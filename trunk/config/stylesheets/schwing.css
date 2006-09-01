@@ -1,0 +1,52 @@
+.mainscreenTitleBar {
+   font-size           : 12px;
+	padding             : 4px 6px 4px 6px;
+   border-style        : solid none solid none;
+	border-top-color    : #BDC7E7;
+	border-bottom-color : #182052;
+   border-width        : 1px 0px 1px 0px;
+	background-color : #ef8700;
+	color            : #ffffff;
+}
+
+.mainscreenTitleBarHover {
+   font-size        : 11px;
+	background-color : #1f669b;
+	color            : #000000;
+}
+
+.mainscreenContentBox {
+   font-size        : 11px;
+   border           : 0px;
+   padding          : 0px 8px 0px 8px;
+}
+
+.mainscreenBorderBox {
+   font-size        : 11px;
+   border           : 1px solid #1f669b;
+   border-top-width : 0px;
+   border-left-width : 0px;
+   border-bottom-width: 0px;
+   padding          : 0px 8px 0px 8px;
+}
+
+.mainSettings {
+	font-size		: 8px;
+}
+
+.mainscreenTable {
+	border 			: 0;
+	height          : 426px;
+}
+
+.statusbar {
+   font-size        : 11px;
+   border           : 1px solid #1f669b;
+   padding          : 0px 8px 0px 8px;
+   background-color : #ffff00;
+}
+
+td {
+	font-size   : 14px;
+}
+

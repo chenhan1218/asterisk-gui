@@ -1,0 +1,562 @@
+<!--
+ * Asterisk -- An open source telephony toolkit.
+ *
+ * Configuration for "MeetMe Extensions"
+ *
+ * Copyright (C) 1999 - 2006, Digium, Inc.
+ *
+ * Mark Spencer <markster@digium.com>
+ *
+ * See http://www.asterisk.org for more information about
+ * the Asterisk project. Please do not directly contact
+ * any of the maintainers of this project for assistance;
+ * the project provides a web site, mailing lists and IRC
+ * channels for your use.
+ *
+ * This program is free software, distributed under the terms of
+ * the GNU General Public License Version 2. See the LICENSE file
+ * at the top of the source tree.
+ *
+-->
+
+<script src="scripts/prototype.js"></script>
+<script src="scripts/rico.js"></script>
+<script src="scripts/astman.js"></script>
+<link href="stylesheets/rico.css" media="all" rel="Stylesheet" type="text/css" />
+<link href="stylesheets/schwing.css" media="all" rel="Stylesheet" type="text/css" />
+
+<script>
+
+	var origwidth;
+	var widgets = new Array;
+	var adstatus;
+	var meetmes;
+	var callbacks = new Object;
+	var usercallbacks = new Object;
+	var fieldnames = new Array(
+				'name', 'delete', 'status', 'new', 'newitem', 'priority', 'realpriority',
+				'save', 'cancel', 'comment', 'planident', 'trunk');
+	var fActiveMenu = false; // Combo Box related
+	var oOverMenu = false; // Combo Box related
+	var tmp_priorities = new Array; 
+
+	function changed_extension() {
+		var app;
+		tmp = $('extensions').value.split(']');
+		app = findapp($('extensions').stored_config.catbyname[tmp[0]].subfields[tmp[1]]['app']);
+		$('name').value = $('extensions').stored_config.catbyname[tmp[0]].subfields[tmp[1]]['name'];
+		$('features').value = app.name.toLowerCase();
+	};
+
+
+
+
+function sortlist() {
+	var lb = document.getElementById('extensions');
+	arrTexts = new Array();
+	arrValues = new Array();
+	arrPriorities = new Array();
+
+		alert (" Size of Extensions : " + lb.length );
+		alert (" Size of tmp_priorities: " + tmp_priorities.length );
+
+	for(i=0; i<lb.length; i++)  {
+		   arrTexts[i] = lb.options[i].text;
+		   arrValues [i] = lb.options[i].value;
+		   //tmp = tmp_priorities[i].split('::'); 
+			//arrPriorities[i] = tmp[2];
+			lb.selectedIndex = i;
+
+			alert (" Text :"+ arrTexts[i] + " Value:" + arrValues [i] + " rank:" + $('priority').value);
+	}
+		//arrTexts.sort();
+		//for(i=0; i<lb.length; i++)  {
+		 // lb.options[i].text = arrTexts[i];
+		 // lb.options[i].value = arrTexts[i];
+		//}
+}
+
+
+
+	callbacks.fields2val = function(box, subfields) {
+		// Called when (new/existing) Pattern is Saved - Onclik of "Save" of Pattern
+		var flags = "d";
+		var xargs="";
+		var room = '${EXTEN:1}';
+		var newpriority = 0 ;
+		// Calculate New Priority
+		if( $('priority').value != ''){
+				newpriority = Number($('priority').value);
+		}else{
+				name_parts = $('extensions').value.split(']');
+				tname = name_parts[0];
+				for (v=0;v<tmp_priorities.length ;v++ ){
+					tmp = tmp_priorities[v].split('::'); 
+					if( tmp[0] == tname && tmp[1] == $('name').value ){
+								if( tmp[2] !='undefined' && tmp[2] > newpriority)
+									newpriority=tmp[2];
+					}
+				}
+				newpriority = Number(newpriority) + 1;
+		}
+
+
+
+		return $('name').value + "," + newpriority + ",Macro(trunkdial,${" + $('trunk').value + "}/" + room + ")";
+	}
+
+
+	callbacks.compare = function(w, a, b) {
+		var tmpa = a.value.split(']');
+		var tmpb = b.value.split(']');
+		if (tmpa.length > 1) {
+			if (tmpb.length > 1) {
+				/* Both are entries */
+				if (tmpa[0] != tmpb[0])
+					return tmpa[0] < tmpb[0];
+				else {
+					if (w.stored_config.catbyname[tmpa[0]].subfields[tmpa[1]]['name'] == 
+					    w.stored_config.catbyname[tmpb[0]].subfields[tmpb[1]]['name']) {
+						if (w.stored_config.catbyname[tmpa[0]].subfields[tmpa[1]]['realpriority'] <
+						       w.stored_config.catbyname[tmpb[0]].subfields[tmpb[1]]['realpriority'])
+							return true;
+						else
+							return false;
+					} else {
+						if (w.stored_config.catbyname[tmpa[0]].subfields[tmpa[1]]['name'] <
+						    w.stored_config.catbyname[tmpb[0]].subfields[tmpb[1]]['name'])
+								return true;
+						else
+							return false;
+					}
+				}
+			} else {
+				/* A is an entry, B is a context */
+				return tmpa[0] < b.value;
+			}
+		} else {
+			if (tmpb.length > 1) {
+				/* A is an context, B is an entry */
+				return a.value <= tmpb[0];
+			} else {
+				/* Both A and B are contexts */
+				return a.value < b.value;
+			}
+		}
+		return a.innerHTML < b.innerHTML;
+	}
+
+
+
+
+	callbacks.format = function(t, x) {
+		var ret;
+		var tmp;
+		var options = new Array;
+		var tmp2, y;
+		var context;
+		var v;
+			
+		if ((t.name.substr(0,11) != 'numberplan-'))
+			return null;
+		if (x == null) {
+			if (t.fieldbyname['comment'])
+				return t.fieldbyname['comment'];
+			else
+				return t.name;
+		}
+		ret = format_extension($('extensions'), t, x, 1);
+
+		if (ret) {
+			tmp = t.subfields[x].args.split(',');
+			tmp_priority = t.subfields[x].priority;
+			tmp_exten = t.subfields[x].name;
+			v = tmp_priorities.length;
+
+			tmp_priorities[v] = t.name + "::" + tmp_exten + "::" + tmp_priority ;
+
+
+			if ((t.subfields[x].app != 'Macro') || (tmp[0] != 'trunkdial'))
+				return "|  " + ret;
+
+			tmp2 = tmp[1].split('}');
+			context = tmp2[0].substr(2);
+			t.subfields[x].trunk = context;
+			context = $('trunk').stored_config.catbyname[context];
+			return "|  " +
+				t.subfields[x].name + " via " + 
+				context.fieldbyname['trunkname'];
+			tmp = t.subfields[x].args.split(',');
+			if (tmp[1]) {
+				tmp2 = tmp[1].split('');
+				for (y=0;y<tmp2.length;y++)
+					options[tmp2[y]] = 'yes';
+			}
+		}
+		return ret;
+	}
+
+
+
+
+	function matches(box, category, index, offset) {
+		var tmp;
+		if ((offset > 0) && (offset < box.options.length)) {
+			tmp = box.options[offset].value.split(']');
+			if ((tmp.length > 1) && (tmp[0] == category)) {
+				if (box.stored_config.catbyname[category].subfields[index].name ==
+					box.stored_config.catbyname[category].subfields[tmp[1]].name)
+						return true;
+			}
+		}
+		return false;
+	}
+
+
+
+	callbacks.checkparams = function(box) {
+		// Occurs when a Pattern or a Plan is saved
+		var tmp = box.value.split(']');
+		if (tmp.length < 2) {
+			$('name').value = 'numberplan-' + $('planident').value;
+		}
+
+	}
+
+
+
+
+
+	callbacks.postselect = function(box, val) {
+	// called "ON page load" and when the  extensions select box is clicked
+		var tmp;
+		tmp = val.split(']');
+
+		if (tmp.length > 1) {
+				/* Found an entry */
+				// Clicked on a SubMenu
+				$('priup').disabled = !matches(box, tmp[0], tmp[1], box.selectedIndex - 1)
+				$('pridown').disabled = !matches(box, tmp[0], tmp[1], box.selectedIndex + 1);
+				$('planident').disabled = true;
+				$('planident').value =  '';
+				$('comment').disabled = true;
+				$('newitem').disabled=true; // "Add new Pattern" is disabled
+		} else {
+				// Clicked a MainMenu - The blue ones
+				$('priup').disabled = true;
+				$('pridown').disabled = true;
+				$('planident').value = $('name').value.substr(11);
+				$('name').disabled = true;
+				$('newitem').disabled=false; // "Add new Pattern" is Enabled
+				if ($('modplan').checked) {
+					$('planident').disabled = false;
+					$('comment').disabled = false;
+					$('delete').disabled=false;
+					$('save').disabled=false;
+				}else{
+					$('delete').disabled=true;
+					$('save').disabled=true;
+					$('planident').disabled = true;
+					$('comment').disabled = true;
+				}
+		}
+		$('new').disabled = !$('modplan').checked;
+		$('priority').disabled = true;
+		$('realpriority').disabled = true;
+	}
+
+	
+
+
+
+
+	function updateplandel() {
+	// called "onpage load" and when the  'Customize Plans' checkbox  is  flipped
+		var tmp;
+		var x;
+		
+		for (x=0;x<$('extensions').options.length;x++) {
+				tmp = $('extensions').options[x].value.split(']');
+				if (tmp.length < 2) { $('extensions').options[x].style.color = '#0000CC'; }
+				$('extensions').options[x].disabled = false;
+		}
+
+		$('new').disabled = !$('modplan').checked;
+		$('planident').disabled = !$('modplan').checked;
+		$('comment').disabled = !$('modplan').checked;
+
+		// If the submenu is the one that is currently highlighted then donot disable the delete button
+		tmp_as =  $('extensions').value.split(']');
+		if(tmp_as.length > 1){ }else{ $('delete').disabled = !$('modplan').checked; }
+
+	}
+
+
+
+
+	callbacks.savechanges = function() {
+	// called when a New Plan or new Pattern is added
+		updateplandel();
+		//$('new').disabled=true;
+		$('newitem').disabled=true;
+		return false;
+	}
+
+
+
+
+
+	callbacks.loaded = function() {
+		$('extensions').contentEditable = 'true';
+		$('extensions').disabled = 0;
+		updateplandel();
+		parent.loadscreen(this);
+		$('newitem').disabled=true;
+	}
+
+	
+	callbacks.sortfunc = function(a,b) {
+		return (a.name < b.name) ? -1 : 1;
+	}
+
+
+
+	callbacks.newsubitem = function(t) {
+		// On "Add Pattern" Click
+		var tmp = new Object;
+		var x;
+		var gen;
+		gen = $('trunk').stored_config.catbyname['general'];
+		if (gen)
+			x = gen.fieldbyname['userbase'];
+		if (x)
+			tmp['name'] = first_free_exten($('extensions'), x);
+		numplan = $('extensions').value ;
+		return new Array(numplan, 'exten', tmp);
+	}
+	
+	
+	callbacks.newcategory = function() {
+		var tmp = null;
+		var x;
+		if ($('extensions').stored_config.catbyname['general'])
+			tmp = objcopy($('extensions').stored_config.catbyname['general']);
+		if (tmp) {
+			x = 1;
+			while($('extensions').stored_config.catbyname['numberplan-custom-' + x]) x++;
+			tmp.name = 'numberplan-custom-' + x;
+			tmp.fieldbyname['comment'] = 'Custom Plan ' + x;
+			tmp.fieldbyname['planident'] = 'custom-' + x;
+		}
+		return tmp;
+	}
+	
+	callbacks.identifier = "extension";
+	
+	callbacks.eachline = true;
+	
+	callbacks.includecats = true;
+	
+	
+	usercallbacks.format = function(t) {
+		if (t.name.substr(0,6) != 'trunk_')
+			return null;
+		if (t.fieldbyname['trunkname'] && t.fieldbyname['trunkname'].length) {
+			return t.fieldbyname['trunkname'];
+		} else
+			return t.name;
+	}
+
+	
+
+	usercallbacks.loaded = function() {
+		parent.astmanEngine.config2list("extensions.conf", $('extensions'), widgets, callbacks);
+	}
+
+
+		// Combo box related
+		function mouseSelect(e) {
+			if (fActiveMenu) {
+				if (oOverMenu == false) {
+					oOverMenu = false;
+					document.getElementById(fActiveMenu).style.display = "none";
+					fActiveMenu = false;
+					return false;
+				}
+				return false;
+			}
+			return true;
+		}
+
+
+		function menuActivate(idEdit, idMenu, idSel) {
+			if (fActiveMenu) return mouseSelect(0);
+			oMenu = document.getElementById(idMenu);
+			oEdit = document.getElementById(idEdit);
+			nTop = oEdit.offsetTop + oEdit.offsetHeight;
+			nLeft = oEdit.offsetLeft;
+			while (oEdit.offsetParent != document.body){
+				oEdit = oEdit.offsetParent;
+				nTop += oEdit.offsetTop;
+				nLeft += oEdit.offsetLeft;
+			}
+			oMenu.style.left = nLeft;
+			oMenu.style.top = nTop;
+			oMenu.style.display = "";
+			fActiveMenu = idMenu;
+			document.getElementById(idSel).focus();
+			return false;
+		}
+
+		function textSet(idEdit, text){
+			document.getElementById(idEdit).value = text;
+			oOverMenu = false;
+			mouseSelect(0);
+			document.getElementById(idEdit).focus();
+		}
+
+		function comboKey(idEdit, idSel){
+			if (window.event.keyCode == 13 || window.event.keyCode == 32)
+				textSet(idEdit,idSel.value);
+			else if (window.event.keyCode == 27){
+				mouseSelect(0);
+				document.getElementById(idEdit).focus();
+			}
+		}
+		document.onmousedown = mouseSelect;
+		// End of 'Combo box related'
+
+
+	function togglefeatures() {
+		if (adstatus == "shown") {
+			adstatus = "hidden";
+			new Rico.Effect.Size('advancedw', null, 1, 120, 8, {complete:function() { $('advancedw').style.height=1;} } );
+		} else {
+			adstatus = "shown";
+			$('advancedw').style.visibility = "visible";
+			new Rico.Effect.Size('advancedw', null, 200, 120, 8 );
+		}
+	}
+
+
+	
+	function localajaxinit() {
+		$('advancedw').style.overflow = "hidden";
+		$('advancedw').style.height = 1;
+		$('advancedw').style.width = $('split').width;
+		$('advancedi').style.width = $('split').width - 60;
+		adstatus = "hidden";
+		$('extensions').contentEditable = 'false';
+		
+		for (var x in fieldnames) {
+			widgets[fieldnames[x]] = $(fieldnames[x]);
+			widgets[fieldnames[x]].disabled = true;
+		}
+		
+		parent.astmanEngine.config2list("users.conf", $('trunk'), new Array(), usercallbacks);
+	}
+
+
+</script>
+<body id="foo" onload="localajaxinit()">
+<div class="mainscreenTitleBar">
+	<span style="margin-left: 4px;font-weight:bold">Numberplan Configuration</span>
+</div>
+<div class="mainscreenContentBox" id="mailboxcontent">
+<table class="mainscreenTable" align="center">
+	<tr valign="top">
+		<td valign='middle' align='center' rowspan='2'>
+			<input style='width:40' type='button' id='priup' value='Up'><br>
+			<br>Priority<br><br>
+			<input style='width:40' type='button' id='pridown' value='Down'>
+		</td>
+		<td colspan='2'>
+		Extensions:
+		</td>
+	</tr>
+	<tr valign="top">
+		<td>
+		<select disabled size="28" id="extensions" style="width:220px">
+		<option expri=''>Loading...</option>
+		</select>
+		</td>
+		<td>
+		<div id='adjustments'>
+		<table cellspacing='0' cellpadding='0'>
+			<tr valign="top"><td>
+
+				<div id='newpatternw'>
+				<table align='center'>
+				<tr><td align='center' colspan='2'>
+					<i>Hints for patterns:<br>
+					<table align='center'>
+						<tr><td><b>N</b></td><td>Any digit from 2 to 9</td></tr>
+						<tr><td><b>X</b></td><td>Any digit from 0 to 9</td></tr>
+						<tr><td><b>.</b></td><td>Any number of additional digits</td></tr>
+					</table>
+				</td></tr>
+				<tr><td>Pattern:</td><td><input size='20' id='name'><input type="button" hidefocus="1" value="&#9660;" style="height:21; width:17; font-size: 7px; font-family: helvetica;"
+    onclick="JavaScript:menuActivate('name', 'combodiv', 'combosel')">
+						<div id="combodiv" style="position:absolute; display:none; top:0px; left:0px;z-index:10000" onmouseover="javascript:oOverMenu='combodiv';" onmouseout="javascript:oOverMenu=false;">
+						  <select size="10" id="combosel" style="width: 220; border-style: none"
+							onclick="JavaScript:textSet('name',this.value); if(!$('name').disabled){$('save').disabled = false;$('cancel').disabled = false;}"
+							onkeypress="JavaScript:comboKey('name', this);">
+							<option value="_9NXXXXXX">_9NXXXXXX (Seven Digit Dial)</option>
+							<option value="_9NXXNXXXXXX">_9NXXNXXXXXX (Ten Digit Dial)</option>
+							<option value='_91NXXNXXXXXX'>_91NXXNXXXXXX (1+ Dial)</option>
+							<option value='_9011.'>_9011. (International Dial)</option>
+						  </select>
+						</div>
+				</td></tr>
+				<tr><td>Trunk:</td><td><select id='trunk'></select></td></tr>
+				<tr><td>Priority:</td><td><input size='4' id='priority'></td></tr>
+				<tr><td>Real Priority:</td><td><input size='4' id='realpriority'></td></tr>
+				<tr><td colspan='2' align='center'><div style="height:15px" id='status'></div></td></tr>
+				<tr><td colspan='2'></td></tr>
+				</table>
+				</div>
+
+			</td>
+			</tr>
+			<tr><td><img id="split" onClick="togglefeatures()" src="images/split-v.png"></td></tr>
+			<tr><td>
+				<div style="background-image:url(images/slice-v.png)" id='advancedw'>
+				<table id='advancedi' align='center'><tr><td>
+				<tr><td>Customize Plans</td><td><input type='checkbox' id='modplan' onClick='updateplandel()'></select></td></tr>
+				<tr><td>Plan Ident</td><td><input size='15' type='text' id='planident'></td></tr>
+				<tr><td>Plan Comment</td><td><input size='15' type='text' id='comment' disabled='yes'></td></tr>
+				<tr><td colspan='2' align='center'><input style='width:80' type='button' id='new' value='New Plan'></td></tr>
+				</table>
+				</div>
+			</td></tr>
+			<tr><td>
+				<img onClick="togglefeatures()" src="images/adv-v.png">
+			</td>
+			</tr>
+		</table>
+		</div>
+		</td>
+
+	</tr><tr>
+		<td align='center' colspan='2'>
+			<table>
+			<tr align='center'><td>
+			<input style='width:80' type='button' id='newitem' value='Add Pattern'>
+			</td><td>
+			<input style='width:80' type='button' id='delete' value='Delete'>
+			</td></tr>
+			</table>
+		</td>
+		<td align='center' colspan='2'>
+				<input style='width:80' type='button' id='save' value='Save'>
+				&nbsp;
+				<input style='width:80' type='button' id='cancel' value='Cancel'>
+				<input type='button'  id="xxxxx" onClick='sortlist()'>
+				&nbsp;
+		<div style='visibility:hidden;overflow:hidden;width:0px;height:0px'>
+		</div>
+		</td>				
+	</tr>
+</table>
+</div>
+</body>
