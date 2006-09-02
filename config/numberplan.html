@@ -38,7 +38,6 @@
 				'save', 'cancel', 'comment', 'planident', 'trunk');
 	var fActiveMenu = false; // Combo Box related
 	var oOverMenu = false; // Combo Box related
-	var tmp_priorities = new Array; 
 
 	function changed_extension() {
 		var app;
@@ -47,36 +46,6 @@
 		$('name').value = $('extensions').stored_config.catbyname[tmp[0]].subfields[tmp[1]]['name'];
 		$('features').value = app.name.toLowerCase();
 	};
-
-
-
-
-function sortlist() {
-	var lb = document.getElementById('extensions');
-	arrTexts = new Array();
-	arrValues = new Array();
-	arrPriorities = new Array();
-
-		alert (" Size of Extensions : " + lb.length );
-		alert (" Size of tmp_priorities: " + tmp_priorities.length );
-
-	for(i=0; i<lb.length; i++)  {
-		   arrTexts[i] = lb.options[i].text;
-		   arrValues [i] = lb.options[i].value;
-		   //tmp = tmp_priorities[i].split('::'); 
-			//arrPriorities[i] = tmp[2];
-			lb.selectedIndex = i;
-
-			alert (" Text :"+ arrTexts[i] + " Value:" + arrValues [i] + " rank:" + $('priority').value);
-	}
-		//arrTexts.sort();
-		//for(i=0; i<lb.length; i++)  {
-		 // lb.options[i].text = arrTexts[i];
-		 // lb.options[i].value = arrTexts[i];
-		//}
-}
-
-
 
 	callbacks.fields2val = function(box, subfields) {
 		// Called when (new/existing) Pattern is Saved - Onclik of "Save" of Pattern
@@ -89,19 +58,18 @@ function sortlist() {
 				newpriority = Number($('priority').value);
 		}else{
 				name_parts = $('extensions').value.split(']');
-				tname = name_parts[0];
-				for (v=0;v<tmp_priorities.length ;v++ ){
-					tmp = tmp_priorities[v].split('::'); 
-					if( tmp[0] == tname && tmp[1] == $('name').value ){
-								if( tmp[2] !='undefined' && tmp[2] > newpriority)
-									newpriority=tmp[2];
+				
+				for (v=0; v < $('extensions').length; v++){
+					tname = $('extensions').options[v].value.split(']');
+					if(tname[1]>0 && $('extensions').options[v].text !='New Entry' ){
+						if( name_parts[0] == tname[0] && $('name').value == box.stored_config.catbyname[tname[0]].subfields[tname[1]]['name'] &&  box.stored_config.catbyname[tname[0]].subfields[tname[1]]['priority'] > newpriority ){
+							newpriority=box.stored_config.catbyname[tname[0]].subfields[tname[1]]['priority'];
+						}
 					}
 				}
+				
 				newpriority = Number(newpriority) + 1;
 		}
-
-
-
 		return $('name').value + "," + newpriority + ",Macro(trunkdial,${" + $('trunk').value + "}/" + room + ")";
 	}
 
@@ -169,12 +137,6 @@ function sortlist() {
 
 		if (ret) {
 			tmp = t.subfields[x].args.split(',');
-			tmp_priority = t.subfields[x].priority;
-			tmp_exten = t.subfields[x].name;
-			v = tmp_priorities.length;
-
-			tmp_priorities[v] = t.name + "::" + tmp_exten + "::" + tmp_priority ;
-
 
 			if ((t.subfields[x].app != 'Macro') || (tmp[0] != 'trunkdial'))
 				return "|  " + ret;
@@ -457,6 +419,60 @@ function sortlist() {
 	}
 
 
+
+
+		function priority_up(){
+			a =  $('extensions').selectedIndex;
+			b = a-1;
+			swap_priorities(a,b);
+		}
+
+		function priority_down(){
+			a =  $('extensions').selectedIndex;
+			b = a+1;
+			swap_priorities(a,b);
+		}
+
+		function swap_priorities(a,b){
+				box = document.getElementById('extensions') ;
+				var opt = {
+					method: 'get',
+					asynchronous: true,
+					onSuccess: function() { 
+						if (box.widgets['status']) 
+							box.widgets['status'].innerHTML = "<i>Updated.</i>";
+						if (box.callbacks.savechanges)
+							box.callbacks.savechanges();
+					},
+					onFailure: function(t) {
+						alert("Config Error: " + t.status + ": " + t.statusText);
+					},
+				};
+
+				v = $('extensions').selectedIndex;
+				t_pattern1 = $('extensions').options[a].value.split(']');
+				t_pattern2 = $('extensions').options[b].value.split(']');
+
+				function subfield_value(n,field){
+					if (n ==1)
+						return box.stored_config.catbyname[t_pattern1[0]].subfields[t_pattern1[1]][field];
+					if (n ==2)
+						return box.stored_config.catbyname[t_pattern2[0]].subfields[t_pattern2[1]][field];
+				}
+				
+				value_one =  subfield_value(1,'name')+ "," +   subfield_value(2,'priority') + ","+ subfield_value(1,'app') +"(" + subfield_value(1,'args') +")";
+				match_one =  subfield_value(1,'name')+ "," +   subfield_value(1,'priority') + ","+ subfield_value(1,'app') +"(" + subfield_value(1,'args') +")";
+				uri = build_action('update', 0, subfield_value(1,'context'),'exten', value_one, match_one);
+				opt.parameters="action=updateconfig&reload=yes&srcfilename=" + encodeURIComponent(box.config_file) + "&dstfilename=" + encodeURIComponent(box.config_file) + uri;
+				tmp = new Ajax.Request(box.engine.url, opt);
+
+				value_two =  subfield_value(1,'name')+ "," +   subfield_value(1,'priority') + ","+ subfield_value(2,'app') +"(" + subfield_value(2,'args') +")";
+				match_two =  subfield_value(1,'name')+ "," +   subfield_value(2,'priority') + ","+ subfield_value(2,'app') +"(" + subfield_value(2,'args') +")";
+				uri = build_action('update', 0, subfield_value(2,'context'),'exten', value_two, match_two);
+				opt.parameters="action=updateconfig&reload=yes&srcfilename=" + encodeURIComponent(box.config_file) + "&dstfilename=" + encodeURIComponent(box.config_file) + uri;
+				tmp = new Ajax.Request(box.engine.url, opt);
+
+		}
 </script>
 <body id="foo" onload="localajaxinit()">
 <div class="mainscreenTitleBar">
@@ -466,9 +482,9 @@ function sortlist() {
 <table class="mainscreenTable" align="center">
 	<tr valign="top">
 		<td valign='middle' align='center' rowspan='2'>
-			<input style='width:40' type='button' id='priup' value='Up'><br>
+			<input style='width:40' type='button' id='priup' value='Up' onClick="priority_up();"><br>
 			<br>Priority<br><br>
-			<input style='width:40' type='button' id='pridown' value='Down'>
+			<input style='width:40' type='button' id='pridown' value='Down' onClick="priority_down();">
 		</td>
 		<td colspan='2'>
 		Extensions:
@@ -551,7 +567,6 @@ function sortlist() {
 				<input style='width:80' type='button' id='save' value='Save'>
 				&nbsp;
 				<input style='width:80' type='button' id='cancel' value='Cancel'>
-				<input type='button'  id="xxxxx" onClick='sortlist()'>
 				&nbsp;
 		<div style='visibility:hidden;overflow:hidden;width:0px;height:0px'>
 		</div>
