@@ -36,8 +36,6 @@
 	var fieldnames = new Array(
 				'name', 'delete', 'status', 'new', 'newitem', 'priority', 'realpriority',
 				'save', 'cancel', 'comment', 'planident', 'trunk');
-	var fActiveMenu = false; // Combo Box related
-	var oOverMenu = false; // Combo Box related
 
 	function changed_extension() {
 		var app;
@@ -227,8 +225,6 @@
 		$('realpriority').disabled = true;
 	}
 
-	
-
 
 
 
@@ -263,9 +259,6 @@
 		$('newitem').disabled=true;
 		return false;
 	}
-
-
-
 
 
 	callbacks.loaded = function() {
@@ -328,65 +321,12 @@
 		} else
 			return t.name;
 	}
-
 	
 
 	usercallbacks.loaded = function() {
 		parent.astmanEngine.config2list("extensions.conf", $('extensions'), widgets, callbacks);
 	}
 
-
-		// Combo box related
-		function mouseSelect(e) {
-			if (fActiveMenu) {
-				if (oOverMenu == false) {
-					oOverMenu = false;
-					document.getElementById(fActiveMenu).style.display = "none";
-					fActiveMenu = false;
-					return false;
-				}
-				return false;
-			}
-			return true;
-		}
-
-
-		function menuActivate(idEdit, idMenu, idSel) {
-			if (fActiveMenu) return mouseSelect(0);
-			oMenu = document.getElementById(idMenu);
-			oEdit = document.getElementById(idEdit);
-			nTop = oEdit.offsetTop + oEdit.offsetHeight;
-			nLeft = oEdit.offsetLeft;
-			while (oEdit.offsetParent != document.body){
-				oEdit = oEdit.offsetParent;
-				nTop += oEdit.offsetTop;
-				nLeft += oEdit.offsetLeft;
-			}
-			oMenu.style.left = nLeft;
-			oMenu.style.top = nTop;
-			oMenu.style.display = "";
-			fActiveMenu = idMenu;
-			document.getElementById(idSel).focus();
-			return false;
-		}
-
-		function textSet(idEdit, text){
-			document.getElementById(idEdit).value = text;
-			oOverMenu = false;
-			mouseSelect(0);
-			document.getElementById(idEdit).focus();
-		}
-
-		function comboKey(idEdit, idSel){
-			if (window.event.keyCode == 13 || window.event.keyCode == 32)
-				textSet(idEdit,idSel.value);
-			else if (window.event.keyCode == 27){
-				mouseSelect(0);
-				document.getElementById(idEdit).focus();
-			}
-		}
-		document.onmousedown = mouseSelect;
-		// End of 'Combo box related'
 
 
 	function togglefeatures() {
@@ -399,7 +339,6 @@
 			new Rico.Effect.Size('advancedw', null, 200, 120, 8 );
 		}
 	}
-
 
 	
 	function localajaxinit() {
@@ -416,8 +355,9 @@
 		}
 		
 		parent.astmanEngine.config2list("users.conf", $('trunk'), new Array(), usercallbacks);
-	}
+		document.getElementById('combosel').style.display = "none";
 
+	}
 
 
 
@@ -485,6 +425,38 @@
 				select_item($('extensions'));
 
 		}
+
+
+		// Experimenting	with the combo box as Mark originally wanted it		- Pari
+		function combo_action(){
+			$('name').value = $('combosel').value;
+			document.getElementById('combosel').style.display = "none";
+			document.getElementById('name').style.display = "";
+		}
+
+		function combo_activate(){
+				tmp_left = $('name').offsetLeft;
+				tmp_top = $('name').offsetTop;
+				tmp_parent = $('name').offsetParent;
+
+				while(tmp_parent.offsetParent != document.body){
+						tmp_parent = tmp_parent.offsetParent;
+						tmp_left += tmp_parent.offsetLeft;
+						tmp_top += tmp_parent.offsetTop;
+				}
+
+				$('combosel').style.left = tmp_left;
+				$('combosel').style.top = tmp_top ;
+
+				document.getElementById('name').style.display = "none";
+				document.getElementById('combosel').style.display = "";
+
+				$('combosel').focus();
+				return false;
+
+		}
+		// End of Experiment with combo box
+
 </script>
 <body id="foo" onload="localajaxinit()">
 <div class="mainscreenTitleBar">
@@ -523,18 +495,13 @@
 						<tr><td><b>.</b></td><td>Any number of additional digits</td></tr>
 					</table>
 				</td></tr>
-				<tr><td>Pattern:</td><td><input size='20' id='name'><input type="button" hidefocus="1" value="&#9660;" style="height:21; width:17; font-size: 7px; font-family: helvetica;"
-    onclick="JavaScript:menuActivate('name', 'combodiv', 'combosel')">
-						<div id="combodiv" style="position:absolute; display:none; top:0px; left:0px;z-index:10000" onmouseover="javascript:oOverMenu='combodiv';" onmouseout="javascript:oOverMenu=false;">
-						  <select size="10" id="combosel" style="width: 220; border-style: none"
-							onclick="JavaScript:textSet('name',this.value); if(!$('name').disabled){$('save').disabled = false;$('cancel').disabled = false;}"
-							onkeypress="JavaScript:comboKey('name', this);">
+				<tr><td>Pattern:</td><td><input size='18' id='name' onclick="combo_activate();">
+						  <select id="combosel" onclick="combo_action();" style="top:1px;left:1px; font-family: Verdana, Arial, Helvetica, Sans-Serif;font-size: 11px; ">
 							<option value="_9NXXXXXX">_9NXXXXXX (Seven Digit Dial)</option>
 							<option value="_9NXXNXXXXXX">_9NXXNXXXXXX (Ten Digit Dial)</option>
 							<option value='_91NXXNXXXXXX'>_91NXXNXXXXXX (1+ Dial)</option>
 							<option value='_9011.'>_9011. (International Dial)</option>
 						  </select>
-						</div>
 				</td></tr>
 				<tr><td>Trunk:</td><td><select id='trunk'></select></td></tr>
 				<tr><td>Priority:</td><td><input size='4' id='priority'></td></tr>
