@@ -69,11 +69,39 @@ function insert_option(box, res, value, core_name)
 	}
 }
 
+function reformat_option(box, index)
+{
+	var v, tmp, res;
+	var cfg = box.stored_config;
+	
+	v = box.options[index].value;
+	tmp = v.split(']');
+	if (tmp.length > 1) {
+		res = box.callbacks.format(cfg.catbyname[tmp[0]], tmp[1]);
+		if (res)
+			box.options[index].innerHTML = res;
+	} else {
+		res = box.callbacks.format(cfg.catbyname[v]);
+		if (res)
+			box.options[index].innerHTML = res;
+	}
+}
 
-
-
-
-
+function update_option(box, index)
+{
+	var v, tmp;
+	var cfg = box.stored_config;
+	v = box.options[index].value;
+	tmp = v.split(']');
+	box.remove(index);
+	if (tmp.length > 1) {
+		res = box.callbacks.format(cfg.catbyname[tmp[0]], tmp[1]);
+		insert_option(box, res, tmp[0] + "]" + tmp[1], cfg.catbyname[tmp[0]].subfields[tmp[1]]['name']); 
+	} else {
+		res = box.callbacks.format(cfg.catbyname[v]);
+		insert_option(box, res, cfg.catbyname[v].name, cfg.categories[x].name);
+	}
+}
 
 function update_box(box) {
 	var x,y,z;

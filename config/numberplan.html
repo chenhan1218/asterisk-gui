@@ -434,7 +434,8 @@
 		}
 
 		function swap_priorities(a,b){
-				box = document.getElementById('extensions') ;
+				var box = $('extensions') ;
+				var sela, selb;
 				var opt = {
 					method: 'get',
 					asynchronous: true,
@@ -448,6 +449,9 @@
 						alert("Config Error: " + t.status + ": " + t.statusText);
 					},
 				};
+
+				sela = $('extensions').options[a].selected;
+				selb = $('extensions').options[b].selected;
 
 				v = $('extensions').selectedIndex;
 				t_pattern1 = $('extensions').options[a].value.split(']');
@@ -463,14 +467,22 @@
 				value_one =  subfield_value(1,'name')+ "," +   subfield_value(2,'priority') + ","+ subfield_value(1,'app') +"(" + subfield_value(1,'args') +")";
 				match_one =  subfield_value(1,'name')+ "," +   subfield_value(1,'priority') + ","+ subfield_value(1,'app') +"(" + subfield_value(1,'args') +")";
 				uri = build_action('update', 0, subfield_value(1,'context'),'exten', value_one, match_one);
-				opt.parameters="action=updateconfig&reload=yes&srcfilename=" + encodeURIComponent(box.config_file) + "&dstfilename=" + encodeURIComponent(box.config_file) + uri;
-				tmp = new Ajax.Request(box.engine.url, opt);
 
 				value_two =  subfield_value(1,'name')+ "," +   subfield_value(1,'priority') + ","+ subfield_value(2,'app') +"(" + subfield_value(2,'args') +")";
 				match_two =  subfield_value(1,'name')+ "," +   subfield_value(2,'priority') + ","+ subfield_value(2,'app') +"(" + subfield_value(2,'args') +")";
-				uri = build_action('update', 0, subfield_value(2,'context'),'exten', value_two, match_two);
+				uri += build_action('update', 1, subfield_value(2,'context'),'exten', value_two, match_two);
 				opt.parameters="action=updateconfig&reload=yes&srcfilename=" + encodeURIComponent(box.config_file) + "&dstfilename=" + encodeURIComponent(box.config_file) + uri;
 				tmp = new Ajax.Request(box.engine.url, opt);
+				box.stored_config.catbyname[t_pattern1[0]].fields[t_pattern1[1]] = value_one;
+				box.stored_config.catbyname[t_pattern2[0]].fields[t_pattern2[1]] = value_two;
+				
+				reformat_option($('extensions'), b);
+				update_option($('extensions'), a);
+				if (sela)
+					$('extensions').options[b].selected = true;
+				else if (selb)
+					$('extensions').options[a].selected = true;
+				select_item($('extensions'));
 
 		}
 </script>
