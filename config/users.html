@@ -35,7 +35,7 @@
 	var numcallbacks = new Object;
 	var fieldnames = new Array(
 				'delete', 'status', 'new', 'save', 'cancel','name','fullname','secret','email','number','zapchan','context',
-				'hasvoicemail','hasdirectory','hassip','hasiax','hasmanager','callwaiting','threewaycalling','mailbox');
+				'hasvoicemail','hasdirectory','hassip','hasiax','hasmanager','callwaiting','threewaycalling','mailbox','isagent');
 
 	extencallbacks.format = function(t, x) {
 		if ((t.name != specialcontext))
@@ -192,6 +192,7 @@
 				<tr><td>CTI:</td><td><input type='checkbox' id='hasmanager'></td></tr>
 				<tr><td>Call&nbsp;Waiting:</td><td><input type='checkbox' id='callwaiting'></td></tr>
 				<tr><td>3-Way&nbsp;Calling:</td><td><input type='checkbox' id='threewaycalling'></td></tr>
+				<tr><td>Is&nbsp;Agent:</td><td><input type='checkbox' id='isagent'></td></tr>
 				</table>
 				</div>
 			</td></tr>
