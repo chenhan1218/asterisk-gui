@@ -50,3 +50,35 @@ td {
 	font-size   : 14px;
 }
 
+/* From astman.css - for use in status tab to show active channels */
+.chanlist {
+	border           : 1px solid #1f669b;
+	height			: 150px;
+	overflow		: auto;
+	background-color : #f1f1f1;
+	width			: 570;
+}
+
+.chantable {
+	border           : 0px;
+	background-color : #f1f1f1;
+	width			: 99%;
+}
+
+.labels {
+	background-color : #000000;
+	color : #ffffff;
+}
+
+.chanlisteven {
+	background-color : #fff8e4;
+}
+
+.chanlistodd {
+	background-color : #f0f5ff;
+}	
+
+.light {
+	color : #717171;
+}
+/* end of - From astman.css */
