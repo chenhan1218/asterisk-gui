@@ -1,0 +1,121 @@
+<!--
+ * Asterisk -- An open source telephony toolkit.
+ *
+ * Configuration for "Users" generally
+ *
+ * Copyright (C) 1999 - 2006, Digium, Inc.
+ *
+ * Mark Spencer <markster@digium.com>
+ *
+ * See http://www.asterisk.org for more information about
+ * the Asterisk project. Please do not directly contact
+ * any of the maintainers of this project for assistance;
+ * the project provides a web site, mailing lists and IRC
+ * channels for your use.
+ *
+ * This program is free software, distributed under the terms of
+ * the GNU General Public License Version 2. See the LICENSE file
+ * at the top of the source tree.
+ *
+-->
+<script src="scripts/prototype.js"></script>
+<script src="scripts/rico.js"></script>
+<script src="scripts/astman.js"></script>
+<link href="stylesheets/rico.css" media="all" rel="Stylesheet" type="text/css" />
+<link href="stylesheets/schwing.css" media="all" rel="Stylesheet" type="text/css" />
+<script>
+	var channels = new Object;
+	var pongs = new Object;
+	var selectedchan = null;
+	var hungupchan = "";
+	var transferedchan = "";
+
+
+function showmsg(){
+	$('status').innerHTML = "Transferred " + transferredchan;
+}
+
+
+// Have to do the following ... but on what event !!
+//		selectedchan = target;
+//		updateButtons();
+
+
+function doStatus(){
+	$('status').innerHTML = "<i>Updating channel status...</i>";
+	astmanEngine.channelClear();
+	$('channellist').innerHTML = astmanEngine.channelTable();
+	$('status').innerHTML = "";
+}
+
+function updateButtons()
+{
+	if ($(selectedchan)) {
+		$('transfer').disabled = 0;
+		$('hangup').disabled = 0;
+	} else {
+		$('transfer').disabled = 1;
+		$('hangup').disabled = 1;
+		selectedchan = null;
+	}
+}
+
+function doTransfer() {
+		var channel = astmanEngine.channelInfo(selectedchan);
+		var exten = prompt("Enter new extension for " + selectedchan);
+		var altchan;
+		if (exten) {
+			if (channel.link) {
+				if (confirm("Transfer " + channel.link + " too?"))
+					altchan = channel.link;
+			}
+			if (altchan) {
+				transferredchan = selectedchan + " and " + altchan + " to " + exten;
+				astmanEngine.sendRequest('action=redirect&channel=' + selectedchan + "&priority=1&extrachannel=" + altchan + "&exten=" + exten, Showmsg);
+			} else {
+				transferredchan = selectedchan + " to " + exten;
+				astmanEngine.sendRequest('action=redirect&channel=' + selectedchan + "&priority=1&exten=" + exten, Showmsg);
+			}
+		}
+}
+
+function doHangup(){
+		hungupchan = selectedchan;
+		astmanEngine.sendRequest('action=hangup&channel=' + selectedchan, demo.hungup);
+}
+
+function localajaxinit(){
+	parent.loadscreen(this);
+	$('status').innerHTML = "<i>Updating channel status...</i>";
+	astmanEngine.channelClear();
+	$('channellist').innerHTML = astmanEngine.channelTable();
+	updateButtons();
+	$('status').innerHTML = "";
+}
+</script>
+<body id="foo" onload="localajaxinit()">
+
+<div class="mainscreenTitleBar">
+	<span style="margin-left: 4px;font-weight:bold">Channels Status</span>
+</div>
+<div class="mainscreenContentBox" id="userscontent">
+<table class="mainscreenTable" align="center">
+	<tr valign="top" height="18">
+		<td>
+		Active Channels: <div style="height:15px" id='status'></div>
+		</td>
+	</tr>
+	<tr height=32 valign="middle">
+		<td align="center"><input type="submit" onClick="doStatus()" id="refresh" value="Refresh">
+				<input type="submit" onClick="doTransfer()" id="transfer" value="Transfer...">
+				<input type="submit" onClick="doHangup()" id="hangup" value="Hangup">
+		</td>
+	</tr>
+	<tr>
+			<td colspan=3 valign="top">
+			<div id="channellist" class="chanlist"></div>
+			</td>
+	</tr>
+</table>
+</div>
+</body>
