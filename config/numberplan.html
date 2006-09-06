@@ -355,11 +355,9 @@
 		}
 		
 		parent.astmanEngine.config2list("users.conf", $('trunk'), new Array(), usercallbacks);
-		document.getElementById('combosel').style.display = "none";
+		document.getElementById('combobox_div').style.display = "none";
 
 	}
-
-
 
 		function priority_up(){
 			a =  $('extensions').selectedIndex;
@@ -413,6 +411,7 @@
 				uri += build_action('update', 1, subfield_value(2,'context'),'exten', value_two, match_two);
 				opt.parameters="action=updateconfig&reload=yes&srcfilename=" + encodeURIComponent(box.config_file) + "&dstfilename=" + encodeURIComponent(box.config_file) + uri;
 				tmp = new Ajax.Request(box.engine.url, opt);
+				
 				box.stored_config.catbyname[t_pattern1[0]].fields[t_pattern1[1]] = value_one;
 				box.stored_config.catbyname[t_pattern2[0]].fields[t_pattern2[1]] = value_two;
 				
@@ -427,17 +426,18 @@
 		}
 
 
-		// Experimenting	with the combo box as Mark originally wanted it		- Pari
+		// Combox_box related
 		function combo_action(){
 			$('name').value = $('combosel').value;
-			document.getElementById('combosel').style.display = "none";
-			document.getElementById('name').style.display = "";
+			document.getElementById('combobox_div').style.display = "none";
+			$('save').disabled= false;
+			$('cancel').disabled= false;
 		}
 
 		function combo_activate(){
 				tmp_left = $('name').offsetLeft;
-				tmp_top = $('name').offsetTop;
-				tmp_parent = $('name').offsetParent;
+				tmp_top = $('name').offsetTop + $('name').offsetHeight;
+				tmp_parent = $('name');
 
 				while(tmp_parent.offsetParent != document.body){
 						tmp_parent = tmp_parent.offsetParent;
@@ -445,17 +445,24 @@
 						tmp_top += tmp_parent.offsetTop;
 				}
 
-				$('combosel').style.left = tmp_left;
-				$('combosel').style.top = tmp_top ;
+				$('combobox_div').style.left = tmp_left;
+				$('combobox_div').style.top = tmp_top ;
+				$('combobox_div').style.width = $('name').offsetWidth;
 
-				document.getElementById('name').style.display = "none";
-				document.getElementById('combosel').style.display = "";
+				document.getElementById('combobox_div').style.display = "";
+		}
 
-				$('combosel').focus();
-				return false;
+		function combo_keypress(event){
+			if( event.keyCode == 13 || event.keyCode == 27 || event.keyCode == 9){
+					document.getElementById('combobox_div').style.display = "none";
+					return false;
+			}else{
+					document.getElementById('combobox_div').style.display = "";
+					return true;
+			}
 
 		}
-		// End of Experiment with combo box
+		// End of - Combox_box related
 
 </script>
 <body id="foo" onload="localajaxinit()">
@@ -495,13 +502,15 @@
 						<tr><td><b>.</b></td><td>Any number of additional digits</td></tr>
 					</table>
 				</td></tr>
-				<tr><td>Pattern:</td><td><input size='18' id='name' onclick="combo_activate();">
-						  <select id="combosel" onclick="combo_action();" style="top:1px;left:1px; font-family: Verdana, Arial, Helvetica, Sans-Serif;font-size: 11px; ">
+				<tr><td>Pattern:</td><td><input size='18' id='name' onfocus="combo_activate();" onkeychange="combo_activate();" onfocusout="document.getElementById('combobox_div').style.display ='none';" onkeypress="combo_keypress(event);">
+						<div id="combobox_div" style="position: absolute; top:0px; left:0px; z-index:10000 ">
+						  <select size=5 id="combosel" onclick="combo_action();" style="font-family: Verdana, Arial, Helvetica, Sans-Serif;font-size: 11px; ">
 							<option value="_9NXXXXXX">_9NXXXXXX (Seven Digit Dial)</option>
 							<option value="_9NXXNXXXXXX">_9NXXNXXXXXX (Ten Digit Dial)</option>
 							<option value='_91NXXNXXXXXX'>_91NXXNXXXXXX (1+ Dial)</option>
 							<option value='_9011.'>_9011. (International Dial)</option>
 						  </select>
+						  </div>
 				</td></tr>
 				<tr><td>Trunk:</td><td><select id='trunk'></select></td></tr>
 				<tr><td>Priority:</td><td><input size='4' id='priority'></td></tr>
@@ -517,7 +526,7 @@
 			<tr><td>
 				<div style="background-image:url(images/slice-v.png)" id='advancedw'>
 				<table id='advancedi' align='center'><tr><td>
-				<tr><td>Customize Plans</td><td><input type='checkbox' id='modplan' onClick='updateplandel()'></select></td></tr>
+				<tr><td>Customize Plans</td><td><input type='checkbox' id='modplan' onClick='updateplandel()'></td></tr>
 				<tr><td>Plan Ident</td><td><input size='15' type='text' id='planident'></td></tr>
 				<tr><td>Plan Comment</td><td><input size='15' type='text' id='comment' disabled='yes'></td></tr>
 				<tr><td colspan='2' align='center'><input style='width:80' type='button' id='new' value='New Plan'></td></tr>
