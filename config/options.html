@@ -24,7 +24,7 @@
 <link href="stylesheets/rico.css" media="all" rel="Stylesheet" type="text/css" />
 <link href="stylesheets/schwing.css" media="all" rel="Stylesheet" type="text/css" />
 <script>
-var demo = new Object;
+var options = new Object;
 
 function loggedOff() {
 			$('pwdbutton').disabled = true;
@@ -35,8 +35,8 @@ function loggedOff() {
 	return;
 }
 
-demo.pongs = function(msgs){
-		resp = msgs[0].headers['response'];
+options.pongs = function(msgs){
+		var resp = msgs[0].headers['response'];
 		if (resp == "Pong") {
 			
 		} else {
@@ -51,10 +51,9 @@ demo.pongs = function(msgs){
 		}
 }
 
-demo.logins = function(msgs) {
+options.logins = function(msgs) {
+	var resp = msgs[0].headers['response'];
 	$('status').innerHTML = msgs[0].headers['message'];
-	resp = msgs[0].headers['response'];
-
 	if (resp == "Success"){
 		changepassword();
 		return;
@@ -65,23 +64,19 @@ demo.logins = function(msgs) {
 
 }
 
-demo.logoffs = function(msgs) {
+options.logoffs = function(msgs) {
 	$('status').innerHTML = msgs[0].headers['message'];
 	return;
 }
 
-demo.updated_logoffs = function(msgs) {
+options.updated_logoffs = function(msgs) {
 	$('status').innerHTML = "Password Updated Successfully!! Please Relogin";
 	return;
 }
 
 function askfor_updatepassword(){
-	// First logout - cause validation does not work unless you logout
-	parent.astmanEngine.sendRequest('action=logoff', demo.logoffs);
-	// login in with the provided username & password 
-	parent.astmanEngine.sendRequest('action=login&username=' + encodeURIComponent($('username').value) + "&secret=" + encodeURIComponent($('currentpass').value), demo.logins);
-	// if login success - change password
-	// if login fails - alert
+	parent.astmanEngine.sendRequest('action=logoff', options.logoffs);
+	parent.astmanEngine.sendRequest('action=login&username=' + encodeURIComponent($('username').value) + "&secret=" + encodeURIComponent($('currentpass').value), options.logins);
 	return;
 }
 
@@ -105,7 +100,7 @@ function showResponse(originalRequest)	{
 			$('currentpass').disabled = true;
 			$('newpass').disabled = true;
 			$('newpass_rep').disabled = true;
-			parent.astmanEngine.sendRequest('action=logoff', demo.updated_logoffs);
+			parent.astmanEngine.sendRequest('action=logoff', options.updated_logoffs);
 			return;
 		}else{
 			$('status').innerHTML= originalRequest.responseText ;
@@ -115,7 +110,7 @@ function showResponse(originalRequest)	{
 
 function localajaxinit(){
 	parent.loadscreen(this);
-	parent.astmanEngine.sendRequest('action=ping', demo.pongs);
+	parent.astmanEngine.sendRequest('action=ping', options.pongs);
 	$('pwdbutton').disabled = true;
 	return;
 }
@@ -172,7 +167,7 @@ function compare_passwords(){
 				</div>
 		</td>
 	</tr>
-	<tr><td><div  id='status'></div></td></tr>
+	<tr><td valign="top"><div  id='status'></div></td></tr>
 	<tr><td></td></tr>
 </table>
 </div>
