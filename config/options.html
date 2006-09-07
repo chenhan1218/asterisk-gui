@@ -1,0 +1,179 @@
+<!--
+ * Asterisk -- An open source telephony toolkit.
+ *
+ * Configuration for "Users" generally
+ *
+ * Copyright (C) 1999 - 2006, Digium, Inc.
+ *
+ * Mark Spencer <markster@digium.com>
+ *
+ * See http://www.asterisk.org for more information about
+ * the Asterisk project. Please do not directly contact
+ * any of the maintainers of this project for assistance;
+ * the project provides a web site, mailing lists and IRC
+ * channels for your use.
+ *
+ * This program is free software, distributed under the terms of
+ * the GNU General Public License Version 2. See the LICENSE file
+ * at the top of the source tree.
+ *
+-->
+<script src="scripts/prototype.js"></script>
+<script src="scripts/rico.js"></script>
+<script src="scripts/astman.js"></script>
+<link href="stylesheets/rico.css" media="all" rel="Stylesheet" type="text/css" />
+<link href="stylesheets/schwing.css" media="all" rel="Stylesheet" type="text/css" />
+<script>
+var demo = new Object;
+
+function loggedOff() {
+			$('pwdbutton').disabled = true;
+			$('username').disabled = true;
+			$('currentpass').disabled = true;
+			$('newpass').disabled = true;
+			$('newpass_rep').disabled = true;
+	return;
+}
+
+demo.pongs = function(msgs){
+		resp = msgs[0].headers['response'];
+		if (resp == "Pong") {
+			
+		} else {
+			$('status').innerHTML = "<i>Please login...</i>";
+			$('pwdbutton').disabled = true;
+			$('username').disabled = true;
+			$('currentpass').disabled = true;
+			$('newpass').disabled = true;
+			$('newpass_rep').disabled = true;
+			//parent.setLoggedOn(0);
+			return;
+		}
+}
+
+demo.logins = function(msgs) {
+	$('status').innerHTML = msgs[0].headers['message'];
+	resp = msgs[0].headers['response'];
+
+	if (resp == "Success"){
+		changepassword();
+		return;
+	}else{
+		loggedOff();
+		return;
+	}
+
+}
+
+demo.logoffs = function(msgs) {
+	$('status').innerHTML = msgs[0].headers['message'];
+	return;
+}
+
+demo.updated_logoffs = function(msgs) {
+	$('status').innerHTML = "Password Updated Successfully!! Please Relogin";
+	return;
+}
+
+function askfor_updatepassword(){
+	// First logout - cause validation does not work unless you logout
+	parent.astmanEngine.sendRequest('action=logoff', demo.logoffs);
+	// login in with the provided username & password 
+	parent.astmanEngine.sendRequest('action=login&username=' + encodeURIComponent($('username').value) + "&secret=" + encodeURIComponent($('currentpass').value), demo.logins);
+	// if login success - change password
+	// if login fails - alert
+	return;
+}
+
+function changepassword(){
+	var opt = {
+			method: 'get',
+			asynchronous: true,
+			onComplete: showResponse,
+		};
+		opt.parameters ="action=updateconfig&reload=yes&srcfilename=manager.conf&dstfilename=manager.conf&Action-000000=update&Cat-000000="+ encodeURIComponent($('username').value) +"&Var-000000=secret&Value-000000="+ encodeURIComponent($('newpass').value );
+		var tmp = new Ajax.Request("../../rawman", opt);
+		return;
+}
+
+function showResponse(originalRequest)	{
+		var v = originalRequest.responseText.split("Success");
+		if( v.length > 1 ){
+			$('status').innerHTML= "Password Updated!!  <BR><BR>Please Relogin using New Password";
+			$('pwdbutton').disabled = true;
+			$('username').disabled = true;
+			$('currentpass').disabled = true;
+			$('newpass').disabled = true;
+			$('newpass_rep').disabled = true;
+			parent.astmanEngine.sendRequest('action=logoff', demo.updated_logoffs);
+			return;
+		}else{
+			$('status').innerHTML= originalRequest.responseText ;
+			return;
+		}
+}
+
+function localajaxinit(){
+	parent.loadscreen(this);
+	parent.astmanEngine.sendRequest('action=ping', demo.pongs);
+	$('pwdbutton').disabled = true;
+	return;
+}
+
+function compare_passwords(){
+	if( $('newpass').value==$('newpass_rep').value && $('newpass').value.length > 3 ){
+		$('pwdbutton').disabled = false;
+	}else{
+		$('pwdbutton').disabled = true;
+	}
+
+}
+
+</script>
+<body id="foo" onload="localajaxinit()">
+<div class="mainscreenTitleBar">
+	<span style="margin-left: 4px;font-weight:bold">Admin Options</span>
+</div>
+<div class="mainscreenContentBox" id="userscontent">
+<table class="mainscreenTable" align="center">
+	<tr valign="top" height="18">
+		<td>
+		<B>Change Password: </B>
+		</td>
+	</tr>
+	<tr>
+		<td align="center" valign="top">
+				<div id="channellist" class="chanlist">
+				<TABLE>
+				<!--  Till we find out a way to retrieve the current username  -->
+				<TR>
+					<TD>Username</TD>
+					<TD><input type="text" id="username" size=16></TD>
+				</TR>
+				<!--  wish I had sessions :) -->
+				<TR>
+					<TD>Current Password:</TD>
+					<TD><input type="password" id="currentpass" size=16></TD>
+				</TR>
+				<TR>
+					<TD>New Password:</TD>
+					<TD><input type="password" id="newpass" size=16 onkeyup="compare_passwords()">&nbsp;( min 4 characters )</TD>
+				</TR>
+				<TR>
+					<TD>Retype New Password:</TD>
+					<TD><input type="password" id="newpass_rep" size=16 onkeyup="compare_passwords()"></TD>
+				</TR>
+				<TR>
+					<TD align=center colspan=2>
+						<input type="button" id="pwdbutton" value="Update" onclick="askfor_updatepassword()">
+					</TD>
+				</TR>
+				</TABLE>
+				</div>
+		</td>
+	</tr>
+	<tr><td><div  id='status'></div></td></tr>
+	<tr><td></td></tr>
+</table>
+</div>
+</body>
