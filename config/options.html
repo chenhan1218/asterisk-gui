@@ -112,6 +112,7 @@ function localajaxinit(){
 	parent.loadscreen(this);
 	parent.astmanEngine.sendRequest('action=ping', options.pongs);
 	$('pwdbutton').disabled = true;
+	document.cookie = 	"var2=something;"
 	return;
 }
 
@@ -139,31 +140,26 @@ function compare_passwords(){
 	<tr>
 		<td align="center" valign="top">
 				<div id="channellist" class="chanlist">
-				<TABLE>
+				<table>
 				<!--  Till we find out a way to retrieve the current username  -->
-				<TR>
-					<TD>Username</TD>
-					<TD><input type="text" id="username" size=16></TD>
-				</TR>
+				<tr>	<td>Username</td>
+					<td><input type="text" id="username" size=16></td>
+				</tr>
 				<!--  wish I had sessions :) -->
-				<TR>
-					<TD>Current Password:</TD>
-					<TD><input type="password" id="currentpass" size=16></TD>
-				</TR>
-				<TR>
-					<TD>New Password:</TD>
-					<TD><input type="password" id="newpass" size=16 onkeyup="compare_passwords()">&nbsp;( min 4 characters )</TD>
-				</TR>
-				<TR>
-					<TD>Retype New Password:</TD>
-					<TD><input type="password" id="newpass_rep" size=16 onkeyup="compare_passwords()"></TD>
-				</TR>
-				<TR>
-					<TD align=center colspan=2>
+				<tr>	<td>Current Password:</td>
+					<td><input type="password" id="currentpass" size=16></td>
+				</tr>
+				<tr>	<td>New Password:</td>
+					<td><input type="password" id="newpass" size=16 onkeyup="compare_passwords()">&nbsp;( min 4 characters )</td>
+				</tr>
+				<tr>	<td>Retype New Password:</td>
+					<td><input type="password" id="newpass_rep" size=16 onkeyup="compare_passwords()"></td>
+				</tr>
+				<tr>	<td align=center colspan=2>
 						<input type="button" id="pwdbutton" value="Update" onclick="askfor_updatepassword()">
-					</TD>
-				</TR>
-				</TABLE>
+					</td>
+				</tr>
+				</table>
 				</div>
 		</td>
 	</tr>

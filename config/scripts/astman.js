@@ -292,7 +292,7 @@ function delete_item(box, value, noconfirm) {
 		},
 		onFailure: function(t) {
 			alert("Config Error: " + t.status + ": " + t.statusText);
-		},
+		}
 	};
 	var tmp, uri;
 	var x,y;
@@ -542,7 +542,7 @@ function apply_uri(box, uri)
 		},
 		onFailure: function(t) {
 			alert("Config Error: " + t.status + ": " + t.statusText);
-		},
+		}
 	};
 	var tmp;
 	
@@ -587,7 +587,7 @@ function save_item(box) {
 		},
 		onFailure: function(t) {
 			alert("Config Error: " + t.status + ": " + t.statusText);
-		},
+		}
 	};
 	var uri;
 	var tmp;
@@ -1310,7 +1310,7 @@ function Astman() {
 			onSuccess: this.managerResponse,
 			onFailure: function(t) {
 				alert("Error: " + t.status + ": " + t.statusText);
-			},
+			}
 		};
 		me.callback = callback;
 		opt.parameters = request;
@@ -1324,7 +1324,7 @@ function Astman() {
 			onSuccess: this.eventResponse,
 			onFailure: function(t) {
 				alert("Event Error: " + t.status + ": " + t.statusText);
-			},
+			}
 		};
 		opt.parameters="action=waitevent";
 		tmp = new Ajax.Request(this.url, opt);
@@ -1340,7 +1340,7 @@ function Astman() {
 			},
 			onFailure: function(t) {
 				alert("Config Error: " + t.status + ": " + t.statusText);
-			},
+			}
 		};
 		if (!callbacks.identifier)
 			callbacks.identifier = "name";
@@ -1393,7 +1393,7 @@ function Astman() {
 		if (widgets['status']) {
 			widgets['status'].disabled = false;
 		}
-
+		
 		tmp = new Ajax.Request(this.url, opt);
 	};
 

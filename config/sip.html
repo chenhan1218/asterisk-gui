@@ -1,0 +1,72 @@
+<!--
+ * Asterisk -- An open source telephony toolkit.
+ *
+ * Configuration for "Users" generally
+ *
+ * Copyright (C) 1999 - 2006, Digium, Inc.
+ *
+ * Mark Spencer <markster@digium.com>
+ *
+ * See http://www.asterisk.org for more information about
+ * the Asterisk project. Please do not directly contact
+ * any of the maintainers of this project for assistance;
+ * the project provides a web site, mailing lists and IRC
+ * channels for your use.
+ *
+ * This program is free software, distributed under the terms of
+ * the GNU General Public License Version 2. See the LICENSE file
+ * at the top of the source tree.
+ *
+-->
+<script src="scripts/prototype.js"></script>
+<script src="scripts/rico.js"></script>
+<script src="scripts/astman.js"></script>
+<link href="stylesheets/rico.css" media="all" rel="Stylesheet" type="text/css" />
+<link href="stylesheets/schwing.css" media="all" rel="Stylesheet" type="text/css" />
+<script>
+var tabs = new Array('tab1', 'tab2', 'tab3', 'tab4');
+var tabwindows = new Array('sip_general.html', 'sip_2.html', 'sip_3.html', 'sip_4.html');
+
+
+function localajaxinit(){
+	parent.loadscreen(this);
+	show_window(1);
+	return;
+}
+
+
+function show_window(x){
+	for(i=0; i < tabwindows.length ; i++){
+		document.getElementById(tabs[i]).style.background = '#DDE';
+		document.getElementById(tabs[i]).style['border-bottom'] = '1px solid #778';
+		document.getElementById(tabs[i]).style['font'] = 'bold 12px Verdana, sans-serif';
+
+	}
+	document.getElementById(tabs[x-1]).style.background = 'white';
+	document.getElementById(tabs[x-1]).style['border-bottom'] = '1px solid white';
+	document.getElementById(tabs[x-1]).style['font'] = 'bold 15px Verdana, sans-serif';
+	document.getElementById('tabwindow').src= tabwindows[x-1];
+	
+	return false;
+}
+
+</script>
+<body id="foo" onload="localajaxinit()">
+<div class="mainscreenTitleBar">
+	<span style="margin-left: 4px;font-weight:bold">SIP Configuration</span>
+</div>
+<div class="mainscreenContentBox" id="userscontent">
+<table class="mainscreenTable" align="center">
+<tr><td align="center">
+	<BR>
+	<a href="" class="tab" onclick="return show_window(1);" id="tab1">General</a>&nbsp;&nbsp;
+    <a href="" class="tab" onclick="return show_window(2);" id="tab2">Tab&nbsp;2</a>&nbsp;&nbsp;
+    <a href="" class="tab" onclick="return show_window(3);" id="tab3">Tab&nbsp;3</a>&nbsp;&nbsp;
+    <a href="" class="tab" onclick="return show_window(4);" id="tab4">Tab&nbsp;4</a>&nbsp;&nbsp;
+
+	<iframe style=" border: solid 1px black; background-color: white; padding: 4px; height:95%; width:95%; overflow: auto;" src="" id="tabwindow"></iframe>
+	</td>
+</tr>
+</table>
+</div>
+</body>

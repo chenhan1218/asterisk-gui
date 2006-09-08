@@ -43,7 +43,7 @@ div.header {margin: 0px 8px 0px 8px; padding: 0px;}
 
 .accordionTabTitleBar {
    font-size           : 12px;
-	padding             : 4px 6px 4px 6px;
+	padding             : 2px 2px 2px 2px;
    border-style        : solid none solid none;
 	border-top-color    : #BDC7E7;
 	border-bottom-color : #182052;
@@ -247,3 +247,27 @@ a.backToSearch:link, a.backToSearch:hover, a.backToSearch:visited {
    font-size: 14px;
    margin: 6px 0px 6px 0px;
    }
+
+/* for DHTML tabs */
+  a.tab { 
+		border-bottom: 1px solid #778;
+		font: bold 12px Verdana, sans-serif;
+		margin: 0;
+		display: inline;
+		padding: 3px 0.5em;
+		margin-left: 3px;
+		border: 1px solid #778;
+		background: #DDE;
+		text-decoration: none;
+		color: #448; 
+ }
+
+a.tab:visited { 
+		color: #448; 
+}
+
+a.tab:hover { 
+		color: #000;
+		background: #AAE;
+		border-color: #227;
+}

@@ -1,0 +1,215 @@
+<!--
+ * Asterisk -- An open source telephony toolkit.
+ *
+ * Top level for configuration GUI
+ *
+ * Copyright (C) 1999 - 2006, Digium, Inc.
+ *
+ * Mark Spencer <markster@digium.com>
+ *
+ * See http://www.asterisk.org for more information about
+ * the Asterisk project. Please do not directly contact
+ * any of the maintainers of this project for assistance;
+ * the project provides a web site, mailing lists and IRC
+ * channels for your use.
+ *
+ * This program is free software, distributed under the terms of
+ * the GNU General Public License Version 2. See the LICENSE file
+ * at the top of the source tree.
+ *
+-->
+
+<script src="scripts/prototype.js"></script>
+<script src="scripts/rico.js"></script>
+<script src="scripts/astman.js"></script>
+<link href="stylesheets/rico.css" media="all" rel="Stylesheet" type="text/css" />
+<link href="stylesheets/schwing.css" media="all" rel="Stylesheet" type="text/css" />
+<script>
+	PanelDef = Class.create();
+	PanelDef.prototype = {
+		initialize: function(name, label, icon, content) {
+			this.name = name;
+			this.label = label;
+			this.icon = icon;
+			this.content = content;
+		}
+	}
+	var panels = new Array;
+	var eventeater = new Object;
+	var loggedon = -1;
+	var started = 0;
+	var accordion;
+	var copyright = "Copyright &copy;2006 Digium, Inc.  All Rights Reserved. &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
+
+
+	eventeater.eventcb = function(msgs) {
+		if (loggedon == 1)
+			astmanEngine.pollEvents();
+	}
+
+	panels.push( 
+
+		new PanelDef("home", "Home", "home.png",
+			"Welcome to the Asterisk Business Edition configuration portal!  This portal " +
+			"is designed to simplify Asterisk configuration for new users of Asterisk " +
+			"Business Edition."),
+
+		new PanelDef("users", "Users", "accordion-icon.gif",
+			"Users is a short cut for quickly adding and removing all the necessary " +
+			"configuration components for any new phone."),
+
+		new PanelDef("meetme", "Conferencing", "accordion-icon.gif",
+			"MeetMe conference bridging allow quick, ad-hoc conferences with or without " +
+			"security."),
+
+		new PanelDef("voicemail", "Voicemail", "accordion-icon.gif",
+			"General settings for voicemail"),
+
+		new PanelDef("queues", "Call Queues", "accordion-icon.gif",
+			"Call queues allow calls to be sequenced to one or more agents."),
+
+		new PanelDef("trunks", "Trunks", "accordion-icon.gif",
+			"Trunks are outbound lines used to allow the system to make calls to the " +
+			"real world.  Trunks can be VoIP lines or traditional telephony lines."),
+
+		new PanelDef("numberplan", "Number Plan", "accordion-icon.gif",
+			"The number plan defines dialing permissions and least cost routing rules."),
+
+//		new PanelDef("musiconhold", "Music On Hold", "accordion-icon.gif",
+//			"Music on hold sometimes keeps people less angry while they wait for an answer."),
+
+		new PanelDef("menus", "Voice Menus", "accordion-icon.gif",
+			"Menus allow for more efficient routing of calls from incoming callers."),
+
+		new PanelDef("sip", "SIP", "accordion-icon.gif", "SIP (Session Initiation Protocol) Configuration"),
+
+		new PanelDef("iax", "IAX", "accordion-icon.gif", "IAX (Inter-Asterisk eXchange Protocol) Configuration"),
+
+		new PanelDef("jabber", "Jabber", "accordion-icon.gif", "Jabber users configuration"),
+
+		new PanelDef("jingle", "Jingle", "accordion-icon.gif", "Jingle configuration lets users connect to google talk networks"),
+
+		new PanelDef("status", "Status", "accordion-icon.gif", "Monitor active channels."),
+
+		new PanelDef("options", "Options", "accordion-icon.gif", "Admin Settings")
+
+	);
+
+	astmanEngine.setURL('../../rawman');
+	astmanEngine.setEventCallback(eventeater.eventcb);
+</script>
+<head>
+<title>Schwing</title>
+</head>
+
+<body onload="javascript:registerajax()">
+
+<script>
+	
+	function setLoggedOn(onoff) {
+		loggedon = onoff;
+		if (loggedon == 1) {
+			for (var i = 0; i < panels.length; i++) {
+				if (panels[i].name == 'home')
+					continue;
+				$(panels[i].name).onclick = $(panels[i].name).realonclick;
+				$(panels[i].name).onmouseover = $(panels[i].name).realonmouseover;
+				$(panels[i].name).style.visibility = 'inherit';
+			}
+		} else {
+			for (var i = 0; i < panels.length; i++) {
+				if (panels[i].name == 'home')
+					continue;
+				$(panels[i].name).onclick = false;
+				$(panels[i].name).onmouseover = false;
+				$(panels[i].name).style.visibility = 'hidden';
+			}
+		}
+	}
+	
+	function loadscreen(srcbody) {
+		$('mainscreen').style.display = '';
+		new Rico.Effect.FadeTo($('mainscreen'), 1, 100, 1);
+		if (loggedon == 1)
+			astmanEngine.pollEvents();
+	}
+
+	function finishfade(page) {
+		$('mainscreen').style.display = "none"; 
+	}
+	
+	function setstatus(status) {
+		$('status').innerHTML = copyright + status;
+	}
+
+	function showmainscreen(page) {
+		if (started) {
+			$('mainscreen').innerHTML = "Loading active screen...";
+			$('mainscreen').src = page.titleBar.id + ".html";
+		}
+	}
+
+	function fademainscreen(page, newpage) {
+		new Rico.Effect.FadeTo($('mainscreen'), 0, 100, 5, {complete:finishfade(page)});
+	}
+
+	function registerajax() {
+		accordion = new Rico.Accordion( $('configpanel'), { panelHeight:360,onHideTab:fademainscreen,onShowTab:showmainscreen });
+		$('borderbox').style.height = $('screenholder').clientHeight;
+		$('titlebar').style.width = $('borderbox').clientWidth - 12;
+		for (var i = 0; i < panels.length; i++) {
+			if (panels[i].name == 'home')
+				continue;
+			$(panels[i].name).realonclick = $(panels[i].name).onclick;
+			$(panels[i].name).realonmouseover = $(panels[i].name).onmouseover;
+		}
+		
+		started = 1;
+	}
+</script>
+<table border="0" align="center" cellspacing="0" cellpadding="0" bgcolor="#dddddd">
+
+<tr>
+	<td bgcolor='white'></td>
+	<td width='80' bgcolor='white'></td>
+	<td bgcolor='white'></td>
+</tr>
+<tr><td valign="bottom" align='right' colspan="2" bgcolor='white'>
+<img align='left' src="images/digiumlogo.gif" align="left">
+</td><td valign='bottom' align='right' bgcolor='white'>
+<a target='_guido' href="http://www.digium.com/guido/about">About Digium</a> | 
+<a target='_guido' href="http://www.digium.com/guido/help">Help</a>
+</td></tr>
+
+<tr><td>
+<div id="configpanel" style="width:150px;">
+	<script>
+	for (var i = 0; i < panels.length; i++) {
+		document.write("<div>");
+		document.write("	<div id='" + panels[i].name + "' class='accordionTabTitleBar'>");
+		document.write("		<img style='vertical-align:middle' src='images/" + panels[i].icon + "'>");
+		document.write("		<span style='margin-left: 4px;font-weight:bold'>" + panels[i].label + "</span>");
+		document.write("    </div>");
+		document.write("	<div class='accordionTabContentBox' style='background-image:url(images/panel.png)'>");
+		document.write(panels[i].content);
+		document.write("	</div>");
+		document.write("</div>");
+	}
+	</script>
+</div>
+</td>
+<td colspan='2' width="600" bgcolor="#eeeeef" valign="top" id="screenholder">
+	<div id="titlebar" class="mainscreenTitleBar" style="position:absolute;top:56px">
+		<span style="margin-left: 4px;font-weight:bold">Loading Screen&nbsp;<img src='images/dots.gif'></span>
+	</div>
+	<div id="borderbox" class="mainscreenBorderBox" style="height:100px">
+	</div>
+	<iframe width="600" height="600" frameborder="0" border="0" marginheight="0" marginwidth="0" src="home.html" id="mainscreen" style="position:absolute;top:56px">
+	</iframe>
+</td>
+</tr>
+<tr><td colspan="3">
+	<div id="status" class="statusbar">Copyright &copy;2006 Digium, Inc.  Digium&reg; and Asterisk&reg; are registered <a href="http://www.digium.com/trademarks">trademarks</a> of Digium, Inc.  All Rights Reserved. <i><a href="http://www.digium.com/gui_legal">Legal Information</a></i></div>
+</td></tr>
+</table>
+</body>

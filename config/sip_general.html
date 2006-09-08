@@ -1,0 +1,85 @@
+<script src="scripts/prototype.js"></script>
+<script src="scripts/rico.js"></script>
+<script src="scripts/astman.js"></script>
+<link href="stylesheets/rico.css" media="all" rel="Stylesheet" type="text/css" />
+<link href="stylesheets/schwing.css" media="all" rel="Stylesheet" type="text/css" />
+<script>
+/*
+allowguest = yes/no
+allowoverlap=no
+allowtransfer=no 
+srvlookup=yes 
+videosupport=yes
+
+
+context = default
+bindport=5060
+bindaddr=0.0.0.0 
+domain=mydomain.tld 
+realm=mydomain.tld
+maxexpiry=3600 
+minexpiry=60 
+defaultexpiry=120
+t1min=100
+disallow=all
+allow=ulaw
+allow=ilbc
+maxcallbitrate=384
+
+*/
+var phonecallbacks = new Object;
+var widgets = new Array;
+
+
+phonecallbacks.format = function(t) {
+//	if( t.name =='general'){
+		//alert ( t.fieldbyname['context'] );
+//	}
+
+	$('hiddenfield').stored_config.catbyname[t.name].fields[]
+
+	if (t.fieldbyname['fullname'] && t.fieldbyname['fullname'].length) {
+			return t.name + " -- " + t.fieldbyname['fullname'];
+		} else
+			return t.name;
+}
+
+
+
+
+
+phonecallbacks.postselect = function(box, val) {
+	
+	alert ( val );
+}
+
+
+
+
+
+
+phonecallbacks.loaded = function() {
+//	alert ("Loaded");
+}
+
+
+
+function localajaxinit(){
+	astmanEngine.setURL('../../rawman');
+	astmanEngine.config2list("sip.conf", $('hiddenfield'), widgets, phonecallbacks);
+}
+</script>
+<body onload="localajaxinit()">
+<div class="mainscreenContentBox" id="userscontent">
+<table>
+<tr><td>Allow Guest:</td><td><input type='checkbox' id='allowguest'></td></tr>
+<tr><td>Allow Overlap:</td><td><input type='checkbox' id='allowoverlap'></td></tr>
+<tr><td>Allow Transfer:</td><td><input type='checkbox' id='allowtransfer'></td></tr>
+<tr><td>SRV Lookups:</td><td><input type='checkbox' id='srvlookup'></td></tr>
+<tr><td>Video Support:</td><td><input type='checkbox' id='videosupport'></td></tr>
+</table>
+
+		<select  size="5" id="hiddenfield" style="width:220px">
+		</select>
+</div>
+</body>
