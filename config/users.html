@@ -35,7 +35,7 @@
 	var numcallbacks = new Object;
 	var fieldnames = new Array(
 				'delete', 'status', 'new', 'save', 'cancel','name','fullname','secret','email','number','zapchan','context',
-				'hasvoicemail','hasdirectory','hassip','hasiax','hasmanager','callwaiting','threewaycalling','mailbox','isagent');
+				'hasvoicemail','hasdirectory','hassip','hasiax','hasmanager','callwaiting','threewaycalling','mailbox','isagent','group');
 
 	extencallbacks.format = function(t, x) {
 		if ((t.name != specialcontext))
@@ -70,6 +70,7 @@
 	}
 	callbacks.checkparams = function(box) {
 		$('mailbox').value = $('name').value;
+		$('group').value = '';
 		return false;
 	}
 	callbacks.newcategory = function() {
@@ -174,7 +175,7 @@
 				<tr><td>Analog Phone:</td><td><select size="1" id='zapchan' style='width:120px'></select></td></tr>
 				<tr><td>Number Plan:</td><td><select size='1' id='context' style='width:120px'></select></td></tr>
 				<tr><td colspan='2' align='center'><div style="height:15px" id='status'></div></td></tr>
-				<tr><td colspan='2' align='center'><input type='hidden' id='mailbox'></td></tr>
+				<tr><td colspan='2' align='center'><input type='hidden' id='mailbox'><input type='hidden' id='group'></td></tr>
 				</table>
 			</td>
 			</tr>

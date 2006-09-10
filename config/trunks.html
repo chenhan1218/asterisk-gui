@@ -36,7 +36,8 @@
 	var fieldnames = new Array(
 				'delete', 'status', 'new', 'save', 'cancel','secret', 'provider', 'zapchan',
 				'trunkstyleanalog','trunkstylevoip', 'name', 'username', 'trunkname', 'callerid',
-				'hasexten', 'hassip', 'hasiax');
+				'hasexten', 'hassip', 'hasiax','registeriax','registersip','host','dialformat','context','group'
+				);
 				
 	var provfieldnames = new Array('providerdesc', 'providerlogo');
 
@@ -121,10 +122,16 @@
 			$('trunkname').value = $('provider').options[$('provider').selectedIndex].innerHTML + " - " + $('username').value;
 			$('hassip').value = provider.fieldbyname['hassip'];
 			$('hasiax').value = provider.fieldbyname['hasiax'];
+			$('registeriax').value = provider.fieldbyname['registeriax'];
+			$('registersip').value = provider.fieldbyname['registersip'];
+			$('host').value = provider.fieldbyname['host'];
+			$('dialformat').value = provider.fieldbyname['dialformat'];
 			$('callerid').value = '';
+			$('context').value = 'default';
 			for (var x=0;x<$('zapchan').options.length;x++)
 				$('zapchan').options[x].selected = false;
 			$('zapchan').value = '';
+			$('group').value = '';
 		} else if ($('trunkstyleanalog').checked) {
 			if (!$('zapchan').value) {
 				alert("When using Analog, at least one port must be selected.");
@@ -149,6 +156,7 @@
 			$('hassip').value = 'no';
 			$('hasiax').value = 'no';
 			$('callerid').value = 'asreceived';
+			$('group').value = box.value.split('_')[1];
 		} else {
 			alert("A trunk must be either Analog or VoIP.");
 			return true;
@@ -245,6 +253,12 @@
 				<input type='hidden' id='hassip'>
 				<input type='hidden' id='hasexten'>
 				<input type='hidden' id='callerid'>
+				<input type='hidden' id='registeriax'>
+				<input type='hidden' id='registersip'>
+				<input type='hidden' id='host'>
+				<input type='hidden' id='dialformat'>
+				<input type='hidden' id='context'>
+				<input type='hidden' id='group'>
 				<div id='analogvoipcontainer' style='height:450;overflow:hidden'>
 				<div id='analog' style='height:0;overflow:hidden'>
 				<table>

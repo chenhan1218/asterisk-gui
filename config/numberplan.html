@@ -49,7 +49,7 @@
 		// Called when (new/existing) Pattern is Saved - Onclik of "Save" of Pattern
 		var flags = "d";
 		var xargs="";
-		var room = '${EXTEN:1}';
+		var room;
 		var newpriority = 0 ;
 		// Calculate New Priority
 		if( $('priority').value != ''){
@@ -68,7 +68,10 @@
 				
 				newpriority = Number(newpriority) + 1;
 		}
-		return $('name').value + "," + newpriority + ",Macro(trunkdial,${" + $('trunk').value + "}/" + room + ")";
+		room = $('trunk').stored_config.catbyname[$('trunk').value].fieldbyname['dialformat'];
+		if (!room || (room == ''))
+ 			room = '${EXTEN:1}';
+ 		return $('name').value + "," + newpriority + ",Macro(trunkdial,${" + $('trunk').value + "}/" + room + ")";
 	}
 
 
