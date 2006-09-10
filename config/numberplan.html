@@ -35,7 +35,7 @@
 	var usercallbacks = new Object;
 	var fieldnames = new Array(
 				'name', 'delete', 'status', 'new', 'newitem', 'priority', 'realpriority',
-				'save', 'cancel', 'comment', 'planident', 'trunk');
+				'save', 'cancel', 'comment', 'planident', 'trunk', 'include');
 
 	function changed_extension() {
 		var app;
@@ -202,6 +202,7 @@
 				$('pridown').disabled = !matches(box, tmp[0], tmp[1], box.selectedIndex + 1);
 				$('planident').disabled = true;
 				$('planident').value =  '';
+				$('include').disabled = true;
 				$('comment').disabled = true;
 				$('newitem').disabled=true; // "Add new Pattern" is disabled
 		} else {
@@ -214,6 +215,7 @@
 				if ($('modplan').checked) {
 					$('planident').disabled = false;
 					$('comment').disabled = false;
+					$('include').disabled = false;
 					$('delete').disabled=false;
 					$('save').disabled=false;
 				}else{
@@ -221,6 +223,7 @@
 					$('save').disabled=true;
 					$('planident').disabled = true;
 					$('comment').disabled = true;
+					$('include').disabled = true;
 				}
 		}
 		$('new').disabled = !$('modplan').checked;
@@ -245,6 +248,7 @@
 		$('new').disabled = !$('modplan').checked;
 		$('planident').disabled = !$('modplan').checked;
 		$('comment').disabled = !$('modplan').checked;
+		$('include').disabled = !$('modplan').checked;
 
 		// If the submenu is the one that is currently highlighted then donot disable the delete button
 		tmp_as =  $('extensions').value.split(']');
@@ -284,11 +288,7 @@
 		var tmp = new Object;
 		var x;
 		var gen;
-		gen = $('trunk').stored_config.catbyname['general'];
-		if (gen)
-			x = gen.fieldbyname['userbase'];
-		if (x)
-			tmp['name'] = first_free_exten($('extensions'), x);
+		tmp['name'] = $('combosel').options[0].value;
 		numplan = $('extensions').value ;
 		return new Array(numplan, 'exten', tmp);
 	}
@@ -305,6 +305,7 @@
 			tmp.name = 'numberplan-custom-' + x;
 			tmp.fieldbyname['comment'] = 'Custom Plan ' + x;
 			tmp.fieldbyname['planident'] = 'custom-' + x;
+			tmp.fieldbyname['include'] = 'default';
 		}
 		return tmp;
 	}
@@ -512,6 +513,7 @@
 							<option value="_9NXXNXXXXXX">_9NXXNXXXXXX (Ten Digit Dial)</option>
 							<option value='_91NXXNXXXXXX'>_91NXXNXXXXXX (1+ Dial)</option>
 							<option value='_9011.'>_9011. (International Dial)</option>
+							<option value='_9911.'>_9911. (Emergency)</option>
 						  </select>
 						  </div>
 				</td></tr>
@@ -532,6 +534,7 @@
 				<tr><td>Customize Plans</td><td><input type='checkbox' id='modplan' onClick='updateplandel()'></td></tr>
 				<tr><td>Plan Ident</td><td><input size='15' type='text' id='planident'></td></tr>
 				<tr><td>Plan Comment</td><td><input size='15' type='text' id='comment' disabled='yes'></td></tr>
+				<tr><td>Builds On</td><td><input size='15' type='text' id='include'></td></tr>
 				<tr><td colspan='2' align='center'><input style='width:80' type='button' id='new' value='New Plan'></td></tr>
 				</table>
 				</div>
