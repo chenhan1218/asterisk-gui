@@ -75,7 +75,7 @@
 		parent.loadscreen(this);
 	}
 
-	callbacks.delchanges = function(value) {
+	callbacks.delchanges = function(box, value) {
 		var oldvalue = $('hiddenglobals').stored_config.catbyname['globals'].fieldbyname[value];
 		if (oldvalue) {
 			uri = build_action('delete', 0, 'globals', value, "");

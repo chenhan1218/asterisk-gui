@@ -186,10 +186,6 @@
 
 	}
 
-
-
-
-
 	callbacks.postselect = function(box, val) {
 	// called "ON page load" and when the  extensions select box is clicked
 		var tmp;
@@ -201,6 +197,7 @@
 				$('priup').disabled = !matches(box, tmp[0], tmp[1], box.selectedIndex - 1)
 				$('pridown').disabled = !matches(box, tmp[0], tmp[1], box.selectedIndex + 1);
 				$('planident').disabled = true;
+				$('trunk').disabled = false;
 				$('planident').value =  '';
 				$('include').disabled = true;
 				$('comment').disabled = true;
@@ -209,6 +206,7 @@
 				// Clicked a MainMenu - The blue ones
 				$('priup').disabled = true;
 				$('pridown').disabled = true;
+				$('trunk').disabled = true;
 				$('planident').value = $('name').value.substr(11);
 				$('name').disabled = true;
 				$('newitem').disabled=false; // "Add new Pattern" is Enabled
@@ -288,7 +286,9 @@
 		var tmp = new Object;
 		var x;
 		var gen;
-		tmp['name'] = $('combosel').options[0].value;
+		tmp['name'] = $('extensions').stored_config.catbyname[$('extensions').value].fieldbyname['defaultpat'];
+		if (!tmp['name'] || !tmp['name'].length)
+			tmp['name'] = $('combosel').options[0].value;
 		numplan = $('extensions').value ;
 		return new Array(numplan, 'exten', tmp);
 	}
@@ -373,6 +373,34 @@
 			a =  $('extensions').selectedIndex;
 			b = a+1;
 			swap_priorities(a,b);
+		}
+
+		callbacks.delchanges = function(box, delvalue, delcat) {
+			var x;
+			var tmp;
+			var match = delvalue.split(']');
+			var cat;
+			var uri = "";
+			var n = 0;
+			if (match.length < 2)
+				return;
+			cat = box.stored_config.catbyname[match[0]];
+			for (x=0;x<box.options.length;x++) {
+				tmp = box.options[x].value.split(']');
+				if (tmp.length > 1) {
+					if ((tmp[0] == match[0]) && 
+						(cat.subfields[tmp[1]]['priority'] > delcat['priority']) && 
+						(cat.subfields[tmp[1]]['name'] == delcat['name'])) {
+							cat.subfields[tmp[1]].priority--;
+							uri += build_action('update', n++, tmp[0], 'exten', 
+								cat.subfields[tmp[1]].name + "," + cat.subfields[tmp[1]].priority + "," + cat.subfields[tmp[1]].app + "(" + cat.subfields[tmp[1]].args + ")",
+								cat.fields[tmp[1]]);
+					}
+				}
+			}
+			if (uri.length) {
+				apply_uri(box, uri);
+			}
 		}
 
 		function swap_priorities(a,b){

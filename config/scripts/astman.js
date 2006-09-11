@@ -288,13 +288,13 @@ function delete_item(box, value, noconfirm) {
 			if (box.widgets['status']) 
 				box.widgets['status'].innerHTML = "<i>Deleted.</i>";
 			if (box.callbacks.delchanges)
-				box.callbacks.delchanges(box.delvalue);
+				box.callbacks.delchanges(box, box.delvalue, box.delcat);
 		},
 		onFailure: function(t) {
 			alert("Config Error: " + t.status + ": " + t.statusText);
 		}
 	};
-	var tmp, uri;
+	var tmp, tmp2, uri;
 	var x,y;
 	var updatebox = 0;
 	var subcat, subname, suborig;
@@ -311,13 +311,23 @@ function delete_item(box, value, noconfirm) {
 	tmp = value.split(']');
 	if (tmp.length > 1) {
 		var oldname;
+		box.delcat = box.stored_config.catbyname[tmp[0]].subfields[tmp[1]];
 		oldname = box.stored_config.catbyname[tmp[0]].subfields[tmp[1]].name;
-		subcat = box.stored_config.catbyname[tmp[0]].subfields[tmp[1]];
 		subname = box.stored_config.catbyname[tmp[0]].names[tmp[1]];
 		suborig = box.stored_config.catbyname[tmp[0]].fields[tmp[1]];
 		box.stored_config.catbyname[tmp[0]].subfields.splice(tmp[1], 1);
 		box.stored_config.catbyname[tmp[0]].names.splice(tmp[1], 1);
 		box.stored_config.catbyname[tmp[0]].fields.splice(tmp[1], 1);
+		for (x=0;x<box.options.length;x++) {
+			tmp2 = box.options[x].value.split(']');
+			/* Renumber remaining line numbers */
+			if ((tmp2.length > 1) && (tmp2[0] == tmp[0])) {
+				if (tmp2[1] > tmp[1]) {
+					var newname = tmp2[0] + "]" + String(Number(tmp2[1]) - 1);
+					box.options[x].value = newname;
+				}
+			}
+		}
 		if (updatebox && oldname == "") {
 			if (box.widgets['status']) 
 				box.widgets['status'].innerHTML = "<i>Deleted.</i>";
