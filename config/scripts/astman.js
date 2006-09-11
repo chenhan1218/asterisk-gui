@@ -511,16 +511,6 @@ function new_subitem(box) {
 
 
 
-
-
-
-
-
-
-
-
-
-
 function apply_uri(box, uri)
 {
 	var opt = {
@@ -779,6 +769,23 @@ function Astman() {
 	this.setDebug = function(debug) {
 		this.debug = debug;
 	};
+	this.run_tool = function(tool, callback) {
+		var opt = {
+			method: 'get',
+			asynchronous: true,
+			onSuccess: function() { 
+				if (callback)
+					callback();
+			},
+			onFailure: function(t) {
+				alert("Tool Error: " + t.status + ": " + t.statusText);
+			}
+		};
+		var tmp;
+		opt.parameters="action=originate&channel=" + encodeURIComponent("Local/" + tool + "@tools") + "&application=noop&timeout=60000";
+		tmp = new Ajax.Request(this.url, opt);
+	}
+
 	this.clickChannel = function(ev) {
 		var target = ev.target;
 		// XXX This is icky, we statically use astmanEngine to call the callback XXX 
