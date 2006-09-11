@@ -1177,14 +1177,23 @@ function Astman() {
 				else
 					thevalue = '';
 				if (widgets[x].type == 'checkbox') {
-					widgets[x].checked = ast_true(thevalue);
+					dfalt = widgets[x].getAttribute('dfalt');
+					if( dfalt && thevalue=='' )
+							widgets[x].checked = ast_true(dfalt);
+					else 
+							widgets[x].checked = ast_true(thevalue);
 				} else if (widgets[x].type == 'radio') {
 					if (widgets[x].value == thevalue)
 						widgets[x].checked = true;
 					else
 						widgets[x].checked = false;
-				} else
-					widgets[x].value = thevalue;
+				} else{
+					dfalt = widgets[x].getAttribute('dfalt');
+					if( dfalt && thevalue=='' )
+							widgets[x].value = dfalt;
+					else 
+							widgets[x].value = thevalue;
+				}
 
 				if (cat)
 					widgets[x].disabled = false;

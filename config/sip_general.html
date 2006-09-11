@@ -4,82 +4,162 @@
 <link href="stylesheets/rico.css" media="all" rel="Stylesheet" type="text/css" />
 <link href="stylesheets/schwing.css" media="all" rel="Stylesheet" type="text/css" />
 <script>
-/*
-allowguest = yes/no
-allowoverlap=no
-allowtransfer=no 
-srvlookup=yes 
-videosupport=yes
-
-
-context = default
-bindport=5060
-bindaddr=0.0.0.0 
-domain=mydomain.tld 
-realm=mydomain.tld
-maxexpiry=3600 
-minexpiry=60 
-defaultexpiry=120
-t1min=100
-disallow=all
-allow=ulaw
-allow=ilbc
-maxcallbitrate=384
-
-*/
 var phonecallbacks = new Object;
 var widgets = new Array;
-
+var fieldnames = new Array('status', 'save', 'cancel', 'context', 'allowguest' , 'allowoverlap' , 'allowtransfer', 'realm', 'bindport', 'bindaddr', 'srvlookup', 'domain', 'pedantic', 'tos_sip', 'tos_audio', 'tos_video', 'maxexpiry', 'minexpiry', 'defaultexpiry', 't1min', 'notifymimetype', 'checkmwi', 'language', 'relaxdtmf', 'rtptimeout', 'rtpholdtimeout', 'trustrpid' ,'sendrpid', 'progressinband', 'useragent', 'promiscredir', 'usereqphone', 'dtmfmode', 'compactheaders', 'videosupport', 'maxcallbitrate', 'callevents', 'alwaysauthreject', 'g726nonstandard', 'sipdebug', 'recordhistory', 'dumphistory', 'allowsubscribe', 'subscribecontext', 'notifyringing', 't38pt_udptl', 'nat', 'canreinvite', 'rtcachefriends', 'rtsavesysname', 'rtupdate', 'rtautoclear', 'ignoreregexpire','domain', 'autodomain', 'allowexternaldomains', 'allowexternalinvites', 'jbenable', 'jbforce', 'jbmaxsize', 'jbresyncthreshold', 'jbimpl','jblog');
 
 phonecallbacks.format = function(t) {
-//	if( t.name =='general'){
-		//alert ( t.fieldbyname['context'] );
-//	}
-
-	$('hiddenfield').stored_config.catbyname[t.name].fields[]
-
-	if (t.fieldbyname['fullname'] && t.fieldbyname['fullname'].length) {
-			return t.name + " -- " + t.fieldbyname['fullname'];
-		} else
+		//	t.name, t.fieldbyname['context'] 
+		tmp = t.name.split('general');
+		if(tmp.length>1)
 			return t.name;
+		else
+			return false;
 }
-
-
-
 
 
 phonecallbacks.postselect = function(box, val) {
-	
-	alert ( val );
+
 }
 
 
-
-
-
-
 phonecallbacks.loaded = function() {
-//	alert ("Loaded");
+		$('hiddenfield').selectitem(0);
 }
 
 
 
 function localajaxinit(){
+		for (var x in fieldnames) {
+			widgets[fieldnames[x]] = $(fieldnames[x]);
+			widgets[fieldnames[x]].disabled = true;
+		}
 	astmanEngine.setURL('../../rawman');
 	astmanEngine.config2list("sip.conf", $('hiddenfield'), widgets, phonecallbacks);
 }
 </script>
 <body onload="localajaxinit()">
+
 <div class="mainscreenContentBox" id="userscontent">
-<table>
-<tr><td>Allow Guest:</td><td><input type='checkbox' id='allowguest'></td></tr>
-<tr><td>Allow Overlap:</td><td><input type='checkbox' id='allowoverlap'></td></tr>
-<tr><td>Allow Transfer:</td><td><input type='checkbox' id='allowtransfer'></td></tr>
-<tr><td>SRV Lookups:</td><td><input type='checkbox' id='srvlookup'></td></tr>
-<tr><td>Video Support:</td><td><input type='checkbox' id='videosupport'></td></tr>
+<div  style="height :85%; overflow :auto;">
+<table align="center">
+<tr><td>Context:</td><td><input type='text' size=10 id='context'></td></tr>
+<tr><td>Allow Guest:</td><td><input type='checkbox' dfalt='y' id='allowguest'></td></tr>
+<tr><td>Allow Overlap:</td><td><input type='checkbox' dfalt='y' id='allowoverlap'></td></tr>
+<tr><td>Allow Transfer:</td><td><input type='checkbox' dfalt='y' id='allowtransfer'></td></tr>
+<tr><td>Realm:</td><td><input type='text' id='realm'></td></tr>
+<tr><td>Bind Port:</td><td><input type='text' id='bindport'></td></tr>
+<tr><td>Bind Address:</td><td><input type='text' id='bindaddr'></td></tr>
+<tr><td>SRV Lookup:</td><td><input type='checkbox' dfalt='y' id='srvlookup'></td></tr>
+<tr><td>Domain:</td><td><input type='text' id='domain'></td></tr>
+<tr><td>Pedantic:</td><td><input type='checkbox' dfalt='no' id='pedantic'></td></tr>
+<tr><td>tos_sip:</td><td><input type='text' id='tos_sip'></td></tr>
+<tr><td>tos_audio:</td><td><input type='text' id='tos_audio'></td></tr>
+<tr><td>tos_video:</td><td><input type='text' id='tos_video'></td></tr>
+<tr><td>maxexpiry:</td><td><input type='text' id='maxexpiry'></td></tr>
+<tr><td>minexpiry:</td><td><input type='text' dfalt='60' id='minexpiry'></td></tr>
+<tr><td>defaultexpiry:</td><td><input type='text' id='defaultexpiry'></td></tr>
+<tr><td>t1min:</td><td><input type='text' dfalt='100' id='t1min'></td></tr>
+<tr><td>notifymimetype:</td><td><input type='text' id='notifymimetype'></td></tr>
+<tr><td>checkmwi:</td><td><input type='text' id='checkmwi'></td></tr>
+<tr><td>language:</td><td><input type='text' id='language'></td></tr>
+<tr><td>relaxdtmf:</td><td><input type='checkbox' id='relaxdtmf'></td></tr>
+<tr><td>rtptimeout:</td><td><input type='text' id='rtptimeout'></td></tr>
+<tr><td>rtpholdtimeout:</td><td><input type='text' id='rtpholdtimeout'></td></tr>
+<tr><td>trustrpid:</td><td><input type='checkbox' id='trustrpid'></td></tr>
+<tr><td>sendrpid:</td><td><input type='checkbox' id='sendrpid'></td></tr>
+<tr><td>progressinband:</td>
+		<td><select id='progressinband'>
+					<option value='never'>never</option>
+					<option value='no'>no</option>
+					<option value='yes'>yes</option>
+				</select>
+		</td>
+</tr>
+<tr><td>useragent:</td><td><input type='text' id='useragent'></td></tr>
+<tr><td>promiscredir:</td><td><input type='checkbox' id='promiscredir'></td></tr>
+<tr><td>usereqphone:</td><td><input type='checkbox' id='usereqphone'></td></tr>
+<tr><td>dtmfmode:</td>
+		<td><select id='dtmfmode'>
+					<option value='rfc2833'>rfc2833</option>
+					<option value='info'>info</option>
+					<option value='inband'>inband</option>
+					<option value='auto'>auto</option>
+				</select>
+		</td>
+</tr>
+<tr><td>compactheaders:</td><td><input type='checkbox' id='compactheaders'></td></tr>
+<tr><td>videosupport:</td><td><input type='checkbox' id='videosupport'></td></tr>
+<tr><td>maxcallbitrate:</td><td><input type='text' id='maxcallbitrate'></td></tr>
+<tr><td>callevents:</td><td><input type='checkbox' id='callevents'></td></tr>
+<tr><td>alwaysauthreject:</td><td><input type='checkbox' id='alwaysauthreject'></td></tr>
+<tr><td>g726nonstandard:</td><td><input type='checkbox' id='g726nonstandard'></td></tr>
+
+<tr><td>sipdebug:</td><td><input type='checkbox' id='sipdebug'></td></tr>
+<tr><td>recordhistory:</td><td><input type='checkbox' id='recordhistory'></td></tr>
+<tr><td>dumphistory:</td><td><input type='checkbox' id='dumphistory'></td></tr>
+
+<tr><td>allowsubscribe:</td><td><input type='checkbox' id='allowsubscribe'></td></tr>
+<tr><td>subscribecontext:</td><td><input type='text' id='subscribecontext'></td></tr>
+<tr><td>notifyringing:</td><td><input type='checkbox' id='notifyringing'></td></tr>
+<tr><td>t38pt_udptl:</td><td><input type='checkbox' id='t38pt_udptl'></td></tr>
+<tr><td>nat:</td>
+		<td><select id='nat'>
+					<option value='yes'>yes</option>
+					<option value='no'>no</option>
+					<option value='never'>never</option>
+					<option value='route'>route</option>
+				</select>
+		</td>
+</tr>
+
+<tr><td>canreinvite:</td>
+		<td><select id='canreinvite'>
+					<option value='yes'>yes</option>
+					<option value='nonat'>nonat</option>
+					<option value='update'>update</option>
+				</select>
+		</td>
+</tr>
+
+<tr><td>rtcachefriends:</td><td><input type='checkbox' id='rtcachefriends'></td></tr>
+<tr><td>rtsavesysname:</td><td><input type='checkbox' id='rtsavesysname'></td></tr>
+<tr><td>rtupdate:</td><td><input type='checkbox' id='rtupdate'></td></tr>
+<tr><td>rtautoclear:</td><td><input type='checkbox' id='rtautoclear'></td></tr>
+<tr><td>ignoreregexpire:</td><td><input type='checkbox' id='ignoreregexpire'></td></tr>
+<tr><td>domain:</td><td><input type='text' id='domain'></td></tr>
+<tr><td>autodomain:</td><td><input type='checkbox' id='autodomain'></td></tr>
+<tr><td>allowexternaldomains:</td><td><input type='checkbox' id='allowexternaldomains'></td></tr>
+<tr><td>allowexternalinvites:</td><td><input type='checkbox' id='allowexternalinvites'></td></tr>
+<tr><td>jbenable:</td><td><input type='checkbox' id='jbenable'></td></tr>
+<tr><td>jbforce:</td><td><input type='checkbox' id='jbforce'></td></tr>
+<tr><td>jbmaxsize:</td><td><input type='text' id='jbmaxsize'></td></tr>
+<tr><td>jbresyncthreshold:</td><td><input type='text' id='jbresyncthreshold'></td></tr>
+<tr><td>jbimpl:</td>
+		<td><select id='jbimpl'>
+					<option value='fixed'>fixed</option>
+					<option value='adaptive'>adaptive</option>
+				</select>
+		</td>
+</tr>
+<tr><td>jblog:</td><td><input type='checkbox' id='jblog'></td></tr>
+</table>
+</div>
+
+<table align="center">
+<tr><td colspan=2 align=center>
+			<div  id='status'></div>
+		</td>
+</tr>
+<tr><td colspan=2 align=center>
+				<input style='width:80' type='button' id='save' value='Save'>&nbsp;<input style='width:80' type='button' id='cancel' value='Cancel'>
+		</td>
+</tr>
 </table>
 
-		<select  size="5" id="hiddenfield" style="width:220px">
-		</select>
+</div>
+<div style='visibility:hidden;overflow:hidden;width:0px;height:0px'>
+<select  size="5" id="hiddenfield" style="width:220px">
+</select>
 </div>
 </body>
