@@ -1,0 +1,115 @@
+<!--
+ * Asterisk -- An open source telephony toolkit.
+ *
+ * Configuration for "Users" generally
+ *
+ * Copyright (C) 1999 - 2006, Digium, Inc.
+ *
+ * Mark Spencer <markster@digium.com>
+ *
+ * See http://www.asterisk.org for more information about
+ * the Asterisk project. Please do not directly contact
+ * any of the maintainers of this project for assistance;
+ * the project provides a web site, mailing lists and IRC
+ * channels for your use.
+ *
+ * This program is free software, distributed under the terms of
+ * the GNU General Public License Version 2. See the LICENSE file
+ * at the top of the source tree.
+ *
+-->
+
+<script src="scripts/prototype.js"></script>
+<script src="scripts/rico.js"></script>
+<script src="scripts/astman.js"></script>
+<link href="stylesheets/rico.css" media="all" rel="Stylesheet" type="text/css" />
+<link href="stylesheets/schwing.css" media="all" rel="Stylesheet" type="text/css" />
+
+<script>
+var phonecallbacks = new Object;
+var widgets = new Array;
+var fieldnames = new Array('status', 'save', 'cancel', 'new', 'delete','name', 'username','disallow','allow','context','connection');
+
+phonecallbacks.format = function(t) {
+		tmp = t.name.split('general');
+		if(tmp.length>1)
+			return false;
+		else
+			return t.name;
+}
+
+phonecallbacks.postselect = function(box, val) {
+
+}
+
+phonecallbacks.loaded = function() {
+		//$('hiddenfield').selectitem(0);
+}
+
+function localajaxinit() {
+	// Load the jabber.conf->users into the Users, associate the field to other fields
+	parent.loadscreen(this);
+	for (var x in fieldnames) {
+		widgets[fieldnames[x]] = $(fieldnames[x]);
+		widgets[fieldnames[x]].disabled = true;
+	}
+	parent.astmanEngine.config2list("jingle.conf", $('JingleUsers'), widgets, phonecallbacks);
+	return;
+}
+</script>
+<body id="foo" onload="localajaxinit()">
+<div class="mainscreenTitleBar">
+	<span style="margin-left: 4px;font-weight:bold">Jingle Configuration</span>
+</div>
+<div class="mainscreenContentBox" id="userscontent">
+<table class="mainscreenTable" align="center">
+	<tr valign="top">
+		<td colspan='2'>
+		Users:
+		</td>
+	</tr>
+	<tr valign="top">
+		<td>
+		<select size="28" id="JingleUsers" style="width:220px">
+		<option>Loading...</option>
+		</select>
+		</td>
+		<td colspan='3'>
+		<div id='adjustments' style='width:350'>
+		<table cellspacing='0' cellpadding='0'>
+			<tr valign="top"><td>
+				<table>
+				<tr><td>Extension:</td><td><input size='10' id='name'></td></tr>
+				<tr><td>Username:</td><td><input size='20' id='username'></td></tr>
+				<tr><td>disallow:</td><td><input size='12' id='disallow'></td></tr>
+				<tr><td>allow:</td><td><input size='12' id='allow'></td></tr>
+				<tr><td>context:</td><td><input size='12' id='context'></td></tr>
+				<tr><td>connection:</td><td><input size='12' id='connection'></td></tr>
+				<tr><td colspan='2' align='center'><div style="height:15px" id='status'></div></td></tr>
+				</table>
+			</td>
+			</tr>
+		</table>
+		</div>
+		</td></tr>				
+		<tr>
+		<td align='center'>
+			<table>
+			<tr align='center'><td>
+			<input style='width:80' type='button' id='new' value='New'>
+			</td><td>
+			<input style='width:80' type='button' id='delete' value='Delete'>
+			</td></tr>
+			</table>
+		</td>
+		<td colspan='1' align='right'>
+				<input style='width:80' type='button' id='save' value='Save'>
+				&nbsp;
+				<input style='width:80' type='button' id='cancel' value='Cancel'>
+				&nbsp;
+		</td>
+	</tr><tr>
+	</tr>
+</table>
+</div>
+</body>

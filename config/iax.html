@@ -1,0 +1,256 @@
+<!--
+ * Asterisk -- An open source telephony toolkit.
+ *
+ * Configuration for "Users" generally
+ *
+ * Copyright (C) 1999 - 2006, Digium, Inc.
+ *
+ * Mark Spencer <markster@digium.com>
+ *
+ * See http://www.asterisk.org for more information about
+ * the Asterisk project. Please do not directly contact
+ * any of the maintainers of this project for assistance;
+ * the project provides a web site, mailing lists and IRC
+ * channels for your use.
+ *
+ * This program is free software, distributed under the terms of
+ * the GNU General Public License Version 2. See the LICENSE file
+ * at the top of the source tree.
+ *
+-->
+<script src="scripts/prototype.js"></script>
+<script src="scripts/rico.js"></script>
+<script src="scripts/astman.js"></script>
+<link href="stylesheets/rico.css" media="all" rel="Stylesheet" type="text/css" />
+<link href="stylesheets/schwing.css" media="all" rel="Stylesheet" type="text/css" />
+<script>
+var phonecallbacks = new Object;
+var widgets = new Array;
+var fieldnames = new Array('status', 'save', 'cancel', 'bindport', 'bindaddr', 'iaxcompat', 'nochecksums', 'delayreject', 'amaflags', 'adsi', 'accountcode', 'language', 'mohinterpret', 'mohsuggest', 'bandwidth','jitterbuffer', 'forcejitterbuffer', 'dropcount', 'maxjitterbuffer', 'maxjitterinterps', 'resyncthreshold', 'maxexcessbuffer', 'minexcessbuffer', 'jittershrinkrate', 'trunkfreq', 'trunktimestamps', 'minregexpire', 'maxregexpire', 'iaxthreadcount', 'iaxmaxthreadcount' , 'register', 'authdebug', 'tos', 'regcontext', 'autokill', 'codecpriority', 'rtcachefriends', 'rtupdate', 'rtautoclear', 'rtignoreexpire');
+
+
+phonecallbacks.format = function(t) {
+		tmp = t.name.split('general');
+		if(tmp.length>1)
+			return t.name;
+		else
+			return false;
+}
+
+
+phonecallbacks.postselect = function(box, val) {
+
+}
+
+
+
+phonecallbacks.loaded = function() {
+		$('hiddenfield').selectitem(0);
+}
+
+
+
+function localajaxinit(){
+	parent.loadscreen(this);
+		for (var x in fieldnames) {
+			widgets[fieldnames[x]] = $(fieldnames[x]);
+			widgets[fieldnames[x]].disabled = true;
+		}
+	parent.astmanEngine.config2list("iax.conf", $('hiddenfield'), widgets, phonecallbacks);
+	return;
+}
+
+</script>
+<body id="foo" onload="localajaxinit()">
+<div class="mainscreenTitleBar">
+	<span style="margin-left: 4px;font-weight:bold">IAX Configuration </span>
+</div>
+
+<div class="mainscreenContentBox" id="userscontent">
+<table class="mainscreenTable" align="center">
+<tr><td height=18></td></tr>
+<tr valign="top">
+<td>
+	<div  style="height :385px;width=400px; overflow :auto;">
+		<table align="center" cellspacing=0 cellpadding=2 width=350>
+		<tr><td align=right>bindport:</td>
+				<td>&nbsp;<input type='text' size=4 id='bindport'></td>
+		</tr>
+
+		<tr><td align=right>bindaddr:</td>
+				<td>&nbsp;<input type='text' size=15 id='bindaddr'></td>
+		</tr>
+
+		<tr><td align=right>iaxcompat:</td>
+				<td><input type='checkbox' id='iaxcompat'></td>
+		</tr>
+
+		<tr><td align=right>nochecksums:</td>
+				<td><input type='checkbox' id='nochecksums'></td>
+		</tr>
+
+		<tr><td align=right>delayreject:</td>
+				<td><input type='checkbox' id='delayreject'></td>
+		</tr>
+
+		<tr><td align=right>amaflags:</td>
+				<td>&nbsp;<input type='text' size=15 id='amaflags'></td>
+		</tr>
+		
+		<tr><td align=right>adsi:</td>
+				<td><input type='checkbox' id='adsi'></td>
+		</tr>
+		
+		<tr><td align=right>accountcode:</td>
+				<td>&nbsp;<input type='text' size=15 id='accountcode'></td>
+		</tr>
+		
+		<tr><td align=right>language:</td>
+				<td>&nbsp;<input type='text' size=3 id='language'></td>
+		</tr>
+		
+		<tr><td align=right>mohinterpret:</td>
+				<td>&nbsp;<input type='text' size=15 id='mohinterpret'></td>
+		</tr>
+		
+		<tr><td align=right>mohsuggest:</td>
+				<td>&nbsp;<input type='text' size=15 id='mohsuggest'></td>
+		</tr>
+		
+		<tr><td align=right>bandwidth:</td>
+				<td>&nbsp;
+				<select id="bandwidth">
+					<option value="low">low</option>
+					<option value="medium">medium</option>
+					<option value="high">high</option>
+				</select>
+				</td>
+		</tr>
+		
+		<tr><td align=right>jitterbuffer:</td>
+				<td><input type='checkbox' id='jitterbuffer'></td>
+		</tr>
+		
+		<tr><td align=right>forcejitterbuffer:</td>
+				<td><input type='checkbox' id='forcejitterbuffer'></td>
+		</tr>
+		
+		<tr><td align=right>dropcount:</td>
+				<td>&nbsp;<input type='text' size=2 id='dropcount'></td>
+		</tr>
+		
+		<tr><td align=right>maxjitterbuffer:</td>
+				<td>&nbsp;<input type='text' size=4 id='maxjitterbuffer'></td>
+		</tr>
+		
+		<tr><td align=right>maxjitterinterps:</td>
+				<td>&nbsp;<input type='text' size=4 id='maxjitterinterps'></td>
+		</tr>
+		
+		<tr><td align=right>resyncthreshold:</td>
+				<td>&nbsp;<input type='text' size=4 id='resyncthreshold'></td>
+		</tr>
+		
+		<tr><td align=right>maxexcessbuffer:</td>
+				<td>&nbsp;<input type='text' size=4 id='maxexcessbuffer'></td>
+		</tr>
+		
+		<tr><td align=right>minexcessbuffer:</td>
+				<td>&nbsp;<input type='text' size=4 id='minexcessbuffer'></td>
+		</tr>
+		
+		<tr><td align=right>jittershrinkrate:</td>
+				<td>&nbsp;<input type='text' size=4 id='jittershrinkrate'></td>
+		</tr>
+		
+		<tr><td align=right>trunkfreq:</td>
+				<td>&nbsp;<input type='text' size=4 id='trunkfreq'></td>
+		</tr>
+		
+		<tr><td align=right>trunktimestamps:</td>
+				<td><input type='checkbox' id='trunktimestamps'></td>
+		</tr>
+		
+		<tr><td align=right>minregexpire:</td>
+				<td>&nbsp;<input type='text' size=4 id='minregexpire'></td>
+		</tr>
+		
+		<tr><td align=right>maxregexpire:</td>
+				<td>&nbsp;<input type='text' size=4 id='maxregexpire'></td>
+		</tr>
+		
+		<tr><td align=right>iaxthreadcount:</td>
+				<td>&nbsp;<input type='text' size=4 id='iaxthreadcount'></td>
+		</tr>
+		
+		<tr><td align=right>iaxmaxthreadcount:</td>
+				<td>&nbsp;<input type='text' size=4 id='iaxmaxthreadcount'></td>
+		</tr>
+		
+		<tr><td align=right>register:</td>
+				<td>&nbsp;<input type='text' size=16 id='register'></td>
+		</tr>
+		
+		<tr><td align=right>authdebug:</td>
+				<td><input type='checkbox' id='authdebug'></td>
+		</tr>
+		
+		<tr><td align=right>tos:</td>
+				<td>&nbsp;<input type='text' size=3 id='tos'></td>
+		</tr>
+		
+		<tr><td align=right>regcontext:</td>
+				<td>&nbsp;<input type='text' size=16 id='regcontext'></td>
+		</tr>
+		
+		<tr><td align=right>autokill:</td>
+				<td><input type='checkbox' id='autokill'></td>
+		</tr>
+		
+		<tr><td align=right>codecpriority:</td>
+				<td>&nbsp;
+				<select id="codecpriority">
+					<option value="caller">caller</option>
+					<option value="host">host</option>
+					<option value="disabled">disabled</option>
+					<option value="reqonly">reqonly</option>
+				</select>
+				</td>
+		</tr>
+		
+		<tr><td align=right>rtcachefriends:</td>
+				<td><input type='checkbox' id='rtcachefriends'></td>
+		</tr>
+
+		<tr><td align=right>rtupdate:</td>
+				<td><input type='checkbox' id='rtupdate'></td>
+		</tr>
+
+		<tr><td align=right>rtautoclear:</td>
+				<td><input type='checkbox' id='rtautoclear'></td>
+		</tr>
+		
+		<tr><td align=right>rtignoreexpire:</td>
+				<td><input type='checkbox' id='rtignoreexpire'></td>
+		</tr>
+
+		</table>
+	</div>
+
+	<table align="center">
+	<tr><td colspan=2 align=center><div  id='status'></div></td></tr>
+	<tr><td colspan=2 align=center>
+					<input style='width:80' type='button' id='save' value='Save'>&nbsp;<input style='width:80' type='button' id='cancel' value='Cancel'>
+			</td>
+	</tr>
+	</table>
+
+</td>
+</tr>
+</table>
+</div>
+<div style='visibility:hidden;overflow:hidden;width:0px;height:0px'>
+<select  size="5" id="hiddenfield" style="width:220px">
+</select>
+</div>
+</body>
