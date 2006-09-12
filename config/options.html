@@ -28,7 +28,6 @@ var options = new Object;
 
 function loggedOff() {
 			$('pwdbutton').disabled = true;
-			$('username').disabled = true;
 			$('currentpass').disabled = true;
 			$('newpass').disabled = true;
 			$('newpass_rep').disabled = true;
@@ -42,7 +41,6 @@ options.pongs = function(msgs){
 		} else {
 			$('status').innerHTML = "<i>Please login...</i>";
 			$('pwdbutton').disabled = true;
-			$('username').disabled = true;
 			$('currentpass').disabled = true;
 			$('newpass').disabled = true;
 			$('newpass_rep').disabled = true;
@@ -76,7 +74,7 @@ options.updated_logoffs = function(msgs) {
 
 function askfor_updatepassword(){
 	parent.astmanEngine.sendRequest('action=logoff', options.logoffs);
-	parent.astmanEngine.sendRequest('action=login&username=' + encodeURIComponent($('username').value) + "&secret=" + encodeURIComponent($('currentpass').value), options.logins);
+	parent.astmanEngine.sendRequest('action=login&username=admin&secret=' + encodeURIComponent($('currentpass').value), options.logins);
 	return;
 }
 
@@ -86,7 +84,7 @@ function changepassword(){
 			asynchronous: true,
 			onComplete: showResponse,
 		};
-		opt.parameters ="action=updateconfig&reload=yes&srcfilename=manager.conf&dstfilename=manager.conf&Action-000000=update&Cat-000000="+ encodeURIComponent($('username').value) +"&Var-000000=secret&Value-000000="+ encodeURIComponent($('newpass').value );
+		opt.parameters ="action=updateconfig&reload=yes&srcfilename=manager.conf&dstfilename=manager.conf&Action-000000=update&Cat-000000=admin&Var-000000=secret&Value-000000="+ encodeURIComponent($('newpass').value );
 		var tmp = new Ajax.Request("../../rawman", opt);
 		return;
 }
@@ -96,7 +94,6 @@ function showResponse(originalRequest)	{
 		if( v.length > 1 ){
 			$('status').innerHTML= "Password Updated!!  <BR><BR>Please Relogin using New Password";
 			$('pwdbutton').disabled = true;
-			$('username').disabled = true;
 			$('currentpass').disabled = true;
 			$('newpass').disabled = true;
 			$('newpass_rep').disabled = true;
@@ -141,11 +138,9 @@ function compare_passwords(){
 		<td align="center" valign="top">
 				<div id="channellist" class="chanlist">
 				<table>
-				<!--  Till we find out a way to retrieve the current username  -->
-				<tr>	<td>Username</td>
-					<td><input type="text" id="username" size=16></td>
+				<tr>	<td colspan=2 height=18></td>
 				</tr>
-				<!--  wish I had sessions :) -->
+
 				<tr>	<td>Current Password:</td>
 					<td><input type="password" id="currentpass" size=16></td>
 				</tr>
