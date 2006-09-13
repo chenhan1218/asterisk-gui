@@ -36,8 +36,8 @@
 	var fieldnames = new Array(
 				'delete', 'status', 'new', 'save', 'cancel','secret', 'provider', 'zapchan',
 				'trunkstyleanalog','trunkstylevoip', 'name', 'username', 'trunkname', 'callerid',
-				'hasexten', 'hassip', 'hasiax','registeriax','registersip','host','dialformat','context','group'
-				);
+				'hasexten', 'hassip', 'hasiax','registeriax','registersip','host','dialformat','context','group',
+				'insecure', 'host', 'fromuser', 'fromdomain');
 				
 	var provfieldnames = new Array('providerdesc', 'providerlogo');
 
@@ -79,7 +79,6 @@
 		var oldvalue = $('hiddenglobals').stored_config.catbyname['globals'].fieldbyname[value];
 		if (oldvalue) {
 			uri = build_action('delete', 0, 'globals', value, "");
-			alert('was ' + oldvalue + '\n' + 'new uri ' + uri);
 			apply_uri($('hiddenglobals'), uri);
 			$('hiddenglobals').stored_config.catbyname['globals'].fieldbyname[value] = null;
 			return true;
@@ -125,9 +124,38 @@
 			$('registeriax').value = provider.fieldbyname['registeriax'];
 			$('registersip').value = provider.fieldbyname['registersip'];
 			$('host').value = provider.fieldbyname['host'];
-			$('dialformat').value = provider.fieldbyname['dialformat'];
+			if (provider.fieldbyname['dialformat'])
+				$('dialformat').value = provider.fieldbyname['dialformat'];
+			else
+				$('dialformat').value = '${EXTEN:1}';
 			$('callerid').value = '';
-			$('context').value = 'default';
+
+			if (provider.fieldbyname['insecure'])
+				$('insecure').value = provider.fieldbyname['insecure'];
+			else
+				$('insecure').value = '';
+			if (provider.fieldbyname['port'])
+				$('port').value = provider.fieldbyname['port'];
+			else
+				$('port').value = '';
+			if (provider.fieldbyname['context'])
+				$('context').value = provider.fieldbyname['context'];
+			else
+				$('context').value = 'default';
+			if (provider.fieldbyname['fromuser'])
+				$('fromuser').value = provider.fieldbyname['fromuser'];
+			else
+				$('fromuser').value = '';
+				
+			if ($('fromuser').value == '<DID>') {
+				$('fromuser').value = $('username').value;
+			}
+
+			if (provider.fieldbyname['fromdomain'])
+				$('fromdomain').value = provider.fieldbyname['fromdomain'];
+			else
+				$('fromdomain').value = '';
+
 			for (var x=0;x<$('zapchan').options.length;x++)
 				$('zapchan').options[x].selected = false;
 			$('zapchan').value = '';
@@ -259,6 +287,10 @@
 				<input type='hidden' id='dialformat'>
 				<input type='hidden' id='context'>
 				<input type='hidden' id='group'>
+				<input type='hidden' id='insecure'>
+				<input type='hidden' id='port'>
+				<input type='hidden' id='fromuser'>
+				<input type='hidden' id='fromdomain'>
 				<div id='analogvoipcontainer' style='height:450;overflow:hidden'>
 				<div id='analog' style='height:0;overflow:hidden'>
 				<table>
@@ -277,7 +309,7 @@
 				<tr><td colspan='2' align='center'><img id='providerlogo' style='visibility:hidden;width:230px;height:72px'></td></tr>
 				<tr><td colspan='2' align='center'><div id='providerdesc' align='left' style='width:230px;height:100px'></div></td></tr>
 				<tr><td>Username:</td><td><input size='20' id='username'></td></tr>
-				<tr><td>Password:</td><td><input size='5' id='secret'></td></tr>
+				<tr><td>Password:</td><td><input size='20' id='secret'></td></tr>
 				</table>
 				</div>
 				</div>
