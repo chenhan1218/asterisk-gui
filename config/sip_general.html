@@ -40,38 +40,92 @@ function localajaxinit(){
 	astmanEngine.config2list("sip.conf", $('hiddenfield'), widgets, phonecallbacks);
 }
 </script>
-<body onload="localajaxinit()">
+<body onload="localajaxinit()" bgcolor="#EFEFEF">
 
 <div class="mainscreenContentBox" id="userscontent">
-<div  style="height :85%; overflow :auto;">
-<table align="center" cellspacing=0 cellpadding=2>
-<tr><td align=right>Context:</td><td>&nbsp;<input type='text' size=10 id='context'></td></tr>
-<tr><td align=right>Allow Guest:</td><td><input type='checkbox' dfalt='y' id='allowguest'></td></tr>
-<tr><td align=right>Allow Overlap:</td><td><input type='checkbox' dfalt='y' id='allowoverlap'></td></tr>
-<tr><td align=right>Allow Transfer:</td><td><input type='checkbox' dfalt='y' id='allowtransfer'></td></tr>
-<tr><td align=right>Realm:</td><td>&nbsp;<input type='text' id='realm'></td></tr>
-<tr><td align=right>Bind Port:</td><td>&nbsp;<input type='text' size=4 id='bindport'></td></tr>
-<tr><td align=right>Bind Address:</td><td>&nbsp;<input type='text' size=16 id='bindaddr'></td></tr>
-<tr><td align=right>SRV Lookup:</td><td><input type='checkbox' dfalt='y' id='srvlookup'></td></tr>
-<tr><td align=right>Domain:</td><td>&nbsp;<input type='text' size=18 id='domain'></td></tr>
-<tr><td align=right>Pedantic:</td><td><input type='checkbox' dfalt='no' id='pedantic'></td></tr>
-<tr><td align=right>tos_sip:</td><td>&nbsp;<input type='text' size=5 id='tos_sip'></td></tr>
-<tr><td align=right>tos_audio:</td><td>&nbsp;<input type='text' size=5 id='tos_audio'></td></tr>
-<tr><td align=right>tos_video:</td><td>&nbsp;<input type='text' size=5 id='tos_video'></td></tr>
-<tr><td align=right>maxexpiry:</td><td>&nbsp;<input type='text' size=4 id='maxexpiry'></td></tr>
-<tr><td align=right>minexpiry:</td><td>&nbsp;<input type='text' dfalt='60'  size=4 id='minexpiry'></td></tr>
-<tr><td align=right>defaultexpiry:</td><td>&nbsp;<input type='text'  size=4 id='defaultexpiry'></td></tr>
-<tr><td align=right>t1min:</td><td>&nbsp;<input type='text' dfalt='100'  size=4 id='t1min'></td></tr>
-<tr><td align=right>notifymimetype:</td><td>&nbsp;<input type='text'  size=16 id='notifymimetype'></td></tr>
-<tr><td align=right>checkmwi:</td><td>&nbsp;<input type='text'  size=4 id='checkmwi'></td></tr>
-<tr><td align=right>mohinterpret:</td><td>&nbsp;<input type='text'  size=12 id='mohinterpret'></td></tr>
-<tr><td align=right>mohsuggest:</td><td>&nbsp;<input type='text'  size=12 id='mohsuggest'></td></tr>
-<tr><td align=right>language:</td><td>&nbsp;<input type='text' size=3 id='language'></td></tr>
-<tr><td align=right>relaxdtmf:</td><td><input type='checkbox' id='relaxdtmf'></td></tr>
-<tr><td align=right>rtptimeout:</td><td>&nbsp;<input type='text' size=4 id='rtptimeout'></td></tr>
-<tr><td align=right>rtpholdtimeout:</td><td>&nbsp;<input type='text' size=4 id='rtpholdtimeout'></td></tr>
-<tr><td align=right>trustrpid:</td><td><input type='checkbox' id='trustrpid'></td></tr>
-<tr><td align=right>sendrpid:</td><td><input type='checkbox' id='sendrpid'></td></tr>
+<div  style="height :85%;width :100%; overflow :auto;">
+<table align="center" cellspacing=0 cellpadding=2 width="97%" bgcolor="#EFEFEF">
+<tr><td align=right>Context:</td>
+		<td>&nbsp;<input type='text' size=10 id='context' title=""></td>
+</tr>
+<tr><td align=right>Allow Guest:</td>
+		<td><input type='checkbox' dfalt='y' id='allowguest'></td>
+</tr>
+<tr><td align=right>Allow Overlap:</td>
+		<td><input type='checkbox' dfalt='y' id='allowoverlap'></td>
+</tr>
+<tr><td align=right>Allow Transfer:</td>
+		<td><input type='checkbox' dfalt='y' id='allowtransfer'></td>
+</tr>
+<tr><td align=right>Realm:</td>
+		<td>&nbsp;<input type='text' id='realm'></td>
+</tr>
+<tr><td align=right>Bind Port:</td>
+		<td>&nbsp;<input type='text' size=4 id='bindport'></td>
+</tr>
+<tr><td align=right>Bind Address:</td>
+		<td>&nbsp;<input type='text' size=16 id='bindaddr'></td>
+</tr>
+<tr><td align=right>SRV Lookup:</td>
+		<td><input type='checkbox' dfalt='y' id='srvlookup'></td>
+</tr>
+<tr><td align=right>Domain:</td>
+		<td>&nbsp;<input type='text' size=18 id='domain'></td>
+</tr>
+<tr><td align=right>Pedantic:</td><td>
+		<input type='checkbox' dfalt='no' id='pedantic'></td>
+</tr>
+<tr><td align=right>tos_sip:</td>
+		<td>&nbsp;<input type='text' size=5 id='tos_sip'></td>
+</tr>
+<tr><td align=right>tos_audio:</td>
+		<td>&nbsp;<input type='text' size=5 id='tos_audio'></td>
+</tr>
+<tr><td align=right>tos_video:</td>
+		<td>&nbsp;<input type='text' size=5 id='tos_video'></td>
+</tr>
+<tr><td align=right>maxexpiry:</td>
+		<td>&nbsp;<input type='text' size=4 id='maxexpiry'></td>
+</tr>
+<tr><td align=right>minexpiry:</td>
+		<td>&nbsp;<input type='text' dfalt='60'  size=4 id='minexpiry'></td>
+</tr>
+<tr><td align=right>defaultexpiry:</td>
+		<td>&nbsp;<input type='text'  size=4 id='defaultexpiry'></td>
+</tr>
+<tr><td align=right>t1min:</td>
+		<td>&nbsp;<input type='text' dfalt='100'  size=4 id='t1min'></td>
+</tr>
+<tr><td align=right>notifymimetype:</td>
+		<td>&nbsp;<input type='text'  size=16 id='notifymimetype'></td>
+</tr>
+<tr><td align=right>checkmwi:</td>
+		<td>&nbsp;<input type='text'  size=4 id='checkmwi'></td>
+</tr>
+<tr><td align=right>mohinterpret:</td>
+		<td>&nbsp;<input type='text'  size=12 id='mohinterpret'></td>
+</tr>
+<tr><td align=right>mohsuggest:</td>
+		<td>&nbsp;<input type='text'  size=12 id='mohsuggest'></td>
+</tr>
+<tr><td align=right>language:</td>
+		<td>&nbsp;<input type='text' size=3 id='language'></td>
+</tr>
+<tr><td align=right>relaxdtmf:</td>
+		<td><input type='checkbox' id='relaxdtmf'></td>
+</tr>
+<tr><td align=right>rtptimeout:</td>
+		<td>&nbsp;<input type='text' size=4 id='rtptimeout'></td>
+</tr>
+<tr><td align=right>rtpholdtimeout:</td>
+		<td>&nbsp;<input type='text' size=4 id='rtpholdtimeout'></td>
+</tr>
+<tr><td align=right>trustrpid:</td>
+		<td><input type='checkbox' id='trustrpid'></td>
+</tr>
+<tr><td align=right>sendrpid:</td>
+		<td><input type='checkbox' id='sendrpid'></td>
+</tr>
 <tr><td align=right>progressinband:</td>
 		<td>&nbsp;<select id='progressinband'>
 					<option value='never'>never</option>
@@ -80,9 +134,15 @@ function localajaxinit(){
 				</select>
 		</td>
 </tr>
-<tr><td align=right>useragent:</td><td>&nbsp;<input type='text' size=12 id='useragent'></td></tr>
-<tr><td align=right>promiscredir:</td><td><input type='checkbox' id='promiscredir'></td></tr>
-<tr><td align=right>usereqphone:</td><td><input type='checkbox' id='usereqphone'></td></tr>
+<tr><td align=right>useragent:</td>
+		<td>&nbsp;<input type='text' size=12 id='useragent'></td>
+</tr>
+<tr><td align=right>promiscredir:</td>
+		<td><input type='checkbox' id='promiscredir'></td>
+</tr>
+<tr><td align=right>usereqphone:</td>
+		<td><input type='checkbox' id='usereqphone'></td>
+</tr>
 <tr><td align=right>dtmfmode:</td>
 		<td>&nbsp;<select id='dtmfmode'>
 					<option value='rfc2833'>rfc2833</option>
@@ -92,51 +152,92 @@ function localajaxinit(){
 				</select>
 		</td>
 </tr>
-<tr><td align=right>compactheaders:</td><td><input type='checkbox' id='compactheaders'></td></tr>
-<tr><td align=right>videosupport:</td><td><input type='checkbox' id='videosupport'></td></tr>
-<tr><td align=right>maxcallbitrate (kb/s):</td><td>&nbsp;<input type='text' size=4  dfalt=384 id='maxcallbitrate'></td></tr>
-<tr><td align=right>callevents:</td><td><input type='checkbox' id='callevents'></td></tr>
-<tr><td align=right>alwaysauthreject:</td><td><input type='checkbox' id='alwaysauthreject'></td></tr>
-<tr><td align=right>g726nonstandard:</td><td><input type='checkbox' id='g726nonstandard'></td></tr>
+<tr><td align=right>compactheaders:</td>
+		<td><input type='checkbox' id='compactheaders'></td>
+</tr>
+<tr><td align=right>videosupport:</td>
+		<td><input type='checkbox' id='videosupport'></td>
+</tr>
+<tr><td align=right>maxcallbitrate (kb/s):</td>
+		<td>&nbsp;<input type='text' size=4  dfalt=384 id='maxcallbitrate'></td>
+</tr>
+<tr><td align=right>callevents:</td>
+		<td><input type='checkbox' id='callevents'></td>
+</tr>
+<tr><td align=right>alwaysauthreject:</td>
+		<td><input type='checkbox' id='alwaysauthreject'></td>
+</tr>
+<tr><td align=right>g726nonstandard:</td>
+		<td><input type='checkbox' id='g726nonstandard'></td>
+</tr>
 
 
 <tr bgcolor="#FFFFFF" height=15><td colspan=2></td></tr>
-<tr><td colspan=2><B>&nbsp;T.38 FAX Passthrough Support</B></td></tr>
-<tr><td align=right>t38pt_udptl:</td><td><input type='checkbox' id='t38pt_udptl'></td></tr>
+<tr bgcolor="#FFFFFF" ><td colspan=2><B>&nbsp;T.38 FAX Passthrough Support</B></td></tr>
+<tr bgcolor="#FFFFFF" ><td align=right>t38pt_udptl:</td>
+										<td><input type='checkbox' id='t38pt_udptl'></td>
+</tr>
 
 
 <tr bgcolor="#FFFFFF" height=15><td colspan=2></td></tr>
-<tr bgcolor="#EFEFEF"><td colspan=2><B>&nbsp;Sip Debugging</B></td></tr>
-<tr bgcolor="#EFEFEF"><td align=right>sipdebug:</td><td><input type='checkbox' id='sipdebug'></td></tr>
-<tr bgcolor="#EFEFEF"><td align=right>recordhistory:</td><td><input type='checkbox' id='recordhistory'></td></tr>
-<tr bgcolor="#EFEFEF"><td align=right>dumphistory:</td><td><input type='checkbox' id='dumphistory'></td></tr>
+<tr><td colspan=2><B>&nbsp;Sip Debugging</B></td></tr>
+<tr><td align=right>sipdebug:</td>
+		<td><input type='checkbox' id='sipdebug'></td>
+</tr>
+<tr><td align=right>recordhistory:</td>
+		<td><input type='checkbox' id='recordhistory'></td>
+</tr>
+<tr><td align=right>dumphistory:</td>
+		<td><input type='checkbox' id='dumphistory'></td>
+</tr>
+
+
+
+<tr   height=15><td colspan=2></td></tr>
+<tr bgcolor="#FFFFFF" height=15><td colspan=2></td></tr>
+<tr bgcolor="#FFFFFF"><td colspan=2><B>&nbsp;Status Notifications (Subscriptions) </B></td></tr>
+<tr bgcolor="#FFFFFF"><td align=right>allowsubscribe:</td>
+										<td><input type='checkbox' id='allowsubscribe'></td>
+</tr>
+<tr bgcolor="#FFFFFF"><td align=right>subscribecontext:</td>
+										<td>&nbsp;<input size=8 type='text' id='subscribecontext'></td>
+</tr>
+<tr bgcolor="#FFFFFF"><td align=right>notifyringing:</td>
+										<td><input type='checkbox' id='notifyringing'></td>
+</tr>
 
 
 
 <tr bgcolor="#FFFFFF" height=15><td colspan=2></td></tr>
-<tr><td colspan=2><B>&nbsp;Status Notifications (Subscriptions) </B></td></tr>
-<tr><td align=right>allowsubscribe:</td><td><input type='checkbox' id='allowsubscribe'></td></tr>
-<tr><td align=right>subscribecontext:</td><td>&nbsp;<input size=8 type='text' id='subscribecontext'></td></tr>
-<tr><td align=right>notifyringing:</td><td><input type='checkbox' id='notifyringing'></td></tr>
+<tr><td colspan=2><B>&nbsp;Outbound SIP Registrations</B></td></tr>
+<tr><td align=right>register:</td>
+		<td>&nbsp;<input size=18 type='text' id='register'></td>
+</tr>
+<tr><td align=right>registertimeout:</td>
+		<td>&nbsp;<input size=4 type='text' id='registertimeout'></td>
+</tr>
+<tr><td align=right>registerattempts:</td>
+		<td>&nbsp;<input size=4 type='text' id='registerattempts'></td>
+</tr>
+<tr height=15><td colspan=2></td></tr>
 
 
 
 <tr bgcolor="#FFFFFF" height=15><td colspan=2></td></tr>
-<tr bgcolor="#EFEFEF"><td colspan=2><B>&nbsp;Outbound SIP Registrations</B></td></tr>
-<tr bgcolor="#EFEFEF"><td align=right>register:</td><td>&nbsp;<input size=18 type='text' id='register'></td></tr>
-<tr bgcolor="#EFEFEF"><td align=right>registertimeout:</td><td>&nbsp;<input size=4 type='text' id='registertimeout'></td></tr>
-<tr bgcolor="#EFEFEF"><td align=right>registerattempts:</td><td>&nbsp;<input size=4 type='text' id='registerattempts'></td></tr>
-
-
-
-
-<tr bgcolor="#FFFFFF" height=15><td colspan=2></td></tr>
-<tr><td colspan=2><B>&nbsp;NAT Support</B></td></tr>
-<tr><td align=right>externip:</td><td>&nbsp;<input size=16 type='text' id='externip'></td></tr>
-<tr><td align=right>externhost:</td><td>&nbsp;<input size=16 type='text' id='externhost'></td></tr>
-<tr><td align=right>externrefresh:</td><td>&nbsp;<input size=4 type='text' id='externrefresh'></td></tr>
-<tr><td align=right>localnet:</td><td>&nbsp;<input size=16 type='text' id='localnet'></td></tr>
-<tr><td align=right>nat:</td>
+<tr bgcolor="#FFFFFF"><td colspan=2><B>&nbsp;NAT Support</B></td></tr>
+<tr bgcolor="#FFFFFF"><td align=right>externip:</td>
+										<td>&nbsp;<input size=16 type='text' id='externip'></td>
+</tr>
+<tr bgcolor="#FFFFFF"><td align=right>externhost:</td>
+										<td>&nbsp;<input size=16 type='text' id='externhost'></td>
+</tr>
+<tr bgcolor="#FFFFFF"><td align=right>externrefresh:</td>
+										<td>&nbsp;<input size=4 type='text' id='externrefresh'></td>
+</tr>
+<tr bgcolor="#FFFFFF"><td align=right>localnet:</td>
+										<td>&nbsp;<input size=16 type='text' id='localnet'></td>
+</tr>
+<tr bgcolor="#FFFFFF"><td align=right>nat:</td>
 		<td>&nbsp;<select id='nat'>
 					<option value='yes'>yes</option>
 					<option value='no'>no</option>
@@ -145,7 +246,7 @@ function localajaxinit(){
 				</select>
 		</td>
 </tr>
-<tr><td align=right>canreinvite:</td>
+<tr bgcolor="#FFFFFF"><td align=right>canreinvite:</td>
 		<td>&nbsp;<select id='canreinvite'>
 					<option value='yes'>yes</option>
 					<option value='nonat'>nonat</option>
@@ -153,50 +254,69 @@ function localajaxinit(){
 				</select>
 		</td>
 </tr>
+<tr bgcolor="#FFFFFF" height=15><td colspan=2></td></tr>
 
-
-
-
+<tr   height=15><td colspan=2></td></tr>
+<tr><td colspan=2><B>&nbsp;Realtime Support</B></td></tr>
+<tr><td align=right>rtcachefriends:</td>
+		<td><input type='checkbox' id='rtcachefriends'></td>
+</tr>
+<tr><td align=right>rtsavesysname:</td>
+		<td><input type='checkbox' id='rtsavesysname'></td>
+</tr>
+<tr><td align=right>rtupdate:</td>
+		<td><input type='checkbox' id='rtupdate'></td>
+</tr>
+<tr><td align=right>rtautoclear:</td>
+		<td><input type='checkbox' id='rtautoclear'></td>
+</tr>
+<tr><td align=right>ignoreregexpire:</td>
+		<td><input type='checkbox' id='ignoreregexpire'></td>
+</tr>
 
 <tr bgcolor="#FFFFFF" height=15><td colspan=2></td></tr>
-<tr bgcolor="#EFEFEF"><td colspan=2><B>&nbsp;Realtime Support</B></td></tr>
-<tr bgcolor="#EFEFEF"><td align=right>rtcachefriends:</td><td><input type='checkbox' id='rtcachefriends'></td></tr>
-<tr bgcolor="#EFEFEF"><td align=right>rtsavesysname:</td><td><input type='checkbox' id='rtsavesysname'></td></tr>
-<tr bgcolor="#EFEFEF"><td align=right>rtupdate:</td><td><input type='checkbox' id='rtupdate'></td></tr>
-<tr bgcolor="#EFEFEF"><td align=right>rtautoclear:</td><td><input type='checkbox' id='rtautoclear'></td></tr>
-<tr bgcolor="#EFEFEF"><td align=right>ignoreregexpire:</td><td><input type='checkbox' id='ignoreregexpire'></td></tr>
-
-
-
+<tr bgcolor="#FFFFFF"><td colspan=2><B>&nbsp;SIP Domain Support</B></td></tr>
+<tr bgcolor="#FFFFFF"><td align=right>domain:</td>
+										<td>&nbsp;<input type='text' id='domain'></td>
+</tr>
+<tr bgcolor="#FFFFFF"><td align=right>autodomain:</td>
+										<td><input type='checkbox' id='autodomain'></td>
+</tr>
+<tr bgcolor="#FFFFFF"><td align=right>allowexternaldomains:</td>
+										<td><input type='checkbox' id='allowexternaldomains'></td>
+</tr>
+<tr bgcolor="#FFFFFF"><td align=right>allowexternalinvites:</td>
+										<td><input type='checkbox' id='allowexternalinvites'></td>
+</tr>
+<tr bgcolor="#FFFFFF"><td align=right>fromdomain:</td>
+										<td>&nbsp;<input type='text' size=18 id='fromdomain'></td>
+</tr>
 <tr bgcolor="#FFFFFF" height=15><td colspan=2></td></tr>
-<tr><td colspan=2><B>&nbsp;SIP Domain Support</B></td></tr>
-<tr><td align=right>domain:</td><td>&nbsp;<input type='text' id='domain'></td></tr>
-<tr><td align=right>autodomain:</td><td><input type='checkbox' id='autodomain'></td></tr>
-<tr><td align=right>allowexternaldomains:</td><td><input type='checkbox' id='allowexternaldomains'></td></tr>
-<tr><td align=right>allowexternalinvites:</td><td><input type='checkbox' id='allowexternalinvites'></td></tr>
-<tr><td align=right>fromdomain:</td><td>&nbsp;<input type='text' size=18 id='fromdomain'></td></tr>
 
-
-
-<tr bgcolor="#FFFFFF" height=15><td colspan=2></td></tr>
-<tr bgcolor="#EFEFEF"><td colspan=2><B>&nbsp;Jitter Buffer Configuration</B></td></tr>
-<tr bgcolor="#EFEFEF"><td align=right>jbenable:</td><td><input type='checkbox' id='jbenable'></td></tr>
-<tr bgcolor="#EFEFEF"><td align=right>jbforce:</td><td><input type='checkbox' id='jbforce'></td></tr>
-<tr bgcolor="#EFEFEF"><td align=right>jbmaxsize:</td><td>&nbsp;<input type='text' size=4 id='jbmaxsize'></td></tr>
-<tr bgcolor="#EFEFEF"><td align=right>jbresyncthreshold:</td><td>&nbsp;<input type='text' size=4 id='jbresyncthreshold'></td></tr>
-<tr bgcolor="#EFEFEF"><td align=right>jbimpl:</td>
+<tr   height=15><td colspan=2></td></tr>
+<tr><td colspan=2><B>&nbsp;Jitter Buffer Configuration</B></td></tr>
+<tr><td align=right>jbenable:</td>
+		<td><input type='checkbox' id='jbenable'></td>
+</tr>
+<tr><td align=right>jbforce:</td>
+		<td><input type='checkbox' id='jbforce'></td>
+</tr>
+<tr><td align=right>jbmaxsize:</td>
+		<td>&nbsp;<input type='text' size=4 id='jbmaxsize'></td>
+</tr>
+<tr><td align=right>jbresyncthreshold:</td>
+		<td>&nbsp;<input type='text' size=4 id='jbresyncthreshold'></td>
+</tr>
+<tr><td align=right>jbimpl:</td>
 		<td>&nbsp;<select id='jbimpl'>
 					<option value='fixed'>fixed</option>
 					<option value='adaptive'>adaptive</option>
 				</select>
 		</td>
 </tr>
-<tr bgcolor="#EFEFEF"><td align=right>jblog:</td><td><input type='checkbox' id='jblog'></td></tr>
-
-
-
-
-
+<tr><td align=right>jblog:</td>
+		<td><input type='checkbox' id='jblog'></td>
+</tr>
 </table>
 </div>
 

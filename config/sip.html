@@ -24,8 +24,8 @@
 <link href="stylesheets/rico.css" media="all" rel="Stylesheet" type="text/css" />
 <link href="stylesheets/schwing.css" media="all" rel="Stylesheet" type="text/css" />
 <script>
-var tabs = new Array('tab1', 'tab2', 'tab3', 'tab4');
-var tabwindows = new Array('sip_general.html', 'sip_2.html', 'sip_3.html', 'sip_4.html');
+var tabs = new Array('tab1', 'tab2');
+var tabwindows = new Array('sip_general.html', 'sip_2.html');
 
 
 function localajaxinit(){
@@ -61,10 +61,7 @@ function show_window(x){
 	<BR>
 	<a href="" class="tab" onclick="return show_window(1);" id="tab1">General</a>&nbsp;&nbsp;
     <a href="" class="tab" onclick="return show_window(2);" id="tab2">Tab&nbsp;2</a>&nbsp;&nbsp;
-    <a href="" class="tab" onclick="return show_window(3);" id="tab3">Tab&nbsp;3</a>&nbsp;&nbsp;
-    <a href="" class="tab" onclick="return show_window(4);" id="tab4">Tab&nbsp;4</a>&nbsp;&nbsp;
-
-	<iframe style=" border: solid 1px black; background-color: white; padding: 4px; height:95%; width:95%; overflow: auto;" src="" id="tabwindow"></iframe>
+	<iframe style=" border: solid 1px black; background-color: white; padding: 4px; height:95%; width:550; overflow: auto;" src="" id="tabwindow"></iframe>
 	</td>
 </tr>
 </table>
