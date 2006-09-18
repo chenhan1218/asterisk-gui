@@ -34,7 +34,7 @@
 	var extencallbacks = new Object;
 	var numcallbacks = new Object;
 	var fieldnames = new Array(
-				'delete', 'status', 'new', 'save', 'cancel','name','fullname','secret','email','number','zapchan','context',
+				'delete', 'status', 'new', 'save', 'cancel','name','fullname','secret','email','cid_number','zapchan','context',
 				'hasvoicemail','hasdirectory','hassip','hasiax','hasmanager','callwaiting','threewaycalling','mailbox','isagent','group');
 
 	extencallbacks.format = function(t, x) {
@@ -171,7 +171,7 @@
 				<tr><td>Name:</td><td><input size='20' id='fullname'></td></tr>
 				<tr><td>Password:</td><td><input size='5' id='secret'></td></tr>
 				<tr><td>E-mail:</td><td><input size='20' id='email'></td></tr>
-				<tr><td>Caller ID:</td><td><input size='12' id='number' onkeypress="return OnlyNumbers(event)"></td></tr>
+				<tr><td>Caller ID:</td><td><input size='12' id='cid_number' onkeypress="return OnlyNumbers(event)"></td></tr>
 				<tr><td>Analog Phone:</td><td><select size="1" id='zapchan' style='width:120px'></select></td></tr>
 				<tr><td>Number Plan:</td><td><select size='1' id='context' style='width:120px'></select></td></tr>
 				<tr><td colspan='2' align='center'><div style="height:15px" id='status'></div></td></tr>
