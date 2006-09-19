@@ -19,6 +19,18 @@
  *
  */
 
+function  InArray(search_array, searchstring ){
+	var i = search_array.length
+	if( i>0){
+			for(i=0; i < search_array.length; i++ ){
+				if( search_array[i] === searchstring )
+					return true;
+			}
+	}
+
+return false;	
+}
+
 
 function objcopy(orig) {
 	var copy = new Object;
@@ -31,7 +43,6 @@ function objcopy(orig) {
 	}
 	return copy;
 };
-
 
 
 

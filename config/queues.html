@@ -22,146 +22,87 @@
 <script src="scripts/prototype.js"></script>
 <script src="scripts/rico.js"></script>
 <script src="scripts/astman.js"></script>
-<script src="scripts/extensions.js"></script>
 <link href="stylesheets/rico.css" media="all" rel="Stylesheet" type="text/css" />
 <link href="stylesheets/schwing.css" media="all" rel="Stylesheet" type="text/css" />
 
 <script>
-	var origwidth;
-	var widgets = new Array;
-	var adstatus;
-	var queues;
-	var callbacks = new Object;
-	var usercallbacks = new Object;
-	var fieldnames = new Array(
-				'name', 'delete', 'status', 'newitem', 
-				'music','menu', 'announce',
-				'room','record','waitmarked','setmarked','quiet',
-				'pin', 'pinadmin', 'save', 'cancel');
+var adstatus;
+var queuecallbacks = new Object;
+var usercallbacks = new Object;
+var widgets = new Array;
+var queuemembers = new  Array;
+var queuenames = new Array;
+var fieldnames = new Array( 'name', 'delete', 'status', 'new',  'save', 'cancel','fullname', 'strategy', 'timeout', 'wrapuptime','autofill','autopause','maxlen', 'joinempty',  'leavewhenempty', 'reportholdtime','members');
+var k =0;
+var j = -1; 
 
-	function changed_extension() {
-		var app;
-		tmp = $('extensions').value.split(']');
-		app = findapp($('extensions').stored_config.catbyname[tmp[0]].subfields[tmp[1]]['app']);
-		$('name').value = $('extensions').stored_config.catbyname[tmp[0]].subfields[tmp[1]]['name'];
-		$('features').value = app.name.toLowerCase();
-	};
-
-	callbacks.fields2val = function(box, subfields) {
-		var flags = "d";
-		var xargs="";
-		var room = '${EXTEN}';
-		if (subfields['music'] != 'no')
-			flags += "M";
-		if (subfields['menu'] != 'no')
-			flags += 's';
-		if (subfields['announce'] != 'no')
-			flags += 'I';
-		if (subfields['record'] != 'no')
-			flags += 'r';
-		if (subfields['waitmarked'] != 'no')
-			flags += 'w';
-		if (subfields['setmarked'] != 'no')
-			flags += 'A';
-		if (subfields['quiet'] != 'no')
-			flags += 'q';
-		if (subfields['room'].length > 0)
-			room = subfields['room'];
-		return $('name').value + ",1,Queue(" + room + "," + flags + "," + subfields['pin'] + "," + subfields['pinadmin'] + ")";
-	}
-
-	callbacks.format = function(t, x) {
-		var ret;
-		var tmp;
-		var options = new Array;
-		var tmp2, y;
-		if ((t.name != specialcontext))
-			return null;
-		ret = format_extension($('extensions'), t, x);
-		if (ret) {
-			tmp = t.subfields[x].args.split(',');
-			if (tmp[1]) {
-				tmp2 = tmp[1].split('');
-				for (y=0;y<tmp2.length;y++)
-					options[tmp2[y]] = 'yes';
-			}
-			if (tmp[2])
-				t.subfields[x].pin = tmp[2];
-			else
-				t.subfields[x].pin = '';
-			if (tmp[3])
-				t.subfields[x].pinadmin = tmp[3];
-			else
-				t.subfields[x].pinadmin = '';
-			if (tmp[0] == '${EXTEN}')
-				t.subfields[x].room = '';
-			else
-				t.subfields[x].room = tmp[0];
-			t.subfields[x].music = options['M'];
-			t.subfields[x].menu = options['s'];
-			t.subfields[x].announce = options['I'];
-			t.subfields[x].record = options['r'];
-			t.subfields[x].waitmarked = options['w'];
-			t.subfields[x].setmarked = options['A'];
-			t.subfields[x].quiet = options['q'];
-		}
-		return ret;
-	}
-	
-	callbacks.loaded = function() {
-		merge_users($('extensions'), $('hiddenusers'));
-		for (x=0;x<$('extensions').options.length;x++) {
-			var tmp;
-			tmp = $('extensions').options[x].value.split(']');
-			if (tmp.length > 1) {
-				if ($('extensions').stored_config.catbyname[tmp[0]].subfields[tmp[1]]['app'].toLowerCase() != "queue") {
-					$('extensions').options[x].disabled = true;
+queuecallbacks.format = function(t,x) {
+		tmp = t.name.split('general');
+		if(tmp.length>1)
+				return false;
+		else if (t.name && x==undefined){	 				// if is a category
+				k=0;
+				j = j +1;
+				queuemembers[j] = new Array;
+				queuenames[j] = t.name;
+				return t.name + " -- " + t.fieldbyname['fullname'];
+		}else {																// if is a subcategory 
+				if(t.names[x] == 'member'){
+					queuemembers [j] [k] = t.fields[x].substr(-4);
+					k = k+1;
 				}
-			}
+				return false;
 		}
-		$('extensions').contentEditable = 'true';
-		$('extensions').disabled = 0;
-		parent.loadscreen(this);
-	}
-	callbacks.sortfunc = function(a,b) {
-		return (a.name < b.name) ? -1 : 1;
-	}
-	callbacks.newsubitem = function() {
-		var tmp = new Object;
-		var x;
-		var gen;
-		gen = $('hiddenusers').stored_config.catbyname['general'];
-		if (gen)
-			x = gen.fieldbyname['userbase'];
-		if (x)
-			tmp['name'] = first_free_exten($('extensions'), x);
-		tmp['pin'] = '';
-		tmp['pinadmin'] = '';
-		tmp['music'] = 'yes';
-		tmp['menu'] = 'no';
-		tmp['announce'] = 'yes';
-		tmp['room'] = '';
-		tmp['>'] = true;
-		return new Array(specialcontext, 'exten', tmp);
-	}
-	callbacks.newcategory = function() {
+}
+
+
+queuecallbacks.postselect = function(box, val ) {
+		if($('queues').selectedIndex	==-1){return true; } // while page loads .. do nothing
+
+		// show all member entires listed under the queue member - $('queues').value
+		for( k=0; k<queuenames.length; k++ ){
+				if( queuenames[k] == $('queues').value ){
+					j = k;
+					break;
+				}
+		}
+
+		for (k=0;k< $('members').length ;k++ )
+		{
+			if( InArray( queuemembers[j], $('members').options[k].value ) )
+				$('members').options[k].selected = true;			
+			else
+				$('members').options[k].selected = false;
+		}
+}
+
+
+
+
+queuecallbacks.loaded = function() {
+		parent.astmanEngine.config2list("users.conf", $('members'), new Array(), usercallbacks);
+}
+
+
+queuecallbacks.newcategory = function(t) {
 		var tmp = null;
 		var x;
-		if ($('extensions').stored_config.catbyname['general'])
-			tmp = objcopy($('extensions').stored_config.catbyname['general']);
-		if (tmp) {
+		if ($('members').stored_config.catbyname['general']){
+			tmp = objcopy($('members').stored_config.catbyname['general']);
 			x = tmp.fieldbyname['userbase'];
+		}
+
+		if ($('queues').stored_config.catbyname['general']){
+			tmp = objcopy($('queues').stored_config.catbyname['general']);
 			if (x) {
-				while($('extensions').stored_config.catbyname[x]) x++;
-				tmp.name = x;
+				tmp.name = first_free_exten($('members'), x);
 			}
 		}
 		return tmp;
-	}
-	callbacks.identifier = "extension";
-	callbacks.eachline = true;
-	
-	usercallbacks.format = function(t) {
+}
+
+
+usercallbacks.format = function (t){
 		if ((t.name == 'general'))
 			return null;
 		if (t.name.substring(0,6) == 'trunk_')
@@ -170,36 +111,54 @@
 			return t.name + " -- " + t.fieldbyname['fullname'];
 		} else
 			return t.name;
-	}
-	usercallbacks.loaded = function() {
-		parent.astmanEngine.config2list("extensions.conf", $('extensions'), widgets, callbacks);
-	}
+}
 
-	function togglefeatures() {
-		if (adstatus == "shown") {
-			adstatus = "hidden";
-			new Rico.Effect.Size('advancedw', null, 1, 120, 8, {complete:function() { $('advancedw').style.height=1;} } );
-		} else {
-			adstatus = "shown";
-			$('advancedw').style.visibility = "visible";
-			new Rico.Effect.Size('advancedw', null, 240, 120, 8 );
-		}
-	}
-	function localajaxinit() {
-		$('advancedw').style.overflow = "hidden";
-		$('advancedw').style.height = 1;
-		$('advancedw').style.width = $('split').width;
-		$('advancedi').style.width = $('split').width - 60;
+
+
+usercallbacks.identifier = "extension";
+
+
+
+usercallbacks.postselect = function (){
+
+}
+
+
+usercallbacks.loaded = function (){
+
+}
+
+
+function togglefeatures() {
+	if (adstatus == "shown") {
 		adstatus = "hidden";
-		$('extensions').contentEditable = 'false';
-		for (var x in fieldnames) {
-			widgets[fieldnames[x]] = $(fieldnames[x]);
-			widgets[fieldnames[x]].disabled = true;
-		}
-		parent.astmanEngine.config2list("users.conf", $('hiddenusers'), new Array(), usercallbacks);
+		new Rico.Effect.Size('advancedw', null, 1, 120, 8, {complete:function() { $('advancedw').style.height=1;} } );
+	} else {
+		adstatus = "shown";
+		$('advancedw').style.visibility = "visible";
+		new Rico.Effect.Size('advancedw', null, 200, 120, 8 );
 	}
-</script>
+}
 
+
+
+
+function localajaxinit() {
+	parent.loadscreen(this);
+	for (var x in fieldnames) {
+		widgets[fieldnames[x]] = $(fieldnames[x]);
+		widgets[fieldnames[x]].disabled = true;
+	}
+	adstatus = "hidden";
+	parent.astmanEngine.config2list("queues.conf", $('queues'), widgets, queuecallbacks);
+	return;
+}
+
+
+
+queuecallbacks.eachline = true;
+queuecallbacks.includecats = true;
+</script>
 
 <body id="foo" onload="localajaxinit()">
 <div class="mainscreenTitleBar">
@@ -214,7 +173,7 @@
 	</tr>
 	<tr valign="top">
 		<td>
-		<select disabled size="28" id="extensions" style="width:220px">
+		<select size="28" id="queues" style="width:220px">
 		<option>Loading...</option>
 		</select>
 		</td>
@@ -223,12 +182,19 @@
 		<table cellspacing='0' cellpadding='0'>
 			<tr valign="top"><td>
 				<table>
-				<tr><td>Extension:</td><td><input size='5' id='name'  onkeypress="return OnlyNumbers(event)"></td></tr>
-				<tr><td>PIN Code:</td><td><input size='5' id='pin'  onkeypress="return OnlyNumbers(event)"></td></tr>
-				<tr><td>Administrator PIN Code:</td><td><input size='5' id='pinadmin'  onkeypress="return OnlyNumbers(event)"></td></tr>
-				<tr><td>Play hold music for first caller</td><td><input type='checkbox' id='music'></td></tr>
-				<tr><td>Enable caller menu</td><td><input type='checkbox' id='menu'></td></tr>
-				<tr><td>Announce callers</td><td><input type='checkbox' id='announce'></td></tr>
+				<tr><td>Queue:</td><td><input size='5' id='name'></td></tr>
+				<tr><td>Full Name:</td><td><input size='24' id='fullname'></td></tr>
+				<tr><td>strategy :</td><td><select id='strategy'> 
+																<option value="ringall">ringall</option> 
+																<option value="roundrobin">roundrobin</option> 
+																<option value="leastrecent">leastrecent</option> 
+																<option value="fewestcalls">fewestcalls</option> 
+																<option value="random">random</option> 
+																<option value="rrmemory">rrmemory</option> 
+																</select>
+						</td>
+				</tr>
+				<tr><td style='width:80px' valign='top'>Members:</td><td><select size="6" multiple='true' id='members' style='width:200px'></select></td></tr>
 				<tr><td colspan='2' align='center'><div style="height:15px" id='status'></div></td></tr>
 				<tr><td colspan='2'></td></tr>
 				</table>
@@ -236,15 +202,18 @@
 			</tr>
 			<tr><td><img id="split" onClick="togglefeatures()" src="images/split-v.png"></td></tr>
 			<tr><td>
-				<div style="background-image:url(images/slice-v.png)" id='advancedw'>
-				<table id='advancedi' align='center'><tr><td>
-				<tr><td>Room Override:</td><td><input size='5' id='room'  onkeypress="return OnlyNumbers(event)"></td></tr>
-				<tr><td>Record conference</td><td><input type='checkbox' id='record'></td></tr>
-				<tr><td>Quiet Mode</td><td><input type='checkbox' id='quiet'></td></tr>
-				<tr><td>Wait for marked user</td><td><input type='checkbox' id='waitmarked'></td></tr>
-				<tr><td>Set marked user</td><td><input type='checkbox' id='setmarked'></td></tr>
-				</td></tr></table>
-				</div>
+						<div style="height :1px;background-image:url(images/slice-v.png); overflow: auto;" id='advancedw'>
+									<table id='advancedi' align='center'>
+									<tr><td>timeout:</td><td>&nbsp;<input size='2' id='timeout'></td></tr>
+									<tr><td>wrapuptime:</td><td>&nbsp;<input size='2' id='wrapuptime'></td></tr>
+									<tr><td>autofill:</td><td><input type=checkbox id='autofill'></td></tr>
+									<tr><td>autopause:</td><td><input type=checkbox id='autopause'></td></tr>
+									<tr><td>maxlen:</td><td>&nbsp;<input size='2' id='maxlen'></td></tr>
+									<tr><td>joinempty:</td><td><input type=checkbox id='joinempty'></td></tr>
+									<tr><td>leavewhenempty:</td><td><input type=checkbox id='leavewhenempty'></td></tr>
+									<tr><td>reportholdtime:</td><td><input type=checkbox id='reportholdtime'></td></tr>
+									</table>
+						</div>
 			</td></tr>
 			<tr><td>
 				<img onClick="togglefeatures()" src="images/adv-v.png">
@@ -258,7 +227,7 @@
 		<td align='center'>
 			<table>
 			<tr align='center'><td>
-			<input style='width:80' type='button' id='newitem' value='New'>
+			<input style='width:80' type='button' id='new' value='New'>
 			</td><td>
 			<input style='width:80' type='button' id='delete' value='Delete'>
 			</td></tr>
