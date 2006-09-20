@@ -1,0 +1,253 @@
+<!--
+ * Asterisk -- An open source telephony toolkit.
+ *
+ * Configuration for Networking
+ *
+ * Copyright (C) 1999 - 2006, Digium, Inc.
+ *
+ * Mark Spencer <markster@digium.com>
+ *
+ * See http://www.asterisk.org for more information about
+ * the Asterisk project. Please do not directly contact
+ * any of the maintainers of this project for assistance;
+ * the project provides a web site, mailing lists and IRC
+ * channels for your use.
+ *
+ * This program is free software, distributed under the terms of
+ * the GNU General Public License Version 2. See the LICENSE file
+ * at the top of the source tree.
+ *
+-->
+
+<script src="scripts/prototype.js"></script>
+<script src="scripts/rico.js"></script>
+<script src="scripts/astman.js"></script>
+<link href="stylesheets/rico.css" media="all" rel="Stylesheet" type="text/css" />
+<link href="stylesheets/schwing.css" media="all" rel="Stylesheet" type="text/css" />
+
+<script>
+	var origwidth;
+	var vmwidgets = new Array;
+	var widgets = new Array;
+	var vmexten='';
+	var adstatus;
+	var networkings;
+	var callbacks = new Object;
+	var usercallbacks = new Object;
+	var networkingcallbacks = new Object;
+	var vmfields = new Array('status', 'save', 'cancel',
+							  'HOSTNAME', 'ESSID', 'WEPKEY', 'SUBBLOCK', 'ALTSUBBLOCK', 'NETMASK', 'DHCPSTARTUNIT', 'DHCPCOUNT','SSHACCESS');
+
+	var fields = new Array('name');
+	
+	function newexten() {
+		var newname = $('name').value;
+		$('save').disabled = false;
+	}
+
+	usercallbacks.format = function(t) {
+		if ((t.name == 'general'))
+			return null;
+		if (t.name.substring(0,6) == 'trunk_')
+			return null;
+		if (t.fieldbyname['fullname'] && t.fieldbyname['fullname'].length) {
+			return t.name + " -- " + t.fieldbyname['fullname'];
+		} else
+			return t.name;
+	}
+
+	function togglefeatures() {
+		if (adstatus == "shown") {
+			adstatus = "hidden";
+			new Rico.Effect.Size('advancedw', null, 1, 120, 8, {complete:function() { $('advancedw').style.height=1;} } );
+		} else {
+			adstatus = "shown";
+			$('advancedw').style.visibility = "visible";
+			new Rico.Effect.Size('advancedw', null, 180, 120, 8 );
+		}
+	}
+	
+	
+	networkingcallbacks.loaded = function() {
+		$('hiddennetworking').selectedIndex = 0;
+		if ($('hiddennetworking').onchange)
+			$('hiddennetworking').onchange($('hiddennetworking'));
+		parent.astmanEngine.config2list("users.conf", $('hiddenusers'), new Array(), usercallbacks);
+	}
+	
+	networkingcallbacks.loaded = function() {
+		$('hiddennetworking').selectedIndex = 0;
+		if ($('hiddennetworking').onchange)
+			$('hiddennetworking').onchange($('hiddenvoicemail'));
+		parent.loadscreen(this);
+	}
+	
+	networkingcallbacks.format = function(t) {
+		if (t.name != 'general')
+			return null;
+		return "General";
+	}
+	
+	function localajaxinit() {
+		$('advancedw').style.overflow = "hidden";
+		$('advancedw').style.height = 1;
+		$('advancedw').style.width = $('split').width;
+		$('advancedi').style.width = $('split').width - 60;
+		adstatus = "hidden";
+		for (var x in vmfields) {
+			vmwidgets[vmfields[x]] = $(vmfields[x]);
+			vmwidgets[vmfields[x]].disabled = true;
+		}
+		for (var x in fields) {
+			widgets[fields[x]] = $(fields[x]);
+			widgets[fields[x]].disabled = true;
+		}
+		parent.astmanEngine.config2list("networking.conf", $('hiddennetworking'), vmwidgets, networkingcallbacks);
+	}
+</script>
+
+
+<body id="foo" onload="localajaxinit()">
+
+<div class="mainscreenTitleBar">
+	<span style="margin-left: 4px;font-weight:bold">Networking Configuration</span>
+</div>
+<div class="mainscreenContentBox" id="mailboxcontent">
+<table class="mainscreenTable" align="center">
+	<tr valign="top">
+		<td colspan='2'>
+		</td>
+	</tr>
+	<tr valign="top">
+		<td>
+		<div style='height:300'></div>
+		</td>
+		<td>
+		<div id='adjustments'>
+		<table cellspacing='0' cellpadding='0'>
+			<tr valign="top"><td>
+				<table>
+				<tr><td>Operating Mode:</td><td><select id='OPERMODE'>
+					<option value='FCC'>FCC (US, Canada)</option>
+					<option value='TBR21'>TBR21 (Most of Europe)</option>
+					<option value="ARGENTINA">Argentina</option>
+					<option value="AUSTRALIA">Australia</option>
+					<option value="AUSTRIA">Austria</option>
+					<option value="BAHRAIN">Bahrain</option>
+					<option value="BELGIUM">Belgium</option>
+					<option value="BRAZIL">Brazil</option>
+					<option value="BULGARIA">Bulgaria</option>
+					<option value="CANADA">Canada</option>
+					<option value="CHILE">Chile</option>
+					<option value="CHINA">China</option>
+					<option value="COLUMBIA">Columbia</option>
+					<option value="CROATIA">Croatia</option>
+					<option value="CYRPUS">Cyrpus</option>
+					<option value="CZECH">Czech</option>
+					<option value="DENMARK">Denmark</option>
+					<option value="ECUADOR">Ecuador</option>
+					<option value="EGYPT">Egypt</option>
+					<option value="ELSALVADOR">Elsalvador</option>
+					<option value="FINLAND">Finland</option>
+					<option value="FRANCE">France</option>
+					<option value="GERMANY">Germany</option>
+					<option value="GREECE">Greece</option>
+					<option value="GUAM">Guam</option>
+					<option value="HONGKONG">Hongkong</option>
+					<option value="HUNGARY">Hungary</option>
+					<option value="ICELAND">Iceland</option>
+					<option value="INDIA">India</option>
+					<option value="INDONESIA">Indonesia</option>
+					<option value="IRELAND">Ireland</option>
+					<option value="ISRAEL">Israel</option>
+					<option value="ITALY">Italy</option>
+					<option value="JAPAN">Japan</option>
+					<option value="JORDAN">Jordan</option>
+					<option value="KAZAKHSTAN">Kazakhstan</option>
+					<option value="KUWAIT">Kuwait</option>
+					<option value="LATVIA">Latvia</option>
+					<option value="LEBANON">Lebanon</option>
+					<option value="LUXEMBOURG">Luxembourg</option>
+					<option value="MACAO">Macao</option>
+					<option value="MALAYSIA">Malaysia</option>
+					<option value="MALTA">Malta</option>
+					<option value="MEXICO">Mexico</option>
+					<option value="MOROCCO">Morocco</option>
+					<option value="NETHERLANDS">Netherlands</option>
+					<option value="NEWZEALAND">Newzealand</option>
+					<option value="NIGERIA">Nigeria</option>
+					<option value="NORWAY">Norway</option>
+					<option value="OMAN">Oman</option>
+					<option value="PAKISTAN">Pakistan</option>
+					<option value="PERU">Peru</option>
+					<option value="PHILIPPINES">Philippines</option>
+					<option value="POLAND">Poland</option>
+					<option value="PORTUGAL">Portugal</option>
+					<option value="ROMANIA">Romania</option>
+					<option value="RUSSIA">Russia</option>
+					<option value="SAUDIARABIA">Saudiarabia</option>
+					<option value="SINGAPORE">Singapore</option>
+					<option value="SLOVAKIA">Slovakia</option>
+					<option value="SLOVENIA">Slovenia</option>
+					<option value="SOUTHAFRICA">Southafrica</option>
+					<option value="SOUTHKOREA">Southkorea</option>
+					<option value="SPAIN">Spain</option>
+					<option value="SWEDEN">Sweden</option>
+					<option value="SWITZERLAND">Switzerland</option>
+					<option value="SYRIA">Syria</option>
+					<option value="TAIWAN">Taiwan</option>
+					<option value="THAILAND">Thailand</option>
+					<option value="UAE">UAE</option>
+					<option value="UK">UK</option>
+					<option value="USA">USA</option>
+					<option value="YEMEN">Yemen</option>
+				</select></td></tr>
+				<tr><td>Hostname:</td><td><input type='text' id='HOSTNAME'></td></tr>
+				<tr><td>ESSID:</td><td><input type='text' id='ESSID'></td></tr>
+				<tr><td>WEP Key:</td><td><input type='text' id='WEPKEY'></td></tr>
+				<tr><td>SSH Access:</td><td><select id='SSHACCESS'><option value=''>Disabled</option><option value='yes'>Enabled</option></select></td></tr>
+				<tr><td colspan='2' align='center'><div style="height:15px" id='status'></div></td></tr>
+				</table>
+			</td>
+			</tr>
+			<tr><td><img id="split" onClick="togglefeatures()" src="images/split-v.png"></td></tr>
+			<tr><td>
+				<div style="background-image:url(images/slice-v.png)" id='advancedw'>
+				<table id='advancedi' align='center'>
+				<tr><td></td><td width='50'></td><td></td></tr>
+				<tr><td>Local Subnet</td><td><input type='text' size='16' id='SUBBLOCK'></td></tr>
+				<tr><td>Alternate Local Subnet</td><td><input size='16' type='text' id='ALTSUBBLOCK'></td></tr>
+				<tr><td>Netmask</td><td><input type='text' size='16' id='NETMASK'></td></tr>
+				<tr><td>DHCP Start unit</td><td><input type='text' size='5' id='DHCPSTARTUNIT'></td></tr>
+				<tr><td>DHCP Count</td><td><input type='text' size='5' id='DHCPCOUNT'></td></tr>
+				</table>
+				</div>
+			</td></tr>
+			<tr><td>
+				<img onClick="togglefeatures()" src="images/adv-v.png">
+			</td>
+			</tr>
+		</table>
+		</div>
+		</td>
+
+	</tr><tr>
+		<td align='center'>
+		</td>
+		<td align='center' colspan='2'>
+				<input type='hidden' id='name'>
+				<input style='width:80' type='button' id='save' value='Save'>
+				&nbsp;
+				<input style='width:80' type='button' id='cancel' value='Cancel'>
+				&nbsp;
+		<div style='visibility:hidden;overflow:hidden;width:0px;height:0px'>
+			<select id='hiddenusers'>
+			</select>
+			<select id='hiddennetworking'>
+			</select>
+		</div>
+		</td>				
+	</tr>
+</table>
+</div>
+</body>
