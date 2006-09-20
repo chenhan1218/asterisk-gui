@@ -30,25 +30,27 @@ var adstatus;
 var queuecallbacks = new Object;
 var usercallbacks = new Object;
 var widgets = new Array;
-var queuemembers = new  Array;
+var queueagents = new  Array;
 var queuenames = new Array;
-var fieldnames = new Array( 'name', 'delete', 'status', 'new',  'save', 'cancel','fullname', 'strategy', 'timeout', 'wrapuptime','autofill','autopause','maxlen', 'joinempty',  'leavewhenempty', 'reportholdtime','members');
+var fieldnames = new Array( 'name', 'delete', 'status', 'new', 'cancel','fullname', 'strategy', 'timeout', 'wrapuptime','autofill','autopause','maxlen', 'joinempty',  'leavewhenempty', 'reportholdtime');
 var k =0;
 var j = -1; 
 
 queuecallbacks.format = function(t,x) {
+		var tmp;
 		tmp = t.name.split('general');
 		if(tmp.length>1)
 				return false;
 		else if (t.name && x==undefined){	 				// if is a category
 				k=0;
 				j = j +1;
-				queuemembers[j] = new Array;
+				queueagents[j] = new Array;
 				queuenames[j] = t.name;
 				return t.name + " -- " + t.fieldbyname['fullname'];
 		}else {																// if is a subcategory 
-				if(t.names[x] == 'member'){
-					queuemembers [j] [k] = t.fields[x].substr(-4);
+				tmp = t.fields[x].split ('Agent/');
+				if(t.names[x] == 'member' && tmp.length > 1){
+					queueagents [j] [k] = t.fields[x].substr(-4);
 					k = k+1;
 				}
 				return false;
@@ -57,7 +59,10 @@ queuecallbacks.format = function(t,x) {
 
 
 queuecallbacks.postselect = function(box, val ) {
-		if($('queues').selectedIndex	==-1){return true; } // while page loads .. do nothing
+		if($('queues').selectedIndex	==-1){ 
+			$('agents').disabled=true; 
+			return true; 
+		} 
 
 		// show all member entires listed under the queue member - $('queues').value
 		for( k=0; k<queuenames.length; k++ ){
@@ -67,56 +72,52 @@ queuecallbacks.postselect = function(box, val ) {
 				}
 		}
 
-		for (k=0;k< $('members').length ;k++ )
+		for (k=0;k< $('agents').length ;k++ )
 		{
-			if( InArray( queuemembers[j], $('members').options[k].value ) )
-				$('members').options[k].selected = true;			
+			if( InArray( queueagents [j], $('agents').options[k].innerHTML.substr(0,4) ) )
+				$('agents').options[k].selected = true;			
 			else
-				$('members').options[k].selected = false;
+				$('agents').options[k].selected = false;
 		}
+		$('agents').disabled = false;
+
 }
 
 
 
 
 queuecallbacks.loaded = function() {
-		parent.astmanEngine.config2list("users.conf", $('members'), new Array(), usercallbacks);
+		parent.astmanEngine.config2list("agents.conf", $('agents'), new Array(), usercallbacks);
 }
 
 
 queuecallbacks.newcategory = function(t) {
-		var tmp = null;
-		var x;
-		if ($('members').stored_config.catbyname['general']){
-			tmp = objcopy($('members').stored_config.catbyname['general']);
-			x = tmp.fieldbyname['userbase'];
-		}
-
-		if ($('queues').stored_config.catbyname['general']){
-			tmp = objcopy($('queues').stored_config.catbyname['general']);
-			if (x) {
-				tmp.name = first_free_exten($('members'), x);
-			}
-		}
-		return tmp;
+	$('agents').disabled=false;
 }
 
-
-usercallbacks.format = function (t){
-		if ((t.name == 'general'))
-			return null;
-		if (t.name.substring(0,6) == 'trunk_')
-			return null;
-		if (t.fieldbyname['fullname'] && t.fieldbyname['fullname'].length) {
-			return t.name + " -- " + t.fieldbyname['fullname'];
-		} else
-			return t.name;
+queuecallbacks.checkparams = function(box) {
+/*
+	if(  $('queues').options[$('queues').selectedIndex].innerHTML == 'New Entry'){
+		alert("add a new extension with the given new extension name and add all agents");
+	}else{
+		alert("Delete all agents(list can be retrieved from  in the given extension and add all agents");
+	}
+*/
 }
 
+usercallbacks.format = function (t,x){
+		var tmp;
 
+		if ( t.name == 'general' )
+			return null;
+		if ( t.name == 'agents' && x!=undefined){
+					tmp = t.fields[x].split(',');
+					return tmp[0]+ " -- " + tmp[2];
+		}
+}
 
-usercallbacks.identifier = "extension";
-
+usercallbacks.eachline = true;
+usercallbacks.includecats = true;
 
 
 usercallbacks.postselect = function (){
@@ -127,6 +128,16 @@ usercallbacks.postselect = function (){
 usercallbacks.loaded = function (){
 
 }
+
+function save_status(){
+
+	$('save').disabled = false;
+	$('cancel').disabled = false;
+
+}
+
+
+
 
 
 function togglefeatures() {
@@ -151,9 +162,62 @@ function localajaxinit() {
 	}
 	adstatus = "hidden";
 	parent.astmanEngine.config2list("queues.conf", $('queues'), widgets, queuecallbacks);
+	$('agents').disabled = true;
 	return;
 }
 
+
+function save_queue(){
+		var p = 0;
+		var fields = new Array('fullname', 'strategy', 'timeout', 'wrapuptime','autofill','autopause','maxlen', 'joinempty',  'leavewhenempty', 'reportholdtime');
+		var otherfields_action, tmp;
+		var opt = {
+			method: 'get',
+			asynchronous: true,
+			onSuccess: function() { 
+				if (box.widgets['status']) 
+					box.widgets['status'].innerHTML = "<i>Updated.</i>";
+				if (box.callbacks.savechanges)
+					box.callbacks.savechanges();
+			},
+			onFailure: function(t) {
+				alert("Config Error: " + t.status + ": " + t.statusText);
+			},
+		};
+
+			if( $('queues').options[$('queues').selectedIndex].innerHTML=='New Entry' ){
+					uri = build_action('newcat', p, $('name').value,"", ""); p = p+1;
+					otherfields_action = 'append'; 			// add other fields
+			}else{
+					// always do a rename cat instead of checking whether or not to do a rename cat
+					uri = build_action('renamecat', p, $('queues').value.substr(0,4),"", $('name').value); p = p+1;
+					// delete existing agents
+					uri += build_action('delete', p, $('name').value,"member", ""); p = p+1;
+					otherfields_action = 'update'; 			// update other fields
+			}
+
+			for(k=0; k<fields.length; k++ ){
+				if ( $(fields[k]).type =='checkbox'){
+					tmp=( $(fields[k]).checked)? 'yes': 'no';
+					alert( "tmp for "+ fields[k] + " is " + tmp );
+				}else{
+					tmp = $(fields[k]).value;
+				}
+				uri += build_action(otherfields_action, p, $('name').value , fields[k] , tmp);
+				p = p + 1;
+			}
+
+			//add agents
+			for(k=0; k<$('agents').length; k++){
+				if( $('agents').options[k].selected ){
+				uri += build_action('append', p, $('name').value,"member", "Agent/"+$('agents').options[k].innerHTML.substr(0,4) );
+				p = p+1;
+				}
+			}
+
+			opt.parameters="action=updateconfig&reload=yes&srcfilename=" + encodeURIComponent("queues.conf") + "&dstfilename=" + encodeURIComponent("queues.conf") + uri;
+			tmp = new Ajax.Request('../../rawman', opt);
+}
 
 
 queuecallbacks.eachline = true;
@@ -194,7 +258,7 @@ queuecallbacks.includecats = true;
 																</select>
 						</td>
 				</tr>
-				<tr><td style='width:80px' valign='top'>Members:</td><td><select size="6" multiple='true' id='members' style='width:200px'></select></td></tr>
+				<tr><td style='width:80px' valign='top'>Agents:</td><td><select size="6" multiple='true' id='agents' style='width:200px' onclick="save_status()"></select></td></tr>
 				<tr><td colspan='2' align='center'><div style="height:15px" id='status'></div></td></tr>
 				<tr><td colspan='2'></td></tr>
 				</table>
@@ -234,7 +298,7 @@ queuecallbacks.includecats = true;
 			</table>
 		</td>
 		<td align='center' colspan='2'>
-				<input style='width:80' type='button' id='save' value='Save'>
+				<input style='width:80' type='button' onclick="save_queue()" value='Save'>
 				&nbsp;
 				<input style='width:80' type='button' id='cancel' value='Cancel'>
 				&nbsp;
