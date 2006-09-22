@@ -31,7 +31,6 @@ var queuecallbacks = new Object;
 var usercallbacks = new Object;
 var extencallbacks = new Object;
 var callbacks = new Object;
-
 var widgets = new Array;
 var queueagents = new  Array;
 var queuenames = new Array;
@@ -42,8 +41,7 @@ var j = -1;
 
 // Queue Call Backs
 queuecallbacks.format = function(t,x) {
-		var tmp;
-		tmp = t.name.split('general');
+		var tmp = t.name.split('general');
 		if(tmp.length>1)
 				return false;
 		else if (t.name && x==undefined){	 				// if is a category
@@ -51,7 +49,7 @@ queuecallbacks.format = function(t,x) {
 				j = j +1;
 				queueagents[j] = new Array;
 				queuenames[j] = t.name;
-				return t.name + " -- " + t.fieldbyname['fullname'];
+				return t.name + " -- Queue '" + t.fieldbyname['fullname'] + "'";
 		}else {																// if is a subcategory 
 				tmp = t.fields[x].split ('Agent/');
 				if(t.names[x] == 'member' && tmp.length > 1){
@@ -61,7 +59,6 @@ queuecallbacks.format = function(t,x) {
 				return false;
 		}
 }
-
 
 queuecallbacks.postselect = function(box, val ) {
 		if($('queues').selectedIndex	==-1){ 
@@ -76,7 +73,6 @@ queuecallbacks.postselect = function(box, val ) {
 					break;
 				}
 		}
-
 		for (k=0;k< $('agents').length ;k++ )
 		{
 			if( InArray( queueagents [j], $('agents').options[k].innerHTML.substr(0,4) ) )
@@ -84,8 +80,7 @@ queuecallbacks.postselect = function(box, val ) {
 			else
 				$('agents').options[k].selected = false;
 		}
-		$('save_q').disabled = false;
-
+	$('save_q').disabled = false;
 }
 
 queuecallbacks.loaded = function() {
@@ -94,34 +89,22 @@ queuecallbacks.loaded = function() {
 
 queuecallbacks.newcategory = function(t) {
 		var tmp = null;
-		var x;
 		$('save_q').disabled=false;
-
-		if ($('agents').stored_config.catbyname['general']){
-			tmp = objcopy($('agents').stored_config.catbyname['general']);
-			x = tmp.fieldbyname['userbase'];
-		}
 
 		if ($('queues').stored_config.catbyname['general']){
 			tmp = objcopy($('queues').stored_config.catbyname['general']);
-			if (x){
-				tmp.name = first_free_exten($('agents'), x);
-			}
 		}
-		return tmp;
+		tmp.name="";
+return tmp;
 }
-
 
 queuecallbacks.checkparams = function(box) {
 
-
 }
 
+queuecallbacks.eachline = true;
 
-
-
-
-
+queuecallbacks.includecats = true;
 
 // User call backs
 usercallbacks.format = function (t,x){
@@ -136,19 +119,24 @@ usercallbacks.format = function (t,x){
 usercallbacks.identifier = "extension";
 
 usercallbacks.postselect = function (){
-
+	
 }
 
 usercallbacks.loaded = function (){
 	parent.astmanEngine.config2list("extensions.conf", $('extensions'), new Array(), extencallbacks);
 }
 
-
 //extencallbacks
 extencallbacks.format = function(t, x) {
+	var res;
+	var qname;
 	if ((t.name != specialcontext))
 		return null;
-	return format_extension($('extensions'), t, x);
+	res = format_extension($('extensions'), t, x);
+	if (t.subfields[x]['app'] == 'Queue') {
+		return null;
+	}
+	return res;
 }
 
 extencallbacks.loaded = function() {
@@ -181,17 +169,10 @@ callbacks.loaded = function (){
 	parent.loadscreen(this);
 }
 
-
-
-
-
-
-
 function save_status(){
 	$('save_q').disabled = false;
 	$('cancel').disabled = false;
 }
-
 
 function togglefeatures() {
 	if (adstatus == "shown") {
@@ -204,23 +185,60 @@ function togglefeatures() {
 	}
 }
 
-
 function localajaxinit() {
+	$('advancedw').style.overflow = "hidden";
+	$('advancedw').style.height = 1;
+	$('advancedw').style.width = $('split').width;
+	$('advancedi').style.width = $('split').width - 60;
+
 	for (var x in fieldnames) {
 		widgets[fieldnames[x]] = $(fieldnames[x]);
 		widgets[fieldnames[x]].disabled = true;
 	}
+
 	adstatus = "hidden";
 	parent.astmanEngine.config2list("queues.conf", $('queues'), widgets, queuecallbacks);
 	$('save_q').disabled = true;
 	return;
 }
 
+function rename_extension(a,b){
+	// rename extension 'a' in extensions.conf to 'b'
+	// change 'exten => a,1,Queue' in default to 'exten => b,1,Queue'
+	var opt0 = {
+				method: 'get',
+				asynchronous: true,
+				onSuccess: function() { 
+					return true;	
+				},
+				onFailure: function(t) {
+					alert("Config Error: " + t.status + ": " + t.statusText);
+					return false;
+				},
+	};
+	uri0 = build_action('update', 0, specialcontext ,'exten', b+',1,Queue', a+',1,Queue(${EXTEN})' ); 
+	opt0.parameters="action=updateconfig&reload=yes&srcfilename=" + encodeURIComponent("extensions.conf") + "&dstfilename=" + encodeURIComponent("extensions.conf") + uri0;
+	tmp0 = new Ajax.Request('../../rawman', opt0);
+}
 
-
-
-
-
+function add_extension(a){
+	// add extension 'a' in extensions.conf 
+	// add 'exten => a,1,Queue' to default
+	var opt0 = {
+				method: 'get',
+				asynchronous: true,
+				onSuccess: function() { 
+					return true;	
+				},
+				onFailure: function(t) {
+					alert("Config Error: " + t.status + ": " + t.statusText);
+					return false;
+				},
+	};
+	uri0 = build_action('append', 0, specialcontext ,'exten', a+',1,Queue'); 
+	opt0.parameters="action=updateconfig&reload=yes&srcfilename=" + encodeURIComponent("extensions.conf") + "&dstfilename=" + encodeURIComponent("extensions.conf") + uri0;
+	tmp0 = new Ajax.Request('../../rawman', opt0);
+}
 
 
 function save_queue(){
@@ -257,9 +275,17 @@ function save_queue(){
 					// also reset queuenames[j] to $('name').value
 					queuenames[j] = $('name').value;
 					$('queues').engine.fields2changes($('queues').widgets, $('queues').stored_config, cattmp);
-					$('queues').options[$('queues').selectedIndex].innerHTML = $('name').value + " -- " + $('fullname').value ;
+					$('queues').options[$('queues').selectedIndex].innerHTML = $('name').value + " -- Queue '" + $('fullname').value +"'";
 					$('queues').options[$('queues').selectedIndex].value =$('name').value;
 					$('queues').options[$('queues').selectedIndex].core_name = cattmp.catname;
+
+					for (var y = 0; y < $('queues').options.length + 1; y++) {
+						if (!$('queues').options[y] || 
+							do_compare($('queues'), $('queues').options[$('queues').selectedIndex], $('queues').options[y])) {
+								$('queues').options.add($('queues').options[$('queues').selectedIndex], y);
+								break;
+						}
+					}
 			},
 			onFailure: function(t) {
 				alert("Config Error: " + t.status + ": " + t.statusText);
@@ -288,12 +314,17 @@ function save_queue(){
 		}
 
 		p = 0;
+		uri = "";
 		if( $('queues').options[$('queues').selectedIndex].innerHTML=='New Entry' ){
-				uri = build_action('newcat', p, $('name').value,"", ""); p = p+1;
+				uri += build_action('newcat', p, $('name').value,"", ""); p = p+1;
 				otherfields_action = 'append'; 			// add other fields
+				add_extension( $('name').value ); // add in extensions.conf
 		}else{
+				if( $('name').value != $('queues').value ){
 				// always do a rename cat instead of checking whether or not to do a rename cat
-				uri = build_action('renamecat', p, $('queues').value ,"", $('name').value ); p = p+1;
+				uri += build_action('renamecat', p, $('queues').value ,"", $('name').value ); p = p+1;
+					rename_extension($('queues').value,$('name').value ); // rename in extensions.conf
+				}
 				// delete existing agents
 				uri += build_action('delete', p, $('name').value,"member", ""); p = p+1;
 				otherfields_action = 'update'; 			// update other fields
@@ -320,10 +351,6 @@ function save_queue(){
 		opt.parameters="action=updateconfig&reload=yes&srcfilename=" + encodeURIComponent("queues.conf") + "&dstfilename=" + encodeURIComponent("queues.conf") + uri;
 		tmp = new Ajax.Request('../../rawman', opt);
 }
-
-
-queuecallbacks.eachline = true;
-queuecallbacks.includecats = true;
 </script>
 
 <body id="foo" onload="localajaxinit()">
@@ -342,7 +369,7 @@ queuecallbacks.includecats = true;
 		<select size="28" id="queues" style="width:220px">
 		<option>Loading...</option>
 		</select>
-		<div style='visibility:hidden;overflow:hidden;width:0px;height:0px'><select id='extensions'></select><select id='devices'></select></div>
+		<div style='visibility:hidden;overflow:hidden;width:0px;height:0px'><select id='extensions'></select><select id='devices'></select><select id='finalextensions'></select></div>
 		</td>
 		<td>
 		<div id='adjustments'>
@@ -369,7 +396,7 @@ queuecallbacks.includecats = true;
 			</tr>
 			<tr><td><img id="split" onClick="togglefeatures()" src="images/split-v.png"></td></tr>
 			<tr><td>
-						<div style="height :1px;background-image:url(images/slice-v.png); overflow: auto;" id='advancedw'>
+						<div style="background-image:url(images/slice-v.png)" id='advancedw'>
 									<table id='advancedi' align='center'>
 									<tr><td>timeout:</td><td>&nbsp;<input size='2' id='timeout'></td></tr>
 									<tr><td>wrapuptime:</td><td>&nbsp;<input size='2' id='wrapuptime'></td></tr>
