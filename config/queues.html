@@ -44,7 +44,7 @@ queuecallbacks.format = function(t,x) {
 		var tmp = t.name.split('general');
 		if(tmp.length>1)
 				return false;
-		else if (t.name && x==undefined){	 				// if is a category
+		else if ( t.name && x==undefined ){	 				// if is a category
 				k=0;
 				j = j +1;
 				queueagents[j] = new Array;
@@ -216,7 +216,7 @@ function rename_extension(a,b){
 					return false;
 				},
 	};
-	uri0 = build_action('update', 0, specialcontext ,'exten', b+',1,Queue', a+',1,Queue(${EXTEN})' ); 
+	uri0 = build_action('update', 0, specialcontext ,'exten', b+',1,Queue(${EXTEN})', a+',1,Queue(${EXTEN})' ); 
 	opt0.parameters="action=updateconfig&reload=yes&srcfilename=" + encodeURIComponent("extensions.conf") + "&dstfilename=" + encodeURIComponent("extensions.conf") + uri0;
 	tmp0 = new Ajax.Request('../../rawman', opt0);
 }
@@ -235,7 +235,7 @@ function add_extension(a){
 					return false;
 				},
 	};
-	uri0 = build_action('append', 0, specialcontext ,'exten', a+',1,Queue'); 
+	uri0 = build_action('append', 0, specialcontext ,'exten', a+',1,Queue(${EXTEN})'); 
 	opt0.parameters="action=updateconfig&reload=yes&srcfilename=" + encodeURIComponent("extensions.conf") + "&dstfilename=" + encodeURIComponent("extensions.conf") + uri0;
 	tmp0 = new Ajax.Request('../../rawman', opt0);
 }
