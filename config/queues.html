@@ -243,6 +243,8 @@ function add_extension(a){
 
 function save_queue(){
 		var p = 0;
+		var q = 0;
+		var r = 0;
 		var fields = new Array('fullname', 'strategy', 'timeout', 'wrapuptime','autofill','autopause','maxlen', 'joinempty',  'leavewhenempty', 'reportholdtime');
 		var otherfields_action, tmp;
 		var opt = {
@@ -257,23 +259,6 @@ function save_queue(){
 					var cattmp = new Object;
 					cattmp.catname = $('queues').value;
 
-					for( k=0; k<queuenames.length; k++ ){
-							if( queuenames[k] == $('queues').value ){
-								j = k;
-								break;
-							}
-					}
-					// reset the array queueagents [j] to selected elements of $('agents')
-					queueagents [j] = [];
-					p =0;
-					for (k=0;k< $('agents').length ;k++ ){
-							if( $('agents').options[k].selected ){
-								queueagents [j][p] = $('agents').options[k].innerHTML.substr(0,4);
-								p = p+1;
-							}
-					}
-					// also reset queuenames[j] to $('name').value
-					queuenames[j] = $('name').value;
 					$('queues').engine.fields2changes($('queues').widgets, $('queues').stored_config, cattmp);
 					$('queues').options[$('queues').selectedIndex].innerHTML = $('name').value + " -- Queue '" + $('fullname').value +"'";
 					$('queues').options[$('queues').selectedIndex].value =$('name').value;
@@ -319,6 +304,17 @@ function save_queue(){
 				uri += build_action('newcat', p, $('name').value,"", ""); p = p+1;
 				otherfields_action = 'append'; 			// add other fields
 				add_extension( $('name').value ); // add in extensions.conf
+				//add to stored names & fields 
+				r = queuenames.length;
+				queueagents[r+1] = new Array;
+				queuenames[r+1] = $('name').value ;
+				q =0;
+				for (k=0;k< $('agents').length ;k++ ){
+						if( $('agents').options[k].selected ){
+							queueagents [r+1][q] = $('agents').options[k].innerHTML.substr(0,4);
+							q = q+1;
+						}
+				}
 		}else{
 				if( $('name').value != $('queues').value ){
 				// always do a rename cat instead of checking whether or not to do a rename cat
@@ -328,6 +324,26 @@ function save_queue(){
 				// delete existing agents
 				uri += build_action('delete', p, $('name').value,"member", ""); p = p+1;
 				otherfields_action = 'update'; 			// update other fields
+				
+				//update the stored names & fields 
+				for( k=0; k<queuenames.length; k++ ){
+						if( queuenames[k] == $('queues').value ){
+							j = k;
+							break;
+						}
+				}
+				// reset the array queueagents [j] to selected elements of $('agents')
+				queueagents [j] = [];
+				q =0;
+				for (k=0;k< $('agents').length ;k++ ){
+						if( $('agents').options[k].selected ){
+							queueagents [j][q] = $('agents').options[k].innerHTML.substr(0,4);
+							q = q+1;
+						}
+				}
+				// also reset queuenames[j] to $('name').value
+				queuenames[j] = $('name').value;
+
 		}
 
 		for(k=0; k<fields.length; k++ ){

@@ -26,115 +26,191 @@
 <link href="stylesheets/schwing.css" media="all" rel="Stylesheet" type="text/css" />
 
 <script>
-	var origwidth;
 	var widgets = new Array;
 	var adstatus;
-	var callbacks = new Object;
-	var phonecallbacks = new Object;
-	var extencallbacks = new Object;
-	var numcallbacks = new Object;
-	var fieldnames = new Array(
-				'delete', 'status', 'new', 'save', 'cancel','name','fullname','secret','email','number','zapchan','context',
-				'hasvoicemail','hasdirectory','hassip','hasiax','hasmanager','callwaiting','threewaycalling','mailbox');
+	var menuscallbacks = new Object;
+	var fieldnames = new Array('delete', 'status', 'new','save','cancel');
+	var voicemenusdata = new Object;
+	var current_context;
+	var keys = new Array('zero','one','two','three','four','five','six','seven','eight','nine','star','pound');
+	var extensions_array = new Array('1001','1002','6010','6275','6233','6786','7002');
+	var menus_array = new Array('Support','Sales','Some');
 
-	extencallbacks.format = function(t, x) {
-		if ((t.name != specialcontext))
-			return null;
-		return format_extension($('extensions'), t, x);
-	}
-	
-	extencallbacks.loaded = function() {
-		merge_extensions($('devices'), $('extensions'));
-		parent.loadscreen(this);
-	}
-	
-	extencallbacks.eachline = true;
+function load_extensions(my_field_options){
+		$(my_field_options).options.length=0;
+		
+		for(x=0; x< extensions_array.length; x++){
+				var newoption = document.createElement("option"); 
+				newoption.text = extensions_array[x] ; 
+				newoption.value = extensions_array[x] ;
+				$(my_field_options).options.add(newoption);
+		}
 
-	callbacks.format = function(t) {
-		if ((t.name == 'general'))
-			return null;
-		if (t.name.substring(0,6) == 'trunk_')
-			return null;
-		if (t.fieldbyname['fullname'] && t.fieldbyname['fullname'].length) {
-			return t.name + " -- " + t.fieldbyname['fullname'];
-		} else
-			return t.name;
+}
+
+
+function load_menus(my_field_options){
+		$(my_field_options).options.length=0;
+		
+		for(x=0; x< menus_array.length; x++){
+				var newoption = document.createElement("option"); 
+				newoption.text = menus_array[x] ; 
+				newoption.value = menus_array[x] ;
+				$(my_field_options).options.add(newoption);
+		}
+}
+
+
+function  key_action(a, my_field_text, my_field_options){
+	if(a=='gotomenu'){
+		//show menus dropdown
+		$(my_field_text).style.display = "none";
+		$(my_field_options).style.display = "";
+		// load menus
+		load_menus(my_field_options);
+
+
 	}
-	callbacks.loaded = function() {
-		$('devices').contentEditable = 'true';
-		$('devices').disabled = 0;
-		parent.astmanEngine.config2list("extensions.conf", $('extensions'), new Array(), extencallbacks);
+
+	if(a=='gotoextension'){
+		//show extensions dropdown
+		$(my_field_text).style.display = "none";
+		$(my_field_options).style.display = "";
+		// load extensions
+		load_extensions(my_field_options);
+
 	}
-	callbacks.sortfunc = function(a,b) {
-		return (a.name < b.name) ? -1 : 1;
+
+	if(a=='Custom'){
+		//show a  text box
+		$(my_field_options).style.display = "none";
+		$(my_field_text).style.display = "";
+		$(my_field_text).type="text";
+		$(my_field_text).size=12;
+		$(my_field_text).focus();
 	}
-	callbacks.checkparams = function(box) {
-		$('mailbox').value = $('name').value;
-		return false;
+
+	if(a=='disabled'){
+		//show nothing
+		$(my_field_text).style.display = "none";
+		$(my_field_options).style.display = "none";
 	}
-	callbacks.newcategory = function() {
-		var tmp = null;
-		var x;
-		if ($('devices').stored_config.catbyname['general'])
-			tmp = objcopy($('devices').stored_config.catbyname['general']);
-		if (tmp) {
-			x = tmp.fieldbyname['userbase'];
-			if (x) {
-				tmp.name = first_free_exten($('devices'), x);
+
+
+}
+
+
+
+
+menuscallbacks.format = function(t, x) {
+		var tmp = t.name.split('general');
+		var exten_fields;
+
+		if(tmp.length>1)
+				return false;
+		else if ( t.name.substr(0,10) == 'voicemenu-' && x==undefined ){	 				// if is a category
+				current_context = t.name;
+				voicemenusdata[current_context] = new Object();
+				return t.name ;
+		}else if(t.name.substr(0,10) == 'voicemenu-' ) {											// if is a subcategory 
+				if (t.names[x]=='comment'){
+					voicemenusdata[current_context].comment =  t.fields[x];
+					voicemenusdata[current_context].extensions = new Object();
+					return false;
+				}
+				if (t.names[x]=='exten'){
+					exten_fields = t.fields[x].split (',');
+					
+					if(!voicemenusdata[current_context].extensions[exten_fields[0]]){
+						voicemenusdata[current_context].extensions[exten_fields[0]] = new Array();
+					}
+					voicemenusdata[current_context].extensions[exten_fields[0]][voicemenusdata[current_context].extensions[exten_fields[0]].length] = t.fields[x] ;
+				}
+				return false;
+		}else{	
+			return false;
+		}
+}
+
+
+
+menuscallbacks.postselect = function() {
+	// show al lthe //s, lines in the select box - 
+	if($('vmenus').selectedIndex	==-1){ return true;}
+	current_context = $('vmenus').value;
+	var x, y;
+
+	//$('keypressoptions').innerHTML = "";
+	$('steps').options.length =0;
+	$('comment').value = voicemenusdata[current_context].comment;
+
+	for (x=0;x<voicemenusdata[current_context].extensions['s'].length ; x++ ){
+		var newoption = document.createElement("option");
+		newoption.text = voicemenusdata[current_context].extensions['s'][x];
+		newoption.value = voicemenusdata[current_context].extensions['s'][x];
+		$('steps').options.add ( newoption );
+	}
+
+	for (y=0; y<10 ; y++ ){
+			if(voicemenusdata[current_context].extensions[y]){
+					// 					
+	
+					/*
+					for (x=0;x<voicemenusdata[current_context].extensions[y].length ; x++ ){
+						tmp = voicemenusdata[current_context].extensions[y][x];
+						$('keypressoptions').innerHTML += "<TR><TD width=50 align=center>" +y+ "</TD><TD>"+  tmp + "</TD></TR>";
+					}
+					*/
+			}else{
+					// Key_action is disabled => hide the text & options (which already are)
 			}
-		}
-		return tmp;
-	}
-	callbacks.identifier = "extension";
-	
-	phonecallbacks.format = function(t) {
-		if (t.fieldbyname['port'] == 'fxo')
-			return "Analog Port #" + t.name;
-		return null;
 	}
 
-	phonecallbacks.loaded = function() {
-		var noneopt = document.createElement("OPTION");
-		noneopt.value = "";
-		noneopt.innerHTML = "None";
-		$('zapchan').options.add(noneopt, 0);
-		parent.astmanEngine.config2list("extensions.conf", $('context'), new Array(), numcallbacks);
-	}
-	
-	numcallbacks.format = function(t) {
-		if ((t.name.substr(0,11) != 'numberplan-'))
-			return null;
-		if (t.fieldbyname['comment'])
-			return t.fieldbyname['comment'];
-		return t.name;
-	}
 
-	numcallbacks.loaded = function() {
-		parent.astmanEngine.config2list("users.conf", $('devices'), widgets, callbacks);
-	}
-	
-	function togglefeatures() {
-		if (adstatus == "shown") {
-			adstatus = "hidden";
-			new Rico.Effect.Size('features', null, 1, 120, 8, {complete:function() { $('features').style.height=1;} } );
-		} else {
-			adstatus = "shown";
-			$('features').style.visibility = "visible";
-			new Rico.Effect.Size('features', null, 200, 120, 8 );
-		}
-	}
-	function localajaxinit() {
-		$('features').style.overflow = "hidden";
-		$('features').style.height = 1;
-		$('features').style.width = $('split').width;
-		adstatus = "hidden";
-		$('devices').contentEditable = 'false';
-		for (var x in fieldnames) {
+
+}
+
+
+menuscallbacks.loaded = function(){
+			for (x=0;x<$('vmenus').options.length ; x++ ){
+				$('vmenus').options[x].text = "VoiceMenu - " + voicemenusdata[$('vmenus').options[x].value].comment;
+			}
+}
+
+
+
+menuscallbacks.identifier = "extension";
+
+menuscallbacks.eachline = true;
+
+menuscallbacks.includecats = true;
+
+
+function localajaxinit() {
+		
+		for (x =0 ; x<fieldnames.length; x++){
 			widgets[fieldnames[x]] = $(fieldnames[x]);
 			widgets[fieldnames[x]].disabled = true;
 		}
-		parent.astmanEngine.config2list("zapscan.conf", $('zapchan'), new Array(), phonecallbacks);
-	}
+
+		parent.loadscreen(this);
+
+		parent.astmanEngine.config2list("extensions.conf", $('vmenus'), widgets, menuscallbacks);
+
+}
+
+
+
+function generate_fields(key){
+			document.write('<select  style="font-family: Verdana, Arial, Helvetica, Sans-Serif;font-size: 11px;"   id=\'keypress_'+ key + '_action\' onchange="key_action(this.value , keypress_' + key + '_text, keypress_' + key + '_options )">\n');
+			document.write('<option value="disabled">Disabled</option>\n');
+			document.write('<option value="gotomenu">Goto Menu</option>\n');
+			document.write('<option value="gotoextension">Goto Extension</option>\n');
+			document.write('<option value="Custom">Custom</option>\n');
+			document.write('</select>&nbsp;<input type="text"  style="display:none" id="keypress_' + key+ '_text">\n');
+			document.write('<select  style="display:none; font-family: Verdana, Arial, Helvetica, Sans-Serif;font-size: 11px;"  id="keypress_'+ key + '_options"></select>\n');
+}
+
 </script>
 
 
@@ -147,76 +223,109 @@
 <table class="mainscreenTable" align="center">
 	<tr valign="top">
 		<td colspan='2'>
-		Extensions:
+		Voice Menus:
 		</td>
 	</tr>
 	<tr valign="top">
 		<td>
-		<select disabled size="28" id="devices" style="width:220px">
-		<option>Loading...</option>
-		</select>
+			<select size="28" id="vmenus" style="width:180px">
+			<option>Loading...</option>
+			</select>
 		</td>
-		<td colspan='3'>
-		<div style='visibility:hidden;overflow:hidden;width:0px;height:0px'>
-		<select id='extensions'></select>
-		</div>
-		<div id='adjustments' style='width:350'>
-		<table cellspacing='0' cellpadding='0'>
-			<tr valign="top"><td>
-				<table>
-				<tr><td>Extension:</td><td><input size='5' id='name' onkeypress="return OnlyNumbers(event)"></td></tr>
-				<tr><td>Name:</td><td><input size='20' id='fullname' onkeypress="return OnlyChars(event)"></td></tr>
-				<tr><td>Password:</td><td><input size='5' id='secret'></td></tr>
-				<tr><td>E-mail:</td><td><input size='20' id='email'></td></tr>
-				<tr><td>Caller ID:</td><td><input size='12' id='number' onkeypress="return OnlyNumbers(event)"></td></tr>
-				<tr><td>Analog Phone:</td><td><select size="1" id='zapchan' style='width:120px'></select></td></tr>
-				<tr><td>Number Plan:</td><td><select size='1' id='context' style='width:120px'></select></td></tr>
-				<tr><td colspan='2' align='center'><div style="height:15px" id='status'></div></td></tr>
-				<tr><td colspan='2' align='center'><input type='hidden' id='mailbox'></td></tr>
-				</table>
-			</td>
-			</tr>
-			<tr>
-			<td>
-				<img id="split" onClick="togglefeatures()" src="images/split-v.png">
-			</td></tr>
-			<tr><td>
-				<div style="background-image:url(images/slice-v.png)" id='features'>
-				<table align='center' width='80%'>
-				<tr><td>Voicemail:</td><td><input type='checkbox' id='hasvoicemail'></td></tr>
-				<tr><td>In Directory:</td><td><input type='checkbox' id='hasdirectory'></td></tr>
-				<tr><td>SIP:</td><td><input type='checkbox' id='hassip'></td></tr>
-				<tr><td>IAX:</td><td><input type='checkbox' id='hasiax'></td></tr>
-				<tr><td>CTI:</td><td><input type='checkbox' id='hasmanager'></td></tr>
-				<tr><td>Call&nbsp;Waiting:</td><td><input type='checkbox' id='callwaiting'></td></tr>
-				<tr><td>3-Way&nbsp;Calling:</td><td><input type='checkbox' id='threewaycalling'></td></tr>
-				</table>
-				</div>
-			</td></tr>
-			<tr><td>
-				<img onClick="togglefeatures()" src="images/adv-v.png">
-			</td></tr>
-			</tr>
-		</table>
-		</div>
-		</td></tr>				
-		<tr>
+		<td valign=top align="right" width=350>
+
+						<table cellpadding=0 align="center" width="289">
+						<tr><td width="60" align=right>Name:</td><td colspan=2  align=left><input id='comment'></td></tr>
+						<tr><td valign=top  align=right>Steps:</td>
+								<td  align=left><select id='steps' size=5></select></td>
+								<td  align=center width=55 valign="middle">
+										<input  style='width:45'  type="button" id="" value="Up"><BR><BR>
+										<input  style='width:45' type="button" id="" value="Down">
+								</td>
+						</tr>
+						<tr><td colspan=3 ><BR>
+								<div id="keypressoptions" style="height :330px;width=390px;">
+										<table cellpadding=3 cellspacing=0 width="100%">
+										<TR bgcolor='#B8B8B8'>
+												<TD width=35>Key</TD><TD>Action</TD>
+										</TR>
+
+										<TR bgcolor='#FFFFFF'>
+												<TD width=35 align=center><font style="font-size: 10pt">0</font></TD>
+												<TD><SCRIPT LANGUAGE="JavaScript">generate_fields('zero');</SCRIPT>
+												</TD>
+										</TR>
+										<TR bgcolor='#FFFFFF'>
+												<TD width=35 align=center><font style="font-size: 10pt">1</font></TD>
+												<TD><SCRIPT LANGUAGE="JavaScript">generate_fields('one');</SCRIPT></TD>
+
+										</TR>
+										<TR bgcolor='#FFFFFF'>
+												<TD width=35 align=center><font style="font-size: 10pt">2</font></TD>
+												<TD><SCRIPT LANGUAGE="JavaScript">generate_fields('two');</SCRIPT></TD>
+										</TR>
+										<TR bgcolor='#FFFFFF'>
+												<TD width=35 align=center><font style="font-size: 10pt">3</font></TD>
+												<TD><SCRIPT LANGUAGE="JavaScript">generate_fields('three');</SCRIPT></TD>
+										</TR>
+										<TR bgcolor='#FFFFFF'>
+												<TD width=35 align=center><font style="font-size: 10pt">4</font></TD>
+												<TD><SCRIPT LANGUAGE="JavaScript">generate_fields('four');</SCRIPT></TD>
+										</TR>
+										<TR bgcolor='#FFFFFF'>
+												<TD width=35 align=center><font style="font-size: 10pt">5</font></TD>
+												<TD><SCRIPT LANGUAGE="JavaScript">generate_fields('five');</SCRIPT></TD>										
+										</TR>
+										<TR bgcolor='#FFFFFF'>
+												<TD width=35 align=center><font style="font-size: 10pt">6</font></TD>
+												<TD><SCRIPT LANGUAGE="JavaScript">generate_fields('six');</SCRIPT></TD>										
+										</TR>
+										<TR bgcolor='#FFFFFF'>
+												<TD width=35 align=center><font style="font-size: 10pt">7</font></TD>
+												<TD><SCRIPT LANGUAGE="JavaScript">generate_fields('seven');</SCRIPT></TD>
+										</TR>
+										<TR bgcolor='#FFFFFF'>
+												<TD width=35 align=center><font style="font-size: 10pt">8</font></TD>
+												<TD><SCRIPT LANGUAGE="JavaScript">generate_fields('eight');</SCRIPT></TD>
+										</TR>
+										<TR bgcolor='#FFFFFF'>
+												<TD width=35 align=center><font style="font-size: 10pt">9</font></TD>
+												<TD><SCRIPT LANGUAGE="JavaScript">generate_fields('nine');</SCRIPT></TD>
+										</TR>
+										<TR bgcolor='#FFFFFF'>
+												<TD width=35 align=center><font style="font-size: 11pt">*</font></TD>
+												<TD><SCRIPT LANGUAGE="JavaScript">generate_fields('star');</SCRIPT></TD>
+										</TR>
+										<TR bgcolor='#FFFFFF'>
+												<TD width=35 align=center><font style="font-size: 10pt">#</font></TD>
+												<TD><SCRIPT LANGUAGE="JavaScript">generate_fields('pound');</SCRIPT></TD>
+										</TR>
+										</table>
+								
+								</div>
+								</td>
+						</tr>
+						<tr><td colspan=3 align="center">
+						<div style="height:15px" id='status'></div>
+								</td>
+						</tr>
+						</table>
+
+		</td>
+	</tr>				
+	<tr>
 		<td align='center'>
-			<table>
-			<tr align='center'><td>
 			<input style='width:80' type='button' id='new' value='New'>
-			</td><td>
+			&nbsp;
 			<input style='width:80' type='button' id='delete' value='Delete'>
-			</td></tr>
-			</table>
+			&nbsp;
 		</td>
-		<td colspan='1' align='right'>
-				<input style='width:80' type='button' id='save' value='Save'>
+		<td align='right'><input type="hidden" id="save">
+				<input style='width:80' type='button' id='Save_Vmenu' value='Save'>
 				&nbsp;
 				<input style='width:80' type='button' id='cancel' value='Cancel'>
 				&nbsp;
 		</td>
-	</tr><tr>
 	</tr>
 </table>
 </div>
