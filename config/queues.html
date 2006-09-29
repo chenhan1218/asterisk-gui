@@ -317,8 +317,7 @@ function save_queue(){
 				}
 		}else{
 				if( $('name').value != $('queues').value ){
-				// always do a rename cat instead of checking whether or not to do a rename cat
-				uri += build_action('renamecat', p, $('queues').value ,"", $('name').value ); p = p+1;
+					uri += build_action('renamecat', p, $('queues').value ,"", $('name').value ); p = p+1;
 					rename_extension($('queues').value,$('name').value ); // rename in extensions.conf
 				}
 				// delete existing agents

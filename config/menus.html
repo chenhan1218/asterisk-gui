@@ -32,74 +32,371 @@
 	var fieldnames = new Array('delete', 'status', 'new','save','cancel');
 	var voicemenusdata = new Object;
 	var current_context;
-	var keys = new Array('zero','one','two','three','four','five','six','seven','eight','nine','star','pound');
+	var keys = new Array('0','1','2','3','4','5','6','7','8','9','*','#','t','i');
 	var extensions_array = new Array('1001','1002','6010','6275','6233','6786','7002');
-	var menus_array = new Array('Support','Sales','Some');
+	var array_menucomments = new Array('Menu','Sales');
+	var array_menunames = new Array('voicemenu-custom-4','voicemenu-custom-2');
+	var answer_call_string = "s,1,Answer";
+
+
+function format_step(this_step){
+	var temp = this_step.split(',');
+
+	if( temp[2].match("Answer") )
+		return "Answer the Call";
+	if( temp[2].match("Background") ){
+		// Background('') - whatever in the brackets
+		temp[2] = temp[2].replace(/Background\(/, "");
+		temp[2] = temp[2].replace(/\)/, "");
+		return "Play '" + temp[2] + "' & Listen for KeyPress";
+	}
+	if( temp[2].match("SetMusicOnHold") ){
+		// Background('') - whatever in the brackets
+		temp[2] = temp[2].replace(/SetMusicOnHold\(/, "");
+		temp[2] = temp[2].replace(/\)/, "");
+		return "Music on Hold  -  '" + temp[2] + "'";
+	}
+	if( temp[2].match("DigitTimeout") ){
+		temp[2] = temp[2].replace(/DigitTimeout\(/, "");
+		temp[2] = temp[2].replace(/\)/, "");
+		return "Wait '"+ temp[2] +"' sec for KeyPress";
+	}
+	if( temp[2].match("Playback") ){
+		temp[2] = temp[2].replace(/Playback\(/, "");
+		temp[2] = temp[2].replace(/\)/, "");
+		return "Play '" + temp[2] + "' & Donot Listen for KeyPress";
+	}
+	if( temp[2].match("Wait") ){
+		temp[2] = temp[2].replace(/Wait\(/, "");
+		temp[2] = temp[2].replace(/\)/, "");
+		return "Wait '"+ temp[2] + "' sec";
+	}
+	if( temp[2].match("Hangup") )
+		return "Hangup";
+
+ return this_step;
+}
 
 function load_extensions(my_field_options){
 		$(my_field_options).options.length=0;
-		
 		for(x=0; x< extensions_array.length; x++){
 				var newoption = document.createElement("option"); 
 				newoption.text = extensions_array[x] ; 
 				newoption.value = extensions_array[x] ;
 				$(my_field_options).options.add(newoption);
 		}
-
 }
-
 
 function load_menus(my_field_options){
 		$(my_field_options).options.length=0;
-		
-		for(x=0; x< menus_array.length; x++){
+		for(x=0; x< array_menucomments.length; x++){
 				var newoption = document.createElement("option"); 
-				newoption.text = menus_array[x] ; 
-				newoption.value = menus_array[x] ;
+				newoption.text = array_menucomments[x] ; 
+				newoption.value = array_menunames[x] ;
 				$(my_field_options).options.add(newoption);
 		}
 }
 
+function select_menu (my_field_options, menustring){
+		var tmp = menustring.split('(');
+		var tmp1 = tmp[1].split('|');
+		for(y=0; y < $(my_field_options).options.length; y++ ){
+			if( $(my_field_options).options[y].value == tmp1[0]){
+				$(my_field_options).options[y].selected = true;
+				return true;
+			}
+		}
+		// if not in the current list of voicemenus/extensions then add it to the menu
+		var newoption = document.createElement("option"); 
+		newoption.text = tmp1[0] ; 
+		newoption.value = tmp1[0] ;
+		$(my_field_options).options.add(newoption);
+		$(my_field_options).options[y].selected = true;
+}
 
-function  key_action(a, my_field_text, my_field_options){
+
+function  key_action(a, field){
+	my_field_text = 'keypress_'+ field + '_text' ;
+	my_field_menus = 'keypress_'+ field + '_menus' ;
+	my_field_exts = 'keypress_'+ field + '_exts' ;
+
+	$('savevmenu').disabled = false;
+	$('cancel').disabled = false;
 	if(a=='gotomenu'){
 		//show menus dropdown
+		$(my_field_menus).style.display = "";
 		$(my_field_text).style.display = "none";
-		$(my_field_options).style.display = "";
-		// load menus
-		load_menus(my_field_options);
-
-
+		$(my_field_exts).style.display = "none";
 	}
-
 	if(a=='gotoextension'){
 		//show extensions dropdown
+		$(my_field_exts).style.display = "";
 		$(my_field_text).style.display = "none";
-		$(my_field_options).style.display = "";
-		// load extensions
-		load_extensions(my_field_options);
-
+		$(my_field_menus).style.display = "none";
 	}
-
 	if(a=='Custom'){
 		//show a  text box
-		$(my_field_options).style.display = "none";
+		$(my_field_exts).style.display = "none";
+		$(my_field_menus).style.display = "none";
 		$(my_field_text).style.display = "";
-		$(my_field_text).type="text";
-		$(my_field_text).size=12;
 		$(my_field_text).focus();
 	}
-
-	if(a=='disabled'){
+	if(a=='disabled' || a=='Hangup' || a=='PlayInvalid'){
 		//show nothing
 		$(my_field_text).style.display = "none";
-		$(my_field_options).style.display = "none";
+		$(my_field_exts).style.display = "none";
+		$(my_field_menus).style.display = "none";
 	}
+}
 
+
+function add_newstep(){
+	// prepare a request to add the new step to the voicemenu
+	// make a request to append
+	var opt = {
+			method: 'get',
+			asynchronous: true,
+			onSuccess: function() { 
+				// if request successfull then add this to the steps select box
+				var newoption = document.createElement("option"); 
+				newoption.text = format_step($('newstep').value); 
+				newoption.value = $('newstep').value ;
+				$('steps').options.add ( newoption );
+				// and also add the information to the voicemenus data
+				exten_fields = $('newstep').value.split (',');
+				voicemenusdata[$('vmenus').value].extensions[exten_fields[0]][voicemenusdata[$('vmenus').value].extensions[exten_fields[0]].length] = $('newstep').value;
+				// empty this textbox & disable this button, select the newly added item to the steps options box
+				$('newstep').value = "";
+				$('addstep').disabled = true;
+				$('steps').selectedIndex = $('steps').length - 1 ;
+				$('status').innerHTML = "<i>New step added !</i>";
+			},
+			onFailure: function(t) {
+				alert("Config Error: " + t.status + ": " + t.statusText);
+			},
+	};
+	uri = "";
+	uri += build_action('append', 0, $('vmenus').value,"exten", $('newstep').value); 
+	opt.parameters="action=updateconfig&reload=yes&srcfilename=" + encodeURIComponent("extensions.conf") + "&dstfilename=" + encodeURIComponent("extensions.conf") + uri;
+	tmp = new Ajax.Request('../../rawman', opt);
 
 }
 
 
+
+function next_freevmenu(){	 // return the next smallest available voicemenu name
+	var current_names = new Array;
+	for(var i=0; i < $('vmenus').length; i++ ){
+		if ( $('vmenus').options[i].value.match('voicemenu-custom-') )
+			current_names[current_names.length] = $('vmenus').options[i].value.replace( /voicemenu-custom-/ ,"");
+	}
+	if ( current_names.length ){
+		for(var i=0; i<current_names.length-1; i++){
+			if( current_names[i+1] -  current_names[i] > 1 )
+				break;
+		}
+		var temp =  parseInt(current_names[i]) +1;
+		return 'voicemenu-custom-' + temp ;
+	}
+	return 'voicemenu-custom-1' ;
+}
+
+
+
+function save_vmenu(){
+	var opt = {
+			method: 'get',
+			asynchronous: true,
+			onSuccess: function() { 
+					$('status').innerHTML = "<i>Updated.</i>";
+					$('savevmenu').disabled = true;
+					$('save').disabled = true;
+					$('cancel').disabled = true;
+					
+					if( $('vmenus').options[$('vmenus').selectedIndex].innerHTML=='New Entry' ){ // (if new Voicemenu 
+							voicemenusdata[current_vmenu] = new Object();
+							voicemenusdata[current_vmenu].comment =  $('comment').value;
+							voicemenusdata[current_vmenu].extensions = new Object();
+							// add the "s,1,Answer" data to voicemenus data
+							voicemenusdata[current_vmenu].extensions['s'] = new Array();
+							voicemenusdata[current_vmenu].extensions['s'][0] = answer_call_string;
+							for (var k=0; k< keys.length; k++){
+								if( buildstring[keys[k]] ){
+									voicemenusdata[current_vmenu].extensions[keys[k]] = new Array();
+									voicemenusdata[current_vmenu].extensions[keys[k]][0] = buildstring[keys[k]] ;
+								}
+							}
+							// update vmenus
+							$('vmenus').options[$('vmenus').selectedIndex].text = "VoiceMenu - " + $('comment').value;
+							$('vmenus').options[$('vmenus').selectedIndex].value = current_vmenu;
+
+					}else{ // if editing existing keypress options
+							for (var k=0; k< keys.length; k++){
+									if( buildstring[keys[k]] ){
+										voicemenusdata[current_vmenu].extensions[keys[k]] = new Array();
+										voicemenusdata[current_vmenu].extensions[keys[k]][0] = buildstring[keys[k]] ;
+									}else{
+										if( voicemenusdata[current_vmenu].extensions[keys[k]] ){
+											voicemenusdata[current_vmenu].extensions[keys[k]] = [];
+										}
+									}
+							}							
+					}
+
+			},
+			onFailure: function(t) {
+				alert("Config Error: " + t.status + ": " + t.statusText);
+			},
+	};
+	var uri = "" ;
+	var p =0 ;
+	var buildstring = new Object ;
+
+	if( $('vmenus').options[$('vmenus').selectedIndex].innerHTML=='New Entry' ){
+			var current_vmenu = next_freevmenu();
+			uri += build_action('newcat', p, current_vmenu,"", ""); p = p+1;
+			uri += build_action('append', p, current_vmenu,"comment", $('comment').value); p = p+1;
+			uri += build_action('append', p, current_vmenu,"exten", answer_call_string); p = p+1;
+	}else{
+			// Updating existing Voicemenu
+			var current_vmenu = $('vmenus').value;
+			if(  voicemenusdata[current_vmenu].comment != $('comment').value ){
+					uri += build_action('update', p, current_vmenu ,"comment", $('comment').value ); p = p+1;
+			}
+			for (var k=0; k< keys.length; k++){
+				if(voicemenusdata[current_vmenu].extensions[keys[k]]){
+					uri += build_action('delete', p, current_vmenu,"exten", "", voicemenusdata[current_vmenu].extensions[keys[k]][0] ); p = p+1;
+				}
+			}
+	}
+
+	// Build exten strings for enabled keys and append/update the 
+	for (var k=0; k< keys.length; k++){
+			var current_key_action='keypress_'+ keys[k] + '_action';
+			var current_key_text='keypress_'+ keys[k] + '_text';
+			var current_key_exts='keypress_'+ keys[k] + '_exts';
+			var current_key_menus='keypress_'+ keys[k] + '_menus';
+		
+			if( $(current_key_action).value == "disabled")
+				continue;
+			else if( $(current_key_action).value == "gotomenu" )
+					buildstring[keys[k]] = keys[k] + ",1,Goto("+ $(current_key_menus).value + "|s|1)" ;					
+			else if( $(current_key_action).value == "gotoextension" )
+					buildstring[keys[k]] = keys[k] + ",1,Goto("+ $(current_key_exts).value + "|1)" ;					
+			else if( $(current_key_action).value == "Custom" ) 
+					buildstring[keys[k]] = keys[k] + ",1,"+ $(current_key_text).value ;
+			else if( $(current_key_action).value == "Hangup" )
+					buildstring[keys[k]] = keys[k] + ",1,"+ "Hangup" ;					
+			else if( $(current_key_action).value == "PlayInvalid" ) 
+					buildstring[keys[k]] = keys[k] + ",1,"+ "Playback(invalid)" ;
+						
+			uri += build_action('append', p, current_vmenu,"exten", buildstring[keys[k]]); p = p+1;
+	}
+
+	opt.parameters="action=updateconfig&reload=yes&srcfilename=" + encodeURIComponent("extensions.conf") + "&dstfilename=" + encodeURIComponent("extensions.conf") + uri;
+	// send the request
+	tmp = new Ajax.Request('../../rawman', opt);
+}
+
+
+function  enable_savecancel(){
+		$('savevmenu').disabled = false;
+		$('cancel').disabled = false;
+}
+
+
+function generate_fields(key){
+			document.write('<select  style="font-family: Verdana, Arial, Helvetica, Sans-Serif;font-size: 11px;"   id=\'keypress_'+ key + '_action\' onchange="key_action(this.value, \'' + key + '\')">\n');
+			document.write('<option value="disabled">Disabled</option>\n');
+			document.write('<option value="gotomenu">Goto Menu</option>\n');
+			document.write('<option value="gotoextension">Goto Extension</option>\n');
+			document.write('<option value="Custom">Custom</option>\n');
+			document.write('<option value="Hangup">Hangup</option>\n');
+			document.write('<option value="PlayInvalid">Play Invalid</option>\n');
+			document.write('</select>&nbsp;<input type="text"  size=16 style="display:none;font-family: Verdana, Arial, Helvetica, Sans-Serif;font-size: 11px;" id="keypress_' + key+ '_text" onchange="enable_savecancel()">\n');
+			document.write('<select  style="display:none; font-family: Verdana, Arial, Helvetica, Sans-Serif;font-size: 11px;"  id="keypress_'+ key + '_menus" onchange="enable_savecancel()"></select>\n');
+			document.write('<select  style="display:none; font-family: Verdana, Arial, Helvetica, Sans-Serif;font-size: 11px;"  id="keypress_'+ key + '_exts" onchange="enable_savecancel()"></select>\n');
+}
+
+
+menuscallbacks.postselect = function() {
+	// show al lthe //s, lines in the select box - 
+	if($('vmenus').selectedIndex	==-1){ return true;}
+	current_context = $('vmenus').value;
+	var x, y;
+
+	//$('keypressoptions').innerHTML = "";
+	$('steps').options.length =0;
+	$('comment').value = voicemenusdata[current_context].comment;
+
+	if(voicemenusdata[current_context].extensions['s']){
+		for (x=0;x<voicemenusdata[current_context].extensions['s'].length ; x++ ){
+			var newoption = document.createElement("option");
+			newoption.text = format_step(voicemenusdata[current_context].extensions['s'][x]);
+			newoption.value = voicemenusdata[current_context].extensions['s'][x];
+			$('steps').options.add ( newoption );
+		}
+	}
+
+	// Sort steps according to priority
+	
+
+	$('steps').disabled = false;
+	$('comment').disabled = false;
+	$('newstep').disabled = false;
+	$('addstep').disabled = false;
+	$('allowexten').disabled = false;
+	$('keypressoptions').style.display = "";
+	//$('steps').options[0].disabled = true; 
+
+	for (y=0; y<keys.length ; y++ ){
+			current_key_action='keypress_'+ keys[y] + '_action';
+			current_key_text='keypress_'+ keys[y] + '_text';
+			current_key_exts='keypress_'+ keys[y] + '_exts';
+			current_key_menus='keypress_'+ keys[y] + '_menus';
+
+			if(voicemenusdata[current_context].extensions[keys[y]]){
+					// Load the appropriate Key menu according to the voicemenusdata[current_context].extensions[y][x]
+					// actually we are assuming that there is only voicemenusdata[current_context].extensions[y][0]
+					tmp = voicemenusdata[current_context].extensions[keys[y]][0].split(',');
+
+					if( tmp[2].match("Goto") && tmp[2].match("voicemenu-") ){ //  if "is a voicemenu"
+							$(current_key_action).options[1].selected = true;
+							$(current_key_menus).style.display = "";
+							$(current_key_text).style.display = "none";
+							$(current_key_exts).style.display = "none";
+							select_menu (current_key_menus, tmp[2]);
+					}else  if( tmp[2].match("Goto") && !tmp[2].match("voicemenu-") ){ // //  if "goto an extension " (no 'voicemenu-')
+							$(current_key_action).options[2].selected = true;
+							$(current_key_exts).style.display = "";
+							$(current_key_text).style.display = "none";
+							$(current_key_menus).style.display = "none";
+							select_menu(current_key_exts, tmp[2]); // select_menu common for exts and menus
+					}else if(tmp[2].match("Hangup") ){ // if HangUp
+							$(current_key_action).options[4].selected = true;
+							$(current_key_text).style.display = "none";
+							$(current_key_menus).style.display = "none";
+							$(current_key_exts).style.display = "none";							
+					}else if( tmp[2].match('Playback') &&  tmp[2].match( "(invalid)" ) ){
+							$(current_key_action).options[5].selected = true;
+							$(current_key_text).style.display = "none";
+							$(current_key_menus).style.display = "none";
+							$(current_key_exts).style.display = "none";												
+					}else{ // if custom (no 'goto')
+							$(current_key_action).options[3].selected = true;
+							$(current_key_text).style.display = "";
+							$(current_key_text).value = tmp[2];
+							$(current_key_exts).style.display = "none";
+							$(current_key_menus).style.display = "none";
+					}
+			}else{	// Key_action is disabled => hide the text & options (which already are)
+							$(current_key_action).options[0].selected = true;
+							$(current_key_text).style.display = "none";
+							$(current_key_menus).style.display = "none";
+							$(current_key_exts).style.display = "none";
+			}
+	}
+}
 
 
 menuscallbacks.format = function(t, x) {
@@ -120,7 +417,6 @@ menuscallbacks.format = function(t, x) {
 				}
 				if (t.names[x]=='exten'){
 					exten_fields = t.fields[x].split (',');
-					
 					if(!voicemenusdata[current_context].extensions[exten_fields[0]]){
 						voicemenusdata[current_context].extensions[exten_fields[0]] = new Array();
 					}
@@ -134,47 +430,28 @@ menuscallbacks.format = function(t, x) {
 
 
 
-menuscallbacks.postselect = function() {
-	// show al lthe //s, lines in the select box - 
-	if($('vmenus').selectedIndex	==-1){ return true;}
-	current_context = $('vmenus').value;
-	var x, y;
-
-	//$('keypressoptions').innerHTML = "";
-	$('steps').options.length =0;
-	$('comment').value = voicemenusdata[current_context].comment;
-
-	for (x=0;x<voicemenusdata[current_context].extensions['s'].length ; x++ ){
-		var newoption = document.createElement("option");
-		newoption.text = voicemenusdata[current_context].extensions['s'][x];
-		newoption.value = voicemenusdata[current_context].extensions['s'][x];
-		$('steps').options.add ( newoption );
-	}
-
-	for (y=0; y<10 ; y++ ){
-			if(voicemenusdata[current_context].extensions[y]){
-					// 					
-	
-					/*
-					for (x=0;x<voicemenusdata[current_context].extensions[y].length ; x++ ){
-						tmp = voicemenusdata[current_context].extensions[y][x];
-						$('keypressoptions').innerHTML += "<TR><TD width=50 align=center>" +y+ "</TD><TD>"+  tmp + "</TD></TR>";
-					}
-					*/
-			}else{
-					// Key_action is disabled => hide the text & options (which already are)
-			}
-	}
-
-
-
-}
-
-
 menuscallbacks.loaded = function(){
 			for (x=0;x<$('vmenus').options.length ; x++ ){
-				$('vmenus').options[x].text = "VoiceMenu - " + voicemenusdata[$('vmenus').options[x].value].comment;
+					$('vmenus').options[x].text = "VoiceMenu - " + voicemenusdata[$('vmenus').options[x].value].comment;
 			}
+			// Load the menus and extensions into corresponding fields
+			for (y=0;y<keys.length; y++){
+				current_key_exts='keypress_'+ keys[y] + '_exts';
+				current_key_menus='keypress_'+ keys[y] + '_menus';
+				load_extensions(current_key_exts);
+				load_menus(current_key_menus);
+			}
+
+			// disable all fields on page load
+			$('comment').disabled = true;
+			$('steps').disabled = true;
+			$('stepUp').disabled = true;
+			$('stepDown').disabled = true;
+			$('newstep').disabled = true;
+			$('addstep').disabled = true;
+			$('allowexten').disabled = true;
+			$('keypressoptions').style.display = "none";
+			$('savevmenu').disabled = true;
 }
 
 
@@ -185,30 +462,56 @@ menuscallbacks.eachline = true;
 
 menuscallbacks.includecats = true;
 
+menuscallbacks.cancelnewcategory =function(){
+	$('comment').disabled = true;
+	$('keypressoptions').style.display = "none";
+}
 
-function localajaxinit() {
-		
-		for (x =0 ; x<fieldnames.length; x++){
-			widgets[fieldnames[x]] = $(fieldnames[x]);
-			widgets[fieldnames[x]].disabled = true;
+menuscallbacks.cancelchanges =function(){
+	$('savevmenu').disabled = true;
+}
+
+menuscallbacks.newcategory = function(t) {
+	// 1. Reset all Keyoptions
+		// Load the menus and extensions into corresponding fields
+		for (y=0;y<keys.length; y++){
+			current_key_exts='keypress_'+ keys[y] + '_exts';
+			current_key_menus='keypress_'+ keys[y] + '_menus';
+			current_key_text = 'keypress_'+ keys[y] + '_text' ;
+			load_extensions(current_key_exts);
+			load_menus(current_key_menus);
+			$(current_key_exts).style.display = "none";
+			$(current_key_menus).style.display = "none";
+			$(current_key_text).style.display = "none";
 		}
-
-		parent.loadscreen(this);
-
-		parent.astmanEngine.config2list("extensions.conf", $('vmenus'), widgets, menuscallbacks);
-
+	// 2. Reset Steps - only 1 step -> Answer
+		$('steps').options.length =0;
+		var newoption = document.createElement("option");
+		newoption.text = format_step(answer_call_string);
+		newoption.value = answer_call_string;
+		$('steps').options.add ( newoption );
+	// 3. Disable Steps - Add Step , Up , Down Arrows
+		$('stepUp').disabled = true;
+		$('stepDown').disabled = true;
+		$('allowexten').checked = false;
+		$('newstep').disabled = true;
+		$('addstep').disabled = true;
+		$('steps').disabled = true;
+	//  4. Reset Comment
+		$('comment').value = "";
+		$('comment').focus();
 }
 
 
 
-function generate_fields(key){
-			document.write('<select  style="font-family: Verdana, Arial, Helvetica, Sans-Serif;font-size: 11px;"   id=\'keypress_'+ key + '_action\' onchange="key_action(this.value , keypress_' + key + '_text, keypress_' + key + '_options )">\n');
-			document.write('<option value="disabled">Disabled</option>\n');
-			document.write('<option value="gotomenu">Goto Menu</option>\n');
-			document.write('<option value="gotoextension">Goto Extension</option>\n');
-			document.write('<option value="Custom">Custom</option>\n');
-			document.write('</select>&nbsp;<input type="text"  style="display:none" id="keypress_' + key+ '_text">\n');
-			document.write('<select  style="display:none; font-family: Verdana, Arial, Helvetica, Sans-Serif;font-size: 11px;"  id="keypress_'+ key + '_options"></select>\n');
+
+function localajaxinit() {
+		for (x =0 ; x<fieldnames.length; x++){
+			widgets[fieldnames[x]] = $(fieldnames[x]);
+			widgets[fieldnames[x]].disabled = true;
+		}
+		parent.loadscreen(this);
+		parent.astmanEngine.config2list("extensions.conf", $('vmenus'), widgets, menuscallbacks);
 }
 
 </script>
@@ -232,80 +535,58 @@ function generate_fields(key){
 			<option>Loading...</option>
 			</select>
 		</td>
-		<td valign=top align="right" width=350>
-
-						<table cellpadding=0 align="center" width="289">
-						<tr><td width="60" align=right>Name:</td><td colspan=2  align=left><input id='comment'></td></tr>
-						<tr><td valign=top  align=right>Steps:</td>
-								<td  align=left><select id='steps' size=5></select></td>
-								<td  align=center width=55 valign="middle">
-										<input  style='width:45'  type="button" id="" value="Up"><BR><BR>
-										<input  style='width:45' type="button" id="" value="Down">
+		<td valign=top align="right" width=390>
+						<table align="center" width="390">
+						<tr><td width="60" align=left>Name:</td><td align=left><input id='comment'  onKeyUp="enable_savecancel()"></td></tr>
+						<tr><td colspan=2>Steps:</td></tr>
+						<tr><td align=center colspan=2> 
+										<TABLE>
+										<tr><td ><select id='steps' size=5  style="width:310px"></select></td>
+												<td  align=center width=55 valign="middle">
+														<input  style='width:45'  type="button" id="stepUp" value="Up"><BR><BR>
+														<input  style='width:45' type="button" id="stepDown" value="Down">
+												</td>
+										</tr>
+										</TABLE>
 								</td>
 						</tr>
-						<tr><td colspan=3 ><BR>
-								<div id="keypressoptions" style="height :330px;width=390px;">
+						<tr><td colspan=2>Add a new Step:</td></tr>
+						<tr><td colspan=2>&nbsp;&nbsp;<input type="text" size=41 id='newstep'>
+								&nbsp;<input type=button style='width:45' id='addstep' onclick="add_newstep()"  value="Add">
+								</td>
+						</tr>
+						
+						<tr><td colspan=2>&nbsp;<input type=checkbox id=allowexten> Allow dialing Extensions ?</td></tr>
+
+						<tr><td colspan=2 height=15></td></tr>
+						<tr><td colspan=2>'Keypress' Events</td></tr>
+						<tr><td colspan=2>
+										<div  style="width=390px;">
 										<table cellpadding=3 cellspacing=0 width="100%">
 										<TR bgcolor='#B8B8B8'>
 												<TD width=35>Key</TD><TD>Action</TD>
 										</TR>
-
-										<TR bgcolor='#FFFFFF'>
-												<TD width=35 align=center><font style="font-size: 10pt">0</font></TD>
-												<TD><SCRIPT LANGUAGE="JavaScript">generate_fields('zero');</SCRIPT>
-												</TD>
-										</TR>
-										<TR bgcolor='#FFFFFF'>
-												<TD width=35 align=center><font style="font-size: 10pt">1</font></TD>
-												<TD><SCRIPT LANGUAGE="JavaScript">generate_fields('one');</SCRIPT></TD>
-
-										</TR>
-										<TR bgcolor='#FFFFFF'>
-												<TD width=35 align=center><font style="font-size: 10pt">2</font></TD>
-												<TD><SCRIPT LANGUAGE="JavaScript">generate_fields('two');</SCRIPT></TD>
-										</TR>
-										<TR bgcolor='#FFFFFF'>
-												<TD width=35 align=center><font style="font-size: 10pt">3</font></TD>
-												<TD><SCRIPT LANGUAGE="JavaScript">generate_fields('three');</SCRIPT></TD>
-										</TR>
-										<TR bgcolor='#FFFFFF'>
-												<TD width=35 align=center><font style="font-size: 10pt">4</font></TD>
-												<TD><SCRIPT LANGUAGE="JavaScript">generate_fields('four');</SCRIPT></TD>
-										</TR>
-										<TR bgcolor='#FFFFFF'>
-												<TD width=35 align=center><font style="font-size: 10pt">5</font></TD>
-												<TD><SCRIPT LANGUAGE="JavaScript">generate_fields('five');</SCRIPT></TD>										
-										</TR>
-										<TR bgcolor='#FFFFFF'>
-												<TD width=35 align=center><font style="font-size: 10pt">6</font></TD>
-												<TD><SCRIPT LANGUAGE="JavaScript">generate_fields('six');</SCRIPT></TD>										
-										</TR>
-										<TR bgcolor='#FFFFFF'>
-												<TD width=35 align=center><font style="font-size: 10pt">7</font></TD>
-												<TD><SCRIPT LANGUAGE="JavaScript">generate_fields('seven');</SCRIPT></TD>
-										</TR>
-										<TR bgcolor='#FFFFFF'>
-												<TD width=35 align=center><font style="font-size: 10pt">8</font></TD>
-												<TD><SCRIPT LANGUAGE="JavaScript">generate_fields('eight');</SCRIPT></TD>
-										</TR>
-										<TR bgcolor='#FFFFFF'>
-												<TD width=35 align=center><font style="font-size: 10pt">9</font></TD>
-												<TD><SCRIPT LANGUAGE="JavaScript">generate_fields('nine');</SCRIPT></TD>
-										</TR>
-										<TR bgcolor='#FFFFFF'>
-												<TD width=35 align=center><font style="font-size: 11pt">*</font></TD>
-												<TD><SCRIPT LANGUAGE="JavaScript">generate_fields('star');</SCRIPT></TD>
-										</TR>
-										<TR bgcolor='#FFFFFF'>
-												<TD width=35 align=center><font style="font-size: 10pt">#</font></TD>
-												<TD><SCRIPT LANGUAGE="JavaScript">generate_fields('pound');</SCRIPT></TD>
-										</TR>
+										</table>
+										</div>
+										<div id="keypressoptions" style="height:180px;width=390px; overflow :auto;">
+										<table cellpadding=3 cellspacing=0 width="100%">
+										<SCRIPT LANGUAGE="JavaScript">
+										<!--
+										for (var k=0; k< keys.length; k++){
+											document.write("<TR bgcolor='#FFFFFF'>\n");
+											document.write("<TD width=35 align=center><font style=\"font-size: 10pt\">"+keys[k]+"</font></TD>\n");
+											document.write("<TD>");
+											generate_fields( keys[k] ) ;
+											document.write("\n </TD></TR>\n\n");											
+										}
+										//-->
+										</SCRIPT>
 										</table>
 								
 								</div>
 								</td>
 						</tr>
-						<tr><td colspan=3 align="center">
+						<tr><td colspan=2 align="center">
 						<div style="height:15px" id='status'></div>
 								</td>
 						</tr>
@@ -321,7 +602,7 @@ function generate_fields(key){
 			&nbsp;
 		</td>
 		<td align='right'><input type="hidden" id="save">
-				<input style='width:80' type='button' id='Save_Vmenu' value='Save'>
+				<input style='width:80' type='button' id='savevmenu' onClick="save_vmenu()" value='Save'>
 				&nbsp;
 				<input style='width:80' type='button' id='cancel' value='Cancel'>
 				&nbsp;

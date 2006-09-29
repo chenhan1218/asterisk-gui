@@ -238,11 +238,17 @@ function cancel_item(box) {
 		}
 	} else {
 		if (box.options[box.selectedIndex].value == "") {
-			if (select_item(box,"Discard new entry?") && box.widgets['status'])
-				box.widgets['status'].innerHTML = "<i>New entry cancelled!</i>";
+			if (select_item(box,"Discard new entry?") && box.widgets['status']){
+					box.widgets['status'].innerHTML = "<i>New entry cancelled!</i>";
+					if (box.callbacks.cancelnewcategory) 
+							box.callbacks.cancelnewcategory();
+			}
 		} else {
-			if (select_item(box) && box.widgets['status'])
+			if (select_item(box) && box.widgets['status']){
 				box.widgets['status'].innerHTML = "<i>Changes cancelled!</i>";
+				if (box.callbacks.cancelchanges) 
+							box.callbacks.cancelchanges();
+			}
 		}
 	}
 }
