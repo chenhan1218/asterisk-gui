@@ -61,6 +61,11 @@ function format_step(this_step){
 		temp[2] = temp[2].replace(/\)/, "");
 		return "Wait '"+ temp[2] +"' sec for KeyPress";
 	}
+	if( temp[2].match("ResponseTimeout") ){
+		temp[2] = temp[2].replace(/ResponseTimeout\(/, "");
+		temp[2] = temp[2].replace(/\)/, "");
+		return "Response Timeout to '" + temp[2] + "' sec";
+	}
 	if( temp[2].match("Playback") ){
 		temp[2] = temp[2].replace(/Playback\(/, "");
 		temp[2] = temp[2].replace(/\)/, "");
@@ -149,8 +154,24 @@ function  key_action(a, field){
 	}
 }
 
+function sortNumber(a,b){
+	return a - b ;
+}
 
 function add_newstep(){
+
+	if( !$('newstep_action').value ){
+		alert("Please select an action for this step");
+		$('newstep_action').focus();
+		return;
+	}
+
+	if( $('newstep_action').value != "Answer" &&   $('newstep_action').value != "Hangup" && !$('newstep_var').value ){
+		alert("Please enter a value for '" + $('newstep_action').value +"'");
+		$('newstep_var').focus();
+		return;
+	}
+
 	// prepare a request to add the new step to the voicemenu
 	// make a request to append
 	var opt = {
@@ -159,15 +180,19 @@ function add_newstep(){
 			onSuccess: function() { 
 				// if request successfull then add this to the steps select box
 				var newoption = document.createElement("option"); 
-				newoption.text = format_step($('newstep').value); 
-				newoption.value = $('newstep').value ;
+				newoption.text = format_step(action_string ); 
+				newoption.value = action_string ;
 				$('steps').options.add ( newoption );
 				// and also add the information to the voicemenus data
-				exten_fields = $('newstep').value.split (',');
-				voicemenusdata[$('vmenus').value].extensions[exten_fields[0]][voicemenusdata[$('vmenus').value].extensions[exten_fields[0]].length] = $('newstep').value;
+				if(voicemenusdata[$('vmenus').value].extensions['s']){
+					voicemenusdata[$('vmenus').value].extensions['s'][voicemenusdata[$('vmenus').value].extensions['s'].length] = action_string;
+				}else{
+					voicemenusdata[$('vmenus').value].extensions['s'] = new Array;
+					voicemenusdata[$('vmenus').value].extensions['s'][0] = action_string;
+				}
 				// empty this textbox & disable this button, select the newly added item to the steps options box
-				$('newstep').value = "";
-				$('addstep').disabled = true;
+				$('newstep_action').selectedIndex = 0;
+				$('newstep_var').value= "";
 				$('steps').selectedIndex = $('steps').length - 1 ;
 				$('status').innerHTML = "<i>New step added !</i>";
 			},
@@ -175,8 +200,41 @@ function add_newstep(){
 				alert("Config Error: " + t.status + ": " + t.statusText);
 			},
 	};
-	uri = "";
-	uri += build_action('append', 0, $('vmenus').value,"exten", $('newstep').value); 
+	var uri = "";
+	var action_string = "";
+	var priorities = new Array;
+
+	// algorithm 4 calculate new priority
+	if(voicemenusdata[$('vmenus').value].extensions['s']){
+		for( var p=0; p < voicemenusdata[$('vmenus').value].extensions['s'].length; p ++){
+			var temp  = voicemenusdata[$('vmenus').value].extensions['s'][p].split(',');			
+			priorities[priorities.length] = temp[1] ;
+		}
+		priorities = priorities.sort(sortNumber);
+		newpriority = parseInt(priorities[priorities.length - 1]) + 1;
+	}else{
+		newpriority = 1;
+	}
+
+	if( $('newstep_action').value == 'Answer' ){
+		action_string = "s,"+ newpriority+ ",Answer";
+	}else if ( $('newstep_action').value == 'Background'  ){
+		action_string = "s,"+ newpriority+ ",Background(" + $('newstep_var').value + ")";
+	}else if ( $('newstep_action').value == 'SetMusicOnHold'  ){
+		action_string = "s,"+ newpriority+ ",SetMusicOnHold(" + $('newstep_var').value + ")";
+	}else if ( $('newstep_action').value == 'DigitTimeout'  ){
+		action_string = "s,"+ newpriority+ ",DigitTimeout(" + $('newstep_var').value + ")";
+	}else if ( $('newstep_action').value == 'ResponseTimeout'  ){
+		action_string = "s,"+ newpriority+ ",ResponseTimeout(" + $('newstep_var').value + ")";
+	}else if ( $('newstep_action').value == 'Playback'  ){
+		action_string = "s,"+ newpriority+ ",Playback(" + $('newstep_var').value + ")";
+	}else if ( $('newstep_action').value == 'Wait'  ){
+		action_string = "s,"+ newpriority+ ",Wait(" + $('newstep_var').value + ")";
+	}else if ( $('newstep_action').value == 'Hangup'  ){
+		action_string = "s,"+ newpriority+ ",Hangup";
+	}
+
+	uri += build_action('append', 0, $('vmenus').value,"exten", action_string ); 
 	opt.parameters="action=updateconfig&reload=yes&srcfilename=" + encodeURIComponent("extensions.conf") + "&dstfilename=" + encodeURIComponent("extensions.conf") + uri;
 	tmp = new Ajax.Request('../../rawman', opt);
 
@@ -343,7 +401,8 @@ menuscallbacks.postselect = function() {
 
 	$('steps').disabled = false;
 	$('comment').disabled = false;
-	$('newstep').disabled = false;
+	$('newstep_action').disabled = false;
+	$('newstep_var').disabled = false;
 	$('addstep').disabled = false;
 	$('allowexten').disabled = false;
 	$('keypressoptions').style.display = "";
@@ -447,7 +506,8 @@ menuscallbacks.loaded = function(){
 			$('steps').disabled = true;
 			$('stepUp').disabled = true;
 			$('stepDown').disabled = true;
-			$('newstep').disabled = true;
+			$('newstep_action').disabled = true;
+			$('newstep_var').disabled = true;
 			$('addstep').disabled = true;
 			$('allowexten').disabled = true;
 			$('keypressoptions').style.display = "none";
@@ -478,8 +538,11 @@ menuscallbacks.newcategory = function(t) {
 			current_key_exts='keypress_'+ keys[y] + '_exts';
 			current_key_menus='keypress_'+ keys[y] + '_menus';
 			current_key_text = 'keypress_'+ keys[y] + '_text' ;
+			current_key_action='keypress_'+ keys[y] + '_action';
+
 			load_extensions(current_key_exts);
 			load_menus(current_key_menus);
+			$(current_key_action).selectedIndex = 0;
 			$(current_key_exts).style.display = "none";
 			$(current_key_menus).style.display = "none";
 			$(current_key_text).style.display = "none";
@@ -494,10 +557,14 @@ menuscallbacks.newcategory = function(t) {
 		$('stepUp').disabled = true;
 		$('stepDown').disabled = true;
 		$('allowexten').checked = false;
-		$('newstep').disabled = true;
+		$('allowexten').disabled = false;
+		$('newstep_action').disabled = true;
+		$('newstep_var').disabled = true;
 		$('addstep').disabled = true;
 		$('steps').disabled = true;
 	//  4. Reset Comment
+		$('keypressoptions').style.display = "";
+		$('comment').disabled = false;
 		$('comment').value = "";
 		$('comment').focus();
 }
@@ -551,7 +618,19 @@ function localajaxinit() {
 								</td>
 						</tr>
 						<tr><td colspan=2>Add a new Step:</td></tr>
-						<tr><td colspan=2>&nbsp;&nbsp;<input type="text" size=41 id='newstep'>
+						<tr><td colspan=2>&nbsp;&nbsp;
+								<select id='newstep_action'>
+									<option value=""> -- Select --</option>
+									<option value="Answer">Answer</option>
+									<option value="Background">Background</option>
+									<option value="SetMusicOnHold">SetMusicOnHold</option>
+									<option value="DigitTimeout">DigitTimeout</option>
+									<option value="ResponseTimeout">ResponseTimeout</option>
+									<option value="Playback">Playback</option>
+									<option value="Wait">Wait</option>
+									<option value="Hangup">Hangup</option>
+								</select>&nbsp;&nbsp;
+								<input type=text id="newstep_var" size=4>
 								&nbsp;<input type=button style='width:45' id='addstep' onclick="add_newstep()"  value="Add">
 								</td>
 						</tr>
