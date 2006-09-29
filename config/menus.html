@@ -29,13 +29,13 @@
 	var widgets = new Array;
 	var adstatus;
 	var menuscallbacks = new Object;
+	var extencallbacks = new Object;
+	var usercallbacks = new Object;
 	var fieldnames = new Array('delete', 'status', 'new','save','cancel');
 	var voicemenusdata = new Object;
 	var current_context;
 	var keys = new Array('0','1','2','3','4','5','6','7','8','9','*','#','t','i');
-	var extensions_array = new Array('1001','1002','6010','6275','6233','6786','7002');
-	var array_menucomments = new Array('Menu','Sales');
-	var array_menunames = new Array('voicemenu-custom-4','voicemenu-custom-2');
+	var extensions_array = new Array;
 	var answer_call_string = "s,1,Answer";
 
 
@@ -94,11 +94,13 @@ function load_extensions(my_field_options){
 
 function load_menus(my_field_options){
 		$(my_field_options).options.length=0;
-		for(x=0; x< array_menucomments.length; x++){
-				var newoption = document.createElement("option"); 
-				newoption.text = array_menucomments[x] ; 
-				newoption.value = array_menunames[x] ;
-				$(my_field_options).options.add(newoption);
+		for(x=0; x< $('vmenus').length; x++){
+				if($('vmenus').options[x].text != "New Entry" ){
+					var newoption = document.createElement("option"); 
+					newoption.text = voicemenusdata[$('vmenus').options[x].value].comment ; 
+					newoption.value = $('vmenus').options[x].value ;
+					$(my_field_options).options.add(newoption);
+				}
 		}
 }
 
@@ -185,13 +187,14 @@ function add_newstep(){
 				$('steps').options.add ( newoption );
 				// and also add the information to the voicemenus data
 				if(voicemenusdata[$('vmenus').value].extensions['s']){
-					voicemenusdata[$('vmenus').value].extensions['s'][voicemenusdata[$('vmenus').value].extensions['s'].length] = action_string;
+					voicemenusdata[$('vmenus').value].extensions['s'].push(action_string);
 				}else{
 					voicemenusdata[$('vmenus').value].extensions['s'] = new Array;
 					voicemenusdata[$('vmenus').value].extensions['s'][0] = action_string;
 				}
 				// empty this textbox & disable this button, select the newly added item to the steps options box
 				$('newstep_action').selectedIndex = 0;
+					$('deletestep').disabled = false;
 				$('newstep_var').value= "";
 				$('steps').selectedIndex = $('steps').length - 1 ;
 				$('status').innerHTML = "<i>New step added !</i>";
@@ -205,10 +208,10 @@ function add_newstep(){
 	var priorities = new Array;
 
 	// algorithm 4 calculate new priority
-	if(voicemenusdata[$('vmenus').value].extensions['s']){
+	if(voicemenusdata[$('vmenus').value].extensions['s'] && voicemenusdata[$('vmenus').value].extensions['s'].length > 1){
 		for( var p=0; p < voicemenusdata[$('vmenus').value].extensions['s'].length; p ++){
 			var temp  = voicemenusdata[$('vmenus').value].extensions['s'][p].split(',');			
-			priorities[priorities.length] = temp[1] ;
+			priorities.push(temp[1]);
 		}
 		priorities = priorities.sort(sortNumber);
 		newpriority = parseInt(priorities[priorities.length - 1]) + 1;
@@ -246,7 +249,7 @@ function next_freevmenu(){	 // return the next smallest available voicemenu name
 	var current_names = new Array;
 	for(var i=0; i < $('vmenus').length; i++ ){
 		if ( $('vmenus').options[i].value.match('voicemenu-custom-') )
-			current_names[current_names.length] = $('vmenus').options[i].value.replace( /voicemenu-custom-/ ,"");
+			current_names.push( $('vmenus').options[i].value.replace( /voicemenu-custom-/ ,"") );
 	}
 	if ( current_names.length ){
 		for(var i=0; i<current_names.length-1; i++){
@@ -376,6 +379,45 @@ function generate_fields(key){
 			document.write('<select  style="display:none; font-family: Verdana, Arial, Helvetica, Sans-Serif;font-size: 11px;"  id="keypress_'+ key + '_exts" onchange="enable_savecancel()"></select>\n');
 }
 
+function step_onselect(){
+	// enable delete button
+	if($('steps').value){
+		$('deletestep').disabled = false;
+	}
+}
+
+
+
+function delete_step(){
+	// delete the selected step and update voicemenusdata
+	// and update 'select' object - steps
+	var opt = {
+			method: 'get',
+			asynchronous: true,
+			onSuccess: function() { 
+						// Update voicemenusdata
+						for(var p=0; p< voicemenusdata[$('vmenus').value].extensions['s'].length; p++){
+							if( voicemenusdata[$('vmenus').value].extensions['s'][p] == $('steps').value )
+								voicemenusdata[$('vmenus').value].extensions['s'].splice(p,1);
+						}
+
+						$('steps').remove( $('steps').selectedIndex);
+						$('status').innerHTML = "<i>Step Deleted !</i>";
+						$('deletestep').disabled = true;
+
+			},
+			onFailure: function(t) {
+				alert("Config Error: " + t.status + ": " + t.statusText);
+			},
+	};	
+	var uri = "";
+	uri += build_action('delete', 0, $('vmenus').value,"exten", "", $('steps').value); 
+	opt.parameters="action=updateconfig&reload=yes&srcfilename=" + encodeURIComponent("extensions.conf") + "&dstfilename=" + encodeURIComponent("extensions.conf") + uri;
+	tmp = new Ajax.Request('../../rawman', opt);
+}
+
+
+
 
 menuscallbacks.postselect = function() {
 	// show al lthe //s, lines in the select box - 
@@ -395,9 +437,7 @@ menuscallbacks.postselect = function() {
 			$('steps').options.add ( newoption );
 		}
 	}
-
 	// Sort steps according to priority
-	
 
 	$('steps').disabled = false;
 	$('comment').disabled = false;
@@ -406,6 +446,7 @@ menuscallbacks.postselect = function() {
 	$('addstep').disabled = false;
 	$('allowexten').disabled = false;
 	$('keypressoptions').style.display = "";
+	$('deletestep').disabled = true;
 	//$('steps').options[0].disabled = true; 
 
 	for (y=0; y<keys.length ; y++ ){
@@ -479,7 +520,7 @@ menuscallbacks.format = function(t, x) {
 					if(!voicemenusdata[current_context].extensions[exten_fields[0]]){
 						voicemenusdata[current_context].extensions[exten_fields[0]] = new Array();
 					}
-					voicemenusdata[current_context].extensions[exten_fields[0]][voicemenusdata[current_context].extensions[exten_fields[0]].length] = t.fields[x] ;
+					voicemenusdata[current_context].extensions[exten_fields[0]].push( t.fields[x] ) ;
 				}
 				return false;
 		}else{	
@@ -500,18 +541,7 @@ menuscallbacks.loaded = function(){
 				load_extensions(current_key_exts);
 				load_menus(current_key_menus);
 			}
-
-			// disable all fields on page load
-			$('comment').disabled = true;
-			$('steps').disabled = true;
-			$('stepUp').disabled = true;
-			$('stepDown').disabled = true;
-			$('newstep_action').disabled = true;
-			$('newstep_var').disabled = true;
-			$('addstep').disabled = true;
-			$('allowexten').disabled = true;
-			$('keypressoptions').style.display = "none";
-			$('savevmenu').disabled = true;
+			
 }
 
 
@@ -548,6 +578,7 @@ menuscallbacks.newcategory = function(t) {
 			$(current_key_text).style.display = "none";
 		}
 	// 2. Reset Steps - only 1 step -> Answer
+
 		$('steps').options.length =0;
 		var newoption = document.createElement("option");
 		newoption.text = format_step(answer_call_string);
@@ -578,7 +609,59 @@ function localajaxinit() {
 			widgets[fieldnames[x]].disabled = true;
 		}
 		parent.loadscreen(this);
-		parent.astmanEngine.config2list("extensions.conf", $('vmenus'), widgets, menuscallbacks);
+		parent.astmanEngine.config2list("extensions.conf", $('extensions'), new Array(), extencallbacks);
+}
+
+
+
+//extencallbacks
+extencallbacks.format = function(t, x) {
+	var res;
+	var qname;
+	if ((t.name != specialcontext))
+		return null;
+	res = format_extension($('extensions'), t, x);
+	//if (t.subfields[x]['app'] == 'Queue') {
+	//	return null;
+	//}
+	return res;
+}
+
+extencallbacks.loaded = function() {
+	// all extensions loaded will be in the format of "ext -- name" format
+	// but we need only ext
+	for (var p=0; p < $('extensions').length ; p++){
+		var tmp = $('extensions').options[p].text.split (" -- ");
+		$('extensions').options[p].text = tmp[0];
+	}
+
+	parent.astmanEngine.config2list("users.conf", $('users'), new Array(), usercallbacks);
+}
+
+extencallbacks.eachline = true;
+
+
+// user callbacks
+usercallbacks.format = function (t,x){
+		if ((t.name == 'general'))
+			return null;
+		if (t.name.substring(0,6) == 'trunk_')
+			return null;
+		else
+			return t.name;
+}
+
+usercallbacks.identifier = "extension";
+
+usercallbacks.loaded = function (){
+	for(var p=0; p < $('extensions').length; p++){
+		extensions_array.push ($('extensions').options[p].text);
+	}
+	for(var p=0; p < $('users').length; p++){
+		extensions_array.push ($('users').options[p].text);
+	}
+	extensions_array = extensions_array.sort(); // or extensions_array.sort(sortNumber);
+	parent.astmanEngine.config2list("extensions.conf", $('vmenus'), widgets, menuscallbacks);
 }
 
 </script>
@@ -601,17 +684,18 @@ function localajaxinit() {
 			<select size="28" id="vmenus" style="width:180px">
 			<option>Loading...</option>
 			</select>
+			<div style='visibility:hidden;overflow:hidden;width:0px;height:0px'><select id='extensions'></select><select id='users'></select></div>
 		</td>
 		<td valign=top align="right" width=390>
 						<table align="center" width="390">
-						<tr><td width="60" align=left>Name:</td><td align=left><input id='comment'  onKeyUp="enable_savecancel()"></td></tr>
+						<tr><td width="60" align=left>Name:</td><td align=left><input id='comment'  onKeyUp="enable_savecancel()" disabled></td></tr>
 						<tr><td colspan=2>Steps:</td></tr>
 						<tr><td align=center colspan=2> 
 										<TABLE>
-										<tr><td ><select id='steps' size=5  style="width:310px"></select></td>
+										<tr><td ><select id='steps' size=5  style="width:310px" onClick="step_onselect()" disabled></select></td>
 												<td  align=center width=55 valign="middle">
-														<input  style='width:45'  type="button" id="stepUp" value="Up"><BR><BR>
-														<input  style='width:45' type="button" id="stepDown" value="Down">
+														<input  style='width:45'  type="button" id="stepUp" value="Up" disabled><BR><BR>
+														<input  style='width:45' type="button" id="stepDown" value="Down" disabled>
 												</td>
 										</tr>
 										</TABLE>
@@ -619,7 +703,7 @@ function localajaxinit() {
 						</tr>
 						<tr><td colspan=2>Add a new Step:</td></tr>
 						<tr><td colspan=2>&nbsp;&nbsp;
-								<select id='newstep_action'>
+								<select id='newstep_action' disabled>
 									<option value=""> -- Select --</option>
 									<option value="Answer">Answer</option>
 									<option value="Background">Background</option>
@@ -630,12 +714,13 @@ function localajaxinit() {
 									<option value="Wait">Wait</option>
 									<option value="Hangup">Hangup</option>
 								</select>&nbsp;&nbsp;
-								<input type=text id="newstep_var" size=4>
-								&nbsp;<input type=button style='width:45' id='addstep' onclick="add_newstep()"  value="Add">
+								<input type=text id="newstep_var" size=4 disabled>
+								&nbsp;<input type=button style='width:45' id='addstep' onclick="add_newstep()"  value="Add" disabled>
+								&nbsp;<input type=button style='width:50' id='deletestep' onclick="delete_step()"  value="Delete" disabled>
 								</td>
 						</tr>
 						
-						<tr><td colspan=2>&nbsp;<input type=checkbox id=allowexten> Allow dialing Extensions ?</td></tr>
+						<tr><td colspan=2>&nbsp;<input type=checkbox id=allowexten disabled> Allow dialing Extensions ?</td></tr>
 
 						<tr><td colspan=2 height=15></td></tr>
 						<tr><td colspan=2>'Keypress' Events</td></tr>
@@ -647,7 +732,7 @@ function localajaxinit() {
 										</TR>
 										</table>
 										</div>
-										<div id="keypressoptions" style="height:180px;width=390px; overflow :auto;">
+										<div id="keypressoptions" style="height:180px;width=390px; overflow :auto;display :none">
 										<table cellpadding=3 cellspacing=0 width="100%">
 										<SCRIPT LANGUAGE="JavaScript">
 										<!--
@@ -681,7 +766,7 @@ function localajaxinit() {
 			&nbsp;
 		</td>
 		<td align='right'><input type="hidden" id="save">
-				<input style='width:80' type='button' id='savevmenu' onClick="save_vmenu()" value='Save'>
+				<input style='width:80' type='button' id='savevmenu' onClick="save_vmenu()" value='Save' disabled>
 				&nbsp;
 				<input style='width:80' type='button' id='cancel' value='Cancel'>
 				&nbsp;
