@@ -444,8 +444,8 @@ function swap_step(a,b){
 							voicemenusdata[$('vmenus').value].extensions['s'][p] = tmp2.join();
 					}
 					// swap select values of a to b
-					$('steps').options[a].value = tmp1.join() ;
-					$('steps').options[b].value = tmp2.join() ;
+					$('steps').options[a].value = tmp2.join();
+					$('steps').options[b].value = tmp1.join();
 					var buffer = $('steps').options[a].text;
 					$('steps').options[a].text = $('steps').options[b].text;
 					$('steps').options[b].text = buffer;
