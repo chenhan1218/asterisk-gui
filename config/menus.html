@@ -208,7 +208,7 @@ function add_newstep(){
 	var priorities = new Array;
 
 	// algorithm 4 calculate new priority
-	if(voicemenusdata[$('vmenus').value].extensions['s'] && voicemenusdata[$('vmenus').value].extensions['s'].length > 1){
+	if(voicemenusdata[$('vmenus').value].extensions['s'] && voicemenusdata[$('vmenus').value].extensions['s'].length > 0 ){
 		for( var p=0; p < voicemenusdata[$('vmenus').value].extensions['s'].length; p ++){
 			var temp  = voicemenusdata[$('vmenus').value].extensions['s'][p].split(',');			
 			priorities.push(temp[1]);
