@@ -384,6 +384,88 @@ function step_onselect(){
 	if($('steps').value){
 		$('deletestep').disabled = false;
 	}
+
+	// enable Up/Down buttons accordingly
+	update_updown();
+}
+
+function update_updown(){
+	if( !$('steps').selectedIndex == 0){
+		$('stepUp').disabled = false;
+	}else{
+		$('stepUp').disabled = true;
+	}
+
+	if( $('steps').selectedIndex != ($('steps').length-1) ){
+		$('stepDown').disabled = false;
+	}else{
+		$('stepDown').disabled = true;
+	}
+
+}
+
+
+function step_up(){
+	// Swap x, x-1
+	swap_step($('steps').selectedIndex, $('steps').selectedIndex-1);
+}
+
+
+function step_down(){
+	//swap x, x+1
+	swap_step($('steps').selectedIndex, $('steps').selectedIndex+1 );
+}
+
+
+function swap_step(a,b){
+	// get prioirty of a
+	// get priority of b
+	var tmp1 = $('steps').options[a].value.split(",") ;
+	var priority_1 = tmp1[1];
+
+	var tmp2 = $('steps').options[b].value.split(",") ;
+	var priority_2 = tmp2[1];
+
+	//alert("Change priority of " + $('steps').options[a].value +" to that of "+ priority_2);
+	//alert("Change priority of "+ $('steps').options[b].value +" to that of "+ priority_1);
+
+	tmp1.splice(1,1,priority_2);
+	tmp2.splice(1,1,priority_1);
+
+	var opt = {
+			method: 'get',
+			asynchronous: true,
+			onSuccess: function() { 
+					// update voicemenusdata
+					for(var p=0; p< voicemenusdata[$('vmenus').value].extensions['s'].length; p++){
+							if( voicemenusdata[$('vmenus').value].extensions['s'][p] == $('steps').options[a].value )
+							voicemenusdata[$('vmenus').value].extensions['s'][p] = tmp1.join();
+							else if (voicemenusdata[$('vmenus').value].extensions['s'][p] == $('steps').options[b].value  ) 
+							voicemenusdata[$('vmenus').value].extensions['s'][p] = tmp2.join();
+					}
+					// swap select values of a to b
+					$('steps').options[a].value = tmp1.join() ;
+					$('steps').options[b].value = tmp2.join() ;
+					var buffer = $('steps').options[a].text;
+					$('steps').options[a].text = $('steps').options[b].text;
+					$('steps').options[b].text = buffer;
+					$('steps').selectedIndex = b;
+					$('status').innerHTML = "<i>Step Priority Updated!</i>";
+					update_updown();
+
+					// some thing is not ok here .. check
+			},
+			onFailure: function(t) {
+				alert("Config Error: " + t.status + ": " + t.statusText);
+			},
+	};	
+	var uri = "";
+
+	// ok find $('steps').options[a].value in extensions.conf and replace it with tmp1.join() and also replace $('steps').options[b].value with tmp2.join()	
+	uri += build_action('update', 0, $('vmenus').value ,"exten",tmp1.join(), $('steps').options[a].value);
+	uri += build_action('update', 1, $('vmenus').value ,"exten",tmp2.join(), $('steps').options[b].value);
+	opt.parameters="action=updateconfig&reload=yes&srcfilename=" + encodeURIComponent("extensions.conf") + "&dstfilename=" + encodeURIComponent("extensions.conf") + uri;
+	tmp = new Ajax.Request('../../rawman', opt);
 }
 
 
@@ -423,7 +505,8 @@ menuscallbacks.postselect = function() {
 	// show al lthe //s, lines in the select box - 
 	if($('vmenus').selectedIndex	==-1){ return true;}
 	current_context = $('vmenus').value;
-	var x, y;
+	var x, y, tmp;
+	var priority_1, priority_2, buffer;
 
 	//$('keypressoptions').innerHTML = "";
 	$('steps').options.length =0;
@@ -437,7 +520,25 @@ menuscallbacks.postselect = function() {
 			$('steps').options.add ( newoption );
 		}
 	}
-	// Sort steps according to priority
+
+	// I know .. bubble sort really sucks ... but something for now.
+	for (x = ($('steps').length - 1); x >= 0; x--){
+				for (y = 1; y <= x; y++){
+					tmp = $('steps').options[y].value.split(",") ;
+					priority_1 = tmp[1];
+					tmp = $('steps').options[y-1].value.split(",") ;
+					priority_2 = tmp[1];
+
+					  if (priority_2 > priority_1){
+							buffer = $('steps').options[y-1].value;
+							$('steps').options[y-1].value = $('steps').options[y].value;
+							$('steps').options[y].value = buffer;
+							buffer = $('steps').options[y-1].text;
+							$('steps').options[y-1].text = $('steps').options[y].text;
+							$('steps').options[y].text = buffer;
+					  }
+				}
+	}
 
 	$('steps').disabled = false;
 	$('comment').disabled = false;
@@ -447,7 +548,8 @@ menuscallbacks.postselect = function() {
 	$('allowexten').disabled = false;
 	$('keypressoptions').style.display = "";
 	$('deletestep').disabled = true;
-	//$('steps').options[0].disabled = true; 
+	$('stepDown').disabled = true;
+	$('stepUp').disabled = true;
 
 	for (y=0; y<keys.length ; y++ ){
 			current_key_action='keypress_'+ keys[y] + '_action';
@@ -694,8 +796,8 @@ usercallbacks.loaded = function (){
 										<TABLE>
 										<tr><td ><select id='steps' size=5  style="width:310px" onClick="step_onselect()" disabled></select></td>
 												<td  align=center width=55 valign="middle">
-														<input  style='width:45'  type="button" id="stepUp" value="Up" disabled><BR><BR>
-														<input  style='width:45' type="button" id="stepDown" value="Down" disabled>
+														<input  style='width:45'  type="button" id="stepUp" value="Up" disabled onClick="step_up()"><BR><BR>
+														<input  style='width:45' type="button" id="stepDown" value="Down" disabled onClick="step_down()">
 												</td>
 										</tr>
 										</TABLE>
