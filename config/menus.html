@@ -198,6 +198,7 @@ function add_newstep(){
 				$('newstep_var').value= "";
 				$('steps').selectedIndex = $('steps').length - 1 ;
 				$('status').innerHTML = "<i>New step added !</i>";
+				update_updown();
 			},
 			onFailure: function(t) {
 				alert("Config Error: " + t.status + ": " + t.statusText);
