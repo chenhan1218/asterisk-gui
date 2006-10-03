@@ -236,22 +236,18 @@
 	// called "onpage load" and when the  'Customize Plans' checkbox  is  flipped
 		var tmp;
 		var x;
-		
 		for (x=0;x<$('extensions').options.length;x++) {
 				tmp = $('extensions').options[x].value.split(']');
 				if (tmp.length < 2) { $('extensions').options[x].style.color = '#0000CC'; }
 				$('extensions').options[x].disabled = false;
 		}
-
 		$('new').disabled = !$('modplan').checked;
 		$('planident').disabled = !$('modplan').checked;
 		$('comment').disabled = !$('modplan').checked;
 		$('include').disabled = !$('modplan').checked;
-
 		// If the submenu is the one that is currently highlighted then donot disable the delete button
 		tmp_as =  $('extensions').value.split(']');
 		if(tmp_as.length > 1){ }else{ $('delete').disabled = !$('modplan').checked; }
-
 	}
 
 
@@ -359,8 +355,6 @@
 		}
 		
 		parent.astmanEngine.config2list("users.conf", $('trunk'), new Array(), usercallbacks);
-		document.getElementById('combobox_div').style.display = "none";
-
 	}
 
 		function priority_up(){
@@ -457,45 +451,6 @@
 
 		}
 
-
-		// Combox_box related
-		function combo_action(){
-			$('name').value = $('combosel').value;
-			document.getElementById('combobox_div').style.display = "none";
-			$('save').disabled= false;
-			$('cancel').disabled= false;
-		}
-
-		function combo_activate(){
-				tmp_left = $('name').offsetLeft;
-				tmp_top = $('name').offsetTop + $('name').offsetHeight;
-				tmp_parent = $('name');
-
-				while(tmp_parent.offsetParent != document.body){
-						tmp_parent = tmp_parent.offsetParent;
-						tmp_left += tmp_parent.offsetLeft;
-						tmp_top += tmp_parent.offsetTop;
-				}
-
-				$('combobox_div').style.left = tmp_left;
-				$('combobox_div').style.top = tmp_top ;
-				$('combobox_div').style.width = $('name').offsetWidth;
-
-				document.getElementById('combobox_div').style.display = "";
-		}
-
-		function combo_keypress(event){
-			if( event.keyCode == 13 || event.keyCode == 27 || event.keyCode == 9){
-					document.getElementById('combobox_div').style.display = "none";
-					return false;
-			}else{
-					document.getElementById('combobox_div').style.display = "";
-					return true;
-			}
-
-		}
-		// End of - Combox_box related
-
 </script>
 <body id="foo" onload="localajaxinit()">
 <div class="mainscreenTitleBar">
@@ -534,9 +489,9 @@
 						<tr><td><b>.</b></td><td>Any number of additional digits</td></tr>
 					</table>
 				</td></tr>
-				<tr><td>Pattern:</td><td><input size='18' id='name' onfocus="combo_activate();" onkeychange="combo_activate();" onfocusout="document.getElementById('combobox_div').style.display ='none';" onkeypress="combo_keypress(event);">
-						<div id="combobox_div" style="position: absolute; top:0px; left:0px; z-index:10000 ">
-						  <select size=5 id="combosel" onclick="combo_action();" style="font-family: Verdana, Arial, Helvetica, Sans-Serif;font-size: 11px; ">
+				<tr><td>Pattern:</td><td><input size='18' id='name'>
+						<div id="combobox_div">
+						  <select size=5 id="combosel" style="font-family: Verdana, Arial, Helvetica, Sans-Serif;font-size: 11px; ">
 							<option value="_9NXXXXXX">_9NXXXXXX (Seven Digit Dial)</option>
 							<option value="_9NXXNXXXXXX">_9NXXNXXXXXX (Ten Digit Dial)</option>
 							<option value='_91NXXNXXXXXX'>_91NXXNXXXXXX (1+ Dial)</option>
@@ -544,6 +499,11 @@
 							<option value='_9911.'>_9911. (Emergency)</option>
 						  </select>
 						  </div>
+						<SCRIPT LANGUAGE="JavaScript">
+						<!--
+						combo_box('name', "combobox_div","combosel");
+						//-->
+						</SCRIPT>
 				</td></tr>
 				<tr><td>Trunk:</td><td><select id='trunk'></select></td></tr>
 				<tr><td>Priority:</td><td><input size='4' id='priority'></td></tr>

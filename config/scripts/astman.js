@@ -19,6 +19,93 @@
  *
  */
 
+function combo_box(a, b, c ){	
+		var combo_text = document.getElementById(a);
+		var combo_selectdiv = document.getElementById(b);
+		var combo_selectbox = document.getElementById(c);
+		var TAB = 9;
+		var ENTER = 13;
+		var ESC = 27;
+		var KEYUP = 38;
+		var KEYDN = 40;
+		var BKSPACE = 8;
+		combo_selectdiv.style.position ="absolute";
+		combo_selectdiv.style.top = "0px";
+		combo_selectdiv.style.left = "0px";
+//		combo_selectdiv.style.z-index = 10000;
+		combo_selectdiv.style.display = "none";
+		combo_text.onkeychange = function(){
+			combobox_activate();
+		};
+		combo_text.onfocus = function(){
+			combobox_activate();
+		};
+		combo_text.onfocusout = function(){
+			combo_selectdiv.style.display ='none';
+		};
+		combo_text.onkeypress = function(event){
+				if( event.keyCode == ENTER || event.keyCode == ESC || event.keyCode == TAB){
+						combo_selectdiv.style.display = "none";
+						return false;
+				}else if( event.keyCode == KEYDN ||  event.keyCode == KEYUP ){
+						combo_selectbox.focus();
+						return false;
+				}else if( event.keyCode == BKSPACE && combo_text.value.length ==0 ){
+						combo_selectdiv.style.display = "none";
+						return false;
+				}else{
+						combo_selectdiv.style.display = "";
+						return true;
+				}
+		};
+		combo_text.onkeyup = function(event){
+				if( event.keyCode == ENTER || event.keyCode == ESC || event.keyCode == TAB){
+				return false;
+				}
+				for (var i=0; i < combo_selectbox.options.length; i++){
+						if(	combo_selectbox.options[i].value.toLowerCase().match(combo_text.value.toLowerCase()) ){
+							combo_selectbox.selectedIndex = i;
+							return true;
+						}
+				}
+				combo_selectdiv.style.display = "none";				
+		}
+		combo_selectbox.onkeypress= function(event) {
+				if( event.keyCode == ENTER ){
+						combo_text.value = combo_selectbox.value;
+						combo_text.focus();
+						combo_selectdiv.style.display = "none";
+						return false;
+				}else if( event.keyCode == ESC ){
+						combo_text.focus();
+						combo_selectdiv.style.display = "none";
+				}else{
+						return true;
+				}
+		};
+		combo_selectbox.onclick= function() {
+					combo_text.value = combo_selectbox.value;
+					combo_text.focus();
+					combo_selectdiv.style.display = "none";
+		};
+		function combobox_activate(){
+				var tmp_left = combo_text.offsetLeft;
+				var tmp_top = combo_text.offsetTop + combo_text.offsetHeight;
+				var tmp_parent = combo_text;
+				while(tmp_parent.offsetParent != document.body){
+						tmp_parent = tmp_parent.offsetParent;
+						tmp_left += tmp_parent.offsetLeft;
+						tmp_top += tmp_parent.offsetTop;
+				}
+				combo_selectdiv.style.left = tmp_left;
+				combo_selectdiv.style.top = tmp_top ;
+				combo_selectdiv.style.width = combo_text.offsetWidth;
+				combo_selectdiv.style.display = "";
+		}
+}
+
+
+
 function  InArray(search_array, searchstring ){
 	var i = search_array.length
 	if( i>0){

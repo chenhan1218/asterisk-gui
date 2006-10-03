@@ -419,16 +419,10 @@ function step_down(){
 
 
 function swap_step(a,b){
-	// get prioirty of a
-	// get priority of b
 	var tmp1 = $('steps').options[a].value.split(",") ;
 	var priority_1 = tmp1[1];
-
 	var tmp2 = $('steps').options[b].value.split(",") ;
 	var priority_2 = tmp2[1];
-
-	//alert("Change priority of " + $('steps').options[a].value +" to that of "+ priority_2);
-	//alert("Change priority of "+ $('steps').options[b].value +" to that of "+ priority_1);
 
 	tmp1.splice(1,1,priority_2);
 	tmp2.splice(1,1,priority_1);
@@ -454,7 +448,6 @@ function swap_step(a,b){
 					$('status').innerHTML = "<i>Step Priority Updated!</i>";
 					update_updown();
 
-					// some thing is not ok here .. check
 			},
 			onFailure: function(t) {
 				alert("Config Error: " + t.status + ": " + t.statusText);
@@ -472,8 +465,7 @@ function swap_step(a,b){
 
 
 function delete_step(){
-	// delete the selected step and update voicemenusdata
-	// and update 'select' object - steps
+	// delete the selected step and update voicemenusdata and update 'select' object - steps
 	var opt = {
 			method: 'get',
 			asynchronous: true,
