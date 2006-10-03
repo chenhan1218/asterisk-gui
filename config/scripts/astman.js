@@ -403,6 +403,10 @@ function delete_item(box, value, noconfirm) {
 	var updatebox = 0;
 	var subcat, subname, suborig;
 	if (!noconfirm) {
+		if( box.options[box.selectedIndex].text == "New Entry" && box.widgets['cancel'] ){
+			box.widgets['cancel'].click();
+			return true;
+		}
 		if (!confirm("Delete entry?")) {
 			return false;
 		}
