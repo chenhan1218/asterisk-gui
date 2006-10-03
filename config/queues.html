@@ -306,12 +306,12 @@ function save_queue(){
 				add_extension( $('name').value ); // add in extensions.conf
 				//add to stored names & fields 
 				r = queuenames.length;
-				queueagents[r+1] = new Array;
-				queuenames[r+1] = $('name').value ;
+				queueagents[r] = new Array;
+				queuenames[r] = $('name').value ;
 				q =0;
 				for (k=0;k< $('agents').length ;k++ ){
 						if( $('agents').options[k].selected ){
-							queueagents [r+1][q] = $('agents').options[k].innerHTML.substr(0,4);
+							queueagents [r][q] = $('agents').options[k].innerHTML.substr(0,4);
 							q = q+1;
 						}
 				}
