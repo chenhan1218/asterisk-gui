@@ -547,8 +547,10 @@ function new_item(box) {
 		box.widgets['cancel'].disabled = false;
 	if (box.widgets['status']) 
 		box.widgets['status'].innerHTML = "<i>Creating new entry!</i>";
-	if (box.widgets['name'])
+	if (box.widgets['name']){
 		box.widgets['name'].value = name;
+		box.widgets['name'].focus();
+	}
 }
 
 
