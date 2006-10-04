@@ -73,13 +73,19 @@ queuecallbacks.postselect = function(box, val ) {
 					break;
 				}
 		}
-		for (k=0;k< $('agents').length ;k++ )
-		{
-			if( InArray( queueagents [j], $('agents').options[k].innerHTML.substr(0,4) ) )
-				$('agents').options[k].selected = true;			
-			else
+		$('testmulti').innerHTML ="";		
+
+		for (k=0;k< $('agents').length ;k++ ){
+			selectedagent = "selectedagent" + k;
+			if( InArray( queueagents [j], $('agents').options[k].innerHTML.substr(0,4) ) ){
+				$('agents').options[k].selected = true;	
+				$('testmulti').innerHTML += '<INPUT id="' + selectedagent + '" TYPE="CHECKBOX" VALUE="'+ $('agents').options[k].innerHTML.substr(0,4) + '" checked>' + $('agents').options[k].innerHTML.substr(8) + '<BR>';
+			}else{
 				$('agents').options[k].selected = false;
+				$('testmulti').innerHTML += '<INPUT id="' + selectedagent + '" TYPE="CHECKBOX" VALUE="'+ $('agents').options[k].innerHTML.substr(0,4) + '">' + $('agents').options[k].innerHTML.substr(8) + '<BR>';
+			}
 		}
+		
 	$('save_q').disabled = false;
 }
 
@@ -334,10 +340,15 @@ function save_queue(){
 				// reset the array queueagents [j] to selected elements of $('agents')
 				queueagents [j] = [];
 				q =0;
+				
 				for (k=0;k< $('agents').length ;k++ ){
-						if( $('agents').options[k].selected ){
+						selectedagent = "selectedagent" + k;
+						if( $(selectedagent).checked  ){
 							queueagents [j][q] = $('agents').options[k].innerHTML.substr(0,4);
+							$('agents').options[k].selected = true;
 							q = q+1;
+						}else{
+							$('agents').options[k].selected = false;
 						}
 				}
 				// also reset queuenames[j] to $('name').value
@@ -357,9 +368,10 @@ function save_queue(){
 
 		//add agents
 		for(k=0; k<$('agents').length; k++){
-			if( $('agents').options[k].selected ){
-			uri += build_action('append', p, $('name').value,"member", "Agent/"+$('agents').options[k].innerHTML.substr(0,4) );
-			p = p+1;
+			selectedagent = "selectedagent" + k;
+			if( $(selectedagent).checked ){
+				uri += build_action('append', p, $('name').value,"member", "Agent/"+$(selectedagent).value);
+				p = p+1;
 			}
 		}
 
@@ -403,7 +415,9 @@ function save_queue(){
 																</select>
 						</td>
 				</tr>
-				<tr><td style='width:80px' valign='top'>Agents:</td><td><select size="6" multiple='true' id='agents' style='width:200px' onclick="save_status()"></select></td></tr>
+				<tr><td style='width:80px' valign='top'>Agents:</td><td><select size="6" multiple='true' id='agents' style='width:200px; display: none' onclick="save_status()"></select>
+				<div id="testmulti" style='height:110px; width: 200px;overflow :auto;'></div>
+				</td></tr>
 				<tr><td colspan='2' align='center'><div style="height:15px" id='status'></div></td></tr>
 				<tr><td colspan='2'></td></tr>
 				</table>
