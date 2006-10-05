@@ -492,6 +492,27 @@ function delete_step(){
 }
 
 
+function update_newstep_var(){
+	if( $('newstep_action').value== "Answer"  || $('newstep_action').value== "Hangup"  ){
+		$('newstep_var').style.display = "none";
+		$('newstep_var_digit').style.display= "none" ;
+		$('combodiv_sounds').style.display = "none" ;
+	}
+
+	if( $('newstep_action').value== "Background"  || $('newstep_action').value== "SetMusicOnHold" || $('newstep_action').value== "Playback" ){
+		$('newstep_var').style.display = "";
+		$('newstep_var').size= 12;
+		$('newstep_var_digit').style.display= "none" ;
+	}
+
+	if( $('newstep_action').value== "DigitTimeout"  || $('newstep_action').value== "ResponseTimeout" ||  $('newstep_action').value== "Wait" ){
+		$('newstep_var').style.display = "none" ;
+		$('combodiv_sounds').style.display = "none" ;
+		$('newstep_var_digit').style.display= "" ;
+	}
+
+}
+
 
 
 menuscallbacks.postselect = function() {
@@ -797,8 +818,8 @@ usercallbacks.loaded = function (){
 								</td>
 						</tr>
 						<tr><td colspan=2>Add a new Step:</td></tr>
-						<tr><td colspan=2>&nbsp;&nbsp;
-								<select id='newstep_action' disabled>
+						<tr><td colspan=2>&nbsp;
+								<select id='newstep_action' disabled onChange="update_newstep_var()">
 									<option value=""> -- Select --</option>
 									<option value="Answer">Answer</option>
 									<option value="Background">Background</option>
@@ -808,8 +829,222 @@ usercallbacks.loaded = function (){
 									<option value="Playback">Playback</option>
 									<option value="Wait">Wait</option>
 									<option value="Hangup">Hangup</option>
-								</select>&nbsp;&nbsp;
+								</select>&nbsp;
 								<input type=text id="newstep_var" size=4 disabled>
+											<div id="combodiv_sounds">
+													<select size=5 id="combosel_sounds" style="font-family: Verdana, Arial, Helvetica, Sans-Serif;font-size: 11px; ">
+															<option value="" style="font-weight: bold">Agent Related</option>
+																	<option value="agent-alreadyon">agent-alreadyon</option>
+																	<option value="agent-incorrect">agent-incorrect</option>
+																	<option value="agent-loggedoff">agent-loggedoff</option>
+																	<option value="agent-loginok">agent-loginok</option>
+																	<option value="agent-newlocation">agent-newlocation</option>
+																	<option value="agent-pass">agent-pass</option>
+																	<option value="agent-user">agent-user</option>
+															<option value="" style="font-weight: bold">Authorization</option>
+																	<option value="auth-incorrect">auth-incorrect</option>
+																	<option value="auth-thankyou">auth-thankyou</option>
+															<option value="" style="font-weight: bold">beep</option>
+																	<option value="beep">beep</option>
+																	<option value="beeperr">beeperr</option>
+															<option value="" style="font-weight: bold">conf-</option>
+																	<option value="conf-adminmenu">conf-adminmenu</option>
+																	<option value="conf-enteringno">conf-enteringno</option>
+																	<option value="conf-errormenu">conf-errormenu</option>
+																	<option value="conf-getchannel">conf-getchannel</option>
+																	<option value="conf-getconfno">conf-getconfno</option>
+																	<option value="conf-getpin">conf-getpin</option>
+																	<option value="conf-hasjoin">conf-hasjoin</option>
+																	<option value="conf-hasleft">conf-hasleft</option>
+																	<option value="conf-invalid">conf-invalid</option>
+																	<option value="conf-invalidpin">conf-invalidpin</option>
+																	<option value="conf-kicked">conf-kicked</option>
+																	<option value="conf-leaderhasleft">conf-leaderhasleft</option>
+																	<option value="conf-locked">conf-locked</option>
+																	<option value="conf-lockednow">conf-lockednow</option>
+																	<option value="conf-muted">conf-muted</option>
+																	<option value="conf-noempty">conf-noempty</option>
+																	<option value="conf-onlyone">conf-onlyone</option>
+																	<option value="conf-onlyperson">conf-onlyperson</option>
+																	<option value="conf-otherinparty">conf-otherinparty</option>
+																	<option value="conf-placeintoconf">conf-placeintoconf</option>
+																	<option value="conf-thereare">conf-thereare</option>
+																	<option value="conf-unlockednow">conf-unlockednow</option>
+																	<option value="conf-unmuted">conf-unmuted</option>
+																	<option value="conf-usermenu">conf-usermenu</option>
+																	<option value="conf-userswilljoin">conf-userswilljoin</option>
+																	<option value="conf-userwilljoin">conf-userwilljoin</option>
+																	<option value="conf-waitforleader">conf-waitforleader</option>
+															<option value="" style="font-weight: bold">demo</option>
+																	<option value="demo-abouttotry">demo-abouttotry</option>
+																	<option value="demo-congrats">demo-congrats</option>
+																	<option value="demo-echodone">demo-echodone</option>
+																	<option value="demo-echotest">demo-echotest</option>
+																	<option value="demo-enterkeywords">demo-enterkeywords</option>
+																	<option value="demo-instruct">demo-instruct</option>
+																	<option value="demo-moreinfo">demo-moreinfo</option>
+																	<option value="demo-nogo">demo-nogo</option>
+																	<option value="demo-nomatch">demo-nomatch</option>
+																	<option value="demo-thanks">demo-thanks</option>
+															<option value="" style="font-weight: bold">dir</option>
+																	<option value="dir-instr">dir-instr</option>
+																	<option value="dir-intro-fn">dir-intro-fn</option>
+																	<option value="dir-intro">dir-intro</option>
+																	<option value="dir-nomatch">dir-nomatch</option>
+																	<option value="dir-nomore">dir-nomore</option>
+															<option value="" style="font-weight: bold">misc</option>
+																	<option value="hello-world">hello-world</option>
+																	<option value="hours">hours</option>
+																	<option value="invalid">invalid</option>
+																	<option value="minutes">minutes</option>
+																	<option value="screen-callee-options">screen-callee-options</option>
+																	<option value="seconds">seconds</option>
+																	<option value="ss-noservice">ss-noservice</option>
+																	<option value="transfer">transfer</option>
+															<option value="" style="font-weight: bold">pbx</option>
+																	<option value="pbx-invalid">pbx-invalid</option>
+																	<option value="pbx-invalidpark">pbx-invalidpark</option>
+																	<option value="pbx-transfer">pbx-transfer</option>
+															<option value="" style="font-weight: bold">priv</option>
+																	<option value="priv-callee-options">priv-callee-options</option>
+																	<option value="priv-callpending">priv-callpending</option>
+																	<option value="priv-introsaved">priv-introsaved</option>
+																	<option value="priv-recordintro">priv-recordintro</option>
+															<option value="" style="font-weight: bold">privacy</option>
+																	<option value="privacy-incorrect">privacy-incorrect</option>
+																	<option value="privacy-prompt">privacy-prompt</option>
+																	<option value="privacy-thankyou">privacy-thankyou</option>
+																	<option value="privacy-unident">privacy-unident</option>
+															<option value="" style="font-weight: bold">queue</option>
+																	<option value="queue-callswaiting">queue-callswaiting</option>
+																	<option value="queue-holdtime">queue-holdtime</option>
+																	<option value="queue-less-than">queue-less-than</option>
+																	<option value="queue-minutes">queue-minutes</option>
+																	<option value="queue-periodic-announce">queue-periodic-announce</option>
+																	<option value="queue-reporthold">queue-reporthold</option>
+																	<option value="queue-seconds">queue-seconds</option>
+																	<option value="queue-thankyou">queue-thankyou</option>
+																	<option value="queue-thereare">queue-thereare</option>
+																	<option value="queue-youarenext">queue-youarenext</option>
+															<option value="" style="font-weight: bold">spy</option>
+																	<option value="spy-agent">spy-agent</option>
+																	<option value="spy-h323">spy-h323</option>
+																	<option value="spy-iax">spy-iax</option>
+																	<option value="spy-iax2">spy-iax2</option>
+																	<option value="spy-mgcp">spy-mgcp</option>
+																	<option value="spy-sip">spy-sip</option>
+																	<option value="spy-skinny">spy-skinny</option>
+																	<option value="spy-zap">spy-zap</option>
+															<option value="" style="font-weight: bold">tt</option>
+																	<option value="tt-allbusy">tt-allbusy</option>
+																	<option value="tt-monkeys">tt-monkeys</option>
+																	<option value="tt-monkeysintro">tt-monkeysintro</option>
+																	<option value="tt-somethingwrong">tt-somethingwrong</option>
+																	<option value="tt-weasels">tt-weasels</option>
+															<option value="" style="font-weight: bold">vm</option>
+																	<option value="vm-Cust1">vm-Cust1</option>
+																	<option value="vm-Cust2">vm-Cust2</option>
+																	<option value="vm-Cust3">vm-Cust3</option>
+																	<option value="vm-Cust4">vm-Cust4</option>
+																	<option value="vm-Cust5">vm-Cust5</option>
+																	<option value="vm-Family">vm-Family</option>
+																	<option value="vm-Friends">vm-Friends</option>
+																	<option value="vm-INBOX">vm-INBOX</option>
+																	<option value="vm-Old">vm-Old</option>
+																	<option value="vm-Work">vm-Work</option>
+																	<option value="vm-advopts">vm-advopts</option>
+																	<option value="vm-and">vm-and</option>
+																	<option value="vm-calldiffnum">vm-calldiffnum</option>
+																	<option value="vm-changeto">vm-changeto</option>
+																	<option value="vm-delete">vm-delete</option>
+																	<option value="vm-deleted">vm-deleted</option>
+																	<option value="vm-dialout">vm-dialout</option>
+																	<option value="vm-enter-num-to-call">vm-enter-num-to-call</option>
+																	<option value="vm-extension">vm-extension</option>
+																	<option value="vm-first">vm-first</option>
+																	<option value="vm-for">vm-for</option>
+																	<option value="vm-forward">vm-forward</option>
+																	<option value="vm-forwardoptions">vm-forwardoptions</option>
+																	<option value="vm-from-extension">vm-from-extension</option>
+																	<option value="vm-from-phonenumber">vm-from-phonenumber</option>
+																	<option value="vm-from">vm-from</option>
+																	<option value="vm-goodbye">vm-goodbye</option>
+																	<option value="vm-helpexit">vm-helpexit</option>
+																	<option value="vm-incorrect-mailbox">vm-incorrect-mailbox</option>
+																	<option value="vm-incorrect">vm-incorrect</option>
+																	<option value="vm-instructions">vm-instructions</option>
+																	<option value="vm-intro">vm-intro</option>
+																	<option value="vm-isonphone">vm-isonphone</option>
+																	<option value="vm-isunavail">vm-isunavail</option>
+																	<option value="vm-last">vm-last</option>
+																	<option value="vm-leavemsg">vm-leavemsg</option>
+																	<option value="vm-login">vm-login</option>
+																	<option value="vm-mailboxfull">vm-mailboxfull</option>
+																	<option value="vm-message">vm-message</option>
+																	<option value="vm-messages">vm-messages</option>
+																	<option value="vm-minutes">vm-minutes</option>
+																	<option value="vm-mismatch">vm-mismatch</option>
+																	<option value="vm-msginstruct">vm-msginstruct</option>
+																	<option value="vm-msgsaved">vm-msgsaved</option>
+																	<option value="vm-newpassword">vm-newpassword</option>
+																	<option value="vm-newuser">vm-newuser</option>
+																	<option value="vm-next">vm-next</option>
+																	<option value="vm-no">vm-no</option>
+																	<option value="vm-nobodyavail">vm-nobodyavail</option>
+																	<option value="vm-nobox">vm-nobox</option>
+																	<option value="vm-nomore">vm-nomore</option>
+																	<option value="vm-nonumber">vm-nonumber</option>
+																	<option value="vm-num-i-have">vm-num-i-have</option>
+																	<option value="vm-onefor">vm-onefor</option>
+																	<option value="vm-options">vm-options</option>
+																	<option value="vm-opts">vm-opts</option>
+																	<option value="vm-passchanged">vm-passchanged</option>
+																	<option value="vm-password">vm-password</option>
+																	<option value="vm-press">vm-press</option>
+																	<option value="vm-prev">vm-prev</option>
+																	<option value="vm-reachoper">vm-reachoper</option>
+																	<option value="vm-rec-busy">vm-rec-busy</option>
+																	<option value="vm-rec-name">vm-rec-name</option>
+																	<option value="vm-rec-temp">vm-rec-temp</option>
+																	<option value="vm-rec-unv">vm-rec-unv</option>
+																	<option value="vm-received">vm-received</option>
+																	<option value="vm-reenterpassword">vm-reenterpassword</option>
+																	<option value="vm-repeat">vm-repeat</option>
+																	<option value="vm-review">vm-review</option>
+																	<option value="vm-saved">vm-saved</option>
+																	<option value="vm-savedto">vm-savedto</option>
+																	<option value="vm-savefolder">vm-savefolder</option>
+																	<option value="vm-savemessage">vm-savemessage</option>
+																	<option value="vm-saveoper">vm-saveoper</option>
+																	<option value="vm-sorry">vm-sorry</option>
+																	<option value="vm-star-cancel">vm-star-cancel</option>
+																	<option value="vm-starmain">vm-starmain</option>
+																	<option value="vm-tempgreetactive">vm-tempgreetactive</option>
+																	<option value="vm-tempgreeting">vm-tempgreeting</option>
+																	<option value="vm-tempgreeting2">vm-tempgreeting2</option>
+																	<option value="vm-tempremoved">vm-tempremoved</option>
+																	<option value="vm-then-pound">vm-then-pound</option>
+																	<option value="vm-theperson">vm-theperson</option>
+																	<option value="vm-tocallback">vm-tocallback</option>
+																	<option value="vm-tocallnum">vm-tocallnum</option>
+																	<option value="vm-tocancel">vm-tocancel</option>
+																	<option value="vm-tocancelmsg">vm-tocancelmsg</option>
+																	<option value="vm-toenternumber">vm-toenternumber</option>
+																	<option value="vm-toforward">vm-toforward</option>
+																	<option value="vm-tohearenv">vm-tohearenv</option>
+																	<option value="vm-tomakecall">vm-tomakecall</option>
+																	<option value="vm-tooshort">vm-tooshort</option>
+																	<option value="vm-toreply">vm-toreply</option>
+																	<option value="vm-torerecord">vm-torerecord</option>
+																	<option value="vm-undelete">vm-undelete</option>
+																	<option value="vm-undeleted">vm-undeleted</option>
+																	<option value="vm-unknown-caller">vm-unknown-caller</option>
+																	<option value="vm-whichbox">vm-whichbox</option>
+																	<option value="vm-youhave">vm-youhave</option>
+													</select>
+											</div>
+											<input type=text id="newstep_var_digit" size=3 style="display:none;" onChange=" $('newstep_var').value = $('newstep_var_digit').value; ">&nbsp;
+											<SCRIPT LANGUAGE="JavaScript">combo_box('newstep_var', "combodiv_sounds","combosel_sounds"); </SCRIPT>
 								&nbsp;<input type=button style='width:45' id='addstep' onclick="add_newstep()"  value="Add" disabled>
 								&nbsp;<input type=button style='width:50' id='deletestep' onclick="delete_step()"  value="Delete" disabled>
 								</td>
