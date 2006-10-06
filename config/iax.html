@@ -30,8 +30,7 @@ var fieldnames = new Array('status', 'save', 'cancel', 'bindport', 'bindaddr', '
 
 
 phonecallbacks.format = function(t) {
-		tmp = t.name.split('general');
-		if(tmp.length>1)
+		if(t.name.match('general'))
 			return t.name;
 		else
 			return false;
@@ -73,51 +72,55 @@ function localajaxinit(){
 <td>
 	<div  style="height :385px;width=400px; overflow :auto;">
 		<table align="center" cellspacing=0 cellpadding=2 width=350>
-		<tr><td align=right>bindport:</td>
+		<tr><td align=right>Bind Port:</td>
 				<td>&nbsp;<input type='text' size=4 id='bindport'></td>
 		</tr>
 
-		<tr><td align=right>bindaddr:</td>
+		<tr><td align=right>Bind Address:</td>
 				<td>&nbsp;<input type='text' size=15 id='bindaddr'></td>
 		</tr>
 
-		<tr><td align=right>iaxcompat:</td>
+		<tr><td align=right>IAX1 Compatibility:</td>
 				<td><input type='checkbox' id='iaxcompat'></td>
 		</tr>
 
-		<tr><td align=right>nochecksums:</td>
+		<tr><td align=right>No Checksums:</td>
 				<td><input type='checkbox' id='nochecksums'></td>
 		</tr>
 
-		<tr><td align=right>delayreject:</td>
+		<tr><td align=right>Delay Reject:</td>
 				<td><input type='checkbox' id='delayreject'></td>
 		</tr>
 
-		<tr><td align=right>amaflags:</td>
-				<td>&nbsp;<input type='text' size=15 id='amaflags'></td>
-		</tr>
-		
-		<tr><td align=right>adsi:</td>
+	
+		<tr><td align=right>ADSI:</td>
 				<td><input type='checkbox' id='adsi'></td>
 		</tr>
-		
-		<tr><td align=right>accountcode:</td>
+
+		<tr><td colspan=2><B>Call Detail Records</B></td></tr>
+		<tr><td align=right>AMA Flags:</td>
+				<td>&nbsp;<input type='text' size=15 id='amaflags'></td>
+		</tr>
+
+		<tr><td align=right>Accountcode:</td>
 				<td>&nbsp;<input type='text' size=15 id='accountcode'></td>
 		</tr>
 		
-		<tr><td align=right>language:</td>
+		<tr><td align=right>Language:</td>
 				<td>&nbsp;<input type='text' size=3 dfalt='en' id='language'></td>
 		</tr>
 		
-		<tr><td align=right>mohinterpret:</td>
-				<td>&nbsp;<input type='text' size=15 id='mohinterpret'></td>
+		<tr><td align=right>Music On Hold Interpret:</td>
+				<td>&nbsp;
+				
+				<input type='text' size=15 id='mohinterpret'></td>
 		</tr>
 		
-		<tr><td align=right>mohsuggest:</td>
+		<tr><td align=right>Music On Hold Suggest:</td>
 				<td>&nbsp;<input type='text' size=15 id='mohsuggest'></td>
 		</tr>
 		
-		<tr><td align=right>bandwidth:</td>
+		<tr><td align=right>Bandwidth:</td>
 				<td>&nbsp;
 				<select id="bandwidth">
 					<option value="low">low</option>
@@ -127,87 +130,119 @@ function localajaxinit(){
 				</td>
 		</tr>
 		
-		<tr><td align=right>jitterbuffer:</td>
+		<tr><td colspan=2><B>Jitter Buffer</B></td></tr>
+
+		<tr><td align=right>Enable Jitter Buffer:</td>
 				<td><input type='checkbox' id='jitterbuffer'></td>
 		</tr>
 		
-		<tr><td align=right>forcejitterbuffer:</td>
+		<tr><td align=right>Force Jitter Buffer:</td>
 				<td><input type='checkbox' id='forcejitterbuffer'></td>
 		</tr>
 		
-		<tr><td align=right>dropcount:</td>
+		<tr><td align=right>Drop Count:</td>
 				<td>&nbsp;<input type='text' size=2 id='dropcount'></td>
 		</tr>
 		
-		<tr><td align=right>maxjitterbuffer:</td>
+		<tr><td align=right>Max Jitter Buffer:</td>
 				<td>&nbsp;<input type='text' size=4 id='maxjitterbuffer'></td>
 		</tr>
 		
-		<tr><td align=right>maxjitterinterps:</td>
+		<tr><td align=right>Max Interpolation Frames:</td>
 				<td>&nbsp;<input type='text' size=4 id='maxjitterinterps'></td>
 		</tr>
 		
-		<tr><td align=right>resyncthreshold:</td>
+		<tr><td align=right>Resync Threshold:</td>
 				<td>&nbsp;<input type='text' size=4 id='resyncthreshold'></td>
 		</tr>
 		
-		<tr><td align=right>maxexcessbuffer:</td>
+		<tr><td align=right>Max Excess Buffer:</td>
 				<td>&nbsp;<input type='text' size=4 id='maxexcessbuffer'></td>
 		</tr>
 		
-		<tr><td align=right>minexcessbuffer:</td>
+		<tr><td align=right>Min Excess Buffer:</td>
 				<td>&nbsp;<input type='text' size=4 id='minexcessbuffer'></td>
 		</tr>
 		
-		<tr><td align=right>jittershrinkrate:</td>
+		<tr><td align=right>Jitter Shrink Rate:</td>
 				<td>&nbsp;<input type='text' size=4 id='jittershrinkrate'></td>
 		</tr>
 		
-		<tr><td align=right>trunkfreq:</td>
+
+<!-- Done with Jitter Buffer -->
+		<tr><td colspan=2><B>IAX Trunking Options</B></td></tr>
+		<tr><td align=right>Trunk Freq:</td>
 				<td>&nbsp;<input type='text' size=4 id='trunkfreq'></td>
 		</tr>
 		
-		<tr><td align=right>trunktimestamps:</td>
+		<tr><td align=right>Trunk Time Stamps:</td>
 				<td><input type='checkbox' id='trunktimestamps'></td>
 		</tr>
+
 		
-		<tr><td align=right>minregexpire:</td>
+		<tr><td colspan=2><B>IAX Registration Options</B></td></tr>
+		<tr><td align=right>Min Reg Expire:</td>
 				<td>&nbsp;<input type='text' size=4 id='minregexpire'></td>
 		</tr>
 		
-		<tr><td align=right>maxregexpire:</td>
+		<tr><td align=right>Max Reg Expire:</td>
 				<td>&nbsp;<input type='text' size=4 id='maxregexpire'></td>
 		</tr>
 		
-		<tr><td align=right>iaxthreadcount:</td>
+
+		<tr><td align=right>IAX ThreadCount:</td>
 				<td>&nbsp;<input type='text' size=4 id='iaxthreadcount'></td>
 		</tr>
 		
-		<tr><td align=right>iaxmaxthreadcount:</td>
+		<tr><td align=right>IAX Max ThreadCount:</td>
 				<td>&nbsp;<input type='text' size=4 id='iaxmaxthreadcount'></td>
 		</tr>
 		
-		<tr><td align=right>register:</td>
+		<tr><td align=right>Register:</td>
 				<td>&nbsp;<input type='text' size=16 id='register'></td>
 		</tr>
 		
-		<tr><td align=right>authdebug:</td>
+		<tr><td align=right>Authentication Debugging:</td>
 				<td><input type='checkbox' id='authdebug'></td>
 		</tr>
 		
-		<tr><td align=right>tos:</td>
-				<td>&nbsp;<input type='text' size=3 id='tos'></td>
+		<tr><td align=right>Type of Service:</td>
+				<td>&nbsp;
+						<select size=1 id="tos">
+							<option value='ef'>ef</option>
+							<option value='CS0'>CS0</option>
+							<option value='CS1'>CS1</option>
+							<option value='CS2'>CS2</option>
+							<option value='CS3'>CS3</option>
+							<option value='CS4'>CS4</option>
+							<option value='CS5'>CS5</option>
+							<option value='CS6'>CS6</option>
+							<option value='CS7'>CS7</option>
+							<option value='AF11'>AF11</option>
+							<option value='AF12'>AF12</option>
+							<option value='AF13'>AF13</option>
+							<option value='AF21'>AF21</option>
+							<option value='AF22'>AF22</option>
+							<option value='AF23'>AF23</option>
+							<option value='AF31'>AF31</option>
+							<option value='AF32'>AF32</option>
+							<option value='AF33'>AF33</option>
+							<option value='AF41'>AF41</option>
+							<option value='AF42'>AF42</option>
+							<option value='AF43'>AF43</option>
+						</select>
+				</td>
 		</tr>
 		
-		<tr><td align=right>regcontext:</td>
+		<tr><td align=right>Reg Context:</td>
 				<td>&nbsp;<input type='text' size=16 id='regcontext'></td>
 		</tr>
 		
-		<tr><td align=right>autokill:</td>
-				<td><input type='checkbox' id='autokill'></td>
+		<tr><td align=right>Auto Kill:</td>
+				<td><input type='text' id='autokill'></td>
 		</tr>
 		
-		<tr><td align=right>codecpriority:</td>
+		<tr><td align=right>Codec Priority:</td>
 				<td>&nbsp;
 				<select id="codecpriority">
 					<option value="caller">caller</option>
@@ -218,19 +253,22 @@ function localajaxinit(){
 				</td>
 		</tr>
 		
-		<tr><td align=right>rtcachefriends:</td>
+
+
+		<tr><td colspan=2><B>Realtime IAX Options</B></td></tr>
+		<tr><td align=right>Cache Friends:</td>
 				<td><input type='checkbox' id='rtcachefriends'></td>
 		</tr>
 
-		<tr><td align=right>rtupdate:</td>
+		<tr><td align=right>Send Registry Updates:</td>
 				<td><input type='checkbox' id='rtupdate'></td>
 		</tr>
 
-		<tr><td align=right>rtautoclear:</td>
+		<tr><td align=right>Auto-Expire Friends:</td>
 				<td><input type='checkbox' id='rtautoclear'></td>
 		</tr>
 		
-		<tr><td align=right>rtignoreexpire:</td>
+		<tr><td align=right>Ignore Expired Peers:</td>
 				<td><input type='checkbox' id='rtignoreexpire'></td>
 		</tr>
 

@@ -8,8 +8,6 @@
 #sidebar {
    float: left;
    width: 220px;
-   \width: 220px;
-   w\idth: 220px;
    margin: 0px;
    margin-right: 5px;
    padding: 0px;
@@ -18,16 +16,12 @@
 #leftHalf {
    float:left;
    width: 300px;
-   \width: 300px;
-   w\idth: 300px;
    margin: 0px 5px 0px 0px;
    padding: 0px;
 }
 
 #rightHalf {
    width: 300px;
-   \width: 300px;
-   w\idth: 300px;
    margin: 0px;
    margin-left: 310px;
    padding: 0px;
