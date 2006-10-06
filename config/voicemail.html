@@ -22,6 +22,7 @@
 <script src="scripts/prototype.js"></script>
 <script src="scripts/rico.js"></script>
 <script src="scripts/astman.js"></script>
+<script src="scripts/tooltip.js"></script>
 <link href="stylesheets/rico.css" media="all" rel="Stylesheet" type="text/css" />
 <link href="stylesheets/schwing.css" media="all" rel="Stylesheet" type="text/css" />
 
@@ -124,7 +125,7 @@
 		} else {
 			adstatus = "shown";
 			$('advancedw').style.visibility = "visible";
-			new Rico.Effect.Size('advancedw', null, 180, 120, 8 );
+			new Rico.Effect.Size('advancedw', null, 140, 120, 8 );
 		}
 	}
 	
@@ -205,14 +206,14 @@
 		<table cellspacing='0' cellpadding='0'>
 			<tr valign="top"><td>
 				<table>
-				<tr><td>Extension for checking messages:</td><td><input size='5' id='name'  onkeypress="return OnlyNumbers(event)"></td></tr>
-				<tr><td>Attach recordings to e-mail:</td><td><input type='checkbox' id='attach'></td></tr>
-				<tr><td>Say message Caller-ID:</td><td><input type='checkbox' id='saycid'></td></tr>
-				<tr><td>Say message duration:</td><td><input type='checkbox' id='sayduration'></td></tr>
-				<tr><td>Send messages by e-mail only:</td><td><input type='checkbox' id='emailonly'></td></tr>
-				<tr><td>Maximum messages per folder:</td><td><select id='maxmsg'><option value='10'>10</option><option value='25'>25</option><option value='100'>100</option><option value='250'>250</option><option value='500'>500</option><option value='1000'>1000</option></select></td></tr>
-				<tr><td>Maximum message time</td><td><select id='maxmessage'><option value='60'>1 minute</option><option value='120'>2 minutes</option><option value='300'>5 minutes</option><option value='900'>15 minutes</option><option value='1800'>30 minutes</option><option value='0'>Unlimited</option></select></td></tr>
-				<tr><td>Minimum message time:</td><td><select id='minmessage'><option value='0'>No minimum</option><option value='1'>1 second</option><option value='2'>2 seconds</option><option value='3'>3 seconds</option><option value='4'>4 seconds</option><option value='5'>5 seconds</option></select></td></tr>
+				<tr onmouseover="show_tooltip('en', 'voicemail', 0);" ><td>Extension for checking messages:</td><td><input size='5' id='name'  onkeypress="return OnlyNumbers(event)"></td></tr>
+				<tr onmouseover="show_tooltip('en', 'voicemail', 1);" ><td>Attach recordings to e-mail:</td><td><input type='checkbox' id='attach'></td></tr>
+				<tr onmouseover="show_tooltip('en', 'voicemail', 2);" ><td>Say message Caller-ID:</td><td><input type='checkbox' id='saycid'></td></tr>
+				<tr onmouseover="show_tooltip('en', 'voicemail', 3);" ><td>Say message duration:</td><td><input type='checkbox' id='sayduration'></td></tr>
+				<tr onmouseover="show_tooltip('en', 'voicemail', 4);" ><td>Send messages by e-mail only:</td><td><input type='checkbox' id='emailonly'></td></tr>
+				<tr onmouseover="show_tooltip('en', 'voicemail', 5);" ><td>Maximum messages per folder:</td><td><select id='maxmsg'><option value='10'>10</option><option value='25'>25</option><option value='100'>100</option><option value='250'>250</option><option value='500'>500</option><option value='1000'>1000</option></select></td></tr>
+				<tr onmouseover="show_tooltip('en', 'voicemail', 6);" ><td>Maximum message time</td><td><select id='maxmessage'><option value='60'>1 minute</option><option value='120'>2 minutes</option><option value='300'>5 minutes</option><option value='900'>15 minutes</option><option value='1800'>30 minutes</option><option value='0'>Unlimited</option></select></td></tr>
+				<tr onmouseover="show_tooltip('en', 'voicemail', 7);" ><td>Minimum message time:</td><td><select id='minmessage'><option value='0'>No minimum</option><option value='1'>1 second</option><option value='2'>2 seconds</option><option value='3'>3 seconds</option><option value='4'>4 seconds</option><option value='5'>5 seconds</option></select></td></tr>
 
 				<tr><td colspan='2' align='center'><div style="height:15px" id='status'></div></td></tr>
 				</table>
@@ -223,11 +224,11 @@
 				<div style="background-image:url(images/slice-v.png)" id='advancedw'>
 				<table id='advancedi' align='center'>
 				<tr><td></td><td width='50'></td><td></td></tr>
-				<tr><td colspan='2'>Dial&nbsp;'0'&nbsp;for&nbsp;Operator:</td><td align='right'><input type='checkbox' id='operator'></td></tr>
-				<tr><td>Message&nbsp;Format:</td><td colspan='2' align='right'><select id='attachfmt'><option value='wav49'>WAV (GSM)</option><option value='wav'>WAV (16-bit)</option><option value='gsm'>Raw GSM</option></select></td></tr>
-				<tr><td colspan='2'>Allow&nbsp;users&nbsp;to&nbsp;review:</td><td align='right'><input type='checkbox' id='review'></td></tr>
-				<tr><td colspan='2'>Play&nbsp;envelope:</td><td align='right'><input type='checkbox' id='envelope'></td></tr>
-				<tr><td colspan='2'>Max&nbsp;greeting&nbsp;(seconds)</td><td align='right' colspan='2'><input size=4 id='maxgreet'  onkeypress="return OnlyNumbers(event)"></td></tr>
+				<tr onmouseover="show_tooltip('en', 'voicemail', 9);" ><td colspan='2'>Dial&nbsp;'0'&nbsp;for&nbsp;Operator:</td><td align='right'><input type='checkbox' id='operator'></td></tr>
+				<tr onmouseover="show_tooltip('en', 'voicemail', 10);" ><td>Message&nbsp;Format:</td><td colspan='2' align='right'><select id='attachfmt'><option value='wav49'>WAV (GSM)</option><option value='wav'>WAV (16-bit)</option><option value='gsm'>Raw GSM</option></select></td></tr>
+				<tr onmouseover="show_tooltip('en', 'voicemail', 11);" ><td colspan='2'>Allow&nbsp;users&nbsp;to&nbsp;review:</td><td align='right'><input type='checkbox' id='review'></td></tr>
+				<tr onmouseover="show_tooltip('en', 'voicemail', 12);" ><td colspan='2'>Play&nbsp;envelope:</td><td align='right'><input type='checkbox' id='envelope'></td></tr>
+				<tr onmouseover="show_tooltip('en', 'voicemail', 13);" ><td colspan='2'>Max&nbsp;greeting&nbsp;(seconds)</td><td align='right' colspan='2'><input size=4 id='maxgreet'  onkeypress="return OnlyNumbers(event)"></td></tr>
 				</table>
 				</div>
 			</td></tr>
@@ -257,4 +258,5 @@
 	</tr>
 </table>
 </div>
+<div id='tooltip' style="margin-left:5px;height: 60px; width:575px; overflow :auto; font-family : Trebuchet MS, Arial, Helvetica, sans-serif;font-size: 11px; "></div>
 </body>

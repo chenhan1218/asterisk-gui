@@ -22,6 +22,7 @@
 <script src="scripts/prototype.js"></script>
 <script src="scripts/rico.js"></script>
 <script src="scripts/astman.js"></script>
+<script src="scripts/tooltip.js"></script>
 <script src="scripts/extensions.js"></script>
 <link href="stylesheets/rico.css" media="all" rel="Stylesheet" type="text/css" />
 <link href="stylesheets/schwing.css" media="all" rel="Stylesheet" type="text/css" />
@@ -182,7 +183,7 @@
 		} else {
 			adstatus = "shown";
 			$('advancedw').style.visibility = "visible";
-			new Rico.Effect.Size('advancedw', null, 240, 120, 8 );
+			new Rico.Effect.Size('advancedw', null, 150, 120, 8 );
 		}
 	}
 	function localajaxinit() {
@@ -224,12 +225,12 @@
 		<table cellspacing='0' cellpadding='0'>
 			<tr valign="top"><td>
 				<table>
-				<tr><td>Extension:</td><td><input size='5' id='name' onkeypress="return OnlyNumbers(event)"></td></tr>
-				<tr><td>PIN Code:</td><td><input size='5' id='pin' onkeypress="return OnlyNumbers(event)"></td></tr>
-				<tr><td>Administrator PIN Code:</td><td><input size='5' id='pinadmin' onkeypress="return OnlyNumbers(event)"></td></tr>
-				<tr><td>Play hold music for first caller</td><td><input type='checkbox' id='music'></td></tr>
-				<tr><td>Enable caller menu</td><td><input type='checkbox' id='menu'></td></tr>
-				<tr><td>Announce callers</td><td><input type='checkbox' id='announce'></td></tr>
+				<tr onmouseover="show_tooltip('en', 'meetme', 0);" ><td>Extension:</td><td><input size='5' id='name' onkeypress="return OnlyNumbers(event)"></td></tr>
+				<tr onmouseover="show_tooltip('en', 'meetme', 1);"><td>PIN Code:</td><td><input size='5' id='pin' onkeypress="return OnlyNumbers(event)"></td></tr>
+				<tr onmouseover="show_tooltip('en', 'meetme', 2);"><td>Administrator PIN Code:</td><td><input size='5' id='pinadmin' onkeypress="return OnlyNumbers(event)"></td></tr>
+				<tr onmouseover="show_tooltip('en', 'meetme', 3);"><td>Play hold music for first caller</td><td><input type='checkbox' id='music'></td></tr>
+				<tr onmouseover="show_tooltip('en', 'meetme', 4);"><td>Enable caller menu</td><td><input type='checkbox' id='menu'></td></tr>
+				<tr onmouseover="show_tooltip('en', 'meetme', 5);"><td>Announce callers</td><td><input type='checkbox' id='announce'></td></tr>
 				<tr><td colspan='2' align='center'><div style="height:15px" id='status'></div></td></tr>
 				<tr><td colspan='2'></td></tr>
 				</table>
@@ -239,11 +240,11 @@
 			<tr><td>
 				<div style="background-image:url(images/slice-v.png)" id='advancedw'>
 				<table id='advancedi' align='center'><tr><td>
-				<tr><td>Room Override:</td><td><input size='5' id='room'  onkeypress="return OnlyNumbers(event)"></td></tr>
+				<tr onmouseover="show_tooltip('en', 'meetme', 7);"><td>Room Override:</td><td><input size='5' id='room'  onkeypress="return OnlyNumbers(event)"></td></tr>
 				<tr><td>Record conference</td><td><input type='checkbox' id='record'></td></tr>
-				<tr><td>Quiet Mode</td><td><input type='checkbox' id='quiet'></td></tr>
-				<tr><td>Wait for marked user</td><td><input type='checkbox' id='waitmarked'></td></tr>
-				<tr><td>Set marked user</td><td><input type='checkbox' id='setmarked'></td></tr>
+				<tr onmouseover="show_tooltip('en', 'meetme', 8);"><td>Quiet Mode</td><td><input type='checkbox' id='quiet'></td></tr>
+				<tr onmouseover="show_tooltip('en', 'meetme', 9);"><td>Wait for marked user</td><td><input type='checkbox' id='waitmarked'></td></tr>
+				<tr onmouseover="show_tooltip('en', 'meetme', 10);"><td>Set marked user</td><td><input type='checkbox' id='setmarked'></td></tr>
 				</td></tr></table>
 				</div>
 			</td></tr>
@@ -277,5 +278,6 @@
 		</td>				
 	</tr>
 </table>
+<div id='tooltip' style="height: 60px; width:575px; overflow :auto; font-family : Trebuchet MS, Arial, Helvetica, sans-serif;font-size: 11px; "></div>
 </div>
 </body>

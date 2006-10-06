@@ -22,6 +22,7 @@
 <script src="scripts/prototype.js"></script>
 <script src="scripts/rico.js"></script>
 <script src="scripts/astman.js"></script>
+<script src="scripts/tooltip.js"></script>
 <link href="stylesheets/rico.css" media="all" rel="Stylesheet" type="text/css" />
 <link href="stylesheets/schwing.css" media="all" rel="Stylesheet" type="text/css" />
 
@@ -36,6 +37,7 @@
 	var fieldnames = new Array(
 				'delete', 'status', 'new', 'save', 'cancel','name','fullname','secret','email','cid_number','zapchan','context',
 				'hasvoicemail','hasdirectory','hassip','hasiax','hasmanager','callwaiting','threewaycalling','mailbox','hasagent','group');
+	var tooltip_fields = new Array('name,0','fullname,1','secret,2','email,3','cid_number,4','zapchan,5','context,6', 'hasvoicemail,8','hasdirectory,9','hassip,10','hasiax,11','hasmanager,12','callwaiting,13','threewaycalling,14','hasagent,15');
 
 	extencallbacks.format = function(t, x) {
 		if ((t.name != specialcontext))
@@ -121,7 +123,7 @@
 		} else {
 			adstatus = "shown";
 			$('features').style.visibility = "visible";
-			new Rico.Effect.Size('features', null, 200, 120, 8 );
+			new Rico.Effect.Size('features', null, 190, 120, 8 );
 		}
 	}
 	function localajaxinit() {
@@ -164,16 +166,16 @@
 		<select id='extensions'></select>
 		</div>
 		<div id='adjustments' style='width:350'>
-		<table cellspacing='0' cellpadding='0'>
+		<table cellspacing='0' cellpadding='0' >
 			<tr valign="top"><td>
 				<table>
-				<tr><td>Extension:</td><td><input size='5' id='name' pattern='^\d*$'></td></tr>
-				<tr><td>Name:</td><td><input size='20' id='fullname'></td></tr>
-				<tr><td>Password:</td><td><input size='5' id='secret'></td></tr>
-				<tr><td>E-mail:</td><td><input size='20' id='email'></td></tr>
-				<tr><td>Caller ID:</td><td><input size='12' id='cid_number' onkeypress="return OnlyNumbers(event)"></td></tr>
-				<tr><td>Analog Phone:</td><td><select size="1" id='zapchan' style='width:120px'></select></td></tr>
-				<tr><td>Number Plan:</td><td><select size='1' id='context' style='width:120px'></select></td></tr>
+				<tr onmouseover="show_tooltip('en', 'users', 0);" ><td>Extension:</td><td><input size='5' id='name' pattern='^\d*$'></td></tr>
+				<tr onmouseover="show_tooltip('en', 'users', 1);"><td>Name:</td><td><input size='20' id='fullname'></td></tr>
+				<tr onmouseover="show_tooltip('en', 'users', 2);"><td>Password:</td><td><input size='5' id='secret'></td></tr>
+				<tr onmouseover="show_tooltip('en', 'users', 3);"><td>E-mail:</td><td><input size='20' id='email'></td></tr>
+				<tr onmouseover="show_tooltip('en', 'users', 4);"><td>Caller ID:</td><td><input size='12' id='cid_number' onkeypress="return OnlyNumbers(event)"></td></tr>
+				<tr onmouseover="show_tooltip('en', 'users', 5);"><td>Analog Phone:</td><td><select size="1" id='zapchan' style='width:120px'></select></td></tr>
+				<tr onmouseover="show_tooltip('en', 'users', 6);"><td>Calling Rule:</td><td><select size='1' id='context' style='width:120px'></select></td></tr>
 				<tr><td colspan='2' align='center'><div style="height:15px" id='status'></div></td></tr>
 				<tr><td colspan='2' align='center'><input type='hidden' id='mailbox'><input type='hidden' id='group'></td></tr>
 				</table>
@@ -186,14 +188,14 @@
 			<tr><td>
 				<div style="background-image:url(images/slice-v.png)" id='features'>
 				<table align='center' width='80%'>
-				<tr><td>Voicemail:</td><td><input type='checkbox' id='hasvoicemail'></td></tr>
-				<tr><td>In Directory:</td><td><input type='checkbox' id='hasdirectory'></td></tr>
-				<tr><td>SIP:</td><td><input type='checkbox' id='hassip'></td></tr>
-				<tr><td>IAX:</td><td><input type='checkbox' id='hasiax'></td></tr>
-				<tr><td>CTI:</td><td><input type='checkbox' id='hasmanager'></td></tr>
-				<tr><td>Call&nbsp;Waiting:</td><td><input type='checkbox' id='callwaiting'></td></tr>
-				<tr><td>3-Way&nbsp;Calling:</td><td><input type='checkbox' id='threewaycalling'></td></tr>
-				<tr><td>Is&nbsp;Agent:</td><td><input type='checkbox' id='hasagent'></td></tr>
+				<tr onmouseover="show_tooltip('en', 'users', 8);"><td>Voicemail:</td><td><input type='checkbox' id='hasvoicemail'></td></tr>
+				<tr onmouseover="show_tooltip('en', 'users', 9);"><td>In Directory:</td><td><input type='checkbox' id='hasdirectory'></td></tr>
+				<tr onmouseover="show_tooltip('en', 'users', 10);"><td>SIP:</td><td><input type='checkbox' id='hassip'></td></tr>
+				<tr onmouseover="show_tooltip('en', 'users', 11);"><td>IAX:</td><td><input type='checkbox' id='hasiax'></td></tr>
+				<tr onmouseover="show_tooltip('en', 'users', 12);"><td>CTI:</td><td><input type='checkbox' id='hasmanager'></td></tr>
+				<tr onmouseover="show_tooltip('en', 'users', 13);"><td>Call&nbsp;Waiting:</td><td><input type='checkbox' id='callwaiting'></td></tr>
+				<tr onmouseover="show_tooltip('en', 'users', 14);"><td>3-Way&nbsp;Calling:</td><td><input type='checkbox' id='threewaycalling'></td></tr>
+				<tr onmouseover="show_tooltip('en', 'users', 15);"><td>Is&nbsp;Agent:</td><td><input type='checkbox' id='hasagent'></td></tr>
 				</table>
 				</div>
 			</td></tr>
@@ -223,5 +225,6 @@
 	</tr><tr>
 	</tr>
 </table>
+<div id='tooltip' style="margin-left:5px;height: 60px; width:575px; overflow :auto; font-family : Trebuchet MS, Arial, Helvetica, sans-serif;font-size: 11px; "></div>
 </div>
 </body>

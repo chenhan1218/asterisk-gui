@@ -47,12 +47,11 @@ phonecallbacks.postselect = function(box, val) {
 
 phonecallbacks.loaded = function() {
 		//$('hiddenfield').selectitem(0);
+
 }
 
 
-
-
-	function localajaxinit() {
+function localajaxinit() {
 		// Load the jabber.conf->users into the Users, associate the field to other fields
 		parent.loadscreen(this);
 		for (var x in fieldnames) {
