@@ -88,10 +88,6 @@ function combo_box(a, b, c ){
 					combo_text.focus();
 					combo_selectdiv.style.display = "none";
 		};
-		combo_selectbox.onBlur = function(){
-					alert("OK!!");
-					//combo_selectdiv.style.display = "none";
-		};
 		function combobox_activate(){
 				var tmp_left = combo_text.offsetLeft;
 				var tmp_top = combo_text.offsetTop + combo_text.offsetHeight;
