@@ -206,7 +206,7 @@
 		<table cellspacing='0' cellpadding='0'>
 			<tr valign="top"><td>
 				<table>
-				<tr onmouseover="show_tooltip('en', 'voicemail', 0);" ><td>Extension for checking messages:</td><td><input size='5' id='name'  onkeypress="return OnlyNumbers(event)"></td></tr>
+				<tr onmouseover="show_tooltip('en', 'voicemail', 0);" ><td>Extension for checking messages:</td><td><input size='5' id='name' pattern='^\d*$'></td></tr>
 				<tr onmouseover="show_tooltip('en', 'voicemail', 1);" ><td>Attach recordings to e-mail:</td><td><input type='checkbox' id='attach'></td></tr>
 				<tr onmouseover="show_tooltip('en', 'voicemail', 2);" ><td>Say message Caller-ID:</td><td><input type='checkbox' id='saycid'></td></tr>
 				<tr onmouseover="show_tooltip('en', 'voicemail', 3);" ><td>Say message duration:</td><td><input type='checkbox' id='sayduration'></td></tr>
@@ -228,7 +228,7 @@
 				<tr onmouseover="show_tooltip('en', 'voicemail', 10);" ><td>Message&nbsp;Format:</td><td colspan='2' align='right'><select id='attachfmt'><option value='wav49'>WAV (GSM)</option><option value='wav'>WAV (16-bit)</option><option value='gsm'>Raw GSM</option></select></td></tr>
 				<tr onmouseover="show_tooltip('en', 'voicemail', 11);" ><td colspan='2'>Allow&nbsp;users&nbsp;to&nbsp;review:</td><td align='right'><input type='checkbox' id='review'></td></tr>
 				<tr onmouseover="show_tooltip('en', 'voicemail', 12);" ><td colspan='2'>Play&nbsp;envelope:</td><td align='right'><input type='checkbox' id='envelope'></td></tr>
-				<tr onmouseover="show_tooltip('en', 'voicemail', 13);" ><td colspan='2'>Max&nbsp;greeting&nbsp;(seconds)</td><td align='right' colspan='2'><input size=4 id='maxgreet'  onkeypress="return OnlyNumbers(event)"></td></tr>
+				<tr onmouseover="show_tooltip('en', 'voicemail', 13);" ><td colspan='2'>Max&nbsp;greeting&nbsp;(seconds)</td><td align='right' colspan='2'><input size=4 id='maxgreet' pattern='^\d*$'></td></tr>
 				</table>
 				</div>
 			</td></tr>

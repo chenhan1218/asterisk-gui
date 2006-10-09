@@ -34,9 +34,7 @@
 	var phonecallbacks = new Object;
 	var extencallbacks = new Object;
 	var numcallbacks = new Object;
-	var fieldnames = new Array(
-				'delete', 'status', 'new', 'save', 'cancel','name','fullname','secret','email','cid_number','zapchan','context',
-				'hasvoicemail','hasdirectory','hassip','hasiax','hasmanager','callwaiting','threewaycalling','mailbox','hasagent','group');
+	var fieldnames = new Array( 'delete', 'status', 'new', 'save', 'cancel','name','fullname','secret','email','cid_number','zapchan','context', 'hasvoicemail','hasdirectory','hassip','hasiax','hasmanager','callwaiting','threewaycalling','mailbox','hasagent','group');
 	var tooltip_fields = new Array('name,0','fullname,1','secret,2','email,3','cid_number,4','zapchan,5','context,6', 'hasvoicemail,8','hasdirectory,9','hassip,10','hasiax,11','hasmanager,12','callwaiting,13','threewaycalling,14','hasagent,15');
 
 	extencallbacks.format = function(t, x) {
@@ -170,10 +168,10 @@
 			<tr valign="top"><td>
 				<table>
 				<tr onmouseover="show_tooltip('en', 'users', 0);" ><td>Extension:</td><td><input size='5' id='name' pattern='^\d*$'></td></tr>
-				<tr onmouseover="show_tooltip('en', 'users', 1);"><td>Name:</td><td><input size='20' id='fullname'></td></tr>
-				<tr onmouseover="show_tooltip('en', 'users', 2);"><td>Password:</td><td><input size='5' id='secret'></td></tr>
-				<tr onmouseover="show_tooltip('en', 'users', 3);"><td>E-mail:</td><td><input size='20' id='email'></td></tr>
-				<tr onmouseover="show_tooltip('en', 'users', 4);"><td>Caller ID:</td><td><input size='12' id='cid_number' onkeypress="return OnlyNumbers(event)"></td></tr>
+				<tr onmouseover="show_tooltip('en', 'users', 1);"><td>Name:</td><td><input size='20' id='fullname' pattern='^[a-zA-Z_0-9 ]*$'></td></tr>
+				<tr onmouseover="show_tooltip('en', 'users', 2);"><td>Password:</td><td><input size='5' id='secret' pattern='^\d*$'></td></tr>
+				<tr onmouseover="show_tooltip('en', 'users', 3);"><td>E-mail:</td><td><input size='20' id='email' pattern='^[0-9a-zA-Z\.\-\_\@]*$'></td></tr>
+				<tr onmouseover="show_tooltip('en', 'users', 4);"><td>Caller ID:</td><td><input size='12' id='cid_number'  pattern='^[\d\-]*$'></td></tr>
 				<tr onmouseover="show_tooltip('en', 'users', 5);"><td>Analog Phone:</td><td><select size="1" id='zapchan' style='width:120px'></select></td></tr>
 				<tr onmouseover="show_tooltip('en', 'users', 6);"><td>Calling Rule:</td><td><select size='1' id='context' style='width:120px'></select></td></tr>
 				<tr><td colspan='2' align='center'><div style="height:15px" id='status'></div></td></tr>

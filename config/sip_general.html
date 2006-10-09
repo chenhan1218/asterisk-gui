@@ -24,6 +24,7 @@ phonecallbacks.postselect = function(box, val) {
 
 phonecallbacks.loaded = function() {
 		$('hiddenfield').selectitem(0);
+		parent.loadscreen(this);
 }
 
 function localajaxinit(){
@@ -31,49 +32,49 @@ function localajaxinit(){
 			widgets[fieldnames[x]] = $(fieldnames[x]);
 			widgets[fieldnames[x]].disabled = true;
 		}
-	astmanEngine.setURL('../../rawman');
-	astmanEngine.config2list("sip.conf", $('hiddenfield'), widgets, phonecallbacks);
+	parent.astmanEngine.config2list("sip.conf", $('hiddenfield'), widgets, phonecallbacks);
 }
 </script>
-<body onload="localajaxinit()" bgcolor="#EFEFEF">
-<div id="dhtmltooltip"></div>
+<body id="foo" onload="localajaxinit()">
+<div class="mainscreenTitleBar">
+	<span style="margin-left: 4px;font-weight:bold">SIP (Session Intitation Protocol) Configuration</span>
+</div>
 <div class="mainscreenContentBox" id="userscontent">
-<div  style="height :85%;width :100%; overflow :auto;">
-<table align="center" cellspacing=0 cellpadding=2 width="97%" bgcolor="#EFEFEF">
-<tr onMouseover="ddrivetip('Default context for incoming calls','#F4EBD8')" onMouseout="hideddrivetip()"><td align=right>Context:</td>
+<div  style="height :75%;width :100%; overflow :auto;">
+<table class="mainscreenTable" align="center" width="100%" cellpadding=3 cellspacing=0>
+<tr><td align=right colspan=2>&nbsp;</td></tr>
+<tr onmouseover="show_tooltip('en', 'sip_general', 0);"><td align=right>Context:</td>
 		<td>&nbsp;<input type='text' size=10 id='context'></td>
 </tr>
-<tr onMouseover="ddrivetip('Allow/deny guest calls.','#F4EBD8')" onMouseout="hideddrivetip()"><td align=right>Allow guest calls:</td>
-		<td><input type='checkbox' dfalt='y' id='allowguest' ></td>
-</tr>
-<tr><td align=right>Overlap dialing support:</td>
-		<td><input type='checkbox' dfalt='y' id='allowoverlap'></td>
-</tr>
-<tr><td align=right>Allow Transfers:</td>
-		<td><input type='checkbox' dfalt='y' id='allowtransfer'></td>
-</tr>
-<tr onMouseover="ddrivetip('Realm for digest authentication.defaults to \'asterisk\'. If you set a system name in asterisk.conf, it defaults to that system name. Realms MUST be globally unique according to RFC 3261. Set this to your host name or domain name','#F4EBD8',300)" onMouseout="hideddrivetip()"><td align=right>Realm for digest authentication:</td>
+<tr onmouseover="show_tooltip('en', 'sip_general', 1);"><td align=right>Realm for digest authentication:</td>
 		<td>&nbsp;<input type='text' id='realm'></td>
 </tr>
-<tr onMouseover="ddrivetip('SIP standard port is 5060','#F4EBD8')" onMouseout="hideddrivetip()"><td align=right>UDP Port to bind to:</td>
+<tr onmouseover="show_tooltip('en', 'sip_general', 2);"><td align=right>UDP Port to bind to:</td>
 		<td>&nbsp;<input type='text' size=4 id='bindport'></td>
 </tr>
-<tr onMouseover="ddrivetip('0.0.0.0 binds to all','#F4EBD8')" onMouseout="hideddrivetip()"><td align=right>IP address to bind to:</td>
+<tr onmouseover="show_tooltip('en', 'sip_general', 3);"><td align=right>IP address to bind to:</td>
 		<td>&nbsp;<input type='text' size=16 id='bindaddr'></td>
 </tr>
-<tr onMouseover="ddrivetip('Enable DNS SRV lookups on calls','#F4EBD8')" onMouseout="hideddrivetip()"><td align=right>Enable DNS SRV lookups (on outbound calls):</td>
-		<td><input type='checkbox' dfalt='y' id='srvlookup'></td>
-</tr>
-<tr onMouseover="ddrivetip('Comma separated list of domains which Asterisk is responsible for','#F4EBD8')" onMouseout="hideddrivetip()"><td align=right>Domain:</td>
+<tr onmouseover="show_tooltip('en', 'sip_general', 4);"><td align=right>Domain:</td>
 		<td>&nbsp;<input type='text' size=18 id='domain'></td>
 </tr>
-<tr onMouseover="ddrivetip('Enable slow, pedantic checking of Call-ID:s, multiline SIP headers and URI-encoded headers','#F4EBD8')" onMouseout="hideddrivetip()"><td align=right>Pedantic:</td><td>
+<tr onmouseover="show_tooltip('en', 'sip_general', 5);"><td align=right>Allow guest calls:</td>
+		<td><input type='checkbox' dfalt='y' id='allowguest' ></td>
+</tr>
+<tr onmouseover="show_tooltip('en', 'sip_general', 6);"><td align=right>Overlap dialing support:</td>
+		<td><input type='checkbox' dfalt='y' id='allowoverlap'></td>
+</tr>
+<tr onmouseover="show_tooltip('en', 'sip_general', 7);"><td align=right>Allow Transfers:</td>
+		<td><input type='checkbox' dfalt='y' id='allowtransfer'></td>
+</tr>
+<tr onmouseover="show_tooltip('en', 'sip_general', 8);"><td align=right>Enable DNS SRV lookups (on outbound calls):</td>
+		<td><input type='checkbox' dfalt='y' id='srvlookup'></td>
+</tr>
+<tr onmouseover="show_tooltip('en', 'sip_general', 9);"><td align=right>Pedantic:</td><td>
 		<input type='checkbox' dfalt='no' id='pedantic'></td>
 </tr>
-
-
-<tr bgcolor="#FFFFFF" ><td colspan=2><B>&nbsp;Type of Service</B></td></tr>
-<tr  onMouseover="ddrivetip('Sets TOS for SIP packets','#F4EBD8')" onMouseout="hideddrivetip()"><td align=right>TOS for Signalling packets:</td>
+<tr bgcolor="#FFFFFF"  onmouseover="show_tooltip('en', 'sip_general', 10);"><td colspan=2><B>&nbsp;Type of Service</B></td></tr>
+<tr onmouseover="show_tooltip('en', 'sip_general', 11);"><td align=right>TOS for Signalling packets:</td>
 		<td>&nbsp;<select size=1 id="tos_sip">
 							<option value='ef'>ef</option>
 							<option value='CS0'>CS0</option>
@@ -98,7 +99,7 @@ function localajaxinit(){
 							<option value='AF43'>AF43</option>
 						</select>		
 </tr>
-<tr onMouseover="ddrivetip('Sets TOS for RTP audio packets ','#F4EBD8')" onMouseout="hideddrivetip()"><td align=right>TOS for RTP audio packets:</td>
+<tr onmouseover="show_tooltip('en', 'sip_general', 12);"><td align=right>TOS for RTP audio packets:</td>
 		<td>&nbsp;<select size=1 id="tos_audio">
 							<option value='ef'>ef</option>
 							<option value='CS0'>CS0</option>
@@ -123,7 +124,7 @@ function localajaxinit(){
 							<option value='AF43'>AF43</option>
 						</select></td>
 </tr>
-<tr onMouseover="ddrivetip('Sets TOS for RTP video packets ','#F4EBD8')" onMouseout="hideddrivetip()"><td align=right>TOS for RTP video packets:</td>
+<tr onmouseover="show_tooltip('en', 'sip_general', 13);"><td align=right>TOS for RTP video packets:</td>
 		<td>&nbsp;<select size=1 id="tos_video">
 							<option value='ef'>ef</option>
 							<option value='CS0'>CS0</option>
@@ -150,57 +151,56 @@ function localajaxinit(){
 </tr>
 
 
-<tr onMouseover="ddrivetip('Max duration (in seconds) of incoming registration we allow. Default 3600 seconds.','#F4EBD8')" onMouseout="hideddrivetip()"><td align=right>Max Registration/Subscription Time:</td>
-		<td>&nbsp;<input type='text' size=4 id='maxexpiry' dfalt="3600"></td>
+<tr onmouseover="show_tooltip('en', 'sip_general', 14);"><td align=right>Max Registration/Subscription Time:</td>
+		<td>&nbsp;<input type='text' size=4 id='maxexpiry' dfalt="3600" pattern='^\d*$'></td>
 </tr>
-<tr onMouseover="ddrivetip('Minimum length of registrations/subscriptions (default 60)','#F4EBD8')" onMouseout="hideddrivetip()"><td align=right>Min Registration/Subscription Time:</td>
-		<td>&nbsp;<input type='text' dfalt='60'  size=4 id='minexpiry'></td>
+<tr onmouseover="show_tooltip('en', 'sip_general', 15);"><td align=right>Min Registration/Subscription Time:</td>
+		<td>&nbsp;<input type='text' dfalt='60'  size=4 id='minexpiry' pattern='^\d*$'></td>
 </tr>
-<tr onMouseover="ddrivetip(' Default length of incoming/outoing registration','#F4EBD8')" onMouseout="hideddrivetip()"><td align=right> Default Incoming/Outgoing Registration Time:</td>
-		<td>&nbsp;<input type='text'  size=4 id='defaultexpiry'></td>
+<tr onmouseover="show_tooltip('en', 'sip_general', 16);"><td align=right> Default Incoming/Outgoing Registration Time:</td>
+		<td>&nbsp;<input type='text'  size=4 id='defaultexpiry' pattern='^\d*$'></td>
 </tr>
-<tr onMouseover="ddrivetip(' Minimum roundtrip time for messages to monitored hosts,  Defaults to 100 ms','#F4EBD8')" onMouseout="hideddrivetip()"><td align=right>Min RoundtripTime (T1 Time):</td>
-		<td>&nbsp;<input type='text' dfalt='100'  size=4 id='t1min'></td>
+<tr onmouseover="show_tooltip('en', 'sip_general', 17);"><td align=right>Min RoundtripTime (T1 Time):</td>
+		<td>&nbsp;<input type='text' dfalt='100'  size=4 id='t1min' pattern='^\d*$'></td>
 </tr>
-<tr onMouseover="ddrivetip('Allow overriding of mime type in MWI NOTIFY','#F4EBD8')" onMouseout="hideddrivetip()"><td align=right>Override Notify MIME Type:</td>
+<tr onmouseover="show_tooltip('en', 'sip_general', 18);"><td align=right>Override Notify MIME Type:</td>
 		<td>&nbsp;<input type='text'  size=16 id='notifymimetype'></td>
 </tr>
-<tr onMouseover="ddrivetip('Default Time between Mailbox checks for peers','#F4EBD8')" onMouseout="hideddrivetip()"><td align=right>Time between MWI Checks:</td>
+<tr onmouseover="show_tooltip('en', 'sip_general', 19);"><td align=right>Time between MWI Checks:</td>
 		<td>&nbsp;<input type='text'  size=4 id='checkmwi'></td>
 </tr>
 
-
-<tr onMouseover="ddrivetip('This option specifies a preference for which music on hold class this channel should listen to when put on hold if the music class has not been set on the channel with Set(CHANNEL(musicclass)=whatever) in the dialplan, and the peer channel putting this one on hold did not suggest a music class','#F4EBD8')" onMouseout="hideddrivetip()"><td align=right>Music On Hold Interpret:</td>
+<tr onmouseover="show_tooltip('en', 'sip_general', 20);"><td align=right>Music On Hold Interpret:</td>
 		<td>&nbsp;<input type='text'  size=12 id='mohinterpret'></td>
 </tr>
-<tr onMouseover="ddrivetip('This option specifies which music on hold class to suggest to the peer channel when this channel places the peer on hold. It may be specified globally or on a per-user or per-peer basis.','#F4EBD8')" onMouseout="hideddrivetip()"><td align=right>Music On Hold Suggest:</td>
+<tr onmouseover="show_tooltip('en', 'sip_general', 21);"><td align=right>Music On Hold Suggest:</td>
 		<td>&nbsp;<input type='text'  size=12 id='mohsuggest'></td>
 </tr>
-<tr onMouseover="ddrivetip(' Default language setting for all users/peers','#F4EBD8')" onMouseout="hideddrivetip()"><td align=right>Language:</td>
+<tr onmouseover="show_tooltip('en', 'sip_general', 22);"><td align=right>Language:</td>
 		<td>&nbsp;<input type='text' size=3 id='language'></td>
 </tr>
-<tr onMouseover="ddrivetip('Relax dtmf handling','#F4EBD8')" onMouseout="hideddrivetip()"><td align=right>Enable Relaxed DTMF:</td>
+<tr onmouseover="show_tooltip('en', 'sip_general', 23);"><td align=right>Enable Relaxed DTMF:</td>
 		<td><input type='checkbox' id='relaxdtmf'></td>
 </tr>
 
 
 
-<tr onMouseover="ddrivetip(' Terminate call if 60 seconds of no RTP activity when we're not on hold ','#F4EBD8')" onMouseout="hideddrivetip()"><td align=right>RTP TimeOut:</td>
-		<td>&nbsp;<input type='text' size=4 id='rtptimeout'></td>
+<tr onmouseover="show_tooltip('en', 'sip_general', 24);"><td align=right>RTP TimeOut:</td>
+		<td>&nbsp;<input type='text' size=4 id='rtptimeout' pattern='^\d*$'></td>
 </tr>
-<tr onMouseover="ddrivetip(' Terminate call if 300 seconds of no RTP activity when we're on hold (must be > rtptimeout)','#F4EBD8')" onMouseout="hideddrivetip()"><td align=right>RTP HoldTimeOut:</td>
-		<td>&nbsp;<input type='text' size=4 id='rtpholdtimeout'></td>
+<tr onmouseover="show_tooltip('en', 'sip_general', 25);"><td align=right>RTP HoldTimeOut:</td>
+		<td>&nbsp;<input type='text' size=4 id='rtpholdtimeout' pattern='^\d*$'></td>
 </tr>
 
 
 
-<tr onMouseover="ddrivetip('If Remote-Party-ID should be trusted','#F4EBD8')" onMouseout="hideddrivetip()"><td align=right>Trust Remote Party ID:</td>
+<tr onmouseover="show_tooltip('en', 'sip_general', 26);"><td align=right>Trust Remote Party ID:</td>
 		<td><input type='checkbox' id='trustrpid'></td>
 </tr>
-<tr onMouseover="ddrivetip('If Remote-Party-ID should be sent','#F4EBD8')" onMouseout="hideddrivetip()"><td align=right>Send Remote Party ID:</td>
+<tr onmouseover="show_tooltip('en', 'sip_general', 27);"><td align=right>Send Remote Party ID:</td>
 		<td><input type='checkbox' id='sendrpid'></td>
 </tr>
-<tr onMouseover="ddrivetip(' If we should generate in-band ringing always use \'never\' to never use in-band signalling, even in cases where some buggy devices might not render it. Default: never','#F4EBD8')" onMouseout="hideddrivetip()"><td align=right>Generate In-Band Ringing:</td>
+<tr onmouseover="show_tooltip('en', 'sip_general', 28);"><td align=right>Generate In-Band Ringing:</td>
 		<td>&nbsp;<select id='progressinband'>
 					<option value='never'>never</option>
 					<option value='no'>no</option>
@@ -208,16 +208,16 @@ function localajaxinit(){
 				</select>
 		</td>
 </tr>
-<tr onMouseover="ddrivetip('Allows you to change the user agent string','#F4EBD8')" onMouseout="hideddrivetip()"><td align=right>Server UserAgent:</td>
+<tr onmouseover="show_tooltip('en', 'sip_general', 29);"><td align=right>Server UserAgent:</td>
 		<td>&nbsp;<input type='text' size=12 id='useragent'></td>
 </tr>
-<tr onMouseover="ddrivetip('If yes, allows 302 or REDIR to non-local SIP address Note that promiscredir when redirects are made to the local system will cause loops since Asterisk is incapable of performing a \'hairpin\' call.','#F4EBD8')" onMouseout="hideddrivetip()"><td align=right>Allow Nonlocal Redirect:</td>
+<tr onmouseover="show_tooltip('en', 'sip_general', 30);"><td align=right>Allow Nonlocal Redirect:</td>
 		<td><input type='checkbox' id='promiscredir'></td>
 </tr>
-<tr onMouseover="ddrivetip(' If checked, \'user=phone\' is added to uri that contains a valid phone number','#F4EBD8')" onMouseout="hideddrivetip()"><td align=right>Add 'user=phone' to URI:</td>
+<tr onmouseover="show_tooltip('en', 'sip_general', 31);"><td align=right>Add 'user=phone' to URI:</td>
 		<td><input type='checkbox' id='usereqphone'></td>
 </tr>
-<tr onMouseover="ddrivetip(' Set default dtmfmode for sending DTMF. Default: rfc2833H ','#F4EBD8')" onMouseout="hideddrivetip()"><td align=right>DTMF Mode:</td>
+<tr onmouseover="show_tooltip('en', 'sip_general', 32);"><td align=right>DTMF Mode:</td>
 		<td>&nbsp;<select id='dtmfmode'>
 					<option value='rfc2833'>rfc2833</option>
 					<option value='info'>info</option>
@@ -226,96 +226,91 @@ function localajaxinit(){
 				</select>
 		</td>
 </tr>
-<tr onMouseover="ddrivetip('  send compact sip headers','#F4EBD8')" onMouseout="hideddrivetip()"><td align=right>Send Compact SIP Headers:</td>
+<tr onmouseover="show_tooltip('en', 'sip_general', 33);"><td align=right>Send Compact SIP Headers:</td>
 		<td><input type='checkbox' id='compactheaders'></td>
 </tr>
 
-<tr bgcolor="#FFFFFF" ><td colspan=2><B>&nbsp;SIP Video Related</B></td></tr>
-<tr onMouseover="ddrivetip('Turn on support for SIP video ','#F4EBD8')" onMouseout="hideddrivetip()"><td align=right>Support for SIP Video:</td>
-		<td><input type='checkbox' id='videosupport'></td>
-</tr>
-<tr onMouseover="ddrivetip('Maximum bitrate for video calls (default 384 kb/s)','#F4EBD8')" onMouseout="hideddrivetip()"><td align=right>Max Bitrate (kb/s):</td>
+<tr bgcolor="#FFFFFF"  onmouseover="show_tooltip('en', 'sip_general', 34);"><td colspan=2><B>&nbsp;SIP Video Related</B></td></tr>
+<tr onmouseover="show_tooltip('en', 'sip_general', 35);"><td align=right>Max Bitrate (kb/s):</td>
 		<td>&nbsp;<input type='text' size=4  dfalt=384 id='maxcallbitrate'></td>
 </tr>
-
-
-<tr onMouseover="ddrivetip('generate manager events when sip ua performs events (e.g. hold)','#F4EBD8')" onMouseout="hideddrivetip()"><td align=right>Generate Manager Events:</td>
+<tr onmouseover="show_tooltip('en', 'sip_general', 36);"><td align=right>Support for SIP Video:</td>
+		<td><input type='checkbox' id='videosupport'></td>
+</tr>
+<tr onmouseover="show_tooltip('en', 'sip_general', 37);"><td align=right>Generate Manager Events:</td>
 		<td><input type='checkbox' id='callevents'></td>
 </tr>
-<tr onMouseover="ddrivetip(' When an incoming INVITE or REGISTER is to be rejected, for any reason, always reject with \'401 Unauthorized\' instead of letting the requester know whether there was a matching user or peer for their request ','#F4EBD8')" onMouseout="hideddrivetip()"><td align=right>Reject NonMatching Invites:</td>
+<tr onmouseover="show_tooltip('en', 'sip_general', 38);"><td align=right>Reject NonMatching Invites:</td>
 		<td><input type='checkbox' id='alwaysauthreject'></td>
 </tr>
-<tr onMouseover="ddrivetip(' If the peer negotiates G726-32 audio, use AAL2 packing order instead of RFC3551 packing order (this is required for Sipura and Grandstream ATAs, among others). This is contrary to the RFC3551 specification, the peer _should_ be negotiating AAL2-G726-32 instead :-( ','#F4EBD8')" onMouseout="hideddrivetip()"><td align=right>NonStandard G.726 Support:</td>
+<tr onmouseover="show_tooltip('en', 'sip_general', 39);"><td align=right>NonStandard G.726 Support:</td>
 		<td><input type='checkbox' id='g726nonstandard'></td>
 </tr>
 
-
 <tr bgcolor="#FFFFFF" height=15><td colspan=2></td></tr>
-<tr bgcolor="#FFFFFF" ><td colspan=2><B>&nbsp;T.38 FAX Passthrough Support</B></td></tr>
-<tr bgcolor="#FFFFFF"  onMouseover="ddrivetip('Enables T.38 fax (UDPTL) passthrough on SIP to SIP calls','#F4EBD8')" onMouseout="hideddrivetip()"><td align=right>T.38 fax (UDPTL) Passthrough:</td>
+<tr  onmouseover="show_tooltip('en', 'sip_general', 40);" bgcolor="#FFFFFF" ><td colspan=2><B>&nbsp;T.38 FAX Passthrough Support</B></td></tr>
+<tr  onmouseover="show_tooltip('en', 'sip_general', 41);" bgcolor="#FFFFFF"><td align=right>T.38 fax (UDPTL) Passthrough:</td>
 										<td><input type='checkbox' id='t38pt_udptl'></td>
 </tr>
 
 
 <tr bgcolor="#FFFFFF" height=15><td colspan=2></td></tr>
-<tr><td colspan=2><B>&nbsp;Sip Debugging</B></td></tr>
-<tr onMouseover="ddrivetip('Turn on SIP debugging by default ','#F4EBD8')" onMouseout="hideddrivetip()"><td align=right>Enable SIP debugging:</td>
+<tr onmouseover="show_tooltip('en', 'sip_general', 42);"><td colspan=2><B>&nbsp;Sip Debugging</B></td></tr>
+<tr onmouseover="show_tooltip('en', 'sip_general', 43);"><td align=right>Enable SIP debugging:</td>
 		<td><input type='checkbox' id='sipdebug'></td>
 </tr>
-<tr onMouseover="ddrivetip(' Record SIP history by default ','#F4EBD8')" onMouseout="hideddrivetip()"><td align=right> Record SIP History:</td>
+<tr onmouseover="show_tooltip('en', 'sip_general', 44);"><td align=right> Record SIP History:</td>
 		<td><input type='checkbox' id='recordhistory'></td>
 </tr>
-<tr onMouseover="ddrivetip('Dump SIP history at end of SIP dialogue ','#F4EBD8')" onMouseout="hideddrivetip()"><td align=right>Dump SIP History:</td>
+<tr onmouseover="show_tooltip('en', 'sip_general', 45);"><td align=right>Dump SIP History:</td>
 		<td><input type='checkbox' id='dumphistory'></td>
 </tr>
 
-
-
 <tr   height=15><td colspan=2></td></tr>
 <tr bgcolor="#FFFFFF" height=15><td colspan=2></td></tr>
-<tr bgcolor="#FFFFFF"><td colspan=2><B>&nbsp;Status Notifications (Subscriptions) </B></td></tr>
-<tr bgcolor="#FFFFFF" onMouseover="ddrivetip(' Support for subscriptions.','#F4EBD8')" onMouseout="hideddrivetip()"><td align=right>Allow Subscribe:</td>
-										<td><input type='checkbox' id='allowsubscribe'></td>
-</tr>
-<tr bgcolor="#FFFFFF" onMouseover="ddrivetip(' Set a specific context for SUBSCRIBE requests. Useful to limit subscriptions to local extensions','#F4EBD8')" onMouseout="hideddrivetip()"><td align=right>Subscribe Context:</td>
+<tr  onmouseover="show_tooltip('en', 'sip_general', 46);" bgcolor="#FFFFFF"><td colspan=2><B>&nbsp;Status Notifications (Subscriptions) </B></td></tr>
+<tr  onmouseover="show_tooltip('en', 'sip_general', 47);" bgcolor="#FFFFFF"><td align=right>Subscribe Context:</td>
 										<td>&nbsp;<input size=8 type='text' id='subscribecontext'></td>
 </tr>
-<tr bgcolor="#FFFFFF" onMouseover="ddrivetip(' Notify subscriptions on RINGING state','#F4EBD8')" onMouseout="hideddrivetip()"><td align=right>Notify on Ringing:</td>
+<tr  onmouseover="show_tooltip('en', 'sip_general', 48);" bgcolor="#FFFFFF"><td align=right>Allow Subscribe:</td>
+										<td><input type='checkbox' id='allowsubscribe'></td>
+</tr>
+<tr  onmouseover="show_tooltip('en', 'sip_general', 49);" bgcolor="#FFFFFF"><td align=right>Notify on Ringing:</td>
 										<td><input type='checkbox' id='notifyringing'></td>
 </tr>
 
 
 
 <tr bgcolor="#FFFFFF" height=15><td colspan=2></td></tr>
-<tr><td colspan=2><B>&nbsp;Outbound SIP Registrations</B></td></tr>
-<tr onMouseover="ddrivetip('Register as a SIP user agent to a SIP proxy (provider)','#F4EBD8')" onMouseout="hideddrivetip()"><td align=right>Register:</td>
+<tr onmouseover="show_tooltip('en', 'sip_general', 50);"><td colspan=2><B>&nbsp;Outbound SIP Registrations</B></td></tr>
+<tr onmouseover="show_tooltip('en', 'sip_general', 51);"><td align=right>Register:</td>
 		<td>&nbsp;<input size=18 type='text' id='register'></td>
 </tr>
-<tr onMouseover="ddrivetip('retry registration calls at every \'x\' seconds (default 20)','#F4EBD8')" onMouseout="hideddrivetip()"><td align=right>Register TimeOut:</td>
-		<td>&nbsp;<input size=4 type='text' id='registertimeout'></td>
+<tr onmouseover="show_tooltip('en', 'sip_general', 52);"><td align=right>Register TimeOut:</td>
+		<td>&nbsp;<input size=4 type='text' id='registertimeout' pattern='^\d*$'></td>
 </tr>
-<tr onMouseover="ddrivetip(' Number of registration attempts before we give up; 0 = continue foreverp','#F4EBD8')" onMouseout="hideddrivetip()"><td align=right>Register Attempts:</td>
-		<td>&nbsp;<input size=4 type='text' id='registerattempts'></td>
+<tr onmouseover="show_tooltip('en', 'sip_general', 53);"><td align=right>Register Attempts:</td>
+		<td>&nbsp;<input size=4 type='text' id='registerattempts' pattern='^\d*$'></td>
 </tr>
 <tr height=15><td colspan=2></td></tr>
 
 
 
 <tr bgcolor="#FFFFFF" height=15><td colspan=2></td></tr>
-<tr bgcolor="#FFFFFF"><td colspan=2><B>&nbsp;NAT Support</B></td></tr>
-<tr bgcolor="#FFFFFF" onMouseover="ddrivetip('Address that we're going to put in outbound SIP messages if we're behind a NAT','#F4EBD8')" onMouseout="hideddrivetip()"><td align=right>Extern ip:</td>
+<tr  onmouseover="show_tooltip('en', 'sip_general', 54);" bgcolor="#FFFFFF"><td colspan=2><B>&nbsp;NAT Support</B></td></tr>
+<tr  onmouseover="show_tooltip('en', 'sip_general', 55);" bgcolor="#FFFFFF"><td align=right>Extern ip:</td>
 										<td>&nbsp;<input size=16 type='text' id='externip'></td>
 </tr>
-<tr bgcolor="#FFFFFF" onMouseover="ddrivetip('Alternatively you can specify an external host, and Asterisk will perform DNS queries periodically.  Not recommended for production environments!  Use externip instead ','#F4EBD8')" onMouseout="hideddrivetip()"><td align=right>Extern Host:</td>
+<tr  onmouseover="show_tooltip('en', 'sip_general', 56);" bgcolor="#FFFFFF"><td align=right>Extern Host:</td>
 										<td>&nbsp;<input size=16 type='text' id='externhost'></td>
 </tr>
-<tr bgcolor="#FFFFFF" onMouseover="ddrivetip('How often to refresh externhost if used. You may a local network in the field below.','#F4EBD8')" onMouseout="hideddrivetip()"><td align=right>Extern Refresh:</td>
+<tr  onmouseover="show_tooltip('en', 'sip_general', 57);" bgcolor="#FFFFFF"><td align=right>Extern Refresh:</td>
 										<td>&nbsp;<input size=4 type='text' id='externrefresh'></td>
 </tr>
-<tr bgcolor="#FFFFFF" onMouseover="ddrivetip(' \'192.168.0.0/255.255.0.0\'  : All RFC 1918 addresses are local networks, \'10.0.0.0/255.0.0.0\' : Also RFC1918,  \'172.16.0.0/12\' : Another RFC1918 with CIDR notation, \'169.254.0.0/255.255.0.0\' : Zero conf local network ','#F4EBD8')" onMouseout="hideddrivetip()"><td align=right>Local Network Address:</td>
+<tr  onmouseover="show_tooltip('en', 'sip_general', 58);" bgcolor="#FFFFFF"><td align=right>Local Network Address:</td>
 										<td>&nbsp;<input size=16 type='text' id='localnet'></td>
 </tr>
-<tr bgcolor="#FFFFFF" onMouseover="ddrivetip('Global NAT settings  (Affects all peers and users); yes = Always ignore info and assume NAT; no = Use NAT mode only according to RFC3581; never = Never attempt NAT mode or RFC3581 support; route = Assume NAT, don't send rport','#F4EBD8')" onMouseout="hideddrivetip()"><td align=right>NAT mode:</td>
+<tr  onmouseover="show_tooltip('en', 'sip_general', 59);" bgcolor="#FFFFFF"><td align=right>NAT mode:</td>
 		<td>&nbsp;<select id='nat'>
 					<option value='yes'>yes</option>
 					<option value='no'>no</option>
@@ -324,7 +319,7 @@ function localajaxinit(){
 				</select>
 		</td>
 </tr>
-<tr bgcolor="#FFFFFF" onMouseover="ddrivetip(' Asterisk by default tries to redirect the RTP media stream (audio) to go directly from the caller to the callee.  Some devices do not support this (especially if one of them is behind a NAT). ','#F4EBD8')" onMouseout="hideddrivetip()"><td align=right>Allow RTP Reinvite:</td>
+<tr  onmouseover="show_tooltip('en', 'sip_general', 60);" bgcolor="#FFFFFF"><td align=right>Allow RTP Reinvite:</td>
 		<td>&nbsp;<select id='canreinvite'>
 					<option value='yes'>yes</option>
 					<option value='nonat'>nonat</option>
@@ -335,83 +330,74 @@ function localajaxinit(){
 <tr bgcolor="#FFFFFF" height=15><td colspan=2></td></tr>
 
 <tr   height=15><td colspan=2></td></tr>
-<tr><td colspan=2><B>&nbsp;Realtime Support</B></td></tr>
-<tr onMouseover="ddrivetip(' Cache realtime friends by adding them to the internal list ','#F4EBD8')" onMouseout="hideddrivetip()"><td align=right>Cache Friends:</td>
-		<td><input type='checkbox' id='rtcachefriends'></td>
-</tr>
-<tr onMouseover="ddrivetip('Save systemname in realtime database at registration','#F4EBD8')" onMouseout="hideddrivetip()"><td align=right>Save SysName:</td>
-		<td><input type='checkbox' id='rtsavesysname'></td>
-</tr>
-<tr onMouseover="ddrivetip('Send registry updates to database using realtime?','#F4EBD8')" onMouseout="hideddrivetip()"><td align=right>Send Registry Updates:</td>
-		<td><input type='checkbox' id='rtupdate'></td>
-</tr>
-<tr onMouseover="ddrivetip(' Auto-Expire friends created on the fly on the same schedule as if it had just registered? (yes|no|<seconds>) If set to yes, when the registration expires, the friend will vanish from the configuration until requested again. If set to an integer, friends expire within this number of seconds instead of the registration interval.','#F4EBD8')" onMouseout="hideddrivetip()"><td align=right>Auto-Expire Friends:</td>
+<tr onmouseover="show_tooltip('en', 'sip_general', 61);"><td colspan=2><B>&nbsp;Realtime Support</B></td></tr>
+<tr onmouseover="show_tooltip('en', 'sip_general', 62);"><td align=right>Auto-Expire Friends:</td>
 		<td><input type='text' size=4 id='rtautoclear'></td>
 </tr>
-<tr onMouseover="ddrivetip(' Enabling this setting has two functions: <P> For non-realtime peers, when their registration expires, the information will _not_ be removed from memory or the Asterisk database if you attempt to place a call to the peer, the existing information will be used in spiteof it having expired</P> <P>For realtime peers, when the peer is retrieved from realtime storage, the registration information will be used regardless of whether it has expired or not; if it expires while the realtime peer is still in memory (due to caching or other reasons), the information will not be removed from realtime storage</P>','#F4EBD8')" onMouseout="hideddrivetip()"><td align=right>Ignore Expired Peers:</td>
+<tr onmouseover="show_tooltip('en', 'sip_general', 63);"><td align=right>Cache Friends:</td>
+		<td><input type='checkbox' id='rtcachefriends'></td>
+</tr>
+<tr onmouseover="show_tooltip('en', 'sip_general', 64);"><td align=right>Save SysName:</td>
+		<td><input type='checkbox' id='rtsavesysname'></td>
+</tr>
+<tr onmouseover="show_tooltip('en', 'sip_general', 65);"><td align=right>Send Registry Updates:</td>
+		<td><input type='checkbox' id='rtupdate'></td>
+</tr>
+<tr onmouseover="show_tooltip('en', 'sip_general', 66);"><td align=right>Ignore Expired Peers:</td>
 		<td><input type='checkbox' id='ignoreregexpire'></td>
 </tr>
 
 <tr bgcolor="#FFFFFF" height=15><td colspan=2></td></tr>
-<tr bgcolor="#FFFFFF"><td colspan=2><B>&nbsp;SIP Domain Support</B></td></tr>
-<tr bgcolor="#FFFFFF" onMouseover="ddrivetip('list of \'allowed\' domains ','#F4EBD8')" onMouseout="hideddrivetip()"><td align=right>Domain:</td>
+<tr  onmouseover="show_tooltip('en', 'sip_general', 67);" bgcolor="#FFFFFF"><td colspan=2><B>&nbsp;SIP Domain Support</B></td></tr>
+<tr  onmouseover="show_tooltip('en', 'sip_general', 68);" bgcolor="#FFFFFF"><td align=right>Domain:</td>
 										<td>&nbsp;<input type='text' id='domain'></td>
 </tr>
-<tr bgcolor="#FFFFFF" onMouseover="ddrivetip(' Turn this on to have Asterisk add local host name and local IP to domain list.','#F4EBD8')" onMouseout="hideddrivetip()"><td align=right>Auto Domain:</td>
+<tr  onmouseover="show_tooltip('en', 'sip_general', 69);" bgcolor="#FFFFFF"><td align=right>From Domain:</td>
+										<td>&nbsp;<input type='text' size=18 id='fromdomain'></td>
+</tr>
+<tr  onmouseover="show_tooltip('en', 'sip_general', 70);" bgcolor="#FFFFFF"><td align=right>Auto Domain:</td>
 										<td><input type='checkbox' id='autodomain'></td>
 </tr>
-<tr bgcolor="#FFFFFF" onMouseover="ddrivetip('Allow requests for domains not serviced by this server ','#F4EBD8')" onMouseout="hideddrivetip()"><td align=right>Allow External Domains:</td>
+<tr  onmouseover="show_tooltip('en', 'sip_general', 71);" bgcolor="#FFFFFF"><td align=right>Allow External Domains:</td>
 										<td><input type='checkbox' id='allowexternaldomains'></td>
 </tr>
-<tr bgcolor="#FFFFFF" onMouseover="ddrivetip('Enable INVITE and REFER to non-local domains ','#F4EBD8')" onMouseout="hideddrivetip()"><td align=right>Allow External Invites:</td>
+<tr  onmouseover="show_tooltip('en', 'sip_general', 72);" bgcolor="#FFFFFF"><td align=right>Allow External Invites:</td>
 										<td><input type='checkbox' id='allowexternalinvites'></td>
-</tr>
-<tr bgcolor="#FFFFFF" onMouseover="ddrivetip('When making outbound SIP INVITEs to non-peers, use your primary domain \'identity\' for From: headers instead of just your IP address. This is to be polite and it may be a mandatory requirement for some destinations which do not have a prior account relationship with your server. ','#F4EBD8')" onMouseout="hideddrivetip()"><td align=right>From Domain:</td>
-										<td>&nbsp;<input type='text' size=18 id='fromdomain'></td>
 </tr>
 <tr bgcolor="#FFFFFF" height=15><td colspan=2></td></tr>
 
 <tr   height=15><td colspan=2></td></tr>
-<tr><td colspan=2><B>&nbsp;Jitter Buffer Configuration</B></td></tr>
-<tr onMouseover="ddrivetip('  Enables the use of a jitterbuffer on the receiving side of a SIP channel.','#F4EBD8')" onMouseout="hideddrivetip()"><td align=right>Enable Jitter Buffer:</td>
+<tr onmouseover="show_tooltip('en', 'sip_general', 73);"><td colspan=2><B>&nbsp;Jitter Buffer Configuration</B></td></tr>
+<tr onmouseover="show_tooltip('en', 'sip_general', 74);"><td align=right>Enable Jitter Buffer:</td>
 		<td><input type='checkbox' id='jbenable'></td>
 </tr>
-<tr onMouseover="ddrivetip('Forces the use of a jitterbuffer on the receive side of a SIP channel ','#F4EBD8')" onMouseout="hideddrivetip()"><td align=right>Force Jitter Buffer:</td>
+<tr onmouseover="show_tooltip('en', 'sip_general', 75);"><td align=right>Force Jitter Buffer:</td>
 		<td><input type='checkbox' id='jbforce'></td>
 </tr>
-<tr onMouseover="ddrivetip(' Max length of the jitterbuffer in milliseconds ','#F4EBD8')" onMouseout="hideddrivetip()"><td align=right>Max Jitter Buffer:</td>
-		<td>&nbsp;<input type='text' size=4 id='jbmaxsize'></td>
+<tr onmouseover="show_tooltip('en', 'sip_general', 76);"><td align=right>Log Frames:</td>
+		<td><input type='checkbox' id='jblog'></td>
 </tr>
-<tr onMouseover="ddrivetip(' Jump in the frame timestamps over which the jitterbuffer is resynchronized. Useful to improve the quality of the voice, with big jumps in/broken timestamps, usualy sent from exotic devices and programs. Defaults to 1000.','#F4EBD8')" onMouseout="hideddrivetip()"><td align=right>Resync Threshold:</td>
-		<td>&nbsp;<input type='text' size=4 id='jbresyncthreshold'></td>
+<tr onmouseover="show_tooltip('en', 'sip_general', 77);"><td align=right>Max Jitter Buffer:</td>
+		<td>&nbsp;<input type='text' size=4 id='jbmaxsize' pattern='^\d*$'></td>
 </tr>
-<tr onMouseover="ddrivetip(' 
-Jitterbuffer implementation, used on the receiving side of a SIP channel. Two implementations are currenlty available - \'fixed\' (with size always equals to jbmaxsize) and \'adaptive\' (with variable size, actually the new jb of IAX2)','#F4EBD8')" onMouseout="hideddrivetip()"><td align=right>Implementation:</td>
+<tr onmouseover="show_tooltip('en', 'sip_general', 78);"><td align=right>Resync Threshold:</td>
+		<td>&nbsp;<input type='text' size=4 id='jbresyncthreshold' pattern='^\d*$'></td>
+</tr>
+<tr onmouseover="show_tooltip('en', 'sip_general', 79);"><td align=right>Implementation:</td>
 		<td>&nbsp;<select id='jbimpl'>
 					<option value='fixed'>fixed</option>
 					<option value='adaptive'>adaptive</option>
 				</select>
 		</td>
 </tr>
-<tr onMouseover="ddrivetip('Enables jitterbuffer frame logging.','#F4EBD8')" onMouseout="hideddrivetip()"><td align=right>Log Frames:</td>
-		<td><input type='checkbox' id='jblog'></td>
-</tr>
 </table>
 </div>
-
-<table align="center">
-<tr><td colspan=2 align=center>
-			<div  id='status'></div>
-		</td>
-</tr>
-<tr><td colspan=2 align=center>
-				<input style='width:80' type='button' id='save' value='Save'>&nbsp;<input style='width:80' type='button' id='cancel' value='Cancel'>
-		</td>
-</tr>
-</table>
+<HR>
+		<table align="center">
+		<tr><td colspan=2 align=center height=20><div  id='status'></div></td></tr>
+		<tr><td colspan=2 align=center><input style='width:80' type='button' id='save' value='Save'>&nbsp;<input style='width:80' type='button' id='cancel' value='Cancel'></td></tr>
+		</table>
 </div>
-<div style='visibility:hidden;overflow:hidden;width:0px;height:0px'>
-<select  size="5" id="hiddenfield" style="width:220px">
-</select>
-</div>
+<div style='visibility:hidden;overflow:hidden;width:0px;height:0px'><select  size="5" id="hiddenfield" style="width:220px"></select></div>
+<div id='tooltip' style="margin-left:5px;height: 60px; width:575px; overflow :auto; font-family : Trebuchet MS, Arial, Helvetica, sans-serif;font-size: 11px; "></div>
 </body>

@@ -84,17 +84,22 @@ function localajaxinit() {
 		<table cellspacing='0' cellpadding='0'>
 			<tr valign="top"><td>
 				<table>
-				<tr><td>Extension:</td><td><input size='10' id='name'></td></tr>
-				<tr><td>Username:</td><td><input size='20' id='username'></td></tr>
-				<tr><td>Password:</td><td><input size='12' id='secret'></td></tr>
-				<tr><td>Type:</td><td><input size='12' id='type'></td></tr>
-				<tr><td>Server Host:</td><td><input size='20' id='serverhost'></td></tr>
-				<tr><td>Port:</td><td><input size='4' id='port'></td></tr>
+				<tr><td>Extension:</td><td>&nbsp;<input size='24' id='name'></td></tr>
+				<tr><td>Username:</td><td>&nbsp;<input size='24' id='username'></td></tr>
+				<tr><td>Password:</td><td>&nbsp;<input size='24' id='secret'></td></tr>
+				<tr><td>Server Host:</td><td>&nbsp;<input size='24' id='serverhost'></td></tr>
+				<tr><td>Buddy:</td><td>&nbsp;<input size='24' id='buddy'></td></tr>
+				<tr><td>Status Message:</td><td>&nbsp;<input size='24' id='statusmessage'></td></tr>
+				<tr><td>Type:</td><td>&nbsp;<select id='type'>
+																			<option value="client">client</option>
+																			<option value="component">component</option>
+																		</select>
+													</td>
+				</tr>
+				<tr><td>Port:</td><td>&nbsp;<input size='4' id='port' pattern='^\d*$'></td></tr>
+				<tr><td>TimeOut:</td><td>&nbsp;<input size='4' id='timeout' pattern='^\d*$'></td></tr>
 				<tr><td>Use TLS:</td><td><input type="checkbox" id='usetls'></td></tr>
 				<tr><td>Use SASL:</td><td><input type="checkbox" id='usesasl'></td></tr>
-				<tr><td>Buddy:</td><td><input size='15' id='buddy'></td></tr>
-				<tr><td>Status Message:</td><td><input size='20' id='statusmessage'></td></tr>
-				<tr><td>TimeOut:</td><td><input size='3' id='timeout'></td></tr>
 				<tr><td colspan='2' align='center'><div style="height:15px" id='status'></div></td></tr>
 				</table>
 			</td>

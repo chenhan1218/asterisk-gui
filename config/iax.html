@@ -21,6 +21,7 @@
 <script src="scripts/prototype.js"></script>
 <script src="scripts/rico.js"></script>
 <script src="scripts/astman.js"></script>
+<script src="scripts/tooltip.js"></script>
 <link href="stylesheets/rico.css" media="all" rel="Stylesheet" type="text/css" />
 <link href="stylesheets/schwing.css" media="all" rel="Stylesheet" type="text/css" />
 <script>
@@ -62,22 +63,19 @@ function localajaxinit(){
 </script>
 <body id="foo" onload="localajaxinit()">
 <div class="mainscreenTitleBar">
-	<span style="margin-left: 4px;font-weight:bold">IAX Configuration </span>
+	<span style="margin-left: 4px;font-weight:bold">IAX (Inter Asterisk Exchange Protocol) Configuration </span>
 </div>
 
 <div class="mainscreenContentBox" id="userscontent">
-<table class="mainscreenTable" align="center">
-<tr><td height=18></td></tr>
-<tr valign="top">
-<td>
-	<div  style="height :385px;width=400px; overflow :auto;">
-		<table align="center" cellspacing=0 cellpadding=2 width=350>
+<div  style="height :75%;width :100%; overflow :auto;">
+<table class="mainscreenTable" align="center" width="100%" cellpadding=3 cellspacing=0>
+		<tr><td align=right colspan=2>&nbsp;</td></tr>
 		<tr><td align=right>Bind Port:</td>
-				<td>&nbsp;<input type='text' size=4 id='bindport'></td>
+				<td>&nbsp;<input type='text' size=4 id='bindport' pattern='^\d*$'></td>
 		</tr>
 
 		<tr><td align=right>Bind Address:</td>
-				<td>&nbsp;<input type='text' size=15 id='bindaddr'></td>
+				<td>&nbsp;<input type='text' size=14 id='bindaddr'></td>
 		</tr>
 
 		<tr><td align=right>IAX1 Compatibility:</td>
@@ -99,30 +97,27 @@ function localajaxinit(){
 
 		<tr><td colspan=2><B>Call Detail Records</B></td></tr>
 		<tr><td align=right>AMA Flags:</td>
-				<td>&nbsp;<input type='text' size=15 id='amaflags'></td>
+				<td>&nbsp;<input type='text' size=14 id='amaflags'></td>
 		</tr>
 
 		<tr><td align=right>Accountcode:</td>
-				<td>&nbsp;<input type='text' size=15 id='accountcode'></td>
+				<td>&nbsp;<input type='text' size=14 id='accountcode'></td>
+		</tr>
+		
+		<tr><td align=right>Music On Hold Interpret:</td>
+				<td>&nbsp;<input type='text' size=14 id='mohinterpret'></td>
+		</tr>
+		
+		<tr><td align=right>Music On Hold Suggest:</td>
+				<td>&nbsp;<input type='text' size=14 id='mohsuggest'></td>
 		</tr>
 		
 		<tr><td align=right>Language:</td>
 				<td>&nbsp;<input type='text' size=3 dfalt='en' id='language'></td>
 		</tr>
 		
-		<tr><td align=right>Music On Hold Interpret:</td>
-				<td>&nbsp;
-				
-				<input type='text' size=15 id='mohinterpret'></td>
-		</tr>
-		
-		<tr><td align=right>Music On Hold Suggest:</td>
-				<td>&nbsp;<input type='text' size=15 id='mohsuggest'></td>
-		</tr>
-		
 		<tr><td align=right>Bandwidth:</td>
-				<td>&nbsp;
-				<select id="bandwidth">
+				<td>&nbsp;<select id="bandwidth">
 					<option value="low">low</option>
 					<option value="medium">medium</option>
 					<option value="high">high</option>
@@ -141,38 +136,38 @@ function localajaxinit(){
 		</tr>
 		
 		<tr><td align=right>Drop Count:</td>
-				<td>&nbsp;<input type='text' size=2 id='dropcount'></td>
+				<td>&nbsp;<input type='text' size=4 id='dropcount' pattern='^\d*$'></td>
 		</tr>
 		
 		<tr><td align=right>Max Jitter Buffer:</td>
-				<td>&nbsp;<input type='text' size=4 id='maxjitterbuffer'></td>
+				<td>&nbsp;<input type='text' size=4 id='maxjitterbuffer' pattern='^\d*$'></td>
 		</tr>
 		
 		<tr><td align=right>Max Interpolation Frames:</td>
-				<td>&nbsp;<input type='text' size=4 id='maxjitterinterps'></td>
+				<td>&nbsp;<input type='text' size=4 id='maxjitterinterps' pattern='^\d*$'></td>
 		</tr>
 		
 		<tr><td align=right>Resync Threshold:</td>
-				<td>&nbsp;<input type='text' size=4 id='resyncthreshold'></td>
+				<td>&nbsp;<input type='text' size=4 id='resyncthreshold' pattern='^\d*$'></td>
 		</tr>
 		
 		<tr><td align=right>Max Excess Buffer:</td>
-				<td>&nbsp;<input type='text' size=4 id='maxexcessbuffer'></td>
+				<td>&nbsp;<input type='text' size=4 id='maxexcessbuffer' pattern='^\d*$'></td>
 		</tr>
 		
 		<tr><td align=right>Min Excess Buffer:</td>
-				<td>&nbsp;<input type='text' size=4 id='minexcessbuffer'></td>
+				<td>&nbsp;<input type='text' size=4 id='minexcessbuffer' pattern='^\d*$'></td>
 		</tr>
 		
 		<tr><td align=right>Jitter Shrink Rate:</td>
-				<td>&nbsp;<input type='text' size=4 id='jittershrinkrate'></td>
+				<td>&nbsp;<input type='text' size=4 id='jittershrinkrate' pattern='^\d*$'></td>
 		</tr>
 		
 
 <!-- Done with Jitter Buffer -->
 		<tr><td colspan=2><B>IAX Trunking Options</B></td></tr>
 		<tr><td align=right>Trunk Freq:</td>
-				<td>&nbsp;<input type='text' size=4 id='trunkfreq'></td>
+				<td>&nbsp;<input type='text' size=4 id='trunkfreq' pattern='^\d*$'></td>
 		</tr>
 		
 		<tr><td align=right>Trunk Time Stamps:</td>
@@ -182,33 +177,50 @@ function localajaxinit(){
 		
 		<tr><td colspan=2><B>IAX Registration Options</B></td></tr>
 		<tr><td align=right>Min Reg Expire:</td>
-				<td>&nbsp;<input type='text' size=4 id='minregexpire'></td>
+				<td>&nbsp;<input type='text' size=4 id='minregexpire' pattern='^\d*$'></td>
 		</tr>
 		
 		<tr><td align=right>Max Reg Expire:</td>
-				<td>&nbsp;<input type='text' size=4 id='maxregexpire'></td>
+				<td>&nbsp;<input type='text' size=4 id='maxregexpire' pattern='^\d*$'></td>
 		</tr>
 		
 
 		<tr><td align=right>IAX ThreadCount:</td>
-				<td>&nbsp;<input type='text' size=4 id='iaxthreadcount'></td>
+				<td>&nbsp;<input type='text' size=4 id='iaxthreadcount' pattern='^\d*$'></td>
 		</tr>
 		
 		<tr><td align=right>IAX Max ThreadCount:</td>
-				<td>&nbsp;<input type='text' size=4 id='iaxmaxthreadcount'></td>
+				<td>&nbsp;<input type='text' size=4 id='iaxmaxthreadcount' pattern='^\d*$'></td>
 		</tr>
 		
 		<tr><td align=right>Register:</td>
-				<td>&nbsp;<input type='text' size=16 id='register'></td>
+				<td>&nbsp;<input type='text' size=12 id='register'></td>
+		</tr>
+
+		<tr><td align=right>Reg Context:</td>
+				<td>&nbsp;<input type='text' size=12 id='regcontext'></td>
 		</tr>
 		
-		<tr><td align=right>Authentication Debugging:</td>
+		<tr><td align=right>Auto Kill:</td>
+				<td>&nbsp;<input size=3 type='text' id='autokill'></td>
+		</tr>
+		
+		<tr><td align=right><NOBR>Authentication Debugging:</NOBR></td>
 				<td><input type='checkbox' id='authdebug'></td>
 		</tr>
 		
+		<tr><td align=right>Codec Priority:</td>
+				<td>&nbsp;<select id="codecpriority">
+					<option value="caller">caller</option>
+					<option value="host">host</option>
+					<option value="disabled">disabled</option>
+					<option value="reqonly">reqonly</option>
+				</select>
+				</td>
+		</tr>
+		
 		<tr><td align=right>Type of Service:</td>
-				<td>&nbsp;
-						<select size=1 id="tos">
+				<td>&nbsp;<select size=1 id="tos">
 							<option value='ef'>ef</option>
 							<option value='CS0'>CS0</option>
 							<option value='CS1'>CS1</option>
@@ -233,27 +245,6 @@ function localajaxinit(){
 						</select>
 				</td>
 		</tr>
-		
-		<tr><td align=right>Reg Context:</td>
-				<td>&nbsp;<input type='text' size=16 id='regcontext'></td>
-		</tr>
-		
-		<tr><td align=right>Auto Kill:</td>
-				<td><input type='text' id='autokill'></td>
-		</tr>
-		
-		<tr><td align=right>Codec Priority:</td>
-				<td>&nbsp;
-				<select id="codecpriority">
-					<option value="caller">caller</option>
-					<option value="host">host</option>
-					<option value="disabled">disabled</option>
-					<option value="reqonly">reqonly</option>
-				</select>
-				</td>
-		</tr>
-		
-
 
 		<tr><td colspan=2><B>Realtime IAX Options</B></td></tr>
 		<tr><td align=right>Cache Friends:</td>
@@ -274,21 +265,12 @@ function localajaxinit(){
 
 		</table>
 	</div>
-
+<HR>
 	<table align="center">
-	<tr><td colspan=2 align=center><div  id='status'></div></td></tr>
-	<tr><td colspan=2 align=center>
-					<input style='width:80' type='button' id='save' value='Save'>&nbsp;<input style='width:80' type='button' id='cancel' value='Cancel'>
-			</td>
-	</tr>
+	<tr><td colspan=2 align=center height=20><div  id='status'></div></td></tr>
+	<tr><td colspan=2 align=center><input style='width:80' type='button' id='save' value='Save'>&nbsp;<input style='width:80' type='button' id='cancel' value='Cancel'></td></tr>
 	</table>
-
-</td>
-</tr>
-</table>
 </div>
-<div style='visibility:hidden;overflow:hidden;width:0px;height:0px'>
-<select  size="5" id="hiddenfield" style="width:220px">
-</select>
-</div>
+<div style='visibility:hidden;overflow:hidden;width:0px;height:0px'><select  size="5" id="hiddenfield" style="width:220px"></select></div>
+<div id='tooltip' style="margin-left:5px;height: 60px; width:575px; overflow :auto; font-family : Trebuchet MS, Arial, Helvetica, sans-serif;font-size: 11px; "></div>
 </body>

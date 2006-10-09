@@ -404,8 +404,8 @@ function save_queue(){
 		<table cellspacing='0' cellpadding='0'>
 			<tr valign="top"><td>
 				<table>
-				<tr onmouseover="show_tooltip('en', 'queues', 0);" ><td>Queue:</td><td><input size='5' id='name'></td></tr>
-				<tr onmouseover="show_tooltip('en', 'queues', 1);" ><td>Full Name:</td><td><input size='24' id='fullname'></td></tr>
+				<tr onmouseover="show_tooltip('en', 'queues', 0);" ><td>Queue:</td><td><input size='5' id='name' pattern='^\d*$'></td></tr>
+				<tr onmouseover="show_tooltip('en', 'queues', 1);" ><td>Full Name:</td><td><input size='24' id='fullname' pattern='^[a-zA-Z_0-9 ]*$'></td></tr>
 				<tr onmouseover="show_tooltip('en', 'queues', 2);" ><td>Strategy :</td><td><select id='strategy'> 
 																<option value="ringall">ringall</option> 
 																<option value="roundrobin">roundrobin</option> 
@@ -428,11 +428,11 @@ function save_queue(){
 			<tr><td>
 						<div style="background-image:url(images/slice-v.png)" id='advancedw'>
 									<table id='advancedi' align='center'>
-									<tr onmouseover="show_tooltip('en', 'queues', 5);" ><td>TimeOut:</td><td>&nbsp;<input size='2' id='timeout'></td></tr>
-									<tr onmouseover="show_tooltip('en', 'queues', 6);" ><td>Wrapup Time:</td><td>&nbsp;<input size='2' id='wrapuptime'></td></tr>
+									<tr onmouseover="show_tooltip('en', 'queues', 5);" ><td>TimeOut:</td><td>&nbsp;<input size='2' id='timeout'  pattern='^\d*$'></td></tr>
+									<tr onmouseover="show_tooltip('en', 'queues', 6);" ><td>Wrapup Time:</td><td>&nbsp;<input size='2' id='wrapuptime' pattern='^\d*$'></td></tr>
 									<tr onmouseover="show_tooltip('en', 'queues', 7);" ><td>Auto Fill:</td><td><input type=checkbox id='autofill'></td></tr>
 									<tr onmouseover="show_tooltip('en', 'queues', 8);" ><td>Auto Pause:</td><td><input type=checkbox id='autopause'></td></tr>
-									<tr onmouseover="show_tooltip('en', 'queues', 9);" ><td>Max Len:</td><td>&nbsp;<input size='2' id='maxlen'></td></tr>
+									<tr onmouseover="show_tooltip('en', 'queues', 9);" ><td>Max Len:</td><td>&nbsp;<input size='2' id='maxlen' pattern='^\d*$'></td></tr>
 									<tr onmouseover="show_tooltip('en', 'queues', 10);" ><td>JoinEmpty:</td><td><input type=checkbox id='joinempty'></td></tr>
 									<tr onmouseover="show_tooltip('en', 'queues', 11);" ><td>LeaveWhenEmpty:</td><td><input type=checkbox id='leavewhenempty'></td></tr>
 									<tr onmouseover="show_tooltip('en', 'queues', 12);" ><td>Report Hold Time:</td><td><input type=checkbox id='reportholdtime'></td></tr>

@@ -851,7 +851,7 @@ usercallbacks.loaded = function (){
 		</td>
 		<td valign=top align="right" width=390>
 						<table align="center" width="390">
-						<tr><td width="60" align=left>Name:</td><td align=left><input id='comment'  onKeyUp="enable_savecancel()" disabled></td></tr>
+						<tr><td width="60" align=left>Name:</td><td align=left><input id='comment'  onKeyUp="enable_savecancel()"  pattern='^[a-zA-Z_0-9 ]*$' disabled ></td></tr>
 						<tr><td colspan=2>Steps:</td></tr>
 						<tr><td align=center colspan=2> 
 										<TABLE>
@@ -877,7 +877,7 @@ usercallbacks.loaded = function (){
 									<option value="Wait">Wait</option>
 									<option value="Hangup">Hangup</option>
 								</select>&nbsp;
-								<input type=text id="newstep_var" size=4 disabled>
+								<input type=text id="newstep_var" style="display:none" size=4 disabled>
 											<div id="combodiv_sounds">
 													<select size=5 id="combosel_sounds" style="font-family: Verdana, Arial, Helvetica, Sans-Serif;font-size: 11px; ">
 															<option value="" style="font-weight: bold">Agent Related</option>
@@ -1090,7 +1090,7 @@ usercallbacks.loaded = function (){
 																	<option value="vm-youhave">vm-youhave</option>
 													</select>
 											</div>
-											<input type=text id="newstep_var_digit" size=3 style="display:none;" onChange=" $('newstep_var').value = $('newstep_var_digit').value; ">&nbsp;
+											<input type=text id="newstep_var_digit" size=3 style="display:none;" onChange=" $('newstep_var').value = $('newstep_var_digit').value;"  pattern='^\d*$'>&nbsp;
 											<SCRIPT LANGUAGE="JavaScript">combo_box('newstep_var', "combodiv_sounds","combosel_sounds"); </SCRIPT>
 								&nbsp;<input type=button style='width:45' id='addstep' onclick="add_newstep()"  value="Add" disabled>
 								&nbsp;<input type=button style='width:50' id='deletestep' onclick="delete_step()"  value="Delete" disabled>

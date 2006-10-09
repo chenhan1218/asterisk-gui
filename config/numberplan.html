@@ -190,6 +190,7 @@
 	// called "ON page load" and when the  extensions select box is clicked
 		var tmp;
 		tmp = val.split(']');
+		$('combobox_div').style.display = "none";
 
 		if (tmp.length > 1) {
 				/* Found an entry */
@@ -491,7 +492,7 @@
 				</td></tr>
 				<tr><td>Pattern:</td><td><input size='18' id='name'>
 						<div id="combobox_div">
-						  <select size=5 id="combosel" style="font-family: Verdana, Arial, Helvetica, Sans-Serif;font-size: 11px; ">
+						  <select size=5 id="combosel" style="font-family: Verdana, Arial, Helvetica, Sans-Serif;font-size: 11px;">
 							<option value="_9NXXXXXX">_9NXXXXXX (Seven Digit Dial)</option>
 							<option value="_9NXXNXXXXXX">_9NXXNXXXXXX (Ten Digit Dial)</option>
 							<option value='_91NXXNXXXXXX'>_91NXXNXXXXXX (1+ Dial)</option>
@@ -506,8 +507,8 @@
 						</SCRIPT>
 				</td></tr>
 				<tr><td>Trunk:</td><td><select id='trunk'></select></td></tr>
-				<tr><td>Priority:</td><td><input size='4' id='priority'></td></tr>
-				<tr><td>Real Priority:</td><td><input size='4' id='realpriority'></td></tr>
+				<tr><td>Priority:</td><td><input size='4' id='priority' pattern='^\d*$'></td></tr>
+				<tr><td>Real Priority:</td><td><input size='4' id='realpriority' pattern='^\d*$'></td></tr>
 				<tr><td colspan='2' align='center'><div style="height:15px" id='status'></div></td></tr>
 				<tr><td colspan='2'></td></tr>
 				</table>
