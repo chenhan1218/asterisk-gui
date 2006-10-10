@@ -18,6 +18,18 @@
  * at the top of the source tree.
  *
  */
+function showdiv_savingchanges(){
+		document.write ("<div ID=\"saving_changes\"  STYLE=\"display:none; position: absolute; left: 170; top: 190; width:350; height:115;  background-color:#F4EFE5;   border-width: 1px; border-color: #7E5538; border-style: solid;\">");
+		document.write ("<BR><BR>");
+		document.write ("		<TABLE border=0 cellpadding=0 cellspacing=3 align=\"center\">");
+		document.write ("					<TR>	<TD><img src=\"images/loading.gif\"></TD>");
+		document.write ("								<TD valign=\"middle\" align=\"center\">&nbsp;&nbsp;Saving Changes ...</TD>");
+		document.write ("					</TR>");
+		document.write ("		</TABLE>");
+		document.write ("	</div>");
+}
+
+
 
 function combo_box(a, b, c ){	
 		var combo_text = document.getElementById(a);
