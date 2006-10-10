@@ -319,8 +319,8 @@ function save_vmenu(){
 			var current_vmenu = next_freevmenu();
 			uri += build_action('newcat', p, current_vmenu,"", ""); p = p+1;
 			uri += build_action('append', p, current_vmenu,"comment", $('comment').value); p = p+1;
-			if( $('allowexten').checked && $('context').value )
-				uri += build_action('append', p, current_vmenu,"include", $('context').value ); p = p+1;
+			if( $('allowexten').checked)
+				uri += build_action('append', p, current_vmenu,"include", "default"); p = p+1;
 			uri += build_action('append', p, current_vmenu,"exten", answer_call_string); p = p+1;
 	}else{
 			// Updating existing Voicemenu
@@ -329,17 +329,15 @@ function save_vmenu(){
 					uri += build_action('update', p, current_vmenu ,"comment", $('comment').value ); p = p+1;
 			}
 			
-			if( typeof  $('vmenus').stored_config.catbyname[current_vmenu].fieldbyname['include'] == "string" && $('vmenus').stored_config.catbyname[current_vmenu].fieldbyname['include']!="" ){
-					if( $('allowexten').checked &&  $('context').value != $('vmenus').stored_config.catbyname[current_vmenu].fieldbyname['include']   &&  $('context').value ) {
-						uri += build_action('update', p, current_vmenu ,"include", $('context').value ); p = p+1;
-						$('vmenus').stored_config.catbyname[current_vmenu].fieldbyname['include'] = $('context').value ;
-					}else if ( ! $('allowexten').checked ){
+			 if( typeof ($('vmenus').stored_config.catbyname[current_vmenu].fieldbyname['include']) == "string" && $('vmenus').stored_config.catbyname[current_vmenu].fieldbyname['include']=="default" && !$('allowexten').checked ){
 						uri += build_action('delete', p, current_vmenu ,"include",""); p = p+1;
 						$('vmenus').stored_config.catbyname[current_vmenu].fieldbyname['include'] = "" ;
-					}
-			}else if( $('allowexten').checked &&  $('context').value != $('vmenus').stored_config.catbyname[current_vmenu].fieldbyname['include']   &&  $('context').value ){
-						uri += build_action('append', p, current_vmenu ,"include", $('context').value ); p = p+1;
-						$('vmenus').stored_config.catbyname[current_vmenu].fieldbyname['include'] = $('context').value ;
+			}else if ( typeof ($('vmenus').stored_config.catbyname[current_vmenu].fieldbyname['include']) == "string" && $('vmenus').stored_config.catbyname[current_vmenu].fieldbyname['include']!="default" && $('allowexten').checked ){
+						uri += build_action('append', p, current_vmenu ,"include", "default"); p = p+1;
+						$('vmenus').stored_config.catbyname[current_vmenu].fieldbyname['include'] = "default" ;
+			}else if ( typeof ($('vmenus').stored_config.catbyname[current_vmenu].fieldbyname['include']) != 'string' && $('allowexten').checked ){
+						uri += build_action('append', p, current_vmenu ,"include", "default"); p = p+1;
+						$('vmenus').stored_config.catbyname[current_vmenu].fieldbyname['include'] = "default" ;
 			}
 
 			for (var k=0; k< keys.length; k++){
@@ -539,18 +537,10 @@ menuscallbacks.postselect = function() {
 	var x, y, tmp;
 	var priority_1, priority_2, buffer;
 	
-	$('context').options[ $('context').length - 1 ].selected = true;
-	$('context').style.display="none";
 	$('allowexten').checked = false;
 
-	if ( typeof  $('vmenus').stored_config.catbyname[current_context].fieldbyname['include'] == "string"){
-		for(y=0; y< $('context').length ; y++ ){
-				if( $('context').options[y].value == $('vmenus').stored_config.catbyname[current_context].fieldbyname['include']){
-					$('context').options[y].selected = true;
-					$('context').style.display="";
-					$('allowexten').checked = true;
-				}
-		}
+	if ( typeof  $('vmenus').stored_config.catbyname[current_context].fieldbyname['include'] == "string" && $('vmenus').stored_config.catbyname[current_context].fieldbyname['include'] == "default" ){
+			$('allowexten').checked = true;
 	}
 
 	//$('keypressoptions').innerHTML = "";
@@ -688,26 +678,7 @@ menuscallbacks.loaded = function(){
 				load_extensions(current_key_exts);
 				load_menus(current_key_menus);
 			}
-
-			parent.astmanEngine.config2list("extensions.conf", $('context'), new Array(), numcallbacks);	
 }
-
-numcallbacks.format = function(t) {
-		if ((t.name.substr(0,11) != 'numberplan-'))
-			return null;
-		if (t.fieldbyname['comment'])
-			return t.fieldbyname['comment'];
-		return t.name;
-}
-
-numcallbacks.loaded = function(){
-		var newoption = document.createElement("option");
-			newoption.text = " - - ";
-			newoption.value = "";
-		$('context').options.add ( newoption );
-		$('context').options[ $('context').length - 1 ].selected = true;
-}
-
 
 menuscallbacks.identifier = "extension";
 
@@ -1097,12 +1068,10 @@ usercallbacks.loaded = function (){
 								</td>
 						</tr>
 						
-						<tr><td colspan=2>&nbsp;<input type=checkbox id=allowexten disabled onchange=" $('context').style.display = ($('context').style.display=='none') ? '': 'none'; "> Dial other Extensions?&nbsp;
-									<select size='1' id='context' style='width:120px; display: none'></select>
+						<tr><td colspan=2>&nbsp;<input type=checkbox id=allowexten disabled> Dial other Extensions?&nbsp;
 								</td>
 						</tr>
-
-						<tr><td colspan=2 height=15></td></tr>
+						<tr><td colspan=2 height=6></td></tr>
 						<tr><td colspan=2>'Keypress' Events</td></tr>
 						<tr><td colspan=2>
 										<div  style="width=390px;">
