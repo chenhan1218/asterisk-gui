@@ -38,143 +38,7 @@ var queuenames = new Array;
 var fieldnames = new Array( 'name', 'delete','save', 'status', 'new', 'cancel','fullname', 'strategy', 'timeout', 'wrapuptime','autofill','autopause','maxlen', 'joinempty',  'leavewhenempty', 'reportholdtime','agents');
 var k =0;
 var j = -1; 
-
-
-// Queue Call Backs
-queuecallbacks.format = function(t,x) {
-		var tmp = t.name.split('general');
-		if(tmp.length>1)
-				return false;
-		else if ( t.name && x==undefined ){	 				// if is a category
-				k=0;
-				j = j +1;
-				queueagents[j] = new Array;
-				queuenames[j] = t.name;
-				return t.name + " -- Queue '" + t.fieldbyname['fullname'] + "'";
-		}else {																// if is a subcategory 
-				tmp = t.fields[x].split ('Agent/');
-				if(t.names[x] == 'member' && tmp.length > 1){
-					queueagents [j] [k] = tmp[1];
-					k = k+1;
-				}
-				return false;
-		}
-}
-
-queuecallbacks.postselect = function(box, val ) {
-		if($('queues').selectedIndex	==-1){ 
-			$('save_q').disabled=true; 
-			return true; 
-		} 
-
-		// show all member entires listed under the queue member - $('queues').value
-		for( k=0; k<queuenames.length; k++ ){
-				if( queuenames[k] == $('queues').value ){
-					j = k;
-					break;
-				}
-		}
-		$('testmulti').innerHTML ="";		
-
-		for (k=0;k< $('agents').length ;k++ ){
-			selectedagent = "selectedagent" + k;
-			if( InArray( queueagents [j], $('agents').options[k].innerHTML.substr(0,4) ) ){
-				$('agents').options[k].selected = true;	
-				$('testmulti').innerHTML += '<INPUT id="' + selectedagent + '" TYPE="CHECKBOX" VALUE="'+ $('agents').options[k].innerHTML.substr(0,4) + '" checked>' + $('agents').options[k].innerHTML.substr(8) + '<BR>';
-			}else{
-				$('agents').options[k].selected = false;
-				$('testmulti').innerHTML += '<INPUT id="' + selectedagent + '" TYPE="CHECKBOX" VALUE="'+ $('agents').options[k].innerHTML.substr(0,4) + '">' + $('agents').options[k].innerHTML.substr(8) + '<BR>';
-			}
-		}
-		
-	$('save_q').disabled = false;
-}
-
-queuecallbacks.loaded = function() {
-		parent.astmanEngine.config2list("users.conf", $('agents'), new Array(), usercallbacks);
-}
-
-queuecallbacks.newcategory = function(t) {
-		var tmp = null;
-		$('save_q').disabled=false;
-
-		if ($('queues').stored_config.catbyname['general']){
-			tmp = objcopy($('queues').stored_config.catbyname['general']);
-		}
-		tmp.name="";
-return tmp;
-}
-
-queuecallbacks.checkparams = function(box) {
-
-}
-
-queuecallbacks.eachline = true;
-
-queuecallbacks.includecats = true;
-
-// User call backs
-usercallbacks.format = function (t,x){
-		if ((t.name == 'general'))
-			return null;
-		if ( t.fieldbyname['hasagent']=='yes' ) {
-			return t.name + " -- " + t.fieldbyname['fullname'];
-		} else
-			return null;
-}
-
-usercallbacks.identifier = "extension";
-
-usercallbacks.postselect = function (){
-	
-}
-
-usercallbacks.loaded = function (){
-	parent.astmanEngine.config2list("extensions.conf", $('extensions'), new Array(), extencallbacks);
-}
-
-//extencallbacks
-extencallbacks.format = function(t, x) {
-	var res;
-	var qname;
-	if ((t.name != specialcontext))
-		return null;
-	res = format_extension($('extensions'), t, x);
-	if (t.subfields[x]['app'] == 'Queue') {
-		return null;
-	}
-	return res;
-}
-
-extencallbacks.loaded = function() {
-	parent.astmanEngine.config2list("users.conf", $('devices'), new Array(), callbacks);
-}
-
-extencallbacks.eachline = true;
-
-// Call Backs
-callbacks.format = function (t,x){
-		if ((t.name == 'general'))
-			return null;
-		if (t.name.substring(0,6) == 'trunk_')
-			return null;
-		if (t.fieldbyname['fullname'] && t.fieldbyname['fullname'].length) {
-			return t.name + " -- " + t.fieldbyname['fullname'];
-		} else
-			return t.name;
-}
-
-callbacks.identifier = "extension";
-
-callbacks.postselect = function (){
-
-}
-
-callbacks.loaded = function (){
-	merge_extensions($('queues'), $('extensions'));
-	merge_extensions($('queues'), $('devices'));
-	parent.loadscreen(this);
-}
+var extensions_conf_qs = new Array;
 
 function save_status(){
 	$('save_q').disabled = false;
@@ -192,22 +56,7 @@ function togglefeatures() {
 	}
 }
 
-function localajaxinit() {
-	$('advancedw').style.overflow = "hidden";
-	$('advancedw').style.height = 1;
-	$('advancedw').style.width = $('split').width;
-	$('advancedi').style.width = $('split').width - 60;
 
-	for (var x in fieldnames) {
-		widgets[fieldnames[x]] = $(fieldnames[x]);
-		widgets[fieldnames[x]].disabled = true;
-	}
-
-	adstatus = "hidden";
-	parent.astmanEngine.config2list("queues.conf", $('queues'), widgets, queuecallbacks);
-	$('save_q').disabled = true;
-	return;
-}
 
 function rename_extension(a,b){
 	// rename extension 'a' in extensions.conf to 'b'
@@ -379,6 +228,122 @@ function save_queue(){
 		opt.parameters="action=updateconfig&reload=yes&srcfilename=" + encodeURIComponent("queues.conf") + "&dstfilename=" + encodeURIComponent("queues.conf") + uri;
 		tmp = new Ajax.Request('../../rawman', opt);
 }
+
+
+// User call backs
+usercallbacks.loaded = function (){
+	merge_extensions($('queues'), $('extensions'));
+	merge_extensions($('queues'), $('devices'));
+	parent.loadscreen(this);
+}
+usercallbacks.identifier = "extension";
+usercallbacks.postselect = function (){	 }
+usercallbacks.format = function (t,x){
+		if ((t.name == 'general'))
+			return null;
+		if ( t.fieldbyname['hasagent']=='yes' ) 
+			return t.name + " -- " + t.fieldbyname['fullname'];
+		else
+			return null;
+}
+
+// Call Backs
+callbacks.loaded = function (){	parent.astmanEngine.config2list("users.conf", $('agents'), new Array(), usercallbacks);	}
+callbacks.identifier = "extension";
+callbacks.postselect = function (){	 }
+callbacks.format = function (t,x){
+		if ((t.name == 'general'))
+			return null;
+		if (t.name.substring(0,6) == 'trunk_')
+			return null;
+		if (t.fieldbyname['fullname'] && t.fieldbyname['fullname'].length) {
+			return t.name + " -- " + t.fieldbyname['fullname'];
+		} else
+			return t.name;
+}
+
+
+// Queue Call Backs
+queuecallbacks.postselect = function(box, val ) {
+		if($('queues').selectedIndex	==-1){ 	$('save_q').disabled=true; 	return true; 	} 
+		// show all member entires listed under the queue member - $('queues').value
+		for( k=0; k<queuenames.length; k++ ){
+				if( queuenames[k] == $('queues').value ){		j = k;	break;		}
+		}
+		$('testmulti').innerHTML ="";		
+		for (k=0;k< $('agents').length ;k++ ){
+			selectedagent = "selectedagent" + k;
+			if( InArray( queueagents [j], $('agents').options[k].innerHTML.substr(0,4) ) ){
+				$('agents').options[k].selected = true;	
+				$('testmulti').innerHTML += '<INPUT id="' + selectedagent + '" TYPE="CHECKBOX" VALUE="'+ $('agents').options[k].innerHTML.substr(0,4) + '" checked>' + $('agents').options[k].innerHTML.substr(8) + '<BR>';
+			}else{
+				$('agents').options[k].selected = false;
+				$('testmulti').innerHTML += '<INPUT id="' + selectedagent + '" TYPE="CHECKBOX" VALUE="'+ $('agents').options[k].innerHTML.substr(0,4) + '">' + $('agents').options[k].innerHTML.substr(8) + '<BR>';
+			}
+		}
+		$('save_q').disabled = false;
+}
+
+queuecallbacks.loaded = function() { 	parent.astmanEngine.config2list("users.conf", $('devices'), new Array(), callbacks); }
+queuecallbacks.newcategory = function(t) {
+		var tmp = null;
+		$('save_q').disabled=false;
+		if ($('queues').stored_config.catbyname['general']){ tmp = objcopy($('queues').stored_config.catbyname['general']);	}
+		tmp.name="";
+	return tmp;
+}
+queuecallbacks.checkparams = function(box) { }
+queuecallbacks.eachline = true;
+queuecallbacks.includecats = true;
+
+queuecallbacks.format = function(t,x) {
+		var tmp = t.name.split('general');
+		if(tmp.length>1)
+				return false;
+		else if ( t.name && x==undefined && InArray(extensions_conf_qs, t.name) ){	 				// if is a category
+				k=0;
+				j = j +1;
+				queueagents[j] = new Array;
+				queuenames[j] = t.name;
+				return t.name + " -- Queue '" + t.fieldbyname['fullname'] + "'";
+		}else if(InArray(extensions_conf_qs, t.name)) {  // if is a subcategory 
+				tmp = t.fields[x].split ('Agent/');
+				if(t.names[x] == 'member' && tmp.length > 1){
+					queueagents [j] [k] = tmp[1];
+					k = k+1;
+				}
+				return false;
+		}
+}
+
+//extencallbacks
+extencallbacks.loaded = function() {	parent.astmanEngine.config2list("queues.conf", $('queues'), widgets, queuecallbacks);	}
+extencallbacks.eachline = true;
+extencallbacks.format = function(t, x) {
+	var res;
+	var qname;
+	if ((t.name != specialcontext)){	return null; }
+	res = format_extension($('extensions'), t, x);
+	if (t.subfields[x]['app'] == 'Queue') {	extensions_conf_qs.push(t.subfields[x]['name']); return null;	 }
+	return res;
+}
+////////
+
+function localajaxinit() {
+	$('advancedw').style.overflow = "hidden";
+	$('advancedw').style.height = 1;
+	$('advancedw').style.width = $('split').width;
+	$('advancedi').style.width = $('split').width - 60;
+	for (var x in fieldnames) {
+		widgets[fieldnames[x]] = $(fieldnames[x]);
+		widgets[fieldnames[x]].disabled = true;
+	}
+	adstatus = "hidden";
+	parent.astmanEngine.config2list("extensions.conf", $('extensions'), new Array(), extencallbacks);
+	$('save_q').disabled = true;
+	return;
+}
+
 </script>
 
 <body id="foo" onload="localajaxinit()">
@@ -397,7 +362,9 @@ function save_queue(){
 		<select size="28" id="queues" style="width:220px">
 		<option>Loading...</option>
 		</select>
-		<div style='visibility:hidden;overflow:hidden;width:0px;height:0px'><select id='extensions'></select><select id='devices'></select><select id='finalextensions'></select></div>
+		<div style='visibility:hidden;overflow:hidden;width:0px;height:0px'>
+			<select id='extensions'></select><select id='devices'></select><select id='finalextensions'></select>
+		</div>
 		</td>
 		<td>
 		<div id='adjustments'>
