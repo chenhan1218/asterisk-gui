@@ -162,7 +162,7 @@ function sortNumber(a,b){
 }
 
 function add_newstep(){
-	$('saving_changes').style.display="block";
+	$('status_message').style.display="block";
 	if( !$('newstep_action').value ){
 		alert("Please select an action for this step");
 		$('newstep_action').focus();
@@ -181,7 +181,7 @@ function add_newstep(){
 			method: 'get',
 			asynchronous: true,
 			onSuccess: function() { 
-				setTimeout("$('saving_changes').style.display='none'",500);
+				setTimeout("$('status_message').style.display='none'",sc_displaytime);
 				// if request successfull then add this to the steps select box
 				var newoption = document.createElement("option"); 
 				newoption.text = format_step(action_string ); 
@@ -203,7 +203,7 @@ function add_newstep(){
 				update_updown();
 			},
 			onFailure: function(t) {
-				$('saving_changes').style.display='none';
+				$('status_message').style.display='none';
 				alert("Config Error: " + t.status + ": " + t.statusText);
 			},
 	};
@@ -269,12 +269,12 @@ function next_freevmenu(){	 // return the next smallest available voicemenu name
 
 
 function save_vmenu(){
-	$('saving_changes').style.display="block";
+	$('status_message').style.display="block";
 	var opt = {
 			method: 'get',
 			asynchronous: true,
 			onSuccess: function() { 
-					setTimeout("$('saving_changes').style.display='none'",500);
+					setTimeout("$('status_message').style.display='none'",sc_displaytime);
 					$('status').innerHTML = "<i>Updated.</i>";
 					$('savevmenu').disabled = true;
 					$('save').disabled = true;
@@ -312,7 +312,7 @@ function save_vmenu(){
 
 			},
 			onFailure: function(t) {
-				$('saving_changes').style.display='none';
+				$('status_message').style.display='none';
 				alert("Config Error: " + t.status + ": " + t.statusText);
 			},
 	};
@@ -486,12 +486,12 @@ function swap_step(a,b){
 
 function delete_step(){
 	// delete the selected step and update voicemenusdata and update 'select' object - steps
-	$('saving_changes').style.display="block";
+	$('status_message').style.display="block";
 	var opt = {
 			method: 'get',
 			asynchronous: true,
 			onSuccess: function() { 
-						setTimeout("$('saving_changes').style.display='none'",500);
+						setTimeout("$('status_message').style.display='none'",sc_displaytime);
 						// Update voicemenusdata
 						for(var p=0; p< voicemenusdata[$('vmenus').value].extensions['s'].length; p++){
 							if( voicemenusdata[$('vmenus').value].extensions['s'][p] == $('steps').value )
@@ -504,7 +504,7 @@ function delete_step(){
 
 			},
 			onFailure: function(t) {
-				$('saving_changes').style.display='none';
+				$('status_message').style.display='none';
 				alert("Config Error: " + t.status + ": " + t.statusText);
 			},
 	};	
@@ -746,6 +746,7 @@ menuscallbacks.newcategory = function(t) {
 
 
 function localajaxinit() {
+		$('message_text').innerHTML ="Saving Changes...";
 		for (x =0 ; x<fieldnames.length; x++){
 			widgets[fieldnames[x]] = $(fieldnames[x]);
 			widgets[fieldnames[x]].disabled = true;
@@ -1132,7 +1133,7 @@ usercallbacks.loaded = function (){
 </div>
 <SCRIPT LANGUAGE="JavaScript">
 <!--
-showdiv_savingchanges();
+showdiv_statusmessage();
 //-->
 </SCRIPT>
 </body>

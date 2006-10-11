@@ -216,12 +216,43 @@
 		parent.astmanEngine.config2list("providers.conf", $('provider'), provwidgets, providercallbacks);
 	}
 	
+
+	function update_zapchan(){
+		$('save').disabled = false;
+		$('cancel').disabled = false;
+
+		for (k=0;k< $('zapchan').length ;k++ ){
+				var selectedline = "selectedline" + k;
+				if( $(selectedline).checked  ){
+					$('zapchan').options[k].selected = true;
+				}else{
+					$('zapchan').options[k].selected = false;
+				}
+		}
+	}
+
+
+
 	function activateanalogvoip() {
-		if ($('trunkstyleanalog').checked) 
-			new Rico.Effect.Size('analog', null, 450, 120, 8);
-		else if ($('trunkstylevoip').checked) {
-			new Rico.Effect.Size('analog', null, 1, 120, 8, {complete:function() { $('analog').style.height = '0'; }});
-			$('voip').style.height = 450;
+		if ($('trunkstyleanalog').checked) {
+				new Rico.Effect.Size('analog', null, 450, 120, 8);
+				$('zapchan').style.display = "none";
+				$('zapchan_analoglines').style.display = "block";
+				$('zapchan_analoglines').innerHTML ="";
+				for (k=0;k< $('zapchan').length ;k++ ){
+						var selectedline = "selectedline" + k;
+						if($('zapchan').options[k].selected){
+							$('zapchan_analoglines').innerHTML += '<INPUT id="' + selectedline + '" TYPE="CHECKBOX" VALUE="'+ $('zapchan').options[k].value+ '" checked onclick="update_zapchan()">' + $('zapchan').options[k].text + '<BR>';
+						}else{
+							$('zapchan_analoglines').innerHTML += '<INPUT id="' + selectedline + '" TYPE="CHECKBOX" VALUE="'+ $('zapchan').options[k].value+ '" onclick="update_zapchan()">' + $('zapchan').options[k].text + '<BR>';
+						}
+				}
+		}else if ($('trunkstylevoip').checked) {
+				new Rico.Effect.Size('analog', null, 1, 120, 8, {complete:function() { $('analog').style.height = '0'; }});
+				$('voip').style.height = 450;
+				$('zapchan').style.display = "block";
+				$('zapchan_analoglines').style.display = "none";
+				$('zapchan_analoglines').innerHTML ="";		
 		}
 			
 	}
@@ -294,10 +325,14 @@
 				<div id='analogvoipcontainer' style='height:450;overflow:hidden'>
 				<div id='analog' style='height:0;overflow:hidden'>
 				<table>
-				<tr><td style='width:80px' valign='top'>Lines:</td><td><select size="12" multiple='true' id='zapchan' style='width:200px'></select></td></tr>
+				<tr><td style='width:80px' valign='top'>Lines:</td>
+						<td><select size="12" multiple='true' id='zapchan' style='width:200px'></select>
+								<div id="zapchan_analoglines" style='height:110px; width: 200px; overflow :auto; display:none'></div>
+						</td>
+				</tr>
 				<tr><td colspan='2' style='width:80px' valign='top' align='center'>
 					<div style='width:250'>
-						<i>Use CTRL+click and/or SHIFT+click to select more than one port.</i>
+						<!-- <i>Use CTRL+click and/or SHIFT+click to select more than one port.</i> -->
 					</div>
 				</td></tr>
 				</table>
