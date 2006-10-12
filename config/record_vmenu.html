@@ -1,0 +1,88 @@
+<!--
+ * Asterisk -- An open source telephony toolkit.
+ *
+ * Configuration for "Users" generally
+ *
+ * Copyright (C) 1999 - 2006, Digium, Inc.
+ *
+ * Mark Spencer <markster@digium.com>
+ *
+ * See http://www.asterisk.org for more information about
+ * the Asterisk project. Please do not directly contact
+ * any of the maintainers of this project for assistance;
+ * the project provides a web site, mailing lists and IRC
+ * channels for your use.
+ *
+ * This program is free software, distributed under the terms of
+ * the GNU General Public License Version 2. See the LICENSE file
+ * at the top of the source tree.
+ *
+-->
+
+<script src="scripts/prototype.js"></script>
+<script src="scripts/rico.js"></script>
+<script src="scripts/astman.js"></script>
+<link href="stylesheets/rico.css" media="all" rel="Stylesheet" type="text/css" />
+<link href="stylesheets/schwing.css" media="all" rel="Stylesheet" type="text/css" />
+
+<script>
+function localajaxinit() {
+	// Load the jabber.conf->users into the Users, associate the field to other fields
+	parent.loadscreen(this);
+
+}
+</script>
+<body id="foo" onload="localajaxinit()">
+<div class="mainscreenTitleBar">
+	<span style="margin-left: 4px;font-weight:bold">Record a Custom VoiceMenu</span>
+</div>
+<div class="mainscreenContentBox" id="userscontent">
+<table class="mainscreenTable" align="center">
+	<tr><td valign="top" align="center">
+			<BR>
+			<table cellpadding=3 cellspacing=0 border=0 width=400>
+				<tr><td colspan=3 align=center><B>List of recorded voicemenus</B></td></tr>
+				<tr bgcolor="#FFFFFF"><td><font color="#2D4E93">File Name</font></td>
+						<td><font color="#2D4E93">Size</font></td>
+						<td></td>
+				</tr>
+				<tr><td>Some_Filename1.gsm</td>
+						<td>230kb</td>
+						<td align=center><input type=checkbox id='select_filename1'></td>
+				</tr>
+				<tr><td>Some_Filename2.gsm</td>
+						<td>164kb</td>
+						<td align=center><input type=checkbox id='select_filename2'></td>
+				</tr>
+				<tr><td>Some_Filename3.gsm</td>
+						<td>514kb</td>
+						<td align=center><input type=checkbox id='select_filename3'></td>
+				</tr>
+				<tr><td></td>
+						<td></td>
+						<td><input type=button id='delete' value="delete"></td>
+				</tr>
+			</table>
+
+
+
+
+
+
+			<BR><BR>
+			<table cellpadding=2 cellspacing=2 border=0>
+				<tr>	<td colspan=2 height=40 valign=middle align=center><B>Record a new voicemenu</B> </td>	</tr>
+				<tr><td>File Name:</td>
+						<td><input id='newvmenu_name' size=16></td>
+				</tr>
+				<tr>	<td>Extension used for recording:</td>
+						<td><input id='newvmenu_ext' size=16><input type="button" value="&#9660;" style="width:20; height:18; font-family: helvetica; font-size=50%"></td>
+				</tr>
+				<tr>	<td colspan=2 align=center height=10></td></tr>
+				<tr>	<td colspan=2 align=center><input type="button" id='record' Value="Record"></td></tr>
+			</table>
+	</td>
+	</tr>
+</table>
+</div>
+</body>
