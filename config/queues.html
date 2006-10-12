@@ -98,6 +98,7 @@ function add_extension(a){
 
 
 function save_queue(){
+		$('status_message').style.display="block";
 		var p = 0;
 		var q = 0;
 		var r = 0;
@@ -107,6 +108,7 @@ function save_queue(){
 			method: 'get',
 			asynchronous: true,
 			onSuccess: function() { 
+					setTimeout("$('status_message').style.display='none'",sc_displaytime);
 					$('status').innerHTML = "<i>Updated.</i>";
 					$('new').disabled = false;
 					$('save_q').disabled = true;
@@ -129,6 +131,7 @@ function save_queue(){
 					}
 			},
 			onFailure: function(t) {
+				$('status_message').style.display='none';
 				alert("Config Error: " + t.status + ": " + t.statusText);
 			},
 		};
@@ -275,10 +278,10 @@ queuecallbacks.postselect = function(box, val ) {
 			selectedagent = "selectedagent" + k;
 			if( InArray( queueagents [j], $('agents').options[k].innerHTML.substr(0,4) ) ){
 				$('agents').options[k].selected = true;	
-				$('testmulti').innerHTML += '<INPUT id="' + selectedagent + '" TYPE="CHECKBOX" VALUE="'+ $('agents').options[k].innerHTML.substr(0,4) + '" checked>' + $('agents').options[k].innerHTML.substr(8) + '<BR>';
+				$('testmulti').innerHTML += '<INPUT id="' + selectedagent + '" TYPE="CHECKBOX" VALUE="'+ $('agents').options[k].innerHTML.substr(0,4) + '" checked onclick="$(\'save_q\').disabled=false; $(\'cancel\').disabled=false;">' + $('agents').options[k].innerHTML.substr(8) + '<BR>';
 			}else{
 				$('agents').options[k].selected = false;
-				$('testmulti').innerHTML += '<INPUT id="' + selectedagent + '" TYPE="CHECKBOX" VALUE="'+ $('agents').options[k].innerHTML.substr(0,4) + '">' + $('agents').options[k].innerHTML.substr(8) + '<BR>';
+				$('testmulti').innerHTML += '<INPUT id="' + selectedagent + '" TYPE="CHECKBOX" VALUE="'+ $('agents').options[k].innerHTML.substr(0,4) + '" onclick="$(\'save_q\').disabled=false; $(\'cancel\').disabled=false;">' + $('agents').options[k].innerHTML.substr(8) + '<BR>';
 			}
 		}
 		$('save_q').disabled = false;
@@ -341,6 +344,7 @@ function localajaxinit() {
 	adstatus = "hidden";
 	parent.astmanEngine.config2list("extensions.conf", $('extensions'), new Array(), extencallbacks);
 	$('save_q').disabled = true;
+	$('message_text').innerHTML = " Saving Changes ... ";
 	return;
 }
 
@@ -435,4 +439,9 @@ function localajaxinit() {
 </table>
 <div id='tooltip' style="margin-left:5px;height: 60px; width:560px; overflow :auto; font-family : Trebuchet MS, Arial, Helvetica, sans-serif;font-size: 11px; "></div>
 </div>
+<SCRIPT LANGUAGE="JavaScript">
+<!--
+showdiv_statusmessage();
+//-->
+</SCRIPT>
 </body>
