@@ -283,9 +283,7 @@
 		var tmp = new Object;
 		var x;
 		var gen;
-		tmp['name'] = $('extensions').stored_config.catbyname[$('extensions').value].fieldbyname['defaultpat'];
-		if (!tmp['name'] || !tmp['name'].length)
-			tmp['name'] = $('combosel').options[0].value;
+		tmp['name'] = $('combosel').options[0].value;
 		numplan = $('extensions').value ;
 		return new Array(numplan, 'exten', tmp);
 	}
@@ -350,7 +348,7 @@
 		adstatus = "hidden";
 		$('extensions').contentEditable = 'false';
 		
-		for (var x in fieldnames) {
+		for (var x =0; x < fieldnames.length ; x++) {
 			widgets[fieldnames[x]] = $(fieldnames[x]);
 			widgets[fieldnames[x]].disabled = true;
 		}

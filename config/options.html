@@ -25,28 +25,16 @@
 <link href="stylesheets/schwing.css" media="all" rel="Stylesheet" type="text/css" />
 <script>
 var options = new Object;
+var options_fields = new Array('pwdbutton', 'currentpass', 'newpass','newpass_rep');
+var widgets = new Array;
+var fieldnames = new Array('status','bindaddr','bindport','save','cancel');
+var httpconf_callbacks = new Object;
 
 function loggedOff() {
-			$('pwdbutton').disabled = true;
-			$('currentpass').disabled = true;
-			$('newpass').disabled = true;
-			$('newpass_rep').disabled = true;
+			for(var x=0; x< options_fields.length; x++){
+				$(options_fields[x]).disabled = true;
+			}
 	return;
-}
-
-options.pongs = function(msgs){
-		var resp = msgs[0].headers['response'];
-		if (resp == "Pong") {
-			
-		} else {
-			$('status').innerHTML = "<i>Please login...</i>";
-			$('pwdbutton').disabled = true;
-			$('currentpass').disabled = true;
-			$('newpass').disabled = true;
-			$('newpass_rep').disabled = true;
-			//parent.setLoggedOn(0);
-			return;
-		}
 }
 
 options.logins = function(msgs) {
@@ -105,59 +93,66 @@ function showResponse(originalRequest)	{
 		}
 }
 
+function compare_passwords(){
+	if( $('newpass').value==$('newpass_rep').value && $('newpass').value.length > 3 )
+		$('pwdbutton').disabled = false;
+	else
+		$('pwdbutton').disabled = true;
+}
+
 function localajaxinit(){
-	parent.loadscreen(this);
-	parent.astmanEngine.sendRequest('action=ping', options.pongs);
 	$('pwdbutton').disabled = true;
+
+	for (var x in fieldnames) {
+		widgets[fieldnames[x]] = $(fieldnames[x]);
+		widgets[fieldnames[x]].disabled = true;
+	}
+	parent.astmanEngine.config2list("http.conf", $('hiddenfield'), widgets, httpconf_callbacks);
 	return;
 }
 
-function compare_passwords(){
-	if( $('newpass').value==$('newpass_rep').value && $('newpass').value.length > 3 ){
-		$('pwdbutton').disabled = false;
-	}else{
-		$('pwdbutton').disabled = true;
-	}
+httpconf_callbacks.format = function(t) {
+		var tmp = t.name.split('general');
+		if(tmp.length>1)
+			return t.name;
+		else
+			return false;
+}
 
+httpconf_callbacks.loaded = function() {
+		$('hiddenfield').selectitem(0);
+		parent.loadscreen(this);
 }
 
 </script>
 <body id="foo" onload="localajaxinit()">
-<div class="mainscreenTitleBar">
-	<span style="margin-left: 4px;font-weight:bold">Admin Options</span>
-</div>
+<div class="mainscreenTitleBar"><span style="margin-left: 4px;font-weight:bold">Admin Options</span></div>
 <div class="mainscreenContentBox" id="userscontent">
 <table class="mainscreenTable" align="center">
-	<tr valign="top" height="18">
-		<td>
-		<B>Change Password: </B>
-		</td>
+	<tr valign="top" height="18">	<td>	<B>Change Password: </B></td></tr>
+	<tr>	<td align="center" valign="top" height=180>
+					<div id="channellist" class="chanlist">
+					<table>	<tr>	<td colspan=2 height=18></td></tr>
+									<tr>	<td>Current Password:</td><td><input type="password" id="currentpass" size=16></td></tr>
+									<tr>	<td>New Password:</td><td><input type="password" id="newpass" size=16 onkeyup="compare_passwords()">&nbsp;( min 4 characters )</td></tr>
+									<tr>	<td>Retype New Password:</td><td><input type="password" id="newpass_rep" size=16 onkeyup="compare_passwords()"></td></tr>
+									<tr>	<td align=center colspan=2><input type="button" id="pwdbutton" value="Update" onclick="askfor_updatepassword()"></td></tr>
+					</table>
+					</div>
+			</td>
 	</tr>
-	<tr>
-		<td align="center" valign="top">
-				<div id="channellist" class="chanlist">
-				<table>
-				<tr>	<td colspan=2 height=18></td>
-				</tr>
-
-				<tr>	<td>Current Password:</td>
-					<td><input type="password" id="currentpass" size=16></td>
-				</tr>
-				<tr>	<td>New Password:</td>
-					<td><input type="password" id="newpass" size=16 onkeyup="compare_passwords()">&nbsp;( min 4 characters )</td>
-				</tr>
-				<tr>	<td>Retype New Password:</td>
-					<td><input type="password" id="newpass_rep" size=16 onkeyup="compare_passwords()"></td>
-				</tr>
-				<tr>	<td align=center colspan=2>
-						<input type="button" id="pwdbutton" value="Update" onclick="askfor_updatepassword()">
-					</td>
-				</tr>
-				</table>
-				</div>
-		</td>
+	<tr valign="top" height="18">	<td><B>GUI - acess settings: </B></td></tr>
+	<tr>	<td align="center" valign="top" height=170>
+					<table>
+							<tr><td>Bind Address:</td>		<td><input size=14 id='bindaddr' dfalt="127.0.0.1"></td></tr>
+							<tr><td>Port:</td>						<td><input size=14 id='bindport' dfalt=80></td></tr>
+							<tr><td colspan=2><BR></td></tr>
+							<tr><td colspan=2 align=center><input type=button id=save value="Save">&nbsp;<input type=button id=cancel value="Cancel"></td></tr>
+					</table>
+					<select  size="5" id="hiddenfield" style="display:none; width:220px"></select>
+			</td>
 	</tr>
-	<tr><td valign="top"><div  id='status'></div></td></tr>
+	<tr><td valign="top" align=center><div  id='status'></div></td></tr>
 	<tr><td></td></tr>
 </table>
 </div>
