@@ -72,8 +72,8 @@
 			"Trunks are outbound lines used to allow the system to make calls to the " +
 			"real world.  Trunks can be VoIP lines or traditional telephony lines."),
 
-		new PanelDef("numberplan", "Number Plan", "accordion-icon.gif",
-			"The number plan defines dialing permissions and least cost routing rules."),
+		new PanelDef("numberplan", "Calling Rules", "accordion-icon.gif",
+			"The calling rules define dialing permissions and least cost routing rules."),
 
 		new PanelDef("networking", "Networking", "accordion-icon.gif",
 			"Configures networking parameters"),
@@ -146,7 +146,7 @@
 	}
 
 	function registerajax() {
-		accordion = new Rico.Accordion( $('configpanel'), { panelHeight:280,onHideTab:fademainscreen,onShowTab:showmainscreen });
+		accordion = new Rico.Accordion( $('configpanel'), { panelHeight:360,onHideTab:fademainscreen,onShowTab:showmainscreen });
 		$('borderbox').style.height = $('screenholder').clientHeight;
 		$('titlebar').style.width = $('borderbox').clientWidth - 12;
 		for (var i = 0; i < panels.length; i++) {
@@ -196,7 +196,7 @@
 	</div>
 	<div id="borderbox" class="mainscreenBorderBox" style="height:100px">
 	</div>
-	<iframe width="600" height="600" frameborder="0" border="0" marginheight="0" marginwidth="0" src="homeapp.html" id="mainscreen" style="position:absolute;top:56px">
+	<iframe width="600" height="640" frameborder="0" border="0" marginheight="0" marginwidth="0" src="homeapp.html" id="mainscreen" style="position:absolute;top:56px">
 	</iframe>
 </td>
 </tr>
