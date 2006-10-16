@@ -1,0 +1,27 @@
+Introduction
+======================
+Asterisk-GUI is a framework for the creation of graphical interfaces for
+configuring Asterisk.  Some sample graphical interfaces for specific vertical
+markets are included for reference or for actual use and extension. 
+
+Software License
+================
+Asterisk-GUI HTML and Javascript files, like Asterisk, are distributed under the
+GNU General Public License version 2.  Dual licensing is available through
+Digium as well.
+
+Use of Graphics, Trademarks and Logos
+=====================================
+The images and logos included with Asterisk-GUI may only be distributed with
+unmodified versions of the toolkit and may not be used in any derivative works
+without special written permission from Digium.  Asterisk, Asterisk-GUI and
+Digium are all trademarks of Digium, Inc. and their use is governed by our
+trademark policy available at:
+
+	http://www.digium.com/en/company/profile/trademarkpolicy.php
+
+Bugs
+====
+Bugs, patches, and feature requests may be submitted at http://bugs.digium.com
+and should reference the GUI project.
+
