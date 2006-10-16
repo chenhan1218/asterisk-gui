@@ -31,7 +31,7 @@ var widgets = new Array;
 var fieldnames = new Array('status', 'save', 'cancel', 'new', 'delete','name', 'username','disallow','allow','context','connection');
 
 phonecallbacks.format = function(t) {
-		tmp = t.name.split('general');
+		var tmp = t.name.split('general');
 		if(tmp.length>1)
 			return false;
 		else
@@ -39,22 +39,130 @@ phonecallbacks.format = function(t) {
 }
 
 phonecallbacks.postselect = function(box, val) {
-
+	
 }
 
 phonecallbacks.loaded = function() {
-		//$('hiddenfield').selectitem(0);
+
+}
+
+
+function enable_selectedcodec(){
+	// add to allowed
+	selectbox_add("allowed" ,  $('disallowed').value );
+	// remove selected from disallowed
+	selectbox_remove("disallowed", $('disallowed').value );
+}
+
+function disable_selectedcodec(){
+	// add to disallowed
+	selectbox_add("disallowed" ,  $('allowed').value );
+	// remove selected from allowed
+	selectbox_remove("allowed", $('allowed').value );
+}
+
+
+
+function selectbox_add(selectbox_id, codec){
+		switch(codec) {
+		  case 'ulaw':   $(selectbox_id).innerHTML = $(selectbox_id).innerHTML + '<option value="ulaw">u-law</option>'; break
+		  case 'alaw':   $(selectbox_id).innerHTML = $(selectbox_id).innerHTML + '<option value="alaw">a-law</option>'; break
+		  case 'gsm':   $(selectbox_id).innerHTML = $(selectbox_id).innerHTML + '<option value="gsm">GSM</option>'; break
+		  case 'ilbc':   $(selectbox_id).innerHTML = $(selectbox_id).innerHTML + '<option value="ilbc">ILBC</option>'; break
+		  case 'speex':   $(selectbox_id).innerHTML = $(selectbox_id).innerHTML + '<option value="speex">SPEEX</option>'; break
+		  case 'g726':   $(selectbox_id).innerHTML = $(selectbox_id).innerHTML + '<option value="g726">G.726</option>'; break
+		  case 'adpcm':   $(selectbox_id).innerHTML = $(selectbox_id).innerHTML + '<option value="adpcm">ADPCM</option>'; break
+		  case 'lpc10':   $(selectbox_id).innerHTML = $(selectbox_id).innerHTML + '<option value="lpc10">LPC10</option>'; break
+		  case 'g729':   $(selectbox_id).innerHTML = $(selectbox_id).innerHTML + '<option value="g729">G.729a</option>'; break
+		  default: break
+	   }
+}
+
+function 	selectbox_remove(selectbox_id,codec){
+	for (var x=0; x < $(selectbox_id).length; x++){
+		if( $(selectbox_id).options[x].value==codec ){	$(selectbox_id).remove(x);		return true;		}
+	}
+}
+
+
+function update_ordercodecs(){
+			if($('disallow_all').checked){
+					$('disallow').value = "all";
+			}else{
+					for (var x=0; x < $('disallowed').length ; x++){
+						if(x==0){
+							$('disallow').value = $('disallowed').options[x].value ;
+						}else{
+							$('disallow').value = $('disallow').value + "," + $('disallowed').options[x].value ;
+						}
+					}
+			}
+
+			for (var x=0; x < $('allowed').length ; x++){
+				if(x==0){ 	
+						$('allow').value = $('allowed').options[x].value ; 
+				}else{
+						$('allow').value = $('allow').value + "," +  $('allowed').options[x].value ; 
+				}
+			}
+			$('div_setordercodecs').style.display = "none";
+			for (var x =0; x < fieldnames.length; x++) {
+				widgets[fieldnames[x]].disabled = false;
+			}
+			$('JingleUsers').disabled = false;
+}
+
+function cancel_ordercodecs(){
+			for (var x =0; x < fieldnames.length; x++) {
+				widgets[fieldnames[x]].disabled = false;
+			}
+			$('div_setordercodecs').style.display = "none";
+			$('JingleUsers').disabled = false;
+}
+
+function update_div_setordercodecs(){
+	if($('JingleUsers').selectedIndex	==-1){ return true;}
+		$('disallowed').innerHTML=""; 	$('allowed').innerHTML="";
+		if( $('disallow').value == "all"){
+			$('disallow_all').checked = true;
+			selectbox_add("disallowed", "ulaw");
+			selectbox_add("disallowed", "alaw");
+			selectbox_add("disallowed", "gsm");
+			selectbox_add("disallowed", "ilbc");
+			selectbox_add("disallowed", "speex");
+			selectbox_add("disallowed", "g726");
+			selectbox_add("disallowed", "adpcm");
+			selectbox_add("disallowed", "lpc10");
+			selectbox_add("disallowed", "g729");
+		}else{
+			var tmp = $('disallow').value.split(",");
+			for(var x=0; x < tmp.length; x++){
+				selectbox_add("disallowed", tmp[x]);
+			}
+		}
+		var tmp = $('allow').value.split(",");
+		for(var x=0; x < tmp.length; x++){
+			selectbox_add("allowed", tmp[x]);
+			selectbox_remove("disallowed",tmp[x]);
+		}
+
+		for (var x =0; x < fieldnames.length; x++) {
+			widgets[fieldnames[x]].disabled = true;
+		}
+		$('JingleUsers').disabled = true;
+
+	$('div_setordercodecs').style.display='block';
 }
 
 function localajaxinit() {
-	// Load the jabber.conf->users into the Users, associate the field to other fields
-	parent.loadscreen(this);
-	for (var x in fieldnames) {
-		widgets[fieldnames[x]] = $(fieldnames[x]);
-		widgets[fieldnames[x]].disabled = true;
-	}
-	parent.astmanEngine.config2list("jingle.conf", $('JingleUsers'), widgets, phonecallbacks);
-	return;
+			// Load the jabber.conf->users into the Users, associate the field to other fields
+			parent.loadscreen(this);
+			for (var x =0; x < fieldnames.length; x++) {
+				widgets[fieldnames[x]] = $(fieldnames[x]);
+				widgets[fieldnames[x]].disabled = true;
+			}
+			parent.astmanEngine.config2list("jingle.conf", $('JingleUsers'), widgets, phonecallbacks);
+			return;
 }
 </script>
 <body id="foo" onload="localajaxinit()">
@@ -82,24 +190,31 @@ function localajaxinit() {
 						<tr><td>Extension:</td>						<td><input size='12' id='name'></td></tr>
 						<tr><td>Username:</td>						<td><input size='20' id='username'></td></tr>
 						<tr><td>Disallowed Codecs:</td>		<td><input size='12' id='disallow'></td></tr>
-						<tr><td>Allowed Codecs:</td>			<td><input size='12' id='allow'><input type=button id="sd" value="Edit" onclick="$('div_setordercodecs').style.display='block'">
-																							<div style="position:absolute; display:none; background-color:#F4EFE5;" id="div_setordercodecs">
-																								<table >
-																									<tr><td><select id="allowed"></select></td>
-																											<td><input type="button" id="select_codec" value="<"><BR><input type="button" id="deselect_codec" value=">"></td>
-																											<td><select id="disallowed" size=9><option value="ulaw">u-law</option>
-																																								  <option value="alaw">a-law</option>
-																																								  <option value="gsm">GSM</option>
-																																								  <option value="ilbc">ILBC</option>
-																																								  <option value="speex">SPEEX</option>
-																																								  <option value="g726">G.726</option>
-																																								  <option value="adpcm">ADPCM</option>
-																																								  <option value="lpc10">LPC10</option>
-																																								  <option value="g729">G.729a</option>
+						<tr><td>Allowed Codecs:</td>			<td><input size='12' id='allow'><input type=button id="sd" value="Edit" onclick="update_div_setordercodecs()">
+																							<div style="position:absolute; display:none; left: 170; top: 190; width:350; background-color:#F4EFE5; border-width: 1px; border-color: #7E5538; border-style: solid;" id="div_setordercodecs">
+																								<table align=center>
+																									<tr><td><BR></td></tr>
+																									<tr><td>Allowed</td>
+																											<td></td>
+																											<td>Disallowed</td>
+																									</tr>
+
+																									<tr><td><select id="allowed" size=9></select></td>
+																											<td><input type="button" id="select_codec" value="<" onclick="enable_selectedcodec()"><BR><input type="button" id="deselect_codec" value=">" onclick="disable_selectedcodec()"></td>
+																											<td><select id="disallowed" size=9>
 																													</select>
 																											</td>
 																									</tr>
-																									<tr><td colspan=3 align=Center><input type="button" id="setordercodecs" value="update" onclick="update_ordercodecs()"></td></tr>
+																									<tr><td></td>
+																											<td></td>
+																											<td><input type=checkbox id="disallow_all">Disallow All</td>
+																									</tr>
+																									<tr><td colspan=3 align=Center>
+																											<input type="button" id="setordercodecs" value="update" onclick="update_ordercodecs()">&nbsp;&nbsp;
+																											<input type="button" id="cancel_setorder" value="Cancel" onclick="cancel_ordercodecs()">
+																											</td>
+																									</tr>
+																									<tr><td><BR></td></tr>
 																								</table>
 																							</div>
 																							</td></tr>
