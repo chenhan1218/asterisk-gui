@@ -25,3 +25,34 @@ Bugs
 Bugs, patches, and feature requests may be submitted at http://bugs.digium.com
 and should reference the GUI project.
 
+Installation
+============
+
+# make
+# make install
+
+Configuration
+=============
+You may install sample configuration files by doing "make samples".  Also you 
+will need to edit your Asterisk configuration files to enable the GUI properly,
+specifically:
+
+1) In http.conf:
+
+	enabled = yes
+	enablestatic = yes
+	
+2) In manager.conf
+
+	enabled = yes
+	webenabled = yes
+	
+3) Create an appropriate entry in manager.conf for the administrative user
+(PLEASE READ THE security.txt FILE!)
+
+    [admin]
+    secret = thiswouldbeaninsecurepassword
+    read = system,call,log,verbose,command,agent,config
+    write = system,call,log,verbose,command,agent,config
+
+to 

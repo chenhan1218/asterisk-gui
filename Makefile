@@ -95,7 +95,7 @@ checkconfig:
 	fi
 		
 	@echo -n "* Checking if manager is enabled: "
-	@if grep -v ^\; $(ASTETCDIR)/manager.conf | grep enabled | grep -q yes 2>/dev/null; then \
+	@if grep -v ^\; $(ASTETCDIR)/manager.conf | grep ^enabled | grep -q yes 2>/dev/null; then \
 		echo "OK" ; \
 	else \
 		echo "FAILED"; \
