@@ -21,6 +21,7 @@
 <script src="scripts/prototype.js"></script>
 <script src="scripts/rico.js"></script>
 <script src="scripts/astman.js"></script>
+<script src="scripts/tooltip.js"></script>
 <link href="stylesheets/rico.css" media="all" rel="Stylesheet" type="text/css" />
 <link href="stylesheets/schwing.css" media="all" rel="Stylesheet" type="text/css" />
 <script>
@@ -133,9 +134,9 @@ httpconf_callbacks.loaded = function() {
 	<tr>	<td align="center" valign="top" height=180>
 					<div id="channellist" class="chanlist">
 					<table>	<tr>	<td colspan=2 height=18></td></tr>
-									<tr>	<td>Current Password:</td><td><input type="password" id="currentpass" size=16></td></tr>
-									<tr>	<td>New Password:</td><td><input type="password" id="newpass" size=16 onkeyup="compare_passwords()">&nbsp;( min 4 characters )</td></tr>
-									<tr>	<td>Retype New Password:</td><td><input type="password" id="newpass_rep" size=16 onkeyup="compare_passwords()"></td></tr>
+									<tr  onmouseover="show_tooltip('en', 'options', 0);">	<td>Current Password:</td><td><input type="password" id="currentpass" size=16></td></tr>
+									<tr  onmouseover="show_tooltip('en', 'options', 1);"><td>New Password:</td><td><input type="password" id="newpass" size=16 onkeyup="compare_passwords()">&nbsp;( min 4 characters )</td></tr>
+									<tr  onmouseover="show_tooltip('en', 'options', 2);"><td>Retype New Password:</td><td><input type="password" id="newpass_rep" size=16 onkeyup="compare_passwords()"></td></tr>
 									<tr>	<td align=center colspan=2><input type="button" id="pwdbutton" value="Update" onclick="askfor_updatepassword()"></td></tr>
 					</table>
 					</div>
@@ -143,17 +144,20 @@ httpconf_callbacks.loaded = function() {
 	</tr>
 	<tr valign="top" height="18">	<td><B>GUI - acess settings: </B></td></tr>
 	<tr>	<td align="center" valign="top" height=170>
-					<table>
-							<tr><td>Bind Address:</td>		<td><input size=14 id='bindaddr' dfalt="127.0.0.1"></td></tr>
-							<tr><td>Port:</td>						<td><input size=14 id='bindport' dfalt=80></td></tr>
-							<tr><td colspan=2><BR></td></tr>
-							<tr><td colspan=2 align=center><input type=button id=save value="Save">&nbsp;<input type=button id=cancel value="Cancel"></td></tr>
+					<div id="channellist" class="chanlist">
+					<table>	<tr>	<td colspan=2 height=18></td></tr>
+									<tr  onmouseover="show_tooltip('en', 'options', 3);"><td>Bind Address:</td>		<td><input size=14 id='bindaddr' dfalt="127.0.0.1"></td></tr>
+									<tr  onmouseover="show_tooltip('en', 'options', 4);"><td>Port:</td>						<td><input size=14 id='bindport' dfalt=80></td></tr>
+									<tr><td colspan=2><BR></td></tr>
+									<tr><td colspan=2 align=center><input type=button id=save value="Save">&nbsp;<input type=button id=cancel value="Cancel"></td></tr>
 					</table>
 					<select  size="5" id="hiddenfield" style="display:none; width:220px"></select>
+					</div>
 			</td>
 	</tr>
 	<tr><td valign="top" align=center><div  id='status'></div></td></tr>
 	<tr><td></td></tr>
 </table>
+<div id='tooltip' style="margin-left:5px;height: 60px; width:575px; overflow :auto; font-family : Trebuchet MS, Arial, Helvetica, sans-serif;font-size: 11px; "></div>
 </div>
 </body>

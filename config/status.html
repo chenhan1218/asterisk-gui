@@ -21,6 +21,7 @@
 <script src="scripts/prototype.js"></script>
 <script src="scripts/rico.js"></script>
 <script src="scripts/astman.js"></script>
+<script src="scripts/tooltip.js"></script>
 <link href="stylesheets/rico.css" media="all" rel="Stylesheet" type="text/css" />
 <link href="stylesheets/schwing.css" media="all" rel="Stylesheet" type="text/css" />
 <script>
@@ -200,16 +201,17 @@ function localajaxinit(){
 		</td>
 	</tr>
 	<tr height=32 valign="middle">
-		<td align="center"><input type="submit" onClick="doStatus()" id="refresh" value="Refresh">
-				<input type="submit" onClick="doTransfer()" id="transfer" value="Transfer...">
-				<input type="submit" onClick="doHangup()" id="hangup" value="Hangup">
+		<td align="center"><input type="submit" onClick="doStatus()" id="refresh" value="Refresh"  onmouseover="show_tooltip('en', 'status', 1);">
+				<input type="submit" onClick="doTransfer()" id="transfer" value="Transfer..."  onmouseover="show_tooltip('en', 'status', 2);">
+				<input type="submit" onClick="doHangup()" id="hangup" value="Hangup"  onmouseover="show_tooltip('en', 'status', 3);">
 		</td>
 	</tr>
 	<tr>
 			<td colspan=3 valign="top">
-			<div id="channellist" class="chanlist"></div>
+			<div id="channellist" class="chanlist" onmouseover="show_tooltip('en', 'status', 0);"></div>
 			</td>
 	</tr>
 </table>
+<div id='tooltip' style="margin-left:5px;height: 60px; width:575px; overflow :auto; font-family : Trebuchet MS, Arial, Helvetica, sans-serif;font-size: 11px; "></div>
 </div>
 </body>

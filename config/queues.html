@@ -52,7 +52,7 @@ function togglefeatures() {
 	} else {
 		adstatus = "shown";
 		$('advancedw').style.visibility = "visible";
-		new Rico.Effect.Size('advancedw', null, 200, 120, 8 );
+		new Rico.Effect.Size('advancedw', null, 190, 120, 8 );
 	}
 }
 
@@ -388,14 +388,14 @@ function localajaxinit() {
 						</td>
 				</tr>
 				<tr onmouseover="show_tooltip('en', 'queues', 3);" ><td style='width:80px' valign='top'>Agents:</td><td><select size="4" multiple='true' id='agents' style='width:200px; display: none' onclick="save_status()"></select>
-				<div id="testmulti" style='height:110px; width: 200px;overflow :auto;'></div>
+				<div id="testmulti" style='height:75px; width: 200px;overflow :auto;'></div>
 				</td></tr>
 				<tr><td colspan='2' align='center'><div style="height:15px" id='status'></div></td></tr>
 				<tr><td colspan='2'></td></tr>
 				</table>
 			</td>
 			</tr>
-			<tr><td><img id="split" onClick="togglefeatures()" src="images/split-v.png"></td></tr>
+			<tr onmouseover="show_tooltip('en', 'queues', 4);"><td><img id="split" onClick="togglefeatures()" src="images/split-v.png"></td></tr>
 			<tr><td>
 						<div style="background-image:url(images/slice-v.png)" id='advancedw'>
 									<table id='advancedi' align='center'>
@@ -410,7 +410,7 @@ function localajaxinit() {
 									</table>
 						</div>
 			</td></tr>
-			<tr><td>
+			<tr onmouseover="show_tooltip('en', 'queues', 4);"><td>
 				<img onClick="togglefeatures()" src="images/adv-v.png">
 			</td>
 			</tr>

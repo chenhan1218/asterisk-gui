@@ -183,7 +183,7 @@
 		} else {
 			adstatus = "shown";
 			$('advancedw').style.visibility = "visible";
-			new Rico.Effect.Size('advancedw', null, 150, 120, 8 );
+			new Rico.Effect.Size('advancedw', null, 130, 120, 8 );
 		}
 	}
 	function localajaxinit() {
@@ -225,9 +225,9 @@
 		<table cellspacing='0' cellpadding='0'>
 			<tr valign="top"><td>
 				<table>
-				<tr onmouseover="show_tooltip('en', 'meetme', 0);" ><td>Extension:</td><td><input size='5' id='name' pattern='^\d*$'></td></tr>
-				<tr onmouseover="show_tooltip('en', 'meetme', 1);"><td>PIN Code:</td><td><input size='5' id='pin' pattern='^\d*$'></td></tr>
-				<tr onmouseover="show_tooltip('en', 'meetme', 2);"><td>Administrator PIN Code:</td><td><input size='5' id='pinadmin' pattern='^\d*$'></td></tr>
+				<tr onmouseover="show_tooltip('en', 'meetme', 0);" ><td>Extension:</td><td>&nbsp;<input size='5' id='name' pattern='^\d*$'></td></tr>
+				<tr onmouseover="show_tooltip('en', 'meetme', 1);"><td>PIN Code:</td><td>&nbsp;<input size='5' id='pin' pattern='^\d*$'></td></tr>
+				<tr onmouseover="show_tooltip('en', 'meetme', 2);"><td>Administrator PIN Code:</td><td>&nbsp;<input size='5' id='pinadmin' pattern='^\d*$'></td></tr>
 				<tr onmouseover="show_tooltip('en', 'meetme', 3);"><td>Play hold music for first caller</td><td><input type='checkbox' id='music'></td></tr>
 				<tr onmouseover="show_tooltip('en', 'meetme', 4);"><td>Enable caller menu</td><td><input type='checkbox' id='menu'></td></tr>
 				<tr onmouseover="show_tooltip('en', 'meetme', 5);"><td>Announce callers</td><td><input type='checkbox' id='announce'></td></tr>
@@ -236,11 +236,11 @@
 				</table>
 			</td>
 			</tr>
-			<tr><td><img id="split" onClick="togglefeatures()" src="images/split-v.png"></td></tr>
+			<tr onmouseover="show_tooltip('en', 'meetme', 6);"><td><img id="split" onClick="togglefeatures()" src="images/split-v.png"></td></tr>
 			<tr><td>
 				<div style="background-image:url(images/slice-v.png)" id='advancedw'>
 				<table id='advancedi' align='center'><tr><td>
-				<tr onmouseover="show_tooltip('en', 'meetme', 7);"><td>Room Override:</td><td><input size='5' id='room' pattern='^\d*$'></td></tr>
+				<tr onmouseover="show_tooltip('en', 'meetme', 7);"><td>Room Override:</td><td>&nbsp;<input size='5' id='room' pattern='^\d*$'></td></tr>
 				<tr><td>Record conference</td><td><input type='checkbox' id='record'></td></tr>
 				<tr onmouseover="show_tooltip('en', 'meetme', 8);"><td>Quiet Mode</td><td><input type='checkbox' id='quiet'></td></tr>
 				<tr onmouseover="show_tooltip('en', 'meetme', 9);"><td>Wait for marked user</td><td><input type='checkbox' id='waitmarked'></td></tr>
@@ -248,7 +248,7 @@
 				</td></tr></table>
 				</div>
 			</td></tr>
-			<tr><td>
+			<tr onmouseover="show_tooltip('en', 'meetme', 6);"><td>
 				<img onClick="togglefeatures()" src="images/adv-v.png">
 			</td>
 			</tr>

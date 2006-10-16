@@ -79,15 +79,33 @@ function localajaxinit() {
 		<table cellspacing='0' cellpadding='0'>
 			<tr valign="top"><td>
 				<table>
-				<tr><td>Extension:</td><td><input size='12' id='name'></td></tr>
-				<tr><td>Username:</td><td><input size='20' id='username'></td></tr>
-				<tr><td>Disallowed Codecs:</td><td><input size='12' id='disallow'></td></tr>
-				<tr><td>Allowed Codecs:</td><td>
-				
-				<input size='12' id='allow'></td></tr>
-				<tr><td>Context:</td><td><input size='12' id='context'></td></tr>
-				<tr><td>Connection:</td><td><input size='12' id='connection'></td></tr>
-				<tr><td colspan='2' align='center'><div style="height:15px" id='status'></div></td></tr>
+						<tr><td>Extension:</td>						<td><input size='12' id='name'></td></tr>
+						<tr><td>Username:</td>						<td><input size='20' id='username'></td></tr>
+						<tr><td>Disallowed Codecs:</td>		<td><input size='12' id='disallow'></td></tr>
+						<tr><td>Allowed Codecs:</td>			<td><input size='12' id='allow'><input type=button id="sd" value="Edit" onclick="$('div_setordercodecs').style.display='block'">
+																							<div style="position:absolute; display:none; background-color:#F4EFE5;" id="div_setordercodecs">
+																								<table >
+																									<tr><td><select id="allowed"></select></td>
+																											<td><input type="button" id="select_codec" value="<"><BR><input type="button" id="deselect_codec" value=">"></td>
+																											<td><select id="disallowed" size=9><option value="ulaw">u-law</option>
+																																								  <option value="alaw">a-law</option>
+																																								  <option value="gsm">GSM</option>
+																																								  <option value="ilbc">ILBC</option>
+																																								  <option value="speex">SPEEX</option>
+																																								  <option value="g726">G.726</option>
+																																								  <option value="adpcm">ADPCM</option>
+																																								  <option value="lpc10">LPC10</option>
+																																								  <option value="g729">G.729a</option>
+																													</select>
+																											</td>
+																									</tr>
+																									<tr><td colspan=3 align=Center><input type="button" id="setordercodecs" value="update" onclick="update_ordercodecs()"></td></tr>
+																								</table>
+																							</div>
+																							</td></tr>
+						<tr><td>Context:</td>							<td><input size='12' id='context'></td></tr>
+						<tr><td>Connection:</td>					<td><input size='12' id='connection'></td></tr>
+						<tr><td colspan='2' align='center'><div style="height:15px" id='status'></div></td></tr>
 				</table>
 			</td>
 			</tr>

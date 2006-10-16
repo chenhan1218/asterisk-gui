@@ -39,7 +39,7 @@ function show_tooltip(lang, file,tip){
 	tooltips['meetme'] .en[3] = "<BR><B>Play Hold Music for First Caller:</B> Checking this option causes Asterisk to play Hold Music to the first user in a conference, until another user has joined the same conference.";
 	tooltips['meetme'] .en[4] = "<BR><B>Enable Caller Menu:</B> Checking this option allows a user to access the Conference Bridge menu by pressing the * \"Asterisk\" key on their dialpad.";
 	tooltips['meetme'] .en[5] = "<BR><B>Announce Callers:</B> Checking this option announces, to all Bridge participants, the joining of any other participants.";
-	tooltips['meetme'] .en[6] = "<BR><B>Advanced:</B> Advanced Conference Bridge configuration options.";
+	tooltips['meetme'] .en[6] = "<BR><B>Advanced:</B> Show/Hide Advanced Conference Bridge configuration options.";
 	tooltips['meetme'] .en[7] = "<BR><B>Room Override:</B> This option allows the entry of a secondary extension that may be used to access this Conference Bridge. This is useful in the event that one wants to set a separate extension, having different options, to access the same Bridge.";
 	tooltips['meetme'] .en[8] = "<BR><B>Quiet Mode:</B> This option enables Quiet mode.  If this option is checked, all users entering this conference will be marked as quiet, and will be in Listen-Only mode.";
 	tooltips['meetme'] .en[9] = "<BR><B>Wait for Market User:</B> If this option is set, then users joining the conference will not be able to speak to one-another until the marked user has joined the conference.";
@@ -57,7 +57,7 @@ function show_tooltip(lang, file,tip){
 	tooltips['voicemail'] .en[5] = "<BR><B>Maximum messages per folder:</B> This select box sets the maximum number of messages that a user may have in any of their folders.";
 	tooltips['voicemail'] .en[6] = "<BR><B>Maximum Message Time:</B> This select box sets the maximum duration of a voicemail message. Message recording will not occur for times greater than this amount.";
 	tooltips['voicemail'] .en[7] = "<BR><B>Minimum message Time:</B> This select box sets the minimum duration of a voicemail message. Messages below this threshold will be automatically deleted.";
-	tooltips['voicemail'] .en[8] = "<BR><B>Advanced:</B> Advanced Voicemail configuration options.";
+	tooltips['voicemail'] .en[8] = "<BR><B>Advanced:</B> Show/Hide Advanced Voicemail configuration options.";
 	tooltips['voicemail'] .en[9] = "<BR><B>Dail 'O' for Operator:</B> Checking this option enables callers entering the voicemail application to dial '0' to back out of the application and be sent to a voicemenu or operator.";
 	tooltips['voicemail'] .en[10] = "<BR><B>Message Format:</B> This selection box controls the format in which messages are stored on the system and delivered by e-mail.";
 	tooltips['voicemail'] .en[11] = "<BR><B>Allow Users to Review:</B> Checking this option allows the caller leaving the voicemail the opportunity to review their recorded message before it is submitted as a voicemail message.";
@@ -166,3 +166,31 @@ function show_tooltip(lang, file,tip){
 	tooltips['sip_general'].en[77] = "<BR><B>Max Jitter Buffer:</B> Max length of the jitterbuffer in milliseconds";
 	tooltips['sip_general'].en[78] = "<BR><B>Resync Threshold:</B> Jump in the frame timestamps over which the jitterbuffer is resynchronized. Useful to improve the quality of the voice, with big jumps in/broken timestamps, usualy sent from exotic devices and programs. Defaults to 1000.";
 	tooltips['sip_general'].en[79] = "<BR><B>Implementation: </B>Jitterbuffer implementation, used on the receiving side of a SIP channel. Two implementations are currenlty available - \'fixed\' (with size always equals to jbmaxsize) and \'adaptive\' (with variable size, actually the new jb of IAX2)";
+
+
+	// Tooltips for Options (options)
+	tooltips['options']= new Object;
+	tooltips['options'].en = new Array;
+
+	tooltips['options'].en[0] = "<BR><B>Current Password:</B> Please enter your existing password";
+	tooltips['options'].en[1] = "<BR><B>New Password:</B> Enter the New Password";
+	tooltips['options'].en[2] = "<BR><B>Retype New Password:</B> Retype New Password ";
+	tooltips['options'].en[3] = "<BR><B>Bind Address:</B> The IP address to which the GUI will be assigned to.";
+	tooltips['options'].en[4] = "<BR><B>Port:</B> GUI port. Must be specified in browser while accessing the GUI";
+
+	// Tooltips for status(status)
+	tooltips['status']= new Object;
+	tooltips['status'].en = new Array;
+
+	tooltips['status'].en[0] = "<BR><B>List of active channels:</B> Shows the list of active channels ";
+	tooltips['status'].en[1] = "<BR><B>Refresh:</B> Refresh the list of active channels";
+	tooltips['status'].en[2] = "<BR><B>Transfer:</B> Transfer selected channel";
+	tooltips['status'].en[3] = "<BR><B>Hangup:</B> Hangup selected Channel";
+
+	// Tooltips for Service Providers (trunks)
+	tooltips['trunks']= new Object;
+	tooltips['trunks'].en = new Array;
+
+	tooltips['trunks'].en[0] = "<BR><B>Analog/Voip Trunks:</B> Analog or Voip trunks .. ";
+	tooltips['trunks'].en[1] = "<BR><B>Provider:</B> Select a Provider";
+	tooltips['trunks'].en[2] = "<BR><B>Lines:</B> Select a Analog Line";

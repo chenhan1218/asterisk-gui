@@ -22,6 +22,7 @@
 <script src="scripts/prototype.js"></script>
 <script src="scripts/rico.js"></script>
 <script src="scripts/astman.js"></script>
+<script src="scripts/tooltip.js"></script>
 <link href="stylesheets/rico.css" media="all" rel="Stylesheet" type="text/css" />
 <link href="stylesheets/schwing.css" media="all" rel="Stylesheet" type="text/css" />
 
@@ -235,7 +236,7 @@
 
 	function activateanalogvoip() {
 		if ($('trunkstyleanalog').checked) {
-				new Rico.Effect.Size('analog', null, 450, 120, 8);
+				new Rico.Effect.Size('analog', null, 350, 120, 8);
 				$('zapchan').style.display = "none";
 				$('zapchan_analoglines').style.display = "block";
 				$('zapchan_analoglines').innerHTML ="";
@@ -249,7 +250,7 @@
 				}
 		}else if ($('trunkstylevoip').checked) {
 				new Rico.Effect.Size('analog', null, 1, 120, 8, {complete:function() { $('analog').style.height = '0'; }});
-				$('voip').style.height = 450;
+				$('voip').style.height =350;
 				$('zapchan').style.display = "block";
 				$('zapchan_analoglines').style.display = "none";
 				$('zapchan_analoglines').innerHTML ="";		
@@ -301,7 +302,7 @@
 		</div>
 		<div id='adjustments' style='width:350'>
 		<table cellspacing='0' cellpadding='0'>
-			<tr><td>
+			<tr   onmouseover="show_tooltip('en', 'trunks', 0);"><td>
 				<input name='trunkstyle' type='radio' id='trunkstyleanalog' onclick='activateanalogvoip()' value='analog'>Analog
 				<input name='trunkstyle' type='radio' id='trunkstylevoip' onclick='activateanalogvoip()' value='voip'>VoIP
 			</td></tr>
@@ -322,10 +323,10 @@
 				<input type='hidden' id='port'>
 				<input type='hidden' id='fromuser'>
 				<input type='hidden' id='fromdomain'>
-				<div id='analogvoipcontainer' style='height:450;overflow:hidden'>
+				<div id='analogvoipcontainer' style='height:350;overflow:hidden'>
 				<div id='analog' style='height:0;overflow:hidden'>
 				<table>
-				<tr><td style='width:80px' valign='top'>Lines:</td>
+				<tr onmouseover="show_tooltip('en', 'trunks', 2);"><td style='width:80px' valign='top'>Lines:</td>
 						<td><select size="12" multiple='true' id='zapchan' style='width:200px'></select>
 								<div id="zapchan_analoglines" style='height:110px; width: 200px; overflow :auto; display:none'></div>
 						</td>
@@ -339,7 +340,7 @@
 				</div>
 				<div id='voip' style='height:0;overflow:hidden'>
 				<table>
-				<tr><td style='width:80px' valign='top'>Provider:</td><td><select size='6' id='provider' style='width:200px' altonchange='selectprovider()'></select></td></tr>
+				<tr  onmouseover="show_tooltip('en', 'trunks', 1);"><td style='width:80px' valign='top'>Provider:</td><td><select size='6' id='provider' style='width:200px' altonchange='selectprovider()'></select></td></tr>
 				<tr><td colspan='2' align='center'><div style="height:15px" id='status'></div></td></tr>
 				<tr><td colspan='2' align='center'><img id='providerlogo' style='visibility:hidden;width:230px;height:72px'></td></tr>
 				<tr><td colspan='2' align='center'><div id='providerdesc' align='left' style='width:230px;height:100px'></div></td></tr>
@@ -373,5 +374,6 @@
 	</tr><tr>
 	</tr>
 </table>
+<div id='tooltip' style="margin-left:5px;height: 60px; width:575px; overflow :auto; font-family : Trebuchet MS, Arial, Helvetica, sans-serif;font-size: 11px; "></div>
 </div>
 </body>
