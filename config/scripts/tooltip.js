@@ -177,6 +177,8 @@ function show_tooltip(lang, file,tip){
 	tooltips['options'].en[2] = "<BR><B>Retype New Password:</B> Retype New Password ";
 	tooltips['options'].en[3] = "<BR><B>Bind Address:</B> The IP address to which the GUI will be assigned to.";
 	tooltips['options'].en[4] = "<BR><B>Port:</B> GUI port. Must be specified in browser while accessing the GUI";
+	tooltips['options'].en[5] = "<BR><B>HTTP Timeout:</B> Session time out in seconds";
+
 
 	// Tooltips for status(status)
 	tooltips['status']= new Object;

@@ -1,0 +1,111 @@
+<!--
+ * Asterisk -- An open source telephony toolkit.
+ *
+ * Configuration for "Users" generally
+ *
+ * Copyright (C) 1999 - 2006, Digium, Inc.
+ *
+ * Mark Spencer <markster@digium.com>
+ *
+ * See http://www.asterisk.org for more information about
+ * the Asterisk project. Please do not directly contact
+ * any of the maintainers of this project for assistance;
+ * the project provides a web site, mailing lists and IRC
+ * channels for your use.
+ *
+ * This program is free software, distributed under the terms of
+ * the GNU General Public License Version 2. See the LICENSE file
+ * at the top of the source tree.
+ *
+-->
+
+<script src="scripts/prototype.js"></script>
+<script src="scripts/rico.js"></script>
+<script src="scripts/astman.js"></script>
+<link href="stylesheets/rico.css" media="all" rel="Stylesheet" type="text/css" />
+<link href="stylesheets/schwing.css" media="all" rel="Stylesheet" type="text/css" />
+
+<script>
+var mohcallbacks = new Object;
+var widgets = new Array;
+var fieldnames = new Array('status', 'save', 'cancel', 'new', 'delete','name', 'mode','directory','application','format','random');
+
+mohcallbacks.format = function(t) {
+			return t.name;
+}
+
+mohcallbacks.postselect = function(box, val) {
+	
+}
+
+mohcallbacks.loaded = function() {
+
+}
+
+function localajaxinit() {
+			// Load the jabber.conf->users into the Users, associate the field to other fields
+			parent.loadscreen(this);
+			for (var x =0; x < fieldnames.length; x++) {
+				widgets[fieldnames[x]] = $(fieldnames[x]);
+				widgets[fieldnames[x]].disabled = true;
+			}
+			parent.astmanEngine.config2list("musiconhold.conf", $('moh_classes'), widgets, mohcallbacks);
+			return;
+}
+</script>
+<body id="foo" onload="localajaxinit()">
+<div class="mainscreenTitleBar">
+	<span style="margin-left: 4px;font-weight:bold">Music on Hold Classes</span>
+</div>
+<div class="mainscreenContentBox" id="userscontent">
+<table class="mainscreenTable" align="center">
+	<tr valign="top">
+		<td colspan='2'>
+		Users:
+		</td>
+	</tr>
+	<tr valign="top">
+		<td>
+		<select size="28" id="moh_classes" style="width:220px">
+		<option>Loading...</option>
+		</select>
+		</td>
+		<td colspan='3'>
+		<div id='adjustments' style='width:350'>
+		<table cellspacing='0' cellpadding='0'>
+			<tr valign="top"><td>
+				<table>
+						<tr><td>Class:</td>						<td><input size='12' id='name'></td></tr>
+						<tr><td>Mode:</td>						<td><input size='20' id='mode'></td></tr>
+						<tr><td>Directory:</td>		<td><input size='12' id='directory'></td></tr>
+						<tr><td>Application:</td>		<td><input size='12' id='application'></td></tr>
+						<tr><td>Format:</td>		<td><input size='12' id='format'></td></tr>
+						<tr><td>Random:</td>		<td><input size='12' id='random'></td></tr>
+						<tr><td colspan='2' align='center'><div style="height:15px" id='status'></div></td></tr>
+				</table>
+			</td>
+			</tr>
+		</table>
+		</div>
+		</td></tr>				
+		<tr>
+		<td align='center'>
+			<table>
+			<tr align='center'><td>
+			<input style='width:80' type='button' id='new' value='New'>
+			</td><td>
+			<input style='width:80' type='button' id='delete' value='Delete'>
+			</td></tr>
+			</table>
+		</td>
+		<td colspan='1' align='right'>
+				<input style='width:80' type='button' id='save' value='Save'>
+				&nbsp;
+				<input style='width:80' type='button' id='cancel' value='Cancel'>
+				&nbsp;
+		</td>
+	</tr><tr>
+	</tr>
+</table>
+</div>
+</body>
