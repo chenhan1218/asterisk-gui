@@ -336,7 +336,7 @@
 		} else {
 			adstatus = "shown";
 			$('advancedw').style.visibility = "visible";
-			new Rico.Effect.Size('advancedw', null, 200, 120, 8 );
+			new Rico.Effect.Size('advancedw', null, 160, 120, 8 );
 		}
 	}
 
@@ -505,9 +505,8 @@
 						//-->
 						</SCRIPT>
 				</td></tr>
-				<tr><td>Trunk:</td><td><select id='trunk'></select></td></tr>
-				<tr><td>Priority:</td><td><input size='4' id='priority' pattern='^\d*$'></td></tr>
-				<tr><td>Real Priority:</td><td><input size='4' id='realpriority' pattern='^\d*$'></td></tr>
+				<tr><td>Trunk:</td><td><select id='trunk'></select><input size='4' id='priority' pattern='^\d*$' type=hidden><input size='4' id='realpriority' pattern='^\d*$'  type=hidden></td></tr>
+
 				<tr><td colspan='2' align='center'><div style="height:15px" id='status'></div></td></tr>
 				<tr><td colspan='2'></td></tr>
 				</table>
@@ -519,10 +518,10 @@
 			<tr><td>
 				<div style="background-image:url(images/slice-v.png)" id='advancedw'>
 				<table id='advancedi' align='center'><tr><td>
-				<tr><td>Customize Plans</td><td><input type='checkbox' id='modplan' onClick='updateplandel()'></td></tr>
-				<tr><td>Plan Ident</td><td><input size='15' type='text' id='planident'></td></tr>
-				<tr><td>Plan Comment</td><td><input size='15' type='text' id='comment' disabled='yes'></td></tr>
-				<tr><td>Builds On</td><td><input size='15' type='text' id='include'></td></tr>
+				<tr><td><NOBR>Customize Plans</NOBR></td><td><input type='checkbox' id='modplan' onClick='updateplandel()'></td></tr>
+				<tr><td>Plan Ident</td><td><input size='14' type='text' id='planident'></td></tr>
+				<tr><td>Plan Comment</td><td><input size='14' type='text' id='comment' disabled='yes'></td></tr>
+				<tr><td>Builds On</td><td><input size='14' type='text' id='include'></td></tr>
 				<tr><td colspan='2' align='center'><input style='width:80' type='button' id='new' value='New Plan'></td></tr>
 				</table>
 				</div>

@@ -281,7 +281,7 @@ function save_vmenu(){
 					$('cancel').disabled = true;
 					
 					if( $('vmenus').options[$('vmenus').selectedIndex].innerHTML=='New Entry' ){ // (if new Voicemenu 
-							voicemenusdata[current_vmenu] = new Object();
+							voicemenusdata[current_vmenu] = new Object();	
 							voicemenusdata[current_vmenu].comment =  $('comment').value;
 							voicemenusdata[current_vmenu].extensions = new Object();
 							// add the "s,1,Answer" data to voicemenus data
@@ -324,8 +324,9 @@ function save_vmenu(){
 			var current_vmenu = next_freevmenu();
 			uri += build_action('newcat', p, current_vmenu,"", ""); p = p+1;
 			uri += build_action('append', p, current_vmenu,"comment", $('comment').value); p = p+1;
-			if( $('allowexten').checked)
+			if( $('allowexten').checked){
 				uri += build_action('append', p, current_vmenu,"include", "default"); p = p+1;
+			}
 			uri += build_action('append', p, current_vmenu,"exten", answer_call_string); p = p+1;
 	}else{
 			// Updating existing Voicemenu
@@ -334,15 +335,15 @@ function save_vmenu(){
 					uri += build_action('update', p, current_vmenu ,"comment", $('comment').value ); p = p+1;
 			}
 			
-			 if( typeof ($('vmenus').stored_config.catbyname[current_vmenu].fieldbyname['include']) == "string" && $('vmenus').stored_config.catbyname[current_vmenu].fieldbyname['include']=="default" && !$('allowexten').checked ){
+			 if( voicemenusdata[current_vmenu].include =="default" && !$('allowexten').checked ){
 						uri += build_action('delete', p, current_vmenu ,"include",""); p = p+1;
-						$('vmenus').stored_config.catbyname[current_vmenu].fieldbyname['include'] = "" ;
-			}else if ( typeof ($('vmenus').stored_config.catbyname[current_vmenu].fieldbyname['include']) == "string" && $('vmenus').stored_config.catbyname[current_vmenu].fieldbyname['include']!="default" && $('allowexten').checked ){
+						voicemenusdata[current_vmenu].include = "" ;
+			}else if ( voicemenusdata[current_vmenu].include !="default"  && $('allowexten').checked ){
+						uri += build_action('append', p, current_vmenu,"include", "default"); p = p+1;
+						voicemenusdata[current_vmenu].include = "default" ;
+			}else if ( !voicemenusdata[current_vmenu].include && $('allowexten').checked ){
 						uri += build_action('append', p, current_vmenu ,"include", "default"); p = p+1;
-						$('vmenus').stored_config.catbyname[current_vmenu].fieldbyname['include'] = "default" ;
-			}else if ( typeof ($('vmenus').stored_config.catbyname[current_vmenu].fieldbyname['include']) != 'string' && $('allowexten').checked ){
-						uri += build_action('append', p, current_vmenu ,"include", "default"); p = p+1;
-						$('vmenus').stored_config.catbyname[current_vmenu].fieldbyname['include'] = "default" ;
+						voicemenusdata[current_vmenu].include = "default" ;
 			}
 
 			for (var k=0; k< keys.length; k++){
@@ -547,7 +548,7 @@ menuscallbacks.postselect = function() {
 	
 	$('allowexten').checked = false;
 
-	if ( typeof  $('vmenus').stored_config.catbyname[current_context].fieldbyname['include'] == "string" && $('vmenus').stored_config.catbyname[current_context].fieldbyname['include'] == "default" ){
+	if ( voicemenusdata[current_context].include == "default" ){
 			$('allowexten').checked = true;
 	}
 
@@ -593,6 +594,7 @@ menuscallbacks.postselect = function() {
 	$('deletestep').disabled = true;
 	$('stepDown').disabled = true;
 	$('stepUp').disabled = true;
+	$('delete').disabled = false;
 
 	for (y=0; y<keys.length ; y++ ){
 			current_key_action='keypress_'+ keys[y] + '_action';
@@ -658,6 +660,10 @@ menuscallbacks.format = function(t, x) {
 				if (t.names[x]=='comment'){
 					voicemenusdata[current_context].comment =  t.fields[x];
 					voicemenusdata[current_context].extensions = new Object();
+					return false;
+				}
+				if (t.names[x]=='include'){
+					voicemenusdata[current_context].include=  t.fields[x];
 					return false;
 				}
 				if (t.names[x]=='exten'){
