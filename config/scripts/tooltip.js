@@ -171,7 +171,6 @@ function show_tooltip(lang, file,tip){
 	// Tooltips for Options (options)
 	tooltips['options']= new Object;
 	tooltips['options'].en = new Array;
-
 	tooltips['options'].en[0] = "<BR><B>Current Password:</B> Please enter your existing password";
 	tooltips['options'].en[1] = "<BR><B>New Password:</B> Enter the New Password";
 	tooltips['options'].en[2] = "<BR><B>Retype New Password:</B> Retype New Password ";
@@ -183,7 +182,6 @@ function show_tooltip(lang, file,tip){
 	// Tooltips for status(status)
 	tooltips['status']= new Object;
 	tooltips['status'].en = new Array;
-
 	tooltips['status'].en[0] = "<BR><B>List of active channels:</B> Shows the list of active channels ";
 	tooltips['status'].en[1] = "<BR><B>Refresh:</B> Refresh the list of active channels";
 	tooltips['status'].en[2] = "<BR><B>Transfer:</B> Transfer selected channel";
@@ -192,7 +190,18 @@ function show_tooltip(lang, file,tip){
 	// Tooltips for Service Providers (trunks)
 	tooltips['trunks']= new Object;
 	tooltips['trunks'].en = new Array;
-
-	tooltips['trunks'].en[0] = "<BR><B>Analog/Voip Trunks:</B> Analog or Voip trunks .. ";
-	tooltips['trunks'].en[1] = "<BR><B>Provider:</B> Select a Provider";
-	tooltips['trunks'].en[2] = "<BR><B>Lines:</B> Select a Analog Line";
+	tooltips['trunks'].en[0] = "<BR><B>Analog/Voip Trunks:</B> Analog lines attached to analog interfaces of the PBX where as<BR> a Voice over IP (VoIP) connection provided by an Internet Telephony Service Provide (ITSP).";
+	tooltips['trunks'].en[1] = "<BR><B>Provider:</B> Please select provider of your voice transport service.";
+	tooltips['trunks'].en[2] = "<BR><B>Lines:</B> Individual lines of the PBX Ex: Analog Port #3: The third analog port of the PBX.";
+	tooltips['trunks'].en[3] = "<BR><B>Username:</B> The username for your account with the provider - please contact your provider if you do not know it.";
+	tooltips['trunks'].en[4] = "<BR><B>Password:</B> The password for your account with the provider - please contact your provider if you do not know it.";
+	 
+	// Tooltips for Voicemenus (menus)
+	tooltips['menus']= new Object;
+	tooltips['menus'].en = new Array;
+	tooltips['menus'].en[0] = "<BR><B>Name:</B> A name for the Voice Menu";
+	tooltips['menus'].en[1] = "<BR><B>Steps:</B> A listing of the actions performed when a call enters the menu.";
+	tooltips['menus'].en[2] = "<BR><B>Add a new step:</B>Add additional steps performed during the menu.";
+	tooltips['menus'].en[3] = "<BR><B>Dial other Extensions:</B>Is the caller allowed to dial extensions other than the ones defined below?";
+	tooltips['menus'].en[4] = "<BR><B>Keypress Events:</B>Define the actions that occur when a user presses the corresponding digit.";
+	

@@ -22,6 +22,7 @@
 <script src="scripts/prototype.js"></script>
 <script src="scripts/rico.js"></script>
 <script src="scripts/astman.js"></script>
+<script src="scripts/tooltip.js"></script>
 <link href="stylesheets/rico.css" media="all" rel="Stylesheet" type="text/css" />
 <link href="stylesheets/schwing.css" media="all" rel="Stylesheet" type="text/css" />
 
@@ -836,8 +837,8 @@ usercallbacks.loaded = function (){
 		</td>
 		<td valign=top align="right" width=390>
 						<table align="center" width="390">
-						<tr><td width="60" align=left>Name:</td><td align=left><input id='comment'  onKeyUp="enable_savecancel()"  pattern='^[a-zA-Z_0-9 ]*$' disabled ></td></tr>
-						<tr><td colspan=2>Steps:</td></tr>
+						<tr onmouseover="show_tooltip('en', 'menus', 0);"><td width="60" align=left>Name:</td><td align=left><input id='comment'  onKeyUp="enable_savecancel()"  pattern='^[a-zA-Z_0-9 ]*$' disabled ></td></tr>
+						<tr onmouseover="show_tooltip('en', 'menus', 1);"><td colspan=2>Steps:</td></tr>
 						<tr><td align=center colspan=2> 
 										<TABLE>
 										<tr><td ><select id='steps' size=5  style="width:310px" onClick="step_onselect()" disabled></select></td>
@@ -849,7 +850,7 @@ usercallbacks.loaded = function (){
 										</TABLE>
 								</td>
 						</tr>
-						<tr><td colspan=2>Add a new Step:</td></tr>
+						<tr  onmouseover="show_tooltip('en', 'menus',2);"><td colspan=2>Add a new Step:</td></tr>
 						<tr><td colspan=2>&nbsp;
 								<select id='newstep_action' disabled onChange="update_newstep_var()">
 									<option value=""> -- Select --</option>
@@ -1082,11 +1083,9 @@ usercallbacks.loaded = function (){
 								</td>
 						</tr>
 						
-						<tr><td colspan=2>&nbsp;<input type=checkbox id=allowexten disabled onclick="$('savevmenu').disabled=false;$('cancel').disabled=false;"> Dial other Extensions?&nbsp;
-								</td>
-						</tr>
+						<tr onmouseover="show_tooltip('en', 'menus', 3);"><td colspan=2>&nbsp;<input type=checkbox id=allowexten disabled onclick="$('savevmenu').disabled=false;$('cancel').disabled=false;"> Dial other Extensions?&nbsp;</td></tr>
 						<tr><td colspan=2 height=6></td></tr>
-						<tr><td colspan=2>'Keypress' Events</td></tr>
+						<tr onmouseover="show_tooltip('en', 'menus', 4);"><td colspan=2>'Keypress' Events</td></tr>
 						<tr><td colspan=2>
 										<div  style="width=390px;">
 										<table cellpadding=3 cellspacing=0 width="100%">
@@ -1136,6 +1135,7 @@ usercallbacks.loaded = function (){
 		</td>
 	</tr>
 </table>
+<div id='tooltip' style="margin-left:5px;height: 60px; width:575px; overflow :auto; font-family : Trebuchet MS, Arial, Helvetica, sans-serif;font-size: 11px; "></div>
 </div>
 <SCRIPT LANGUAGE="JavaScript">
 <!--
