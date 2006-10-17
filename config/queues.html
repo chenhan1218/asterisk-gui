@@ -337,7 +337,7 @@ function localajaxinit() {
 	$('advancedw').style.height = 1;
 	$('advancedw').style.width = $('split').width;
 	$('advancedi').style.width = $('split').width - 60;
-	for (var x in fieldnames) {
+	for (var x=0; x < fieldnames.length ; x++) {
 		widgets[fieldnames[x]] = $(fieldnames[x]);
 		widgets[fieldnames[x]].disabled = true;
 	}

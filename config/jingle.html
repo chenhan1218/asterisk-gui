@@ -86,6 +86,8 @@ function 	selectbox_remove(selectbox_id,codec){
 
 
 function update_ordercodecs(){
+			$('disallow').value = "";
+			$('allow').value = "";
 			if($('disallow_all').checked){
 					$('disallow').value = "all";
 			}else{

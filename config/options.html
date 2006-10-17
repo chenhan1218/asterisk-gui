@@ -153,12 +153,12 @@ function compare_passwords(){
 function localajaxinit(){
 	$('pwdbutton').disabled = true;
 
-	for (var x in fieldnames) {
+	for (var x =0; x < fieldnames.length; x++) {
 		widgets[fieldnames[x]] = $(fieldnames[x]);
 		widgets[fieldnames[x]].disabled = true;
 	}
 
-	for (var x in fieldnames2) {
+	for (var x =0; x < fieldnames2.length; x++) {
 		widgets2[fieldnames2[x]] = $(fieldnames2[x]);
 		widgets2[fieldnames2[x]].disabled = true;
 	}

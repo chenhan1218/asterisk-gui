@@ -170,11 +170,11 @@
 		$('advancedi').style.width = $('split').width - 60;
 		adstatus = "hidden";
 		$('extensions').contentEditable = 'false';
-		for (var x in vmfields) {
+		for (var x =0; x< vmfields.length; x++) {
 			vmwidgets[vmfields[x]] = $(vmfields[x]);
 			vmwidgets[vmfields[x]].disabled = true;
 		}
-		for (var x in fields) {
+		for (var x =0; x < fields.length; x++) {
 			widgets[fields[x]] = $(fields[x]);
 			widgets[fields[x]].disabled = true;
 		}

@@ -265,11 +265,11 @@
 		$('trunkstyleanalog').onclick = null;
 		$('trunkstylevoip').altonclick = $('trunkstylevoip').onclick;
 		$('trunkstylevoip').onclick = null;
-		for (var x in fieldnames) {
+		for (var x =0; x< fieldnames.length; x++) {
 			widgets[fieldnames[x]] = $(fieldnames[x]);
 			widgets[fieldnames[x]].disabled = true;
 		}
-		for (var x in provfieldnames) {
+		for (var x =0; x < provfieldnames.length ; x++) {
 			provwidgets[provfieldnames[x]] = $(provfieldnames[x]);
 			provwidgets[provfieldnames[x]].disabled = true;
 		}
