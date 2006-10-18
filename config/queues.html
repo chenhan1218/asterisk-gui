@@ -70,7 +70,7 @@ function rename_extension(a,b){
 				onFailure: function(t) {
 					alert("Config Error: " + t.status + ": " + t.statusText);
 					return false;
-				},
+				}
 	};
 	uri0 = build_action('update', 0, specialcontext ,'exten', b+',1,Queue(${EXTEN})', a+',1,Queue(${EXTEN})' ); 
 	opt0.parameters="action=updateconfig&reload=yes&srcfilename=" + encodeURIComponent("extensions.conf") + "&dstfilename=" + encodeURIComponent("extensions.conf") + uri0;
@@ -89,7 +89,7 @@ function add_extension(a){
 				onFailure: function(t) {
 					alert("Config Error: " + t.status + ": " + t.statusText);
 					return false;
-				},
+				}
 	};
 	uri0 = build_action('append', 0, specialcontext ,'exten', a+',1,Queue(${EXTEN})'); 
 	opt0.parameters="action=updateconfig&reload=yes&srcfilename=" + encodeURIComponent("extensions.conf") + "&dstfilename=" + encodeURIComponent("extensions.conf") + uri0;
@@ -133,7 +133,7 @@ function save_queue(){
 			onFailure: function(t) {
 				$('status_message').style.display='none';
 				alert("Config Error: " + t.status + ": " + t.statusText);
-			},
+			}
 		};
 
 		// before going any further check whether there is another entry with this name

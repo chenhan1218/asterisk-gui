@@ -1,12 +1,12 @@
 .mainscreenTitleBar {
-   font-size           : 12px;
-	padding             : 4px 6px 4px 6px;
-   border-style        : solid none solid none;
-	border-top-color    : #BDC7E7;
-	border-bottom-color : #182052;
-   border-width        : 1px 0px 1px 0px;
-	background-color : #ef8700;
-	color            : #ffffff;
+		font-size           : 12px;
+		padding             : 4px 6px 4px 6px;
+		border-style        : solid none solid none;
+		border-top-color    : #BDC7E7;
+		border-bottom-color : #182052;
+		border-width        : 1px 0px 1px 0px;
+		background-color : #ef8700;
+		color            : #ffffff;
 }
 
 .mainscreenTitleBarHover {
@@ -16,13 +16,13 @@
 }
 
 .mainscreenContentBox {
-   font-size        : 11px;
+   font-size        : 10px;
    border           : 0px;
    padding          : 0px 8px 0px 8px;
 }
 
 .mainscreenBorderBox {
-   font-size        : 11px;
+   font-size        : 10px;
    border           : 1px solid #1f669b;
    border-top-width : 0px;
    border-left-width : 0px;
@@ -40,7 +40,7 @@
 }
 
 .statusbar {
-   font-size        : 11px;
+   font-size        : 10px;
    border           : 1px solid #1f669b;
    padding          : 0px 8px 0px 8px;
    background-color : #ffff00;
@@ -81,18 +81,4 @@ td {
 .light {
 	color : #717171;
 }
-
-
-#dhtmltooltip{
-	position: absolute;
-	width: 220px;
-	border: 1px solid black;
-	padding: 2px;
-	background-color: lightyellow;
-	visibility: hidden;
-	z-index: 100;
-	/*Remove below line to remove shadow. Below line should always appear last within this CSS*/
-	filter: progid:DXImageTransform.Microsoft.Shadow(color=gray,direction=135);
-}
-
 /* end of - From astman.css */

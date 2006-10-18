@@ -55,17 +55,17 @@ options.logins = function(msgs) {
 		return;
 	}
 
-}
+};
 
 options.logoffs = function(msgs) {
 	$('status').innerHTML = msgs[0].headers['message'];
 	return;
-}
+};
 
 options.updated_logoffs = function(msgs) {
 	$('status').innerHTML = "Password Updated Successfully!! Please Relogin";
 	return;
-}
+};
 
 function askfor_updatepassword(){
 	parent.astmanEngine.sendRequest('action=logoff', options.logoffs);
@@ -77,7 +77,7 @@ function changepassword(){
 	var opt = {
 			method: 'get',
 			asynchronous: true,
-			onComplete: showResponse,
+			onComplete: showResponse
 		};
 		opt.parameters ="action=updateconfig&reload=yes&srcfilename=manager.conf&dstfilename=manager.conf&Action-000000=update&Cat-000000=admin&Var-000000=secret&Value-000000="+ encodeURIComponent($('newpass').value );
 		var tmp = new Ajax.Request("../../rawman", opt);
@@ -100,7 +100,7 @@ function	update_guisettings_manager(){
 			onFailure: function(t) {
 				$('status_message').style.display='none';
 				alert("Config Error: " + t.status + ": " + t.statusText);
-			},
+			}
 		};
 		opt.parameters ="action=updateconfig&reload=yes&srcfilename=manager.conf&dstfilename=manager.conf&Action-000000=update&Cat-000000=general&Var-000000=httptimeout&Value-000000="+ encodeURIComponent($('httptimeout').value);
 		var tmp = new Ajax.Request("../../rawman", opt);
@@ -119,7 +119,7 @@ $('status_message').style.display="block";
 			},
 			onFailure: function(t) {
 				alert("Config Error: " + t.status + ": " + t.statusText);
-			},
+			}
 		};
 		opt.parameters ="action=updateconfig&reload=yes&srcfilename=http.conf&dstfilename=http.conf&Action-000000=update&Cat-000000=general&Var-000000=bindport&Value-000000="+ encodeURIComponent($('bindport').value) + "&Action-000001=update&Cat-000001=general&Var-000001=bindaddr&Value-000001=" + encodeURIComponent($('bindaddr').value );
 		var tmp = new Ajax.Request("../../rawman", opt);

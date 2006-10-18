@@ -83,7 +83,7 @@ function combo_box(a, b, c ){
 						}
 				}
 				combo_selectdiv.style.display = "none";				
-		}
+		};
 		combo_selectbox.onkeypress= function(event) {
 				if( event.keyCode == ENTER ){
 						combo_text.value = combo_selectbox.value;

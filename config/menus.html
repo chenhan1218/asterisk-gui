@@ -206,7 +206,7 @@ function add_newstep(){
 			onFailure: function(t) {
 				$('status_message').style.display='none';
 				alert("Config Error: " + t.status + ": " + t.statusText);
-			},
+			}
 	};
 	var uri = "";
 	var action_string = "";
@@ -315,7 +315,7 @@ function save_vmenu(){
 			onFailure: function(t) {
 				$('status_message').style.display='none';
 				alert("Config Error: " + t.status + ": " + t.statusText);
-			},
+			}
 	};
 	var uri = "" ;
 	var p =0 ;
@@ -473,7 +473,7 @@ function swap_step(a,b){
 			},
 			onFailure: function(t) {
 				alert("Config Error: " + t.status + ": " + t.statusText);
-			},
+			}
 	};	
 	var uri = "";
 
@@ -508,7 +508,7 @@ function delete_step(){
 			onFailure: function(t) {
 				$('status_message').style.display='none';
 				alert("Config Error: " + t.status + ": " + t.statusText);
-			},
+			}
 	};	
 	var uri = "";
 	uri += build_action('delete', 0, $('vmenus').value,"exten", "", $('steps').value); 
