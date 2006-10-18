@@ -42,23 +42,24 @@
 		loggedon = 1;
 		updateButtons();
 		$('status').innerHTML = "<i>Retrieving channel status...</i>";
-		parent.astmanEngine.pollEvents();
-		parent.astmanEngine.sendRequest('action=status', activechannels.channels);
+		astmanEngine.pollEvents();
+		astmanEngine.sendRequest('action=status', activechannels.channels);
 	}
-	
+
 	function clearChannelList() {
 		$('channellist').innerHTML = "<i class='light'>Not connected</i>";
-			$('transfer').disabled = 1;
-			$('hangup').disabled = 1;
 	}
 
 	function loggedOff() {
+		if (loggedon == 0)
+			return;
 		loggedon = 0;
 		selectedchan = null;
-		parent.astmanEngine.channelClear();
+		updateButtons();
+		astmanEngine.channelClear();
 	 	clearChannelList();
 	}
-	
+
 	function updateButtons()
 	{
 		if ($(selectedchan)) {
@@ -72,12 +73,10 @@
 		if (loggedon) {
 			$('refresh').disabled = 0;
 		} else {
-			$('transfer').disabled = 1;
-			$('hangup').disabled = 1;
 			$('refresh').disabled = 1;
 		}
 	}
-	
+
 	activechannels.channelCallback = function(target) {
 		selectedchan = target;
 		updateButtons();
@@ -91,8 +90,8 @@
 			loggedOff();
 
 		for (i=1;i<msgs.length - 1;i++) 
-			parent.astmanEngine.channelUpdate(msgs[i]);
-		$('channellist').innerHTML = parent.astmanEngine.channelTable(activechannels.channelCallback);
+			astmanEngine.channelUpdate(msgs[i]);
+		$('channellist').innerHTML = astmanEngine.channelTable(activechannels.channelCallback);
 		$('status').innerHTML = "Ready";
 	}
 
@@ -121,22 +120,22 @@
 
 	function doHangup() {
 		hungupchan = selectedchan;
-		parent.astmanEngine.sendRequest('action=hangup&channel=' + selectedchan, activechannels.hungup);
+		astmanEngine.sendRequest('action=hangup&channel=' + selectedchan, activechannels.hungup);
 	}
 
 	function doStatus() {
 		$('status').innerHTML = "<i>Updating channel status...</i>";
-		parent.astmanEngine.channelClear();
-		parent.astmanEngine.sendRequest('action=status', activechannels.channels);
+		astmanEngine.channelClear();
+		astmanEngine.sendRequest('action=status', activechannels.channels);
 	}	
 		
 	function doLogin() {
 		$('status').innerHTML = "<i>Logging in...</i>";
-		parent.astmanEngine.sendRequest('action=login&username=' + $('username').value + "&secret=" + $('secret').value, activechannels.logins);
+		astmanEngine.sendRequest('action=login&username=' + $('username').value + "&secret=" + $('secret').value, activechannels.logins);
 	}
 	
 	function doTransfer() {
-		var channel = parent.astmanEngine.channelInfo(selectedchan);
+		var channel = astmanEngine.channelInfo(selectedchan);
 		var exten = prompt("Enter new extension for " + selectedchan);
 		var altchan;
 		if (exten) {
@@ -146,17 +145,17 @@
 			}
 			if (altchan) {
 				transferredchan = selectedchan + " and " + altchan + " to " + exten;
-				parent.astmanEngine.sendRequest('action=redirect&channel=' + selectedchan + "&priority=1&extrachannel=" + altchan + "&exten=" + exten, activechannels.transferred);
+				astmanEngine.sendRequest('action=redirect&channel=' + selectedchan + "&priority=1&extrachannel=" + altchan + "&exten=" + exten, activechannels.transferred);
 			} else {
 				transferredchan = selectedchan + " to " + exten;
-				parent.astmanEngine.sendRequest('action=redirect&channel=' + selectedchan + "&priority=1&exten=" + exten, activechannels.transferred);
+				astmanEngine.sendRequest('action=redirect&channel=' + selectedchan + "&priority=1&exten=" + exten, activechannels.transferred);
 			}
 		}
 	}
 	
 	function doLogoff() {
 		$('status').innerHTML = "<i>Logging off...</i>";
-		parent.astmanEngine.sendRequest('action=logoff', activechannels.logoffs);
+		astmanEngine.sendRequest('action=logoff', activechannels.logoffs);
 	}
 	
 	activechannels.pongs  = function(msgs) {
@@ -173,18 +172,19 @@
 		var x;
 		if (loggedon) {
 			for (i=1;i<msgs.length - 1;i++) {
-				parent.astmanEngine.channelUpdate(msgs[i]);
+				astmanEngine.channelUpdate(msgs[i]);
 			}
-			$('channellist').innerHTML = parent.astmanEngine.channelTable(activechannels.channelCallback);
-			parent.astmanEngine.pollEvents();
+			$('channellist').innerHTML = astmanEngine.channelTable(activechannels.channelCallback);
+			astmanEngine.pollEvents();
 		}
 		updateButtons();
 	}
 
 function localajaxinit(){
-		parent.astmanEngine.setEventCallback(activechannels.eventcb);
+		astmanEngine.setURL('../../rawman');
+		astmanEngine.setEventCallback(activechannels.eventcb);
 		clearChannelList();
-		parent.astmanEngine.sendRequest('action=ping', activechannels.pongs);
+		astmanEngine.sendRequest('action=ping', activechannels.pongs);
 		parent.loadscreen(this);
 }
 </script>

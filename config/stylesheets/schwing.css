@@ -16,13 +16,13 @@
 }
 
 .mainscreenContentBox {
-   font-size        : 10px;
+   font-size        : 11px;
    border           : 0px;
    padding          : 0px 8px 0px 8px;
 }
 
 .mainscreenBorderBox {
-   font-size        : 10px;
+   font-size        : 11px;
    border           : 1px solid #1f669b;
    border-top-width : 0px;
    border-left-width : 0px;
@@ -40,7 +40,7 @@
 }
 
 .statusbar {
-   font-size        : 10px;
+   font-size        : 11px;
    border           : 1px solid #1f669b;
    padding          : 0px 8px 0px 8px;
    background-color : #ffff00;
@@ -77,6 +77,10 @@ td {
 .chanlistodd {
 	background-color : #f0f5ff;
 }	
+
+.chanlistselected {
+	background-color : #ffb13d;
+}
 
 .light {
 	color : #717171;

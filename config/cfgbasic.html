@@ -115,8 +115,8 @@
 			for (var i = 0; i < panels.length; i++) {
 				if (panels[i].name == 'home')
 					continue;
-				$(panels[i].name).onclick = false;
-				$(panels[i].name).onmouseover = false;
+				$(panels[i].name).onClick = false;
+				$(panels[i].name).onMouseOver = false;
 				$(panels[i].name).style.visibility = 'hidden';
 			}
 		}
@@ -139,7 +139,7 @@
 
 	function showmainscreen(page) {
 		if (started) {
-			$('mainscreen').innerHTML = "Loading active screen...";
+//			$('mainscreen').innerHTML = "Loading active screen...";
 			$('mainscreen').src = page.titleBar.id + ".html";
 		}
 	}

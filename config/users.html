@@ -97,7 +97,14 @@
 		var noneopt = document.createElement("OPTION");
 		noneopt.value = "";
 		noneopt.innerHTML = "None";
-		$('zapchan').options.add(noneopt, 0);
+
+		try {
+			$('zapchan').options.add(noneopt, 0);
+		}
+		catch(err) {
+			$('zapchan').add(noneopt, 0);
+		}
+		
 		parent.astmanEngine.config2list("extensions.conf", $('context'), new Array(), numcallbacks);
 	}
 	

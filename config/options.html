@@ -229,12 +229,12 @@ function cancel_guisettings(){
 	</tr>
 	<tr valign="top" height="18">	<td><B>GUI - access settings: </B></td></tr>
 	<tr>	<td align="center" valign="top" height=170>
-					<div id="channellist" class="chanlist">
-					<table>	<tr>	<td colspan=2 height=18></td></tr>
+					<div id="gui_accesssettings" class="chanlist">
+					<table>	<tr>	<td colspan=2 height=10></td></tr>
 									<tr  onmouseover="show_tooltip('en', 'options', 3);"><td>Bind Address:</td>		<td><input size=14 id='bindaddr' dfalt="127.0.0.1" onkeydown="$('save').disabled=false; $('cancel').disabled=false;"></td></tr>
 									<tr  onmouseover="show_tooltip('en', 'options', 4);"><td>Port:</td>						<td><input size=14 id='bindport' dfalt=80  onkeydown="$('save').disabled=false; $('cancel').disabled=false;"></td></tr>
 									<tr  onmouseover="show_tooltip('en', 'options', 5);"><td>HTTP Timeout:</td>	<td><input size=14 id='httptimeout'  onkeydown="$('save').disabled=false; $('cancel').disabled=false;"></td></tr>
-									<tr><td colspan=2><BR></td></tr>
+									<tr><td colspan=2 height=8> </td></tr>
 									<tr><td colspan=2 align=center><input type=button id=save value="Save"  onclick="update_guisettings_http()">&nbsp;<input type=button id=cancel value="Cancel" onclick="cancel_guisettings()"></td></tr>
 					</table>
 					<select  size="5" id="hiddenfield" style="display:none;"></select>
