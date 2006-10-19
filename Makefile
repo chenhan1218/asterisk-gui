@@ -55,6 +55,14 @@ HTTPURL=http://$(HTTPHOST):$(HTTPBINDPORT)/$(HTTPPREFIX)/static/config/cfgbasic.
 
 # Nothing to do yet for building, but one day there could be...
 
+all:
+	@echo " +------- Asterisk-GUI Build Complete -------+"
+	@echo " + Asterisk-GUI has successfully been built, +"
+	@echo " + and can be installed by running:          +"
+	@echo " +                                           +"
+	@echo " +               make install                +"
+	@echo " +-------------------------------------------+"
+
 checkconfig:
 	@echo " --- Checking Asterisk configuration to see if it will support the GUI ---"
 	@echo -n "* Checking for http.conf: "
@@ -124,13 +132,6 @@ checkconfig:
 	@echo "    write = system,call,log,verbose,command,agent,config"
 	@echo ""
 	@echo " --- Good luck! ---	"
-all:
-	@echo " +------- Asterisk-GUI Build Complete -------+"
-	@echo " + Asterisk-GUI has successfully been built, +"
-	@echo " + and can be installed by running:          +"
-	@echo " +                                           +"
-	@echo " +               make install                +"
-	@echo " +-------------------------------------------+"
 
 _install:
 	@echo "Installing into $(HTTPDIR)"
@@ -174,7 +175,7 @@ install:_install
 	@echo " +                                           +"
 	@echo " + Before the GUI will run, you must perform +"
 	@echo " + some modifications to the Asterisk        +"
-	@echo " + configuration fiels in accordance with    +"
+	@echo " + configuration files in accordance with    +"
 	@echo " + the README file.  When done, you can      +"
 	@echo " + check your changes by doing:              +"
 	@echo " +                                           +"
