@@ -26,9 +26,50 @@
 <link href="stylesheets/schwing.css" media="all" rel="Stylesheet" type="text/css" />
 
 <script>
-function localajaxinit() {
-	parent.loadscreen(this);
+var callbacks = new Object;
 
+callbacks.format = function(t) {
+	if ((t.name == 'general'))
+		return null;
+	if (t.name.substring(0,6) == 'trunk_')
+		return null;
+	if (t.fieldbyname['fullname'] && t.fieldbyname['fullname'].length) {
+		return t.name + " -- " + t.fieldbyname['fullname'];
+	} else
+		return t.name;
+}
+
+function localajaxinit() {
+	parent.astmanEngine.config2list("users.conf", $('devices'), new Array, callbacks);
+	parent.loadscreen(this);
+	$('message_text').innerHTML = " Saving Changes ... ";
+}
+
+
+function record_new(){
+		$('status_message').style.display="block";
+		var opt = {
+			method: 'get',
+			asynchronous: true,
+			onSuccess: function(t) { 
+					setTimeout("$('status_message').style.display='none'",sc_displaytime);
+					if ( t.responseText.indexOf("Originate successfully queued") == -1 ){
+							// Request Failed
+					}else{
+						$('status').innerHTML = " <I> Configuration Saved ! </I>";
+						$("newvmenu_name").value="";
+						$("format").selectedIndex =0;
+						$("newvmenu_ext").value="";						
+					}				
+			},
+			onFailure: function(t) {
+				$('status_message').style.display='none';
+				alert("Config Error: " + t.status + ": " + t.statusText);
+			}
+		};
+		opt.parameters ="action=originate&channel=Local/"+$('newvmenu_ext').value+ "&context=record_vmenu&exten=1&priority=1&Variable=var1%3d"+ encodeURIComponent($('newvmenu_name').value + "." + $('format').value);
+		var tmp = new Ajax.Request("../../rawman", opt);
+		return;
 }
 </script>
 <body id="foo" onload="localajaxinit()">
@@ -49,14 +90,6 @@ function localajaxinit() {
 						<td>230kb</td>
 						<td align=center><input type=checkbox id='select_filename1'></td>
 				</tr>
-				<tr><td>Some_Filename2.gsm</td>
-						<td>164kb</td>
-						<td align=center><input type=checkbox id='select_filename2'></td>
-				</tr>
-				<tr><td>Some_Filename3.gsm</td>
-						<td>514kb</td>
-						<td align=center><input type=checkbox id='select_filename3'></td>
-				</tr>
 				<tr><td></td>
 						<td></td>
 						<td><input type=button id='delete' value="delete"></td>
@@ -71,14 +104,39 @@ function localajaxinit() {
 				<tr><td>File Name:</td>
 						<td><input id='newvmenu_name' size=16></td>
 				</tr>
+				<tr><td>Format:</td>
+						<td><select id='format'>
+										<option value="gsm">gsm</option>
+										<option value="g723">g723</option>
+										<option value="g729">g729</option>
+										<option value="h623">h623</option>
+										<option value="ulaw">ulaw</option>
+										<option value="alaw">alaw</option>
+										<option value="vox">vox</option>
+										<option value="wav">wav</option>
+										<option value="WAV">WAV</option>
+								</select>
+						</td>
+				</tr>
 				<tr>	<td>Extension used for recording:</td>
-						<td><input id='newvmenu_ext' size=16><input type="button" value="&#9660;" style="width:20; height:18; font-family: helvetica; font-size=50%"></td>
+						<td><input id='newvmenu_ext' size=16>
+								<div  id="combobox_div"><select id='devices'></select></div>
+								<SCRIPT LANGUAGE="JavaScript">
+										combo_box('newvmenu_ext', "combobox_div","devices");
+								</SCRIPT>
+						</td>
 				</tr>
 				<tr>	<td colspan=2 align=center height=10></td></tr>
-				<tr>	<td colspan=2 align=center><input type="button" id='record' Value="Record"></td></tr>
+				<tr>	<td colspan=2 align=center><input type="button" id='record' Value="Record" onclick="record_new()"></td></tr>
+				<tr>	<td colspan=2 align=center height=10><div id="status"></div></td></tr>
 			</table>
 	</td>
 	</tr>
 </table>
 </div>
+<SCRIPT LANGUAGE="JavaScript">
+<!--
+showdiv_statusmessage();
+//-->
+</SCRIPT>
 </body>

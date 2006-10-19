@@ -112,6 +112,7 @@
 
 	activechannels.hungup = function(msgs) {
 		$('status').innerHTML = "Hungup " + hungupchan;
+		doStatus();
 	}
 	
 	activechannels.transferred = function(msgs) {
