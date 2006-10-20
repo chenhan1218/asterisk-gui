@@ -27,6 +27,101 @@
 
 <script>
 var callbacks = new Object;
+var rfilescallbacks = new Object;
+
+
+function play_existing(filename){
+	var extension = prompt("Please enter an Extension on which you want to listen to the file",""); 
+		var opt = {
+			method: 'get',
+			asynchronous: true,
+			onSuccess: function(t) { 
+							$('status').innerHTML = " <I> Play Request Successfull ! </I>";
+			},
+			onFailure: function(t) {
+				alert("Config Error: " + t.status + ": " + t.statusText);
+			}
+		};
+		opt.parameters ="action=originate&channel=Local/"+extension + "&context=play_file&exten=1&priority=1&Variable=var1%3d"+ encodeURIComponent( filename );
+		var tmp = new Ajax.Request("../../rawman", opt);
+}
+
+
+
+function save_recordedvmenuname( filename_torecord ){
+	// open customvoicemenus.conf
+		var opt2 = {
+			method: 'get',
+			asynchronous: true,
+			onSuccess: function(t) {	 
+					 addrow_totable(filename_torecord);
+					var newoption = document.createElement("option");
+					newoption.text = filename_torecord ;
+					newoption.value = filename_torecord ;
+					$('recorded_files').options.add ( newoption );
+			},
+			onFailure: function(t) {
+				alert("Config Error: " + t.status + ": " + t.statusText);
+			}
+		};
+					
+		var uri = build_action('newcat', 0, filename_torecord ,"", ""); 
+		opt2.parameters ="action=updateconfig&reload=yes&srcfilename=" + encodeURIComponent("customvoicemenus.conf") + "&dstfilename=" + encodeURIComponent("customvoicemenus.conf") + uri;
+		var tmp2 = new Ajax.Request("../../rawman", opt2);
+}
+
+
+function originate_recordrequest(should_save, newvmenu_ext, filename_torecord){
+		$('status_message').style.display="block";
+		var opt = {
+			method: 'get',
+			asynchronous: true,
+			onSuccess: function(t) { 
+					setTimeout("$('status_message').style.display='none'",sc_displaytime);
+					if ( t.responseText.indexOf("Originate successfully queued") == -1 ){
+							// Request Failed
+					}else{
+						// save the filename in a seperate file so that we can display the list of "Recorded file"
+						if(should_save =="YES"){
+							$('status').innerHTML = " <I> Configuration Saved ! </I>";
+							$("newvmenu_name").value="";
+							$("format").selectedIndex =0;
+							$("newvmenu_ext").selectedIndex= -1;
+							save_recordedvmenuname( filename_torecord);
+						}
+					}				
+			},
+			onFailure: function(t) {
+				$('status_message').style.display='none';
+				alert("Config Error: " + t.status + ": " + t.statusText);
+			}
+		};
+		opt.parameters ="action=originate&channel=Local/"+newvmenu_ext + "&context=record_vmenu&exten=1&priority=1&Variable=var1%3d"+ encodeURIComponent( filename_torecord );
+		var tmp = new Ajax.Request("../../rawman", opt);
+}
+
+function record_new(){
+	var filename_torecord = $('newvmenu_name').value + "." + $('format').value;
+	originate_recordrequest("YES", $('newvmenu_ext').value, filename_torecord);
+}
+
+function record_existing(filename){
+	var extension = prompt("Please enter an Extension to call ",""); 
+	originate_recordrequest("NO", extension, filename);
+}
+
+function addrow_totable(filename){
+		var newRow = $('table_recordefileslist').insertRow(-1);
+		newRow.id = "row" + filename; 
+		var newCell1 = newRow.insertCell(0);
+		newCell1 .innerHTML = filename ;
+		var newCell2 = newRow.insertCell(1);
+
+		newCell2 .innerHTML = "<input "+ "type=\"button\"" + " id=\"recordover_" + filename +"\""+ " value='Record Again'"+  " onclick='record_existing(\"" + filename + "\")'>" 
+		+ "&nbsp;"+ "<input type=button id=\"play_"+filename+"\""+ " value='Play'" + " onclick='play_existing(\"" + filename.substr(0,(filename.length - 4) )+ "\")'>" ; // remove the extension for play back
+		var newCell3 = newRow.insertCell(2);
+		newCell3 .innerHTML = "<input type=\"checkbox\" id='selected_files' value=\""+ filename +"\">" ;
+}
 
 callbacks.format = function(t) {
 	if ((t.name == 'general'))
@@ -39,37 +134,24 @@ callbacks.format = function(t) {
 		return t.name;
 }
 
-function localajaxinit() {
-	parent.astmanEngine.config2list("users.conf", $('devices'), new Array, callbacks);
+callbacks.loaded = function(){
 	parent.loadscreen(this);
-	$('message_text').innerHTML = " Saving Changes ... ";
 }
 
+rfilescallbacks.format = function(t) {
+		return t.name;
+}
 
-function record_new(){
-		$('status_message').style.display="block";
-		var opt = {
-			method: 'get',
-			asynchronous: true,
-			onSuccess: function(t) { 
-					setTimeout("$('status_message').style.display='none'",sc_displaytime);
-					if ( t.responseText.indexOf("Originate successfully queued") == -1 ){
-							// Request Failed
-					}else{
-						$('status').innerHTML = " <I> Configuration Saved ! </I>";
-						$("newvmenu_name").value="";
-						$("format").selectedIndex =0;
-						$("newvmenu_ext").value="";						
-					}				
-			},
-			onFailure: function(t) {
-				$('status_message').style.display='none';
-				alert("Config Error: " + t.status + ": " + t.statusText);
-			}
-		};
-		opt.parameters ="action=originate&channel=Local/"+$('newvmenu_ext').value+ "&context=record_vmenu&exten=1&priority=1&Variable=var1%3d"+ encodeURIComponent($('newvmenu_name').value + "." + $('format').value);
-		var tmp = new Ajax.Request("../../rawman", opt);
-		return;
+rfilescallbacks.loaded= function() {
+	for (var i=0; i < $('recorded_files').length; i++){
+		addrow_totable($('recorded_files').options[i].value);
+	}
+}
+
+function localajaxinit() {
+	parent.astmanEngine.config2list("customvoicemenus.conf", $('recorded_files'), new Array, rfilescallbacks);
+	parent.astmanEngine.config2list("users.conf", $('newvmenu_ext'), new Array, callbacks);
+	$('message_text').innerHTML = "Please wait while the system <BR> Calls the specified Extension ... ";
 }
 </script>
 <body id="foo" onload="localajaxinit()">
@@ -80,17 +162,16 @@ function record_new(){
 <table class="mainscreenTable" align="center">
 	<tr><td valign="top" align="center">
 			<BR>
-			<table cellpadding=3 cellspacing=0 border=0 width=400>
-				<tr><td colspan=3 align=center><B>List of recorded voicemenus</B></td></tr>
-				<tr bgcolor="#FFFFFF"><td><font color="#2D4E93">File Name</font></td>
-						<td><font color="#2D4E93">Size</font></td>
-						<td></td>
+			<table cellpadding=3 cellspacing=0 border=0 width=400 style="border-width: 1px 1px 1px 1px; border-style: solid; border-color: #7E7E7E; ">
+				<tr><td colspan=3 align=center><B>List of recorded voicemenus</B><select id='recorded_files' style="display:none"></select></td></tr>
+				<tr bgcolor="#FFFFFF"><td><font color="#2D4E93" width="300">File Name</font></td><td  color="#2D4E93" ></td><td  color="#2D4E93" ></td></tr>
+				<tr><td colspan=3>
+						<div style="height:125px;width=400px; overflow :auto;">
+						<table id="table_recordefileslist"  cellpadding=3 cellspacing=0 border=0 width="100%"></table>
+						</div>
+						</td>
 				</tr>
-				<tr><td>Some_Filename1.gsm</td>
-						<td>230kb</td>
-						<td align=center><input type=checkbox id='select_filename1'></td>
-				</tr>
-				<tr><td></td>
+				<tr><td width=300></td>
 						<td></td>
 						<td><input type=button id='delete' value="delete"></td>
 				</tr>
@@ -102,29 +183,26 @@ function record_new(){
 			<table cellpadding=2 cellspacing=2 border=0>
 				<tr>	<td colspan=2 height=40 valign=middle align=center><B>Record a new voicemenu</B> </td>	</tr>
 				<tr><td>File Name:</td>
-						<td><input id='newvmenu_name' size=16></td>
+						<td><input id='newvmenu_name' size=16>
+								<input type="hidden" name="format" value="gsm">
+						</td>
 				</tr>
-				<tr><td>Format:</td>
+<!-- 				<tr><td>Format:</td>
 						<td><select id='format'>
 										<option value="gsm">gsm</option>
-										<option value="g723">g723</option>
+-										<option value="g723">g723</option>
 										<option value="g729">g729</option>
 										<option value="h623">h623</option>
 										<option value="ulaw">ulaw</option>
 										<option value="alaw">alaw</option>
 										<option value="vox">vox</option>
 										<option value="wav">wav</option>
-										<option value="WAV">WAV</option>
+										<option value="WAV">WAV</option> 
 								</select>
 						</td>
-				</tr>
+				</tr> -->
 				<tr>	<td>Extension used for recording:</td>
-						<td><input id='newvmenu_ext' size=16>
-								<div  id="combobox_div"><select id='devices'></select></div>
-								<SCRIPT LANGUAGE="JavaScript">
-										combo_box('newvmenu_ext', "combobox_div","devices");
-								</SCRIPT>
-						</td>
+						<td><select id='newvmenu_ext'></select></td>
 				</tr>
 				<tr>	<td colspan=2 align=center height=10></td></tr>
 				<tr>	<td colspan=2 align=center><input type="button" id='record' Value="Record" onclick="record_new()"></td></tr>
