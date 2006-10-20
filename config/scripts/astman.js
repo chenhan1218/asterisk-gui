@@ -903,7 +903,7 @@ function Astman() {
 	this.setDebug = function(debug) {
 		this.debug = debug;
 	};
-	/*
+
 	this.run_tool = function(tool, callback) {
 		var opt = {
 			method: 'get',
@@ -920,7 +920,7 @@ function Astman() {
 		opt.parameters="action=originate&channel=" + encodeURIComponent("Local/" + tool + "@tools") + "&application=noop&timeout=60000";
 		tmp = new Ajax.Request(this.url, opt);
 	}
-	*/
+
 
 	this.clickChannel = function(ev) {
 		var target = ev.target;
