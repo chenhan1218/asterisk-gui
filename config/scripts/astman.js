@@ -389,24 +389,34 @@ function first_free_exten(box, start) {
 
 
 
+function action_issuccess(responseText) {
+	if ( responseText.indexOf("Response: Success") == -1 ){
+			return false;
+	}else{
+			return true;
+	}
+}
 
-
-
-
-
-
-
+function action_errmsg (responseText){
+	var tmp = responseText.split("Message:");
+	return tmp[1];
+}
 
 
 function delete_item(box, value, noconfirm) {
 	var opt = {
 		method: 'get',
 		asynchronous: true,
-		onSuccess: function() { 
-			if (box.widgets['status']) 
-				box.widgets['status'].innerHTML = "<i>Deleted.</i>";
-			if (box.callbacks.delchanges)
-				box.callbacks.delchanges(box, box.delvalue, box.delcat);
+		onSuccess: function(t) { 
+//			if(action_issuccess(t.responseText) ){
+				if (box.widgets['status']) 
+					box.widgets['status'].innerHTML = "<i>Deleted.</i>";
+				if (box.callbacks.delchanges)
+					box.callbacks.delchanges(box, box.delvalue, box.delcat);
+//			}else{
+//				alert( action_errmsg (t.responseText) );
+//			}
+
 		},
 		onFailure: function(t) {
 			alert("Config Error: " + t.status + ": " + t.statusText);
