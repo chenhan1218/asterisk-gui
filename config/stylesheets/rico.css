@@ -37,7 +37,7 @@ div.header {margin: 0px 8px 0px 8px; padding: 0px;}
 
 .accordionTabTitleBar {
    font-size           : 12px;
-	padding             : 2px 4px 2px 4px;
+	padding             : 2px 2px 2px 2px;
    border-style        : solid none solid none;
 	border-top-color    : #BDC7E7;
 	border-bottom-color : #182052;
@@ -51,10 +51,10 @@ div.header {margin: 0px 8px 0px 8px; padding: 0px;}
 }
 
 .accordionTabContentBox {
-   font-size        : 12px;
+   font-size        : 11px;
    border           : 1px solid #1f669b;
    border-top-width : 0px;
-   padding          : 0px 11px 0px 11px;
+   padding          : 0px 8px 0px 8px; 
 }
 
 #accordionExample {
