@@ -46,6 +46,49 @@ function play_existing(filename){
 		var tmp = new Ajax.Request("../../rawman", opt);
 }
 
+function delete_sounds(filename){
+	var ans = confirm("Delete recorded file "+ filename +" ?");
+	if (ans){
+			var opt = {
+				method: 'get',
+				asynchronous: true,
+				onSuccess: function(t) { 
+						$('status').innerHTML = " <I> Delete Request Successfull ! </I>";
+						// remove file name from stored config file
+						var opt2 = {
+							method: 'get',
+							asynchronous: true,
+							onSuccess: function() { 
+								// Remove this TR
+								var delete_id = "delete_" + filename;
+								var tableRow = $(delete_id).parentNode.parentNode; //gets TR object
+								for( var i=0; i <  $('table_recordefileslist'). rows.length; i++){
+									if  ( $('table_recordefileslist'). rows[i].id == tableRow.id){
+										 $('table_recordefileslist').deleteRow(i);
+										 break;
+									}
+								}
+							},
+							onFailure: function(t) {
+								$('status_message').style.display='none';
+								alert("Config Error: " + t.status + ": " + t.statusText);
+							}
+						};	
+						var uri = build_action('delcat', 0, filename,"", ""); 
+						opt2.parameters = "action=updateconfig&srcfilename=" + encodeURIComponent("customvoicemenus.conf") + "&dstfilename=" + encodeURIComponent("customvoicemenus.conf") + uri;
+						var tmp2 = new Ajax.Request('../../rawman', opt2);
+				},
+				onFailure: function(t) {
+					alert("Config Error: " + t.status + ": " + t.statusText);
+				}
+			};
+			opt.parameters="action=originate&channel=" + encodeURIComponent("Local/removefile@tools") + "&Variable=var1%3d"+ encodeURIComponent( filename )+"&application=noop&timeout=60000";
+			var tmp = new Ajax.Request("../../rawman", opt);
+	}
+	else{
+		//
+	}
+}
 
 
 function save_recordedvmenuname( filename_torecord ){
@@ -120,7 +163,8 @@ function addrow_totable(filename){
 		newCell2 .innerHTML = "<input "+ "type=\"button\"" + " id=\"recordover_" + filename +"\""+ " value='Record Again'"+  " onclick='record_existing(\"" + filename + "\")'>" 
 		+ "&nbsp;"+ "<input type=button id=\"play_"+filename+"\""+ " value='Play'" + " onclick='play_existing(\"" + filename.substr(0,(filename.length - 4) )+ "\")'>" ; // remove the extension for play back
 		var newCell3 = newRow.insertCell(2);
-		newCell3 .innerHTML = "<input type=\"checkbox\" id='selected_files' value=\""+ filename +"\">" ;
+		newCell3 .innerHTML = "<input type=\"button\" id='delete_" + filename + "' onclick='delete_sounds(\""+ filename + "\")'  value=\"Delete\">" ;
+
 }
 
 callbacks.format = function(t) {
@@ -163,17 +207,13 @@ function localajaxinit() {
 	<tr><td valign="top" align="center">
 			<BR>
 			<table cellpadding=3 cellspacing=0 border=0 width=400 style="border-width: 1px 1px 1px 1px; border-style: solid; border-color: #7E7E7E; ">
-				<tr><td colspan=3 align=center><B>List of recorded voicemenus</B><select id='recorded_files' style="display:none"></select></td></tr>
-				<tr bgcolor="#FFFFFF"><td><font color="#2D4E93" width="300">File Name</font></td><td  color="#2D4E93" ></td><td  color="#2D4E93" ></td></tr>
-				<tr><td colspan=3>
+				<tr><td colspan=2 align=center><B>List of recorded voicemenus</B><select id='recorded_files' style="display:none"></select></td></tr>
+				<tr bgcolor="#FFFFFF"><td><font color="#2D4E93" width="300">File Name</font></td><td  color="#2D4E93" ></td></tr>
+				<tr><td colspan=2>
 						<div style="height:125px;width=400px; overflow :auto;">
 						<table id="table_recordefileslist"  cellpadding=3 cellspacing=0 border=0 width="100%"></table>
 						</div>
 						</td>
-				</tr>
-				<tr><td width=300></td>
-						<td></td>
-						<td><input type=button id='delete' value="delete"></td>
 				</tr>
 			</table>
 
@@ -184,7 +224,7 @@ function localajaxinit() {
 				<tr>	<td colspan=2 height=40 valign=middle align=center><B>Record a new voicemenu</B> </td>	</tr>
 				<tr><td>File Name:</td>
 						<td><input id='newvmenu_name' size=16>
-								<input type="hidden" name="format" value="gsm">
+								<input type="hidden" id="format" value="gsm">
 						</td>
 				</tr>
 <!-- 				<tr><td>Format:</td>

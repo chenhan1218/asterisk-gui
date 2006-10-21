@@ -188,7 +188,7 @@ Rico.Accordion.prototype = {
          collapsedFontWeight : 'normal',
          hoverTextColor      : '#ffffff',
          borderColor         : '#1f669b',
-         panelHeight         : 200,
+         panelHeight         : 160,
          onHideTab           : null,
          onShowTab           : null,
          onLoadShowTab       : 0
@@ -224,7 +224,7 @@ Rico.Accordion.prototype = {
                                    accordionTab.content,
                                    1,
                                    this.options.panelHeight,
-                                   100, 10,
+                                   100, 14,
                                    { complete: function() {accordion.showTabDone(lastExpandedTab)} } );
          this.lastExpandedTab = accordionTab;
       }
@@ -1785,7 +1785,7 @@ Rico.LiveGridMetaData.prototype = {
       this.pageSize  = pageSize;
       this.totalRows = totalRows;
       this.setOptions(options);
-      this.ArrowHeight = 16;
+      this.ArrowHeight = 20;
       this.columnCount = columnCount;
    },
 
