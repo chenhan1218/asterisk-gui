@@ -109,8 +109,7 @@
 </script>
 
 
-<body id="foo" onload="localinit()">
-
+<body id="foo" onload="localinit()" topmargin=0  bgcolor="EFEFEF">
 <div class="mainscreenTitleBar">
 	<span style="margin-left: 4px;font-weight:bold">Welcome to the Asterisk Configuration Panel</span>
 </div>
@@ -120,17 +119,17 @@
 		<td colspan=2>
 			<table align="center">
 				<tr><td colspan="2"><h2>Asterisk&trade; Configuration Engine</h2></td>
-				<tr><td>Username:</td><td><input disabled=1 id="username"></td></tr>
-				<tr><td>Secret:</td><td><input disabled=1 type="password" id="secret"></td></tr>
+				<tr><td>Username:</td><td><input disabled=1 id="username"  class="input9" size=12></td></tr>
+				<tr><td>Secret:</td><td><input disabled=1 type="password" id="secret" class="input9" size=12></td></tr>
 				<tr><td colspan=2 align="center">
 				  <div id="statusbar">
 					<span style="margin-left: 4px;font-weight:bold">&nbsp;</span>
 				  </div>
 				</td></tr>
 
-				<tr><td align='center' colspan='2'><input type="submit" id="login" value="Login" disabled=1 onClick="doLogin()">
+				<tr><td align='center' colspan='2'><input type="submit" id="login" value="Login" disabled=1 onClick="doLogin()" class="input">
 				&nbsp;&nbsp;&nbsp;&nbsp;
-				<input type="submit" id="logoff" value="Logoff" disabled=1 onClick="doLogoff()"></td></tr>
+				<input type="submit" id="logoff" value="Logoff" disabled=1 onClick="doLogoff()" class="input"></td></tr>
 			</table>
 		</td>
 	</tr>

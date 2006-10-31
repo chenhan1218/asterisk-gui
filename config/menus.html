@@ -390,16 +390,16 @@ function  enable_savecancel(){
 
 
 function generate_fields(key){
-			document.write('<select  style="font-family: Verdana, Arial, Helvetica, Sans-Serif;font-size: 11px;"   id=\'keypress_'+ key + '_action\' onchange="key_action(this.value, \'' + key + '\')">\n');
+			document.write('<select  class="input8" style="font-family: Verdana, Arial, Helvetica, Sans-Serif;font-size: 11px;"   id=\'keypress_'+ key + '_action\' onchange="key_action(this.value, \'' + key + '\')">\n');
 			document.write('<option value="disabled">Disabled</option>\n');
 			document.write('<option value="gotomenu">Goto Menu</option>\n');
 			document.write('<option value="gotoextension">Goto Extension</option>\n');
 			document.write('<option value="Custom">Custom</option>\n');
 			document.write('<option value="Hangup">Hangup</option>\n');
 			document.write('<option value="PlayInvalid">Play Invalid</option>\n');
-			document.write('</select>&nbsp;<input type="text"  size=16 style="display:none;font-family: Verdana, Arial, Helvetica, Sans-Serif;font-size: 11px;" id="keypress_' + key+ '_text" onchange="enable_savecancel()">\n');
-			document.write('<select  style="display:none; font-family: Verdana, Arial, Helvetica, Sans-Serif;font-size: 11px;"  id="keypress_'+ key + '_menus" onchange="enable_savecancel()"></select>\n');
-			document.write('<select  style="display:none; font-family: Verdana, Arial, Helvetica, Sans-Serif;font-size: 11px;"  id="keypress_'+ key + '_exts" onchange="enable_savecancel()"></select>\n');
+			document.write('</select>&nbsp;<input type="text" class="input8" size=16 style="display:none;font-family: Verdana, Arial, Helvetica, Sans-Serif;font-size: 11px;" id="keypress_' + key+ '_text" onchange="enable_savecancel()">\n');
+			document.write('<select  style="display:none; font-family: Verdana, Arial, Helvetica, Sans-Serif;font-size: 11px;"  id="keypress_'+ key + '_menus" onchange="enable_savecancel()" class="input8"></select>\n');
+			document.write('<select  style="display:none; font-family: Verdana, Arial, Helvetica, Sans-Serif;font-size: 11px;"  id="keypress_'+ key + '_exts" onchange="enable_savecancel()" class="input8"></select>\n');
 }
 
 function step_onselect(){
@@ -817,7 +817,7 @@ usercallbacks.loaded = function (){
 </script>
 
 
-<body id="foo" onload="localajaxinit()">
+<body id="foo" onload="localajaxinit()"  bgcolor="EFEFEF">
 <div class="mainscreenTitleBar">
 	<span style="margin-left: 4px;font-weight:bold">Voice Menus Configuration</span>
 </div>
@@ -830,29 +830,25 @@ usercallbacks.loaded = function (){
 	</tr>
 	<tr valign="top">
 		<td>
-			<select size="28" id="vmenus" style="width:180px">
+			<select size="20" id="vmenus" style="width:180px; height: 415px" class="input10">
 			<option>Loading...</option>
 			</select>
 			<div style='visibility:hidden;overflow:hidden;width:0px;height:0px'><select id='extensions'></select><select id='users'></select></div>
 		</td>
-		<td valign=top align="right" width=390>
-						<table align="center" width="390">
-						<tr onmouseover="show_tooltip('en', 'menus', 0);"><td width="60" align=left>Name:</td><td align=left><input id='comment'  onKeyUp="enable_savecancel()"  pattern='^[a-zA-Z_0-9 ]*$' disabled ></td></tr>
-						<tr onmouseover="show_tooltip('en', 'menus', 1);"><td colspan=2>Steps:</td></tr>
-						<tr><td align=center colspan=2> 
-										<TABLE>
-										<tr><td ><select id='steps' size=5  style="width:310px" onClick="step_onselect()" disabled></select></td>
-												<td  align=center width=55 valign="middle">
-														<input  style='width:45'  type="button" id="stepUp" value="Up" disabled onClick="step_up()"><BR><BR>
-														<input  style='width:45' type="button" id="stepDown" value="Down" disabled onClick="step_down()">
-												</td>
-										</tr>
-										</TABLE>
-								</td>
+		<td valign=top align="right" width=346 height=415>
+						<table align="center" width="346">
+						<tr onmouseover="show_tooltip('en', 'menus', 0);"><td width="50" align=left class="field_text">Name:</td><td align=left><input id='comment'  onKeyUp="enable_savecancel()"  pattern='^[a-zA-Z_0-9 ]*$' disabled  class="input8"></td></tr>
+						<tr onmouseover="show_tooltip('en', 'menus', 1);">
+									<td class="field_text">Steps:<BR>
+														<input  style='width:45'  type="button" id="stepUp" value="Up" disabled onClick="step_up()" class="buttonbold"><BR><BR>
+														<input  style='width:45' type="button" id="stepDown" value="Down" disabled onClick="step_down()" class="buttonbold">
+									</td>
+									<td rowspan=2><select id='steps' size=5  style="width:280px;" onClick="step_onselect()" disabled class="input8"></select></td>
 						</tr>
-						<tr  onmouseover="show_tooltip('en', 'menus',2);"><td colspan=2>Add a new Step:</td></tr>
+						<tr  onmouseover="show_tooltip('en', 'menus',2);"><td colspan=2 class="field_text" height=4></td></tr>
+						<tr  onmouseover="show_tooltip('en', 'menus',2);"><td colspan=2 class="field_text">Add a new Step:</td></tr>
 						<tr><td colspan=2>&nbsp;
-								<select id='newstep_action' disabled onChange="update_newstep_var()">
+								<select id='newstep_action' disabled onChange="update_newstep_var()" class="input8">
 									<option value=""> -- Select --</option>
 									<option value="Answer">Answer</option>
 									<option value="Background">Background</option>
@@ -865,7 +861,7 @@ usercallbacks.loaded = function (){
 								</select>&nbsp;
 								<input type=text id="newstep_var" style="display:none" size=4 disabled>
 											<div id="combodiv_sounds">
-													<select size=5 id="combosel_sounds" style="font-family: Verdana, Arial, Helvetica, Sans-Serif;font-size: 11px; ">
+													<select size=5 id="combosel_sounds" style="font-family: Verdana, Arial, Helvetica, Sans-Serif;font-size: 11px;" class="input8">
 															<option value="" style="font-weight: bold">Agent Related</option>
 																	<option value="agent-alreadyon">agent-alreadyon</option>
 																	<option value="agent-incorrect">agent-incorrect</option>
@@ -1076,66 +1072,58 @@ usercallbacks.loaded = function (){
 																	<option value="vm-youhave">vm-youhave</option>
 													</select>
 											</div>
-											<input type=text id="newstep_var_digit" size=3 style="display:none;" onChange=" $('newstep_var').value = $('newstep_var_digit').value;"  pattern='^\d*$'>&nbsp;
+											<input type=text id="newstep_var_digit" size=3 style="display:none;" onChange=" $('newstep_var').value = $('newstep_var_digit').value;"  pattern='^\d*$' class="input8">&nbsp;
 											<SCRIPT LANGUAGE="JavaScript">combo_box('newstep_var', "combodiv_sounds","combosel_sounds"); </SCRIPT>
-								&nbsp;<input type=button style='width:45' id='addstep' onclick="add_newstep()"  value="Add" disabled>
-								&nbsp;<input type=button style='width:50' id='deletestep' onclick="delete_step()"  value="Delete" disabled>
+								&nbsp;<input type=button style='width:45' id='addstep' onclick="add_newstep()"  value="Add" disabled  class="buttonbold">
+								&nbsp;<input type=button style='width:50' id='deletestep' onclick="delete_step()"  value="Delete" disabled  class="buttonbold">
 								</td>
 						</tr>
 						
-						<tr onmouseover="show_tooltip('en', 'menus', 3);"><td colspan=2>&nbsp;<input type=checkbox id=allowexten disabled onclick="$('savevmenu').disabled=false;$('cancel').disabled=false;"> Dial other Extensions?&nbsp;</td></tr>
+						<tr onmouseover="show_tooltip('en', 'menus', 3);"><td colspan=2 class="field_text">&nbsp;<input type=checkbox id=allowexten disabled onclick="$('savevmenu').disabled=false;$('cancel').disabled=false;"> Dial other Extensions?&nbsp;</td></tr>
 						<tr><td colspan=2 height=6></td></tr>
-						<tr onmouseover="show_tooltip('en', 'menus', 4);"><td colspan=2>'Keypress' Events</td></tr>
+						<tr onmouseover="show_tooltip('en', 'menus', 4);"><td colspan=2 class="field_text">'Keypress' Events</td></tr>
 						<tr><td colspan=2>
-										<div  style="width=390px;">
-										<table cellpadding=3 cellspacing=0 width="100%">
-										<TR bgcolor='#B8B8B8'>
-												<TD width=35>Key</TD><TD>Action</TD>
-										</TR>
-										</table>
+										<div  style="width=340px;">
+												<table cellpadding=3 cellspacing=0 width="100%">
+												<TR bgcolor='#B8B8B8'>
+														<TD width=35 class="field_text">Key</TD><TD class="field_text">Action</TD>
+												</TR>
+												</table>
 										</div>
-										<div id="keypressoptions" style="height:155px;width=390px; overflow :auto;display :none">
-										<table cellpadding=3 cellspacing=0 width="100%">
-										<SCRIPT LANGUAGE="JavaScript">
-										<!--
-										for (var k=0; k< keys.length; k++){
-											document.write("<TR bgcolor='#FFFFFF'>\n");
-											document.write("<TD width=35 align=center><font style=\"font-size: 10pt\">"+keys[k]+"</font></TD>\n");
-											document.write("<TD>");
-											generate_fields( keys[k] ) ;
-											document.write("\n </TD></TR>\n\n");											
-										}
-										//-->
-										</SCRIPT>
-										</table>
-								
-								</div>
+										<div id="keypressoptions" style="height:155px;width=340px; overflow :auto;display :none;">
+													<table cellpadding=3 cellspacing=0 width="100%">
+													<SCRIPT LANGUAGE="JavaScript">
+													<!--
+													for (var k=0; k< keys.length; k++){
+														document.write("<TR bgcolor='#FFFFFF'>\n");
+														document.write("<TD width=35 align=center><font style=\"font-size: 10pt\">"+keys[k]+"</font></TD>\n");
+														document.write("<TD>");
+														generate_fields( keys[k] ) ;
+														document.write("\n </TD></TR>\n\n");											
+													}
+													//-->
+													</SCRIPT>
+													</table>
+											</div>
 								</td>
 						</tr>
 						<tr><td colspan=2 align="center">
-						<div style="height:15px" id='status'></div>
+										<div style="height:15px" id='status'></div>
 								</td>
 						</tr>
 						</table>
-
 		</td>
 	</tr>				
 	<tr>
 		<td align='center'>
-			<input style='width:80' type='button' id='new' value='New'>
-			&nbsp;
-			<input style='width:80' type='button' id='delete' value='Delete'>
-			&nbsp;
+			<input style='width:80' type='button' id='new' value='New' class="buttonbold">&nbsp;<input style='width:80' type='button' id='delete' value='Delete' class="buttonbold">&nbsp;
 		</td>
-		<td align='right'><input type="hidden" id="save">
-				<input style='width:80' type='button' id='savevmenu' onClick="save_vmenu()" value='Save' disabled>
-				&nbsp;
-				<input style='width:80' type='button' id='cancel' value='Cancel'>
-				&nbsp;
+		<td align='right'>
+				<input type="hidden" id="save">
+				<input type='button' id='savevmenu' onClick="save_vmenu()" value='Save' disabled class="buttonbold">&nbsp;<input type='button' id='cancel' value='Cancel' class="buttonbold">&nbsp;
 		</td>
 	</tr>
 </table>
-<div id='tooltip' style="margin-left:5px;height: 60px; width:575px; overflow :auto; font-family : Trebuchet MS, Arial, Helvetica, sans-serif;font-size: 11px; "></div>
 </div>
 <SCRIPT LANGUAGE="JavaScript">
 <!--

@@ -211,31 +211,41 @@ function cancel_guisettings(){
 
 
 </script>
-<body id="foo" onload="localajaxinit()">
+<body id="foo" onload="localajaxinit()" bgcolor="EFEFEF">
 <div class="mainscreenTitleBar"><span style="margin-left: 4px;font-weight:bold">Admin Options</span></div>
 <div class="mainscreenContentBox" id="userscontent">
 <table class="mainscreenTable" align="center">
-	<tr valign="top" height="18">	<td>	<B>Change Password: </B></td></tr>
-	<tr>	<td align="center" valign="top" height=180>
-					<div id="channellist" class="chanlist">
-					<table>	<tr>	<td colspan=2 height=18></td></tr>
-									<tr  onmouseover="show_tooltip('en', 'options', 0);">	<td>Current Password:</td><td><input type="password" id="currentpass" size=16></td></tr>
-									<tr  onmouseover="show_tooltip('en', 'options', 1);"><td>New Password:</td><td><input type="password" id="newpass" size=16 onkeyup="compare_passwords()">&nbsp;( min 4 characters )</td></tr>
-									<tr  onmouseover="show_tooltip('en', 'options', 2);"><td>Retype New Password:</td><td><input type="password" id="newpass_rep" size=16 onkeyup="compare_passwords()"></td></tr>
-									<tr>	<td align=center colspan=2><input type="button" id="pwdbutton" value="Update" onclick="askfor_updatepassword()"></td></tr>
+	<tr valign="top" height="18">	<td align="center">
+														<TABLE align="center" border=0 cellpadding=0 cellpadding=0 width=320><TR><TD align=left><B>Change Password:</B></TD></TR></TABLE>
+														</td>
+	</tr>
+	<tr>	<td align="center" valign="top">
+					<div id="channellist" class="chanlist_small" style="width: 320px; height:120">
+					<table>	<tr>	<td colspan=2 height=5></td></tr>
+									<tr  onmouseover="show_tooltip('en', 'options', 0);">	<td class="field_text">Current Password:</td><td><input type="password" id="currentpass" size=16 class="input8"></td></tr>
+									<tr  onmouseover="show_tooltip('en', 'options', 1);"><td class="field_text">New Password:</td><td><input type="password" id="newpass" size=16 onkeyup="compare_passwords()"  class="input8"></td></tr>
+									<tr  onmouseover="show_tooltip('en', 'options', 2);"><td class="field_text">Retype New Password:</td><td><input type="password" id="newpass_rep" size=16 onkeyup="compare_passwords()"  class="input8"></td></tr>
+										<tr>	<td colspan=2 height=6></td></tr>
+									<tr>	<td align=center colspan=2><input type="button" id="pwdbutton" value="Update" onclick="askfor_updatepassword()" class="buttonbold"></td></tr>
 					</table>
 					</div>
 			</td>
 	</tr>
-	<tr valign="top" height="18">	<td><B>GUI - access settings: </B></td></tr>
-	<tr>	<td align="center" valign="top" height=170>
-					<div id="gui_accesssettings" class="chanlist">
-					<table>	<tr>	<td colspan=2 height=10></td></tr>
-									<tr  onmouseover="show_tooltip('en', 'options', 3);"><td>Bind Address:</td>		<td><input size=14 id='bindaddr' dfalt="127.0.0.1" onkeydown="$('save').disabled=false; $('cancel').disabled=false;"></td></tr>
-									<tr  onmouseover="show_tooltip('en', 'options', 4);"><td>Port:</td>						<td><input size=14 id='bindport' dfalt=80  onkeydown="$('save').disabled=false; $('cancel').disabled=false;"></td></tr>
-									<tr  onmouseover="show_tooltip('en', 'options', 5);"><td>HTTP Timeout:</td>	<td><input size=14 id='httptimeout'  onkeydown="$('save').disabled=false; $('cancel').disabled=false;"></td></tr>
-									<tr><td colspan=2 height=8> </td></tr>
-									<tr><td colspan=2 align=center><input type=button id=save value="Save"  onclick="update_guisettings_http()">&nbsp;<input type=button id=cancel value="Cancel" onclick="cancel_guisettings()"></td></tr>
+	<tr valign="top" height="18">	<td></td></tr>
+	<tr valign="top" height="18">	<td align="center">
+														<TABLE align="center" border=0 cellpadding=0 cellpadding=0 width=320><TR><TD align=left><B>GUI - access settings: </B></TD></TR></TABLE>
+														</td>
+	</tr>
+	<tr>	<td align="center" valign="top">
+					<div id="gui_accesssettings" class="chanlist_small"  style="width: 320px; height:120">
+					<table>	<tr>	<td colspan=2 height=5></td></tr>
+									<tr  onmouseover="show_tooltip('en', 'options', 3);">
+													<td class="field_text">Bind Address:</td>		<td><input size=14 id='bindaddr' dfalt="127.0.0.1" onkeydown="$('save').disabled=false; $('cancel').disabled=false;"  class="input8"></td>
+									</tr>
+									<tr  onmouseover="show_tooltip('en', 'options', 4);"><td class="field_text">Port:</td>						<td><input size=14 id='bindport' dfalt=80  onkeydown="$('save').disabled=false; $('cancel').disabled=false;"  class="input8"></td></tr>
+									<tr  onmouseover="show_tooltip('en', 'options', 5);"><td class="field_text">HTTP Timeout:</td>	<td><input size=14 id='httptimeout'  onkeydown="$('save').disabled=false; $('cancel').disabled=false;"  class="input8"></td></tr>
+									<tr><td colspan=2 height=6> </td></tr>
+									<tr><td colspan=2 align=center><input type=button id=save value="Save"  onclick="update_guisettings_http()" class="buttonbold">&nbsp;<input type=button id=cancel value="Cancel" onclick="cancel_guisettings()" class="buttonbold"></td></tr>
 					</table>
 					<select  size="5" id="hiddenfield" style="display:none;"></select>
 					<select  size="5" id="hiddenfield2" style="display:none; width:220px"></select>
@@ -245,7 +255,6 @@ function cancel_guisettings(){
 	<tr><td valign="top" align=center><div  id='status'></div></td></tr>
 	<tr><td></td></tr>
 </table>
-<div id='tooltip' style="margin-left:5px;height: 60px; width:575px; overflow :auto; font-family : Trebuchet MS, Arial, Helvetica, sans-serif;font-size: 11px; "></div>
 </div>
 <SCRIPT LANGUAGE="JavaScript">
 <!--

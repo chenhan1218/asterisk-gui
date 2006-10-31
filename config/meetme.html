@@ -117,6 +117,7 @@
 			if (tmp.length > 1) {
 				if ($('extensions').stored_config.catbyname[tmp[0]].subfields[tmp[1]]['app'].toLowerCase() != "meetme") {
 					$('extensions').options[x].disabled = true;
+					$('extensions').options[x].value= "reserved";
 				}
 			}
 		}
@@ -189,8 +190,8 @@
 	function localajaxinit() {
 		$('advancedw').style.overflow = "hidden";
 		$('advancedw').style.height = 1;
-		$('advancedw').style.width = $('split').width;
-		$('advancedi').style.width = $('split').width - 60;
+		$('advancedw').style.width = $('split').style.width;
+		//$('advancedi').style.width = $('split').style.width - 60;
 		adstatus = "hidden";
 		$('extensions').contentEditable = 'false';
 		for (var x =0; x < fieldnames.length; x++) {
@@ -202,82 +203,55 @@
 </script>
 
 
-<body id="foo" onload="localajaxinit()">
+<body id="foo" onload="localajaxinit()"  bgcolor="EFEFEF">
 
 <div class="mainscreenTitleBar">
 	<span style="margin-left: 4px;font-weight:bold">MeetMe Extension Configuration</span>
 </div>
 <div class="mainscreenContentBox" id="mailboxcontent">
 <table class="mainscreenTable" align="center">
+	<tr valign="top"><td colspan='2'>Extensions:</td>	</tr>
 	<tr valign="top">
-		<td colspan='2'>
-		Extensions:
+		<td><select disabled size="28" id="extensions" style="width:220px;height: 415px" class="input10">	
+							<option>Loading...</option>	
+				</select>
+				<div style='visibility:hidden;overflow:hidden;width:0px;height:0px'>	<select id='hiddenusers'>	</select></div>
+		</td>
+		<td style="width:311px;height: 415px">
+					<div id='adjustments'>
+									<table cellspacing='0' cellpadding='0'>
+										<tr valign="top">
+												<td><table>
+															<tr onmouseover="show_tooltip('en', 'meetme', 0);" ><td class="field_text">Extension:</td><td>&nbsp;<input size='5' id='name' pattern='^\d*$' class="input8"></td></tr>
+															<tr onmouseover="show_tooltip('en', 'meetme', 1);"><td class="field_text">PIN Code:</td><td>&nbsp;<input size='5' id='pin' pattern='^\d*$' class="input8"></td></tr>
+															<tr onmouseover="show_tooltip('en', 'meetme', 2);"><td class="field_text">Administrator PIN Code:</td><td>&nbsp;<input size='5' id='pinadmin' pattern='^\d*$' class="input8"></td></tr>
+															<tr onmouseover="show_tooltip('en', 'meetme', 3);"><td class="field_text">Play hold music for first caller</td><td><input type='checkbox' id='music'></td></tr>
+															<tr onmouseover="show_tooltip('en', 'meetme', 4);"><td class="field_text">Enable caller menu</td><td><input type='checkbox' id='menu'></td></tr>
+															<tr onmouseover="show_tooltip('en', 'meetme', 5);"><td class="field_text">Announce callers</td><td><input type='checkbox' id='announce'></td></tr>
+															<tr><td colspan='2' align='center'><div style="height:15px" id='status'></div></td></tr>
+															<tr><td colspan='2'></td></tr>
+														</table>
+												</td>
+										</tr>
+										<tr onmouseover="show_tooltip('en', 'meetme', 6);"><td><img id="split" onClick="togglefeatures()" src="images/split-v.png"></td></tr>
+										<tr><td><div style="background-image:url(images/slice-v.png)" id='advancedw'>
+															<table id='advancedi' align='center'>
+																<tr onmouseover="show_tooltip('en', 'meetme', 7);"><td class="field_text">Room Override:</td><td>&nbsp;<input size='5' id='room' pattern='^\d*$' class="input8"></td></tr>
+																<tr><td class="field_text">Record conference</td><td><input type='checkbox' id='record'></td>	</tr>
+																<tr onmouseover="show_tooltip('en', 'meetme', 8);"><td class="field_text">Quiet Mode</td><td><input type='checkbox' id='quiet'></td>
+																</tr><tr onmouseover="show_tooltip('en', 'meetme', 9);"><td class="field_text">Wait for marked user</td><td><input type='checkbox' id='waitmarked'></td>
+																</tr><tr onmouseover="show_tooltip('en', 'meetme', 10);">	<td class="field_text">Set marked user</td><td><input type='checkbox' id='setmarked'></td></tr>
+															</table>
+														</div>
+												</td>
+										</tr>
+										<tr onmouseover="show_tooltip('en', 'meetme', 6);"><td><img onClick="togglefeatures()" src="images/adv-v.png"></td></tr>
+									</table>
+					</div>
 		</td>
 	</tr>
-	<tr valign="top">
-		<td>
-		<select disabled size="28" id="extensions" style="width:220px">
-		<option>Loading...</option>
-		</select>
-		</td>
-		<td>
-		<div id='adjustments'>
-		<table cellspacing='0' cellpadding='0'>
-			<tr valign="top"><td>
-				<table>
-				<tr onmouseover="show_tooltip('en', 'meetme', 0);" ><td>Extension:</td><td>&nbsp;<input size='5' id='name' pattern='^\d*$'></td></tr>
-				<tr onmouseover="show_tooltip('en', 'meetme', 1);"><td>PIN Code:</td><td>&nbsp;<input size='5' id='pin' pattern='^\d*$'></td></tr>
-				<tr onmouseover="show_tooltip('en', 'meetme', 2);"><td>Administrator PIN Code:</td><td>&nbsp;<input size='5' id='pinadmin' pattern='^\d*$'></td></tr>
-				<tr onmouseover="show_tooltip('en', 'meetme', 3);"><td>Play hold music for first caller</td><td><input type='checkbox' id='music'></td></tr>
-				<tr onmouseover="show_tooltip('en', 'meetme', 4);"><td>Enable caller menu</td><td><input type='checkbox' id='menu'></td></tr>
-				<tr onmouseover="show_tooltip('en', 'meetme', 5);"><td>Announce callers</td><td><input type='checkbox' id='announce'></td></tr>
-				<tr><td colspan='2' align='center'><div style="height:15px" id='status'></div></td></tr>
-				<tr><td colspan='2'></td></tr>
-				</table>
-			</td>
-			</tr>
-			<tr onmouseover="show_tooltip('en', 'meetme', 6);"><td><img id="split" onClick="togglefeatures()" src="images/split-v.png"></td></tr>
-			<tr><td>
-				<div style="background-image:url(images/slice-v.png)" id='advancedw'>
-				<table id='advancedi' align='center'><tr><td>
-				<tr onmouseover="show_tooltip('en', 'meetme', 7);"><td>Room Override:</td><td>&nbsp;<input size='5' id='room' pattern='^\d*$'></td></tr>
-				<tr><td>Record conference</td><td><input type='checkbox' id='record'></td></tr>
-				<tr onmouseover="show_tooltip('en', 'meetme', 8);"><td>Quiet Mode</td><td><input type='checkbox' id='quiet'></td></tr>
-				<tr onmouseover="show_tooltip('en', 'meetme', 9);"><td>Wait for marked user</td><td><input type='checkbox' id='waitmarked'></td></tr>
-				<tr onmouseover="show_tooltip('en', 'meetme', 10);"><td>Set marked user</td><td><input type='checkbox' id='setmarked'></td></tr>
-				</td></tr></table>
-				</div>
-			</td></tr>
-			<tr onmouseover="show_tooltip('en', 'meetme', 6);"><td>
-				<img onClick="togglefeatures()" src="images/adv-v.png">
-			</td>
-			</tr>
-		</table>
-		</div>
-		</td>
-
-	</tr><tr>
-		<td align='center'>
-			<table>
-			<tr align='center'><td>
-			<input style='width:80' type='button' id='newitem' value='New'>
-			</td><td>
-			<input style='width:80' type='button' id='delete' value='Delete'>
-			</td></tr>
-			</table>
-		</td>
-		<td align='center' colspan='2'>
-				<input style='width:80' type='button' id='save' value='Save'>
-				&nbsp;
-				<input style='width:80' type='button' id='cancel' value='Cancel'>
-				&nbsp;
-		<div style='visibility:hidden;overflow:hidden;width:0px;height:0px'>
-			<select id='hiddenusers'>
-			</select>
-		</div>
-		</td>				
+	<tr>	<td align='center'><input type='button' id='newitem' value='New' class="buttonbold">&nbsp;<input  type='button' id='delete' value='Delete' class="buttonbold"></td>
+			<td align='center' colspan='2'><input  class="buttonbold" type='button' id='save' value='Save'>&nbsp;<input  class="buttonbold" type='button' id='cancel' value='Cancel'></td>				
 	</tr>
 </table>
-<div id='tooltip' style="height: 60px; width:575px; overflow :auto; font-family : Trebuchet MS, Arial, Helvetica, sans-serif;font-size: 11px; "></div>
-</div>
 </body>

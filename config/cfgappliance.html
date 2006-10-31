@@ -39,8 +39,8 @@
 	var loggedon = -1;
 	var started = 0;
 	var accordion;
-	var copyright = "Copyright &copy;2006 Digium, Inc.  All Rights Reserved. &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
-
+	var copyright = "Copyright &copy;2006 Digium, Inc.  All Rights Reserved. &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
+	var tooltip_default = "Move the mouse over to a field to see tooltips";
 
 	eventeater.eventcb = function(msgs) {
 		if (loggedon == 1)
@@ -81,43 +81,40 @@
 		new PanelDef("menus", "Voice Menus", "accordion-icon.gif",
 			"Menus allow for more efficient routing of calls from incoming callers."),
 
-//		new PanelDef("record", "Record a Menu", "accordion-icon.gif",
-//			"Allows you to record custom voicemenus over a phone"),
+		new PanelDef("record", "Record a Menu", "accordion-icon.gif",
+			"Allows you to record custom voicemenus over a phone"),
 
-		new PanelDef("status", "Status", "accordion-icon.gif", "Monitor active channels."),
+		new PanelDef("status", "Active Channels", "accordion-icon.gif", "Monitor active channels."),
+
+		new PanelDef("sysinfo", "System Info", "accordion-icon.gif", "System Information."),
+
+		new PanelDef("backup", "Backup", "accordion-icon.gif", "Backup Management."),
 
 		new PanelDef("options", "Options", "accordion-icon.gif", "Admin Settings")
 
 	);
 
-	astmanEngine.setURL('../../rawman');
-	astmanEngine.setEventCallback(eventeater.eventcb);
-</script>
-<head>
-<title>Asterisk AtomPBX</title>
-</head>
-
-<body onload="javascript:registerajax()">
-
-<script>
-	
 	function setLoggedOn(onoff) {
 		loggedon = onoff;
 		if (loggedon == 1) {
 			for (var i = 0; i < panels.length; i++) {
-				if (panels[i].name == 'homeapp')
+				if (panels[i].name == 'home'){
 					continue;
+				}
 				$(panels[i].name).onclick = $(panels[i].name).realonclick;
 				$(panels[i].name).onmouseover = $(panels[i].name).realonmouseover;
 				$(panels[i].name).style.visibility = 'inherit';
 			}
 		} else {
 			for (var i = 0; i < panels.length; i++) {
-				if (panels[i].name == 'homeapp')
+				if (panels[i].name == 'home'){
+					// class :: accordionTabContentBox panelHeight = 474;
 					continue;
-				$(panels[i].name).onclick = false;
-				$(panels[i].name).onmouseover = false;
+				}
+				$(panels[i].name).onClick = false;
+				$(panels[i].name).onMouseOver = false;
 				$(panels[i].name).style.visibility = 'hidden';
+
 			}
 		}
 	}
@@ -128,83 +125,86 @@
 		if (loggedon == 1)
 			astmanEngine.pollEvents();
 	}
-
-	function finishfade(page) {
-		$('mainscreen').style.display = "none"; 
-	}
-	
-	function setstatus(status) {
-		$('status').innerHTML = copyright + status;
-	}
-
+	function finishfade(page) {	$('mainscreen').style.display = "none"; 	}
+	function setstatus(status) {	$('status').innerHTML = copyright + status;	}
 	function showmainscreen(page) {
-		if (started) {
-			$('mainscreen').innerHTML = "Loading active screen...";
+		if (started) 
 			$('mainscreen').src = page.titleBar.id + ".html";
-		}
 	}
 
 	function fademainscreen(page, newpage) {
+		// Confirm Discard Changes goes here 
+		$('tooltip').innerHTML = tooltip_default;
 		new Rico.Effect.FadeTo($('mainscreen'), 0, 100, 5, {complete:finishfade(page)});
 	}
 
+	function show_Acctooltip(name, tip){
+		$('tooltip').innerHTML = tip;
+	}
+
 	function registerajax() {
-		accordion = new Rico.Accordion( $('configpanel'), { panelHeight:360,onHideTab:fademainscreen,onShowTab:showmainscreen });
-		$('borderbox').style.height = $('screenholder').clientHeight;
-		$('titlebar').style.width = $('borderbox').clientWidth - 12;
+		var pnameheight = 22;
+		var pheight = (505  - (pnameheight*panels.length) )  - 4 ;
+		accordion = new Rico.Accordion( $('configpanel'), { panelHeight: pheight,onHideTab:fademainscreen,onShowTab:showmainscreen });
+		//$('borderbox').style.height = $('screenholder').clientHeight;
+		//$('titlebar').style.width = $('borderbox').clientWidth - 12;
 		for (var i = 0; i < panels.length; i++) {
-			if (panels[i].name == 'homeapp')
+			if (panels[i].name == 'home'){
+				$(panels[i].name).style.height = pnameheight + "px";
 				continue;
+			}
 			$(panels[i].name).realonclick = $(panels[i].name).onclick;
 			$(panels[i].name).realonmouseover = $(panels[i].name).onmouseover;
 		}
-		
 		started = 1;
 	}
+
+	astmanEngine.setURL('../../rawman');
+	astmanEngine.setEventCallback(eventeater.eventcb);
 </script>
-<table border="0" align="center" cellspacing="0" cellpadding="0" bgcolor="#dddddd">
-
-<tr>
-	<td bgcolor='white'></td>
-	<td width='80' bgcolor='white'></td>
-	<td bgcolor='white'></td>
+<head>
+	<title>Asterisk Configuration GUI</title>
+</head>
+<body onload="javascript:registerajax()" topmargin=1>
+<table border="0" align="center" cellspacing="0" cellpadding="0" bgcolor="#dddddd" width=950 height=570>
+<tr height=47><td valign="bottom" align='right' bgcolor='white' height=47><img align='left' src="images/digiumlogo.gif" align="left"></td>
+							<td valign='bottom' align='right' bgcolor='white' colspan=2><a target='_extern' href="http://www.digium.com/astguibasic/about">About Digium</a>&nbsp;|&nbsp;<a target='_extern' href="http://www.digium.com/astguibasic/help">Help</a>&nbsp;</td>
 </tr>
-<tr><td valign="bottom" align='right' colspan="2" bgcolor='white'>
-<img align='left' src="images/digiumlogo.gif" align="left">
-</td><td valign='bottom' align='right' bgcolor='white'>
-<a target='_guido' href="http://www.digium.com/guido/about">About Digium</a> | 
-<a target='_guido' href="http://www.digium.com/guido/help">Help</a>
-</td></tr>
-
-<tr><td>
-<div id="configpanel" style="width:150px">
-	<script>
-	for (var i = 0; i < panels.length; i++) {
-		document.write("<div>");
-		document.write("	<div id='" + panels[i].name + "' class='accordionTabTitleBar'>");
-		document.write("		<img style='vertical-align:middle' src='images/" + panels[i].icon + "'>");
-		document.write("		<span style='margin-left: 4px;font-weight:bold'>" + panels[i].label + "</span>");
-		document.write("    </div>");
-		document.write("	<div class='accordionTabContentBox' style='background-image:url(images/panel.png)'>");
-		document.write(panels[i].content);
-		document.write("	</div>");
-		document.write("</div>");
-	}
-	</script>
-</div>
-</td>
-<td colspan='2' width="600" bgcolor="#eeeeef" valign="top" id="screenholder">
-	<div id="titlebar" class="mainscreenTitleBar" style="position:absolute;top:56px">
-		<span style="margin-left: 4px;font-weight:bold">Loading Screen&nbsp;<img src='images/dots.gif'></span>
-	</div>
-	<div id="borderbox" class="mainscreenBorderBox" style="height:100px">
-	</div>
-	<iframe width="600" height="600" frameborder="0" border="0" marginheight="0" marginwidth="0" src="homeapp.html" id="mainscreen" style="position:absolute;top:56px">
-	</iframe>
-</td>
+<tr><td height="505"><div id="configpanel" style="width:150px; height: 505px;">
+										<script>
+												for (var i = 0; i < panels.length; i++) {
+													document.write("<div onmouseover='show_Acctooltip(\""+ panels[i].name +"\", \""+ panels[i].content +"\")'  onmouseout='show_Acctooltip(\""+ panels[i].name +"\", \"" + tooltip_default +"\")'>");
+													document.write("	<div id='" + panels[i].name + "' class='accordionTabTitleBar'>");
+													document.write("		<img style='vertical-align:middle' src='images/" + panels[i].icon + "'>");
+													document.write("		<span style='margin-left: 4px;font-weight:bold'>" + panels[i].label + "</span>");
+													document.write("    </div>");
+													document.write("	<div class='accordionTabContentBox' style='background-image:url(images/panel.png)'>");
+													document.write(panels[i].content);
+													document.write("	</div>");
+													document.write("</div>");
+												}
+										</script>
+									</div>
+		</td>
+		<td width="550" height="505" bgcolor="#EFEFEF" valign="top" id="screenholder">
+				<div id="titlebar" class="mainscreenTitleBar" style="position:absolute;top:48px">
+						<span style="margin-left: 4px;font-weight:bold">Loading Screen&nbsp;<img src='images/dots.gif'></span>
+				</div>
+				<div id="borderbox" class="mainscreenBorderBox" height="100%"></div>
+				<iframe width="540" height="505" frameborder="0" border="0" marginheight="0" marginwidth="0" src="homeapp.html" id="mainscreen" style="position:absolute;top:48px;" SCROLLING=no></iframe>
+		</td>
+		<td valign=top width=250 height="505">
+			<div class="mainscreenTooltipBar"><span style="font-weight:bold">&nbsp;</span></div>
+			<div style="margin-left: 4px;">
+			<BR>
+			<font style="margin-left:4px; font-family : Trebuchet MS, Arial, Helvetica, sans-serif;font-size: 11px; font-weight: bold">Tooltips:</font>
+			<div id='tooltip' style="margin-left:4px; font-family : Trebuchet MS, Arial, Helvetica, sans-serif;font-size: 11px; "><script>document.write(tooltip_default);</script></div>
+			</div>
+		</td>
 </tr>
-<tr><td colspan="3">
-	<div id="status" class="statusbar">Copyright &copy;2006 Digium, Inc.  Digium&reg; and Asterisk&reg; are registered <a href="http://www.digium.com/trademarks">trademarks</a> of Digium, Inc.  All Rights Reserved. <i><a href="http://www.digium.com/gui_legal">Legal Information</a></i></div>
-</td></tr>
+<tr><td colspan="3" align=center height=18>
+		<div id="status" class="statusbar">Copyright &copy;2006 Digium, Inc.  Digium&reg; and Asterisk&reg; are registered <a href="http://www.digium.com/trademarks">trademarks</a> of Digium, Inc.  All Rights Reserved. <i><a href="http://www.digium.com/gui_legal">Legal Information</a></i></div>
+		</td>
+</tr>
 </table>
 </body>

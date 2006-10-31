@@ -167,7 +167,7 @@ function localajaxinit() {
 			return;
 }
 </script>
-<body id="foo" onload="localajaxinit()">
+<body id="foo" onload="localajaxinit()"  bgcolor="EFEFEF">
 <div class="mainscreenTitleBar">
 	<span style="margin-left: 4px;font-weight:bold">Jingle Configuration</span>
 </div>
@@ -180,48 +180,48 @@ function localajaxinit() {
 	</tr>
 	<tr valign="top">
 		<td>
-		<select size="28" id="JingleUsers" style="width:220px">
+		<select size="28" id="JingleUsers" style="width:220px; height: 415px">
 		<option>Loading...</option>
 		</select>
 		</td>
-		<td colspan='3'>
-		<div id='adjustments' style='width:350'>
+		<td colspan='3'  style='width:311px; height: 415px'>
+		<div id='adjustments'>
 		<table cellspacing='0' cellpadding='0'>
 			<tr valign="top"><td>
-				<table>
-						<tr><td>Extension:</td>						<td><input size='12' id='name'></td></tr>
-						<tr><td>Username:</td>						<td><input size='20' id='username'></td></tr>
-						<tr><td>Disallowed Codecs:</td>		<td><input size='12' id='disallow'></td></tr>
-						<tr><td>Allowed Codecs:</td>			<td><input size='12' id='allow'><input type=button id="sd" value="Edit" onclick="update_div_setordercodecs()">
+				<table cellpaddin=1 cellspacing=0>
+						<tr><td class="field_text">Extension:</td>						<td><input size='12' id='name' class="input8"></td></tr>
+						<tr><td class="field_text">Username:</td>						<td><input size='20' id='username' class="input8"></td></tr>
+						<tr><td class="field_text">Disallowed Codecs:</td>		<td><input size='12' id='disallow' class="input8"></td></tr>
+						<tr><td class="field_text">Allowed Codecs:</td>			<td><input size='12' id='allow' class="input8"><input type=button id="sd" value="Edit" onclick="update_div_setordercodecs()">
 																							<div style="position:absolute; display:none; left: 170; top: 190; width:350; background-color:#F4EFE5; border-width: 1px; border-color: #7E5538; border-style: solid;" id="div_setordercodecs">
 																								<table align=center>
 																									<tr><td><BR></td></tr>
-																									<tr><td>Allowed</td>
+																									<tr><td class="field_text">Allowed</td>
 																											<td></td>
-																											<td>Disallowed</td>
+																											<td class="field_text">Disallowed</td>
 																									</tr>
 
-																									<tr><td><select id="allowed" size=9></select></td>
+																									<tr><td><select id="allowed" size=9 class="input8"></select></td>
 																											<td><input type="button" id="select_codec" value="<" onclick="enable_selectedcodec()"><BR><input type="button" id="deselect_codec" value=">" onclick="disable_selectedcodec()"></td>
-																											<td><select id="disallowed" size=9>
+																											<td><select id="disallowed" size=9 class="input8">
 																													</select>
 																											</td>
 																									</tr>
 																									<tr><td></td>
 																											<td></td>
-																											<td><input type=checkbox id="disallow_all">Disallow All</td>
+																											<td class="field_text"><input type=checkbox id="disallow_all">Disallow All</td>
 																									</tr>
 																									<tr><td colspan=3 align=Center>
-																											<input type="button" id="setordercodecs" value="update" onclick="update_ordercodecs()">&nbsp;&nbsp;
-																											<input type="button" id="cancel_setorder" value="Cancel" onclick="cancel_ordercodecs()">
+																											<input type="button" class="buttonbold" id="setordercodecs" value="update" onclick="update_ordercodecs()">&nbsp;&nbsp;
+																											<input type="button" class="buttonbold" id="cancel_setorder" value="Cancel" onclick="cancel_ordercodecs()">
 																											</td>
 																									</tr>
 																									<tr><td><BR></td></tr>
 																								</table>
 																							</div>
 																							</td></tr>
-						<tr><td>Context:</td>							<td><input size='12' id='context'></td></tr>
-						<tr><td>Connection:</td>					<td><input size='12' id='connection'></td></tr>
+						<tr><td>Context:</td>							<td><input size='12' id='context'  class="input8"></td></tr>
+						<tr><td>Connection:</td>					<td><input size='12' id='connection'  class="input8"></td></tr>
 						<tr><td colspan='2' align='center'><div style="height:15px" id='status'></div></td></tr>
 				</table>
 			</td>
@@ -231,19 +231,10 @@ function localajaxinit() {
 		</td></tr>				
 		<tr>
 		<td align='center'>
-			<table>
-			<tr align='center'><td>
-			<input style='width:80' type='button' id='new' value='New'>
-			</td><td>
-			<input style='width:80' type='button' id='delete' value='Delete'>
-			</td></tr>
-			</table>
+			<input type='button' id='new' value='New' class="buttonbold" >&nbsp;&nbsp;<input type='button' id='delete' value='Delete' class="buttonbold" >
 		</td>
-		<td colspan='1' align='right'>
-				<input style='width:80' type='button' id='save' value='Save'>
-				&nbsp;
-				<input style='width:80' type='button' id='cancel' value='Cancel'>
-				&nbsp;
+		<td colspan='1' align='center'>
+				<input type='button' id='save' value='Save' class="buttonbold" >&nbsp;&nbsp;<input type='button' id='cancel' value='Cancel' class="buttonbold" >
 		</td>
 	</tr><tr>
 	</tr>

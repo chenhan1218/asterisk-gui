@@ -1038,11 +1038,11 @@ function Astman() {
 				}
 				count++;
 				s = s + "\t<tr class='" + cclass + "' id='" + channels[x].channel + "' onClick='astmanEngine.clickChannel(event)'>";
-				s = s + "<td>" + channels[x].channel + "</td>";
+				s = s + "<td class='field_text'>" + channels[x].channel + "</td>";
 				if (channels[x].state)
-					s = s + "<td>" + channels[x].state + "</td>";
+					s = s + "<td class='field_text'>" + channels[x].state + "</td>";
 				else
-					s = s + "<td><i class='light'>unknown</i></td>";
+					s = s + "<td class='field_text'><i class='light'>unknown</i></td>";
 				if (channels[x].calleridname && channels[x].callerid && channels[x].calleridname != "<unknown>") {
 					cid = channels[x].calleridname.escapeHTML() + " &lt;" + channels[x].callerid.escapeHTML() + "&gt;";
 				} else if (channels[x].calleridname && (channels[x].calleridname != "<unknown>")) {
@@ -1052,16 +1052,16 @@ function Astman() {
 				} else {
 					cid = "<i class='light'>Unknown</i>";
 				}
-				s = s + "<td>" + cid + "</td>";
+				s = s + "<td class='field_text'>" + cid + "</td>";
 				if (channels[x].extension) {
-					s = s + "<td>" + channels[x].extension + "@" + channels[x].context + ":" + channels[x].priority + "</td>";
+					s = s + "<td class='field_text'>" + channels[x].extension + "@" + channels[x].context + ":" + channels[x].priority + "</td>";
 				} else {
-					s = s + "<td><i class='light'>None</i></td>";
+					s = s + "<td class='field_text'><i class='light'>None</i></td>";
 				}
 				if (channels[x].link) {
-					s = s + "<td>" + channels[x].link + "</td>";
+					s = s + "<td class='field_text'>" + channels[x].link + "</td>";
 				} else {
-					s = s + "<td><i class='light'>None</i></td>";
+					s = s + "<td class='field_text'><i class='light'>None</i></td>";
 				}
 				s = s + "</tr>\n";
 				found++;
@@ -1666,48 +1666,44 @@ function Astman() {
 	}	
 
 
+function merge_users(e, u) { 			// read e and add into u according to sort order
+	merge_extensions(e, u);
+}
 
 
-
-
-
-	function merge_users(e, u) {
-		var opt, x;
-		while(u.options.length) {
-			opt = u.options[0];
-			opt.value = 'reserved';
-			opt.disabled = true;
-			for (x=0;x<e.options.length + 1;x++) {
-				if (!e.options[x] || 
-					(opt.innerHTML < e.options[x].innerHTML)) {
-					e.options.add(opt, x);
-					break;
+function merge_extensions(u, e) {			// read e and add into u according to sort order
+	if(document.all){
+				for (var x=0; x< e.options.length; x++){
+						var oOption = document.createElement("OPTION");
+						oOption.text=e.options[x].innerHTML;
+						oOption.value="reserved";
+						var z = u.options.length;
+						for(var y=0; y < u.options.length; y++){
+									if(e.options[x].innerHTML  < u.options[y].innerHTML ){
+										u.add(oOption, y);
+										break;
+									}else {
+									}
+						}
+						if( z == u.options.length){	 u.add(oOption); }
 				}
-			}
-			e.selectedIndex = -1;
-			e.value = null;
-		}
-	}
-
-
-	function merge_extensions(u, e) {
-		var opt, x;
-		while(e.options.length) {
-			opt = e.options[0];
-			opt.value = 'reserved';
-			opt.disabled = true;
-			for (x=0;x<u.options.length + 1;x++) {
-				if (!u.options[x] || 
-					(opt.innerHTML < u.options[x].innerHTML)) {
-					u.options.add(opt, x);
-					break;
+	}else{
+			var opt, x;
+			while(e.options.length) {
+				opt = e.options[0];
+				opt.value = 'reserved';
+				opt.disabled = true;
+				for (x=0;x<u.options.length + 1;x++) {
+					if (!u.options[x] || (opt.innerHTML < u.options[x].innerHTML)) {
+						u.options.add(opt, x);
+						break;
+					}
 				}
+				u.selectedIndex = -1;
+				u.value = null;
 			}
-			u.selectedIndex = -1;
-			u.value = null;
-		}
 	}
-
+}
 
 
 astmanEngine = new Astman();

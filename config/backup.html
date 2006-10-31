@@ -1,0 +1,189 @@
+<!--
+ * Asterisk -- An open source telephony toolkit.
+ *
+ * Configuration for "Users" generally
+ *
+ * Copyright (C) 1999 - 2006, Digium, Inc.
+ *
+ * Mark Spencer <markster@digium.com>
+ *
+ * See http://www.asterisk.org for more information about
+ * the Asterisk project. Please do not directly contact
+ * any of the maintainers of this project for assistance;
+ * the project provides a web site, mailing lists and IRC
+ * channels for your use.
+ *
+ * This program is free software, distributed under the terms of
+ * the GNU General Public License Version 2. See the LICENSE file
+ * at the top of the source tree.
+ *
+-->
+
+<script src="scripts/prototype.js"></script>
+<script src="scripts/rico.js"></script>
+<script src="scripts/astman.js"></script>
+<link href="stylesheets/rico.css" media="all" rel="Stylesheet" type="text/css" />
+<link href="stylesheets/schwing.css" media="all" rel="Stylesheet" type="text/css" />
+<script>
+var backups_callbacks = new Object;
+var bkp_path = "/var/lib/asterisk/static-http/config_expie/bkps/";
+
+
+function save_bkpfilename( newbkp_name ){
+		var opt2 = {
+			method: 'get',
+			asynchronous: true,
+			onSuccess: function(t) {	 
+					 addrow_totable(newbkp_name);
+			},
+			onFailure: function(t) {
+				alert("Config Error: " + t.status + ": " + t.statusText);
+			}
+		};
+		var uri = build_action('newcat', 0, newbkp_name,"", ""); 
+		opt2.parameters ="action=updateconfig&reload=yes&srcfilename=" + encodeURIComponent("backupfiles.conf") + "&dstfilename=" + encodeURIComponent("backupfiles.conf") + uri;
+		var tmp2 = new Ajax.Request("../../rawman", opt2);
+}
+
+
+function backup_new(){
+		$('status_message').style.display="block";
+		var opt = {
+				method: 'get',
+				asynchronous: true,
+				onSuccess: function(t) { 
+							setTimeout("$('status_message').style.display='none'",sc_displaytime);
+							$('status').innerHTML = " <I> Configuration Saved ! </I>";
+							save_bkpfilename( $('newbkp_name').value );
+							$("newbkp_name").value="";
+				},
+				onFailure: function(t) {
+					$('status_message').style.display='none';
+					alert("Config Error: " + t.status + ": " + t.statusText);
+				}
+		};
+		opt.parameters="action=originate&channel=" + encodeURIComponent("Local/takebackup@tools") + "&Variable=var1%3d"+ encodeURIComponent( bkp_path + $('newbkp_name').value +".tar" )+"&application=noop&timeout=60000";
+		var tmp = new Ajax.Request("../../rawman", opt);
+}
+
+
+
+
+
+function delete_bkps(filename){
+	var ans = confirm("Delete Backup file "+ filename +" ?");
+	if (ans){
+			var opt = {
+				method: 'get',
+				asynchronous: true,
+				onSuccess: function(t) { 
+						$('status').innerHTML = " <I> Delete Request Successfull ! </I>";
+						// remove file name from stored config file
+						var opt2 = {
+							method: 'get',
+							asynchronous: true,
+							onSuccess: function() { 
+								// Remove this TR
+								var delete_id = "delete_" + filename;
+								var tableRow = $(delete_id).parentNode.parentNode; //gets TR object
+								for( var i=0; i <  $('table_bkpfileslist'). rows.length; i++){
+									if  ( $('table_bkpfileslist'). rows[i].id == tableRow.id){
+										 $('table_bkpfileslist').deleteRow(i);
+										 break;
+									}
+								}
+							},
+							onFailure: function(t) {
+								$('status_message').style.display='none';
+								alert("Config Error: " + t.status + ": " + t.statusText);
+							}
+						};	
+						var uri = build_action('delcat', 0, filename,"", ""); 
+						opt2.parameters = "action=updateconfig&srcfilename=" + encodeURIComponent("backupfiles.conf") + "&dstfilename=" + encodeURIComponent("backupfiles.conf") + uri;
+						var tmp2 = new Ajax.Request('../../rawman', opt2);
+				},
+				onFailure: function(t) {
+					alert("Config Error: " + t.status + ": " + t.statusText);
+				}
+			};
+			opt.parameters="action=originate&channel=" + encodeURIComponent("Local/removefile@tools") + "&Variable=var1%3d"+ encodeURIComponent( bkp_path + filename+".tar" )+"&application=noop&timeout=60000";
+			var tmp = new Ajax.Request("../../rawman", opt);
+	}
+	else{
+		//
+	}
+}
+
+
+
+
+function addrow_totable(filename){
+		var newRow = $('table_bkpfileslist').insertRow(-1);
+		newRow.id = "row" + filename; 
+
+		var newCell1 = newRow.insertCell(0);
+		newCell1 .innerHTML = "<A href=\' ./bkps/" + filename +".tar\'>" + filename + "</A>" ;
+
+		var newCell2 = newRow.insertCell(1);
+		newCell2 .innerHTML = "<input type=\"button\" id='delete_" + filename + "' onclick='delete_bkps(\""+ filename + "\")'  value=\"Delete\">" ;
+}
+
+
+backups_callbacks.format = function(t) {
+		return t.name;
+}
+
+backups_callbacks.loaded= function() {
+	for (var i=0; i < $('backups_list').length; i++){
+		addrow_totable($('backups_list').options[i].value);
+	}
+}
+
+function localajaxinit() {
+	parent.astmanEngine.config2list("backupfiles.conf", $('backups_list'), new Array, backups_callbacks);
+	parent.loadscreen(this);
+	$('message_text').innerHTML = "Please wait while the system <BR> Generates a Backup ... ";
+}
+
+</script>
+<body id="foo" onload="localajaxinit()"  bgcolor="EFEFEF">
+<div class="mainscreenTitleBar">
+	<span style="margin-left: 4px;font-weight:bold">Download Configuration Backup</span>
+</div>
+<div class="mainscreenContentBox" id="userscontent">
+<table class="mainscreenTable" align="center">
+	<tr><td valign="top" align="center">
+			<BR>
+			<table cellpadding=3 cellspacing=0 border=0 width=400 style="border-width: 1px 1px 1px 1px; border-style: solid; border-color: #7E7E7E; ">
+				<tr><td colspan=2 align=center class="field_text"><B>List of Backup Files</B><select id='backups_list' style="display:none"></select></td></tr>
+				<tr bgcolor="#FFFFFF"><td><font color="#2D4E93" width="300">File Name</font></td><td  color="#2D4E93" ></td></tr>
+				<tr><td colspan=2>
+						<div style="height:125px;width=400px; overflow :auto;">
+						<table id="table_bkpfileslist"  cellpadding=3 cellspacing=0 border=0 width="100%"  class="field_text"></table>
+						</div>
+						</td>
+				</tr>
+			</table>
+
+
+
+			<BR><BR>
+			<table cellpadding=2 cellspacing=2 border=0>
+				<tr>	<td colspan=2 height=40 valign=middle align=center class="field_text"><B>Create New Backup</B> </td>	</tr>
+				<tr><td class="field_text">File Name:</td>
+						<td><input id='newbkp_name' size=16 class="input8"></td>
+				</tr>
+				<tr>	<td colspan=2 align=center height=10></td></tr>
+				<tr>	<td colspan=2 align=center><input type="button" id='getbackup' Value="Backup" onclick="backup_new()" class="buttonbold"></td></tr>
+				<tr>	<td colspan=2 align=center height=10><div id="status"></div></td></tr>
+			</table>
+	</td>
+	</tr>
+</table>
+</div>
+<SCRIPT LANGUAGE="JavaScript">
+<!--
+showdiv_statusmessage();
+//-->
+</SCRIPT>
+</body>

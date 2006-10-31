@@ -278,7 +278,7 @@
 </script>
 
 
-<body id="foo" onload="localajaxinit()">
+<body id="foo" onload="localajaxinit()"  bgcolor="EFEFEF">
 
 <div class="mainscreenTitleBar">
 	<span style="margin-left: 4px;font-weight:bold">User and Phone Configuration</span>
@@ -292,7 +292,7 @@
 	</tr>
 	<tr valign="top">
 		<td>
-		<select disabled size="15" id="devices" style="width:220px">
+		<select disabled size="15" id="devices" style="width:220px" class="input10">
 		<option>Loading...</option>
 		</select>
 		</td>
@@ -302,11 +302,11 @@
 		</div>
 		<div id='adjustments' style='width:350'>
 		<table cellspacing='0' cellpadding='0'>
-			<tr   onmouseover="show_tooltip('en', 'trunks', 0);"><td>
+			<tr   onmouseover="show_tooltip('en', 'trunks', 0);"><td class="field_text">
 				<input name='trunkstyle' type='radio' id='trunkstyleanalog' onclick='activateanalogvoip()' value='analog'>Analog
 				<input name='trunkstyle' type='radio' id='trunkstylevoip' onclick='activateanalogvoip()' value='voip'>VoIP
 			</td></tr>
-			<tr valign="top"><td>
+			<tr valign="top"><td align="center">
 				<input type='hidden' id='name'>
 				<input type='hidden' id='trunkname'>
 				<input type='hidden' id='hasiax'>
@@ -323,29 +323,29 @@
 				<input type='hidden' id='port'>
 				<input type='hidden' id='fromuser'>
 				<input type='hidden' id='fromdomain'>
-				<div id='analogvoipcontainer' style='height:350;overflow:hidden'>
-				<div id='analog' style='height:0;overflow:hidden'>
-				<table>
-				<tr onmouseover="show_tooltip('en', 'trunks', 2);"><td style='width:80px' valign='top'>Lines:</td>
-						<td><select size="12" multiple='true' id='zapchan' style='width:200px'></select>
-								<div id="zapchan_analoglines" style='height:110px; width: 200px; overflow :auto; display:none'></div>
-						</td>
-				</tr>
-				<tr><td colspan='2' style='width:80px' valign='top' align='center'>
-					<div style='width:250'>
-						<!-- <i>Use CTRL+click and/or SHIFT+click to select more than one port.</i> -->
-					</div>
-				</td></tr>
-				</table>
+				<div id='analogvoipcontainer' style='height:350;overflow:hidden' align="center">
+				<div id='analog' style='height:0;overflow:hidden' align="center">
+							<table align="center">
+							<tr onmouseover="show_tooltip('en', 'trunks', 2);"><td style='width:80px' valign='top' class="field_text">Lines:</td>
+									<td><select size="12" multiple='true' id='zapchan' style='width:200px' class="input8"></select>
+											<div id="zapchan_analoglines" style='height:110px; width: 200px; overflow :auto; display:none'></div>
+									</td>
+							</tr>
+							<tr><td colspan='2' style='width:80px' valign='top' align='center'>
+								<div style='width:250'>
+									<!-- <i>Use CTRL+click and/or SHIFT+click to select more than one port.</i> -->
+								</div>
+							</td></tr>
+							</table>
 				</div>
-				<div id='voip' style='height:0;overflow:hidden'>
-				<table>
-				<tr  onmouseover="show_tooltip('en', 'trunks', 1);"><td style='width:80px' valign='top'>Provider:</td><td><select size='6' id='provider' style='width:200px' altonchange='selectprovider()'></select></td></tr>
+				<div id='voip' style='height:0;overflow:hidden' align="center">
+				<table align="center">
+				<tr  onmouseover="show_tooltip('en', 'trunks', 1);"><td style='width:80px' valign='top' class="field_text">Provider:</td><td><select size='6' id='provider' style='width:200px' altonchange='selectprovider()' class="input8"></select></td></tr>
 				<tr><td colspan='2' align='center'><div style="height:15px" id='status'></div></td></tr>
-				<tr><td colspan='2' align='center'><img id='providerlogo' style='visibility:hidden;width:230px;height:72px'></td></tr>
-				<tr><td colspan='2' align='center'><div id='providerdesc' align='left' style='width:230px;height:100px'></div></td></tr>
-				<tr onmouseover="show_tooltip('en', 'trunks', 3);"><td>Username:</td><td><input size='20' id='username'></td></tr>
-				<tr onmouseover="show_tooltip('en', 'trunks', 4);"><td>Password:</td><td><input size='20' id='secret'></td></tr>
+				<tr><td colspan='2' align='center'><img id='providerlogo' style='visibility:hidden;width:214px;height:46px'></td></tr>
+				<tr><td colspan='2' align='center'><div id='providerdesc' align='left' style='width:230px;height:100px; font-size:10px'></div></td></tr>
+				<tr onmouseover="show_tooltip('en', 'trunks', 3);"><td class="field_text">Username:</td><td><input size='20' id='username' class="input8"></td></tr>
+				<tr onmouseover="show_tooltip('en', 'trunks', 4);"><td class="field_text">Password:</td><td><input size='20' id='secret' class="input8"></td></tr>
 				</table>
 				</div>
 				</div>
@@ -356,24 +356,12 @@
 		</div>
 		</td></tr>				
 		<tr>
+		<td align='center'><input type='button' id='new' value='New' class="buttonbold" class="buttonbold">&nbsp;<input type='button' id='delete' value='Delete' class="buttonbold"></td>
 		<td align='center'>
-			<table>
-			<tr align='center'><td>
-			<input style='width:80' type='button' id='new' value='New'>
-			</td><td>
-			<input style='width:80' type='button' id='delete' value='Delete'>
-			</td></tr>
-			</table>
-		</td>
-		<td colspan='1' align='right'>
-				<input style='width:80' type='button' id='save' value='Save'>
-				&nbsp;
-				<input style='width:80' type='button' id='cancel' value='Cancel'>
-				&nbsp;
+				<input type='button' id='save' value='Save' class="buttonbold">&nbsp;<input type='button' id='cancel' value='Cancel' class="buttonbold">
 		</td>
 	</tr><tr>
 	</tr>
 </table>
-<div id='tooltip' style="margin-left:5px;height: 60px; width:575px; overflow :auto; font-family : Trebuchet MS, Arial, Helvetica, sans-serif;font-size: 11px; "></div>
 </div>
 </body>

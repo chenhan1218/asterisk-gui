@@ -7,6 +7,19 @@
 		border-width        : 1px 0px 1px 0px;
 		background-color : #ef8700;
 		color            : #ffffff;
+		width: 550px;
+}
+
+.mainscreenTooltipBar {
+		font-size           : 12px;
+		padding             : 4px 6px 4px 6px;
+		border-style        : solid none solid none;
+		border-top-color    : #BDC7E7;
+		border-bottom-color : #182052;
+		border-width        : 1px 0px 1px 0px;
+		background-color : #ef8700;
+		color            : #ffffff;
+		width: 250px;
 }
 
 .mainscreenTitleBarHover {
@@ -18,7 +31,7 @@
 .mainscreenContentBox {
    font-size        : 11px;
    border           : 0px;
-   padding          : 0px 8px 0px 8px;
+   padding          : 0px 8px 0px 2px;
 }
 
 .mainscreenBorderBox {
@@ -36,7 +49,9 @@
 
 .mainscreenTable {
 	border 			: 0;
-	height          : 426px;
+	/*height          : 426px;*/
+	 width				: 536px; 
+	 font-size: 11px;
 }
 
 .statusbar {
@@ -50,13 +65,57 @@ td {
 	font-size   : 14px;
 }
 
+.input {
+	font-family:'trebuchet ms',helvetica,sans-serif;
+	font-size: 8pt;
+}
+
+.input8 {
+	font-size: 8pt;
+	border:1px solid; 
+}
+
+.input9 {
+	font-size: 9pt;
+	border:1px solid; 
+	/*
+	border-top-color:#999;
+	border-left-color:#999;
+	border-right-color:#666;
+	border-bottom-color:#666;
+	*/
+}
+
+.input10 {
+	font-size: 10pt;
+	border:1px solid; 
+}
+
+.field_text{
+	font-size: 9pt;
+}
+
+.buttonbold{
+	font-weight:bold;
+	font-family:helvetica,sans-serif,'trebuchet ms';
+	font-size: 8pt;
+	height: 20;
+ }
+
+.chanlist_small{
+	border         : 1px solid #1f669b;
+	overflow		: auto;
+	background-color : #f1f1f1;
+}
+
+
 /* From astman.css - for use in status tab to show active channels */
 .chanlist {
 	border           : 1px solid #1f669b;
 	height			: 150px;
 	overflow		: auto;
 	background-color : #f1f1f1;
-	width			: 570;
+	width			: 524;
 }
 
 .chantable {

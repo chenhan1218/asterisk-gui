@@ -36,12 +36,13 @@ div.portalContent p { margin: 6px 8px 0px 8px; padding: 0px; }
 div.header {margin: 0px 8px 0px 8px; padding: 0px;}
 
 .accordionTabTitleBar {
-   font-size           : 12px;
+   font-size           : 12.5px;
 	padding             : 2px 2px 2px 2px;
    border-style        : solid none solid none;
 	border-top-color    : #BDC7E7;
 	border-bottom-color : #182052;
    border-width        : 1px 0px 1px 0px;
+   height : 16px;
 }
 
 .accordionTabTitleBarHover {
@@ -67,10 +68,7 @@ div.header {margin: 0px 8px 0px 8px; padding: 0px;}
 	font-size   : 11px;
 }
 
-body, p {
-	font-family : Trebuchet MS, Arial, Helvetica, sans-serif;
-	font-size   : 11px;
-}
+body,td,a,p,.h{font-family:arial,sans-serif,Helvetica,Trebuchet MS; font-size   : 10px; }
 
 a:visited, a:link, a:hover  {
 	font-family : Trebuchet MS, Arial, Helvetica, sans-serif;
@@ -244,16 +242,17 @@ a.backToSearch:link, a.backToSearch:hover, a.backToSearch:visited {
 
 /* for DHTML tabs */
   a.tab { 
-		border-bottom: 1px solid #778;
-		font: bold 12px Verdana, sans-serif;
+		border-bottom: 0px solid #778;
+		font: bold 11px arial,Verdana, sans-serif;
 		margin: 0;
 		display: inline;
-		padding: 3px 0.5em;
+		padding: 2px 0.5em;
 		margin-left: 3px;
-		border: 1px solid #778;
+		border: 0px solid #778;
 		background: #DDE;
 		text-decoration: none;
 		color: #448; 
+		height: 11px;
  }
 
 a.tab:visited { 
@@ -264,4 +263,5 @@ a.tab:hover {
 		color: #000;
 		background: #AAE;
 		border-color: #227;
+		text-decoration: none;
 }

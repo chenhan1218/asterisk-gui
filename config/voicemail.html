@@ -36,10 +36,7 @@
 	var callbacks = new Object;
 	var usercallbacks = new Object;
 	var voicemailcallbacks = new Object;
-	var vmfields = new Array('status', 'save', 'cancel',
-							  'attach','maxmsg','minmessage','maxmessage','saycid','sayduration', 'emailonly',
-							  'review',
-							  'attachfmt','maxgreet','operator','envelope');
+	var vmfields = new Array('status', 'save', 'cancel','attach','maxmsg','minmessage','maxmessage','saycid','sayduration', 'emailonly','review','attachfmt','maxgreet','operator','envelope');
 
 	var fields = new Array('name');
 	
@@ -70,6 +67,7 @@
 			if (tmp.length > 1) {
 				if ($('extensions').stored_config.catbyname[tmp[0]].subfields[tmp[1]]['app'].toLowerCase() != "voicemailmain") {
 					$('extensions').options[x].disabled = true;
+					$('extensions').options[x].value = "reserved";
 				} else {
 					whichexten = $('extensions').stored_config.catbyname[tmp[0]].subfields[tmp[1]]['name'];
 					$('extensions').selectitem(x);
@@ -166,8 +164,8 @@
 	function localajaxinit() {
 		$('advancedw').style.overflow = "hidden";
 		$('advancedw').style.height = 1;
-		$('advancedw').style.width = $('split').width;
-		$('advancedi').style.width = $('split').width - 60;
+		$('advancedw').style.width = $('split').style.width;
+		//$('advancedi').style.width = $('split').width - 60;
 		adstatus = "hidden";
 		$('extensions').contentEditable = 'false';
 		for (var x =0; x< vmfields.length; x++) {
@@ -183,80 +181,100 @@
 </script>
 
 
-<body id="foo" onload="localajaxinit()">
+<body id="foo" onload="localajaxinit()"  bgcolor="EFEFEF">
 
 <div class="mainscreenTitleBar">
 	<span style="margin-left: 4px;font-weight:bold">Voicemail Configuration</span>
 </div>
 <div class="mainscreenContentBox" id="mailboxcontent">
 <table class="mainscreenTable" align="center">
+	<tr valign="top"><td colspan='2'>Extensions:</td></tr>
 	<tr valign="top">
-		<td colspan='2'>
-		Extensions:
+		<td><select disabled size="28" id="extensions" style="width:220px; height: 415px" class="input10">
+						<option>Loading...</option>
+				</select>
+				<div style='visibility:hidden;overflow:hidden;width:0px;height:0px'>
+							<select id='hiddenusers'></select>
+							<select id='hiddenvoicemail'></select>
+				</div>
+		</td>
+		<td style="height: 415px">
+		<div id='adjustments' style='width:310'>
+										<table cellspacing='0' cellpadding='0'>
+											<tr valign="top"><td>
+																			<table>
+																					<tr onmouseover="show_tooltip('en', 'voicemail', 0);" ><td class="field_text">Extension for checking messages:</td><td>&nbsp;<input size='5' id='name' pattern='^\d*$' class="input8"></td></tr>
+																					<tr onmouseover="show_tooltip('en', 'voicemail', 1);" ><td class="field_text">Attach recordings to e-mail:</td><td><input type='checkbox' id='attach'></td></tr>
+																					<tr onmouseover="show_tooltip('en', 'voicemail', 2);" ><td class="field_text">Say message Caller-ID:</td><td><input type='checkbox' id='saycid'></td></tr>
+																					<tr onmouseover="show_tooltip('en', 'voicemail', 3);" ><td class="field_text">Say message duration:</td><td><input type='checkbox' id='sayduration'></td></tr>
+																					<tr onmouseover="show_tooltip('en', 'voicemail', 4);" ><td class="field_text">Send messages by e-mail only:</td><td><input type='checkbox' id='emailonly'></td></tr>
+																					<tr onmouseover="show_tooltip('en', 'voicemail', 5);" ><td class="field_text">Maximum messages per folder:</td>
+																																														<td>&nbsp;<select id='maxmsg' class="input8">
+																																																			<option value='10'>10</option>
+																																																			<option value='25'>25</option>
+																																																			<option value='100'>100</option>
+																																																			<option value='250'>250</option>
+																																																			<option value='500'>500</option>
+																																																			<option value='1000'>1000</option>
+																																																			</select>
+																																														</td>
+																					</tr>
+																					<tr onmouseover="show_tooltip('en', 'voicemail', 6);" ><td class="field_text">Maximum message time</td>
+																																														<td>&nbsp;<select id='maxmessage' class="input8">
+																																																			<option value='60'>1 minute</option>
+																																																			<option value='120'>2 minutes</option>
+																																																			<option value='300'>5 minutes</option>
+																																																			<option value='900'>15 minutes</option>
+																																																			<option value='1800'>30 minutes</option>
+																																																			<option value='0'>Unlimited</option>
+																																																			</select>
+																																														</td>
+																					</tr>
+																					<tr onmouseover="show_tooltip('en', 'voicemail', 7);" ><td class="field_text">Minimum message time:</td>
+																																														<td>&nbsp;<select id='minmessage' class="input8">
+																																																			<option value='0'>No minimum</option>
+																																																			<option value='1'>1 second</option>
+																																																			<option value='2'>2 seconds</option>
+																																																			<option value='3'>3 seconds</option>
+																																																			<option value='4'>4 seconds</option>
+																																																			<option value='5'>5 seconds</option>
+																																																			</select>
+																																														</td>
+																					</tr>
+																					<tr><td colspan='2' align='center'><div style="height:15px" id='status'></div></td></tr>
+																			</table>
+																		</td>
+											</tr>
+											<tr onmouseover="show_tooltip('en', 'voicemail', 8);" ><td><img id="split" onClick="togglefeatures()" src="images/split-v.png"></td></tr>
+											<tr><td>
+														<div style="background-image:url(images/slice-v.png)" id='advancedw'>
+																<table id='advancedi' align='center'>
+																			<tr><td></td><td width='50'></td><td></td></tr>
+																			<tr onmouseover="show_tooltip('en', 'voicemail', 9);" ><td colspan='2' class="field_text" >Dial&nbsp;'0'&nbsp;for&nbsp;Operator:</td><td align='right'><input type='checkbox' id='operator'></td></tr>
+																			<tr onmouseover="show_tooltip('en', 'voicemail', 10);" >	<td class="field_text">Message&nbsp;Format:</td>
+																																													<td colspan='2' align='right'>
+																																														<select id='attachfmt' class="input8">
+																																															<option value='wav49'>WAV (GSM)</option>
+																																															<option value='wav'>WAV (16-bit)</option>
+																																															<option value='gsm'>Raw GSM</option>
+																																														</select>
+																																													</td>
+																			</tr>
+																			<tr onmouseover="show_tooltip('en', 'voicemail', 11);" ><td colspan='2' class="field_text">Allow&nbsp;users&nbsp;to&nbsp;review:</td><td align='right'><input type='checkbox' id='review'></td></tr>
+																			<tr onmouseover="show_tooltip('en', 'voicemail', 12);" ><td colspan='2' class="field_text">Play&nbsp;envelope:</td><td align='right'><input type='checkbox' id='envelope'></td></tr>
+																			<tr onmouseover="show_tooltip('en', 'voicemail', 13);" ><td colspan='2' class="field_text">Max&nbsp;greeting&nbsp;(seconds)</td><td align='right' colspan='2'><input size=4 id='maxgreet' pattern='^\d*$' class="input8"></td></tr>
+																</table>
+														</div>
+													</td>
+											</tr>
+											<tr onmouseover="show_tooltip('en', 'voicemail', 8);" ><td><img onClick="togglefeatures()" src="images/adv-v.png"></td></tr>
+										</table>
+		</div>
 		</td>
 	</tr>
-	<tr valign="top">
-		<td>
-		<select disabled size="28" id="extensions" style="width:220px">
-		<option>Loading...</option>
-		</select>
-		</td>
-		<td>
-		<div id='adjustments'>
-		<table cellspacing='0' cellpadding='0'>
-			<tr valign="top"><td>
-				<table>
-				<tr onmouseover="show_tooltip('en', 'voicemail', 0);" ><td>Extension for checking messages:</td><td>&nbsp;<input size='5' id='name' pattern='^\d*$'></td></tr>
-				<tr onmouseover="show_tooltip('en', 'voicemail', 1);" ><td>Attach recordings to e-mail:</td><td><input type='checkbox' id='attach'></td></tr>
-				<tr onmouseover="show_tooltip('en', 'voicemail', 2);" ><td>Say message Caller-ID:</td><td><input type='checkbox' id='saycid'></td></tr>
-				<tr onmouseover="show_tooltip('en', 'voicemail', 3);" ><td>Say message duration:</td><td><input type='checkbox' id='sayduration'></td></tr>
-				<tr onmouseover="show_tooltip('en', 'voicemail', 4);" ><td>Send messages by e-mail only:</td><td><input type='checkbox' id='emailonly'></td></tr>
-				<tr onmouseover="show_tooltip('en', 'voicemail', 5);" ><td>Maximum messages per folder:</td><td>&nbsp;<select id='maxmsg'><option value='10'>10</option><option value='25'>25</option><option value='100'>100</option><option value='250'>250</option><option value='500'>500</option><option value='1000'>1000</option></select></td></tr>
-				<tr onmouseover="show_tooltip('en', 'voicemail', 6);" ><td>Maximum message time</td><td>&nbsp;<select id='maxmessage'><option value='60'>1 minute</option><option value='120'>2 minutes</option><option value='300'>5 minutes</option><option value='900'>15 minutes</option><option value='1800'>30 minutes</option><option value='0'>Unlimited</option></select></td></tr>
-				<tr onmouseover="show_tooltip('en', 'voicemail', 7);" ><td>Minimum message time:</td><td>&nbsp;<select id='minmessage'><option value='0'>No minimum</option><option value='1'>1 second</option><option value='2'>2 seconds</option><option value='3'>3 seconds</option><option value='4'>4 seconds</option><option value='5'>5 seconds</option></select></td></tr>
-
-				<tr><td colspan='2' align='center'><div style="height:15px" id='status'></div></td></tr>
-				</table>
-			</td>
-			</tr>
-			<tr onmouseover="show_tooltip('en', 'voicemail', 8);" ><td><img id="split" onClick="togglefeatures()" src="images/split-v.png"></td></tr>
-			<tr><td>
-				<div style="background-image:url(images/slice-v.png)" id='advancedw'>
-				<table id='advancedi' align='center'>
-				<tr><td></td><td width='50'></td><td></td></tr>
-				<tr onmouseover="show_tooltip('en', 'voicemail', 9);" ><td colspan='2'>Dial&nbsp;'0'&nbsp;for&nbsp;Operator:</td><td align='right'><input type='checkbox' id='operator'></td></tr>
-				<tr onmouseover="show_tooltip('en', 'voicemail', 10);" ><td>Message&nbsp;Format:</td><td colspan='2' align='right'><select id='attachfmt'><option value='wav49'>WAV (GSM)</option><option value='wav'>WAV (16-bit)</option><option value='gsm'>Raw GSM</option></select></td></tr>
-				<tr onmouseover="show_tooltip('en', 'voicemail', 11);" ><td colspan='2'>Allow&nbsp;users&nbsp;to&nbsp;review:</td><td align='right'><input type='checkbox' id='review'></td></tr>
-				<tr onmouseover="show_tooltip('en', 'voicemail', 12);" ><td colspan='2'>Play&nbsp;envelope:</td><td align='right'><input type='checkbox' id='envelope'></td></tr>
-				<tr onmouseover="show_tooltip('en', 'voicemail', 13);" ><td colspan='2'>Max&nbsp;greeting&nbsp;(seconds)</td><td align='right' colspan='2'><input size=4 id='maxgreet' pattern='^\d*$'></td></tr>
-				</table>
-				</div>
-			</td></tr>
-			<tr onmouseover="show_tooltip('en', 'voicemail', 8);" ><td>
-				<img onClick="togglefeatures()" src="images/adv-v.png">
-			</td>
-			</tr>
-		</table>
-		</div>
-		</td>
-
-	</tr><tr>
-		<td align='center'>
-		</td>
-		<td align='center' colspan='2'>
-				<input style='width:80' type='button' id='save' value='Save'>
-				&nbsp;
-				<input style='width:80' type='button' id='cancel' value='Cancel'>
-				&nbsp;
-		<div style='visibility:hidden;overflow:hidden;width:0px;height:0px'>
-			<select id='hiddenusers'>
-			</select>
-			<select id='hiddenvoicemail'>
-			</select>
-		</div>
-		</td>				
+	<tr>	<td align='center'></td>
+			<td align='center' colspan='2'><input type='button' id='save' value='Save' class="buttonbold">&nbsp;<input type='button' id='cancel' value='Cancel' class="buttonbold"></td>				
 	</tr>
 </table>
 </div>
-<div id='tooltip' style="margin-left:5px;height: 60px; width:575px; overflow :auto; font-family : Trebuchet MS, Arial, Helvetica, sans-serif;font-size: 11px; "></div>
 </body>

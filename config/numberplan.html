@@ -25,9 +25,7 @@
 <script src="scripts/tooltip.js"></script>
 <link href="stylesheets/rico.css" media="all" rel="Stylesheet" type="text/css" />
 <link href="stylesheets/schwing.css" media="all" rel="Stylesheet" type="text/css" />
-
 <script>
-
 	var origwidth;
 	var widgets = new Array;
 	var adstatus;
@@ -40,8 +38,8 @@
 
 	function changed_extension() {
 		var app;
-		tmp = $('extensions').value.split(']');
-		app = findapp($('extensions').stored_config.catbyname[tmp[0]].subfields[tmp[1]]['app']);
+		var tmp = $('extensions').value.split(']');
+		var app = findapp($('extensions').stored_config.catbyname[tmp[0]].subfields[tmp[1]]['app']);
 		$('name').value = $('extensions').stored_config.catbyname[tmp[0]].subfields[tmp[1]]['name'];
 		$('features').value = app.name.toLowerCase();
 	};
@@ -307,9 +305,7 @@
 	}
 	
 	callbacks.identifier = "extension";
-	
 	callbacks.eachline = true;
-	
 	callbacks.includecats = true;
 	
 	
@@ -327,8 +323,6 @@
 		parent.astmanEngine.config2list("extensions.conf", $('extensions'), widgets, callbacks);
 	}
 
-
-
 	function togglefeatures() {
 		if (adstatus == "shown") {
 			adstatus = "hidden";
@@ -336,16 +330,15 @@
 		} else {
 			adstatus = "shown";
 			$('advancedw').style.visibility = "visible";
-			new Rico.Effect.Size('advancedw', null, 160, 120, 8 );
+			new Rico.Effect.Size('advancedw', null, 130, 120, 8 );
 		}
 	}
 
-	
 	function localajaxinit() {
 		$('advancedw').style.overflow = "hidden";
 		$('advancedw').style.height = 1;
-		$('advancedw').style.width = $('split').width;
-		$('advancedi').style.width = $('split').width - 60;
+		$('advancedw').style.width = $('split').style.width;
+//		$('advancedi').style.width = $('split').width - 60;
 		adstatus = "hidden";
 		$('extensions').contentEditable = 'false';
 		
@@ -357,200 +350,186 @@
 		parent.astmanEngine.config2list("users.conf", $('trunk'), new Array(), usercallbacks);
 	}
 
-		function priority_up(){
-			a =  $('extensions').selectedIndex;
-			b = a-1;
-			swap_priorities(a,b);
-		}
+	function priority_up(){
+		a =  $('extensions').selectedIndex;
+		b = a-1;
+		swap_priorities(a,b);
+	}
 
-		function priority_down(){
-			a =  $('extensions').selectedIndex;
-			b = a+1;
-			swap_priorities(a,b);
-		}
+	function priority_down(){
+		a =  $('extensions').selectedIndex;
+		b = a+1;
+		swap_priorities(a,b);
+	}
 
-		callbacks.delchanges = function(box, delvalue, delcat) {
-			var x;
-			var tmp;
-			var match = delvalue.split(']');
-			var cat;
-			var uri = "";
-			var n = 0;
-			if (match.length < 2)
-				return;
-			cat = box.stored_config.catbyname[match[0]];
-			for (x=0;x<box.options.length;x++) {
-				tmp = box.options[x].value.split(']');
-				if (tmp.length > 1) {
-					if ((tmp[0] == match[0]) && 
-						(cat.subfields[tmp[1]]['priority'] > delcat['priority']) && 
-						(cat.subfields[tmp[1]]['name'] == delcat['name'])) {
-							cat.subfields[tmp[1]].priority--;
-							uri += build_action('update', n++, tmp[0], 'exten', 
-								cat.subfields[tmp[1]].name + "," + cat.subfields[tmp[1]].priority + "," + cat.subfields[tmp[1]].app + "(" + cat.subfields[tmp[1]].args + ")",
-								cat.fields[tmp[1]]);
-					}
+	callbacks.delchanges = function(box, delvalue, delcat) {
+		var x;
+		var tmp;
+		var match = delvalue.split(']');
+		var cat;
+		var uri = "";
+		var n = 0;
+		if (match.length < 2)
+			return;
+		cat = box.stored_config.catbyname[match[0]];
+		for (x=0;x<box.options.length;x++) {
+			tmp = box.options[x].value.split(']');
+			if (tmp.length > 1) {
+				if ((tmp[0] == match[0]) && 
+					(cat.subfields[tmp[1]]['priority'] > delcat['priority']) && 
+					(cat.subfields[tmp[1]]['name'] == delcat['name'])) {
+						cat.subfields[tmp[1]].priority--;
+						uri += build_action('update', n++, tmp[0], 'exten', 
+							cat.subfields[tmp[1]].name + "," + cat.subfields[tmp[1]].priority + "," + cat.subfields[tmp[1]].app + "(" + cat.subfields[tmp[1]].args + ")",
+							cat.fields[tmp[1]]);
 				}
 			}
-			if (uri.length) {
-				apply_uri(box, uri);
-			}
 		}
+		if (uri.length) {
+			apply_uri(box, uri);
+		}
+	}
 
-		function swap_priorities(a,b){
-				var box = $('extensions') ;
-				var sela, selb;
-				var opt = {
-					method: 'get',
-					asynchronous: true,
-					onSuccess: function() { 
-						if (box.widgets['status']) 
-							box.widgets['status'].innerHTML = "<i>Updated.</i>";
-						if (box.callbacks.savechanges)
-							box.callbacks.savechanges();
-					},
-					onFailure: function(t) {
-						alert("Config Error: " + t.status + ": " + t.statusText);
-					}
-				};
-
-				sela = $('extensions').options[a].selected;
-				selb = $('extensions').options[b].selected;
-
-				v = $('extensions').selectedIndex;
-				t_pattern1 = $('extensions').options[a].value.split(']');
-				t_pattern2 = $('extensions').options[b].value.split(']');
-
-				function subfield_value(n,field){
-					if (n ==1)
-						return box.stored_config.catbyname[t_pattern1[0]].subfields[t_pattern1[1]][field];
-					if (n ==2)
-						return box.stored_config.catbyname[t_pattern2[0]].subfields[t_pattern2[1]][field];
+	function swap_priorities(a,b){
+			var box = $('extensions') ;
+			var sela, selb;
+			var opt = {
+				method: 'get',
+				asynchronous: true,
+				onSuccess: function() { 
+					if (box.widgets['status']) 
+						box.widgets['status'].innerHTML = "<i>Updated.</i>";
+					if (box.callbacks.savechanges)
+						box.callbacks.savechanges();
+				},
+				onFailure: function(t) {
+					alert("Config Error: " + t.status + ": " + t.statusText);
 				}
-				
-				value_one =  subfield_value(1,'name')+ "," +   subfield_value(2,'priority') + ","+ subfield_value(1,'app') +"(" + subfield_value(1,'args') +")";
-				match_one =  subfield_value(1,'name')+ "," +   subfield_value(1,'priority') + ","+ subfield_value(1,'app') +"(" + subfield_value(1,'args') +")";
-				uri = build_action('update', 0, subfield_value(1,'context'),'exten', value_one, match_one);
+			};
 
-				value_two =  subfield_value(1,'name')+ "," +   subfield_value(1,'priority') + ","+ subfield_value(2,'app') +"(" + subfield_value(2,'args') +")";
-				match_two =  subfield_value(1,'name')+ "," +   subfield_value(2,'priority') + ","+ subfield_value(2,'app') +"(" + subfield_value(2,'args') +")";
-				uri += build_action('update', 1, subfield_value(2,'context'),'exten', value_two, match_two);
-				opt.parameters="action=updateconfig&reload=yes&srcfilename=" + encodeURIComponent(box.config_file) + "&dstfilename=" + encodeURIComponent(box.config_file) + uri;
-				tmp = new Ajax.Request(box.engine.url, opt);
-				
-				box.stored_config.catbyname[t_pattern1[0]].fields[t_pattern1[1]] = value_one;
-				box.stored_config.catbyname[t_pattern2[0]].fields[t_pattern2[1]] = value_two;
-				
-				reformat_option($('extensions'), b);
-				update_option($('extensions'), a);
-				if (sela)
-					$('extensions').options[b].selected = true;
-				else if (selb)
-					$('extensions').options[a].selected = true;
-				select_item($('extensions'));
+			sela = $('extensions').options[a].selected;
+			selb = $('extensions').options[b].selected;
 
-		}
+			v = $('extensions').selectedIndex;
+			t_pattern1 = $('extensions').options[a].value.split(']');
+			t_pattern2 = $('extensions').options[b].value.split(']');
+
+			function subfield_value(n,field){
+				if (n ==1)
+					return box.stored_config.catbyname[t_pattern1[0]].subfields[t_pattern1[1]][field];
+				if (n ==2)
+					return box.stored_config.catbyname[t_pattern2[0]].subfields[t_pattern2[1]][field];
+			}
+			
+			value_one =  subfield_value(1,'name')+ "," +   subfield_value(2,'priority') + ","+ subfield_value(1,'app') +"(" + subfield_value(1,'args') +")";
+			match_one =  subfield_value(1,'name')+ "," +   subfield_value(1,'priority') + ","+ subfield_value(1,'app') +"(" + subfield_value(1,'args') +")";
+			uri = build_action('update', 0, subfield_value(1,'context'),'exten', value_one, match_one);
+
+			value_two =  subfield_value(1,'name')+ "," +   subfield_value(1,'priority') + ","+ subfield_value(2,'app') +"(" + subfield_value(2,'args') +")";
+			match_two =  subfield_value(1,'name')+ "," +   subfield_value(2,'priority') + ","+ subfield_value(2,'app') +"(" + subfield_value(2,'args') +")";
+			uri += build_action('update', 1, subfield_value(2,'context'),'exten', value_two, match_two);
+			opt.parameters="action=updateconfig&reload=yes&srcfilename=" + encodeURIComponent(box.config_file) + "&dstfilename=" + encodeURIComponent(box.config_file) + uri;
+			tmp = new Ajax.Request(box.engine.url, opt);
+			
+			box.stored_config.catbyname[t_pattern1[0]].fields[t_pattern1[1]] = value_one;
+			box.stored_config.catbyname[t_pattern2[0]].fields[t_pattern2[1]] = value_two;
+			
+			reformat_option($('extensions'), b);
+			update_option($('extensions'), a);
+			if (sela)
+				$('extensions').options[b].selected = true;
+			else if (selb)
+				$('extensions').options[a].selected = true;
+			select_item($('extensions'));
+
+	}
 
 </script>
-<body id="foo" onload="localajaxinit()">
+<body id="foo" onload="localajaxinit()"  bgcolor="EFEFEF">
 <div class="mainscreenTitleBar">
 	<span style="margin-left: 4px;font-weight:bold">Numberplan Configuration</span>
 </div>
 <div class="mainscreenContentBox" id="mailboxcontent">
 <table class="mainscreenTable" align="center">
 	<tr valign="top">
-		<td valign='middle' align='center' rowspan='2'>
-			<input style='width:40' type='button' id='priup' value='Up' onClick="priority_up();"><br>
+		<td valign='middle' align='center' rowspan='2'  class="field_text">
+			<input  class="buttonbold" type='button' id='priup' value='Up' onClick="priority_up();"><br>
 			<br>Priority<br><br>
-			<input style='width:40' type='button' id='pridown' value='Down' onClick="priority_down();">
+			<input  class="buttonbold" style="width:40px" type='button' id='pridown' value='Down' onClick="priority_down();">
 		</td>
 		<td colspan='2'>
 		Extensions:
 		</td>
 	</tr>
 	<tr valign="top">
-		<td>
-		<select disabled size="28" id="extensions" style="width:220px">
-		<option expri=''>Loading...</option>
-		</select>
+		<td>	<select disabled size="21" id="extensions" style="width:170px;height: 410px" class="input9">
+					<option expri=''>Loading...</option>
+					</select>
 		</td>
-		<td>
+		<td  style="height: 410px">
 		<div id='adjustments'>
-		<table cellspacing='0' cellpadding='0'>
-			<tr valign="top"><td>
+						<table cellspacing='0' cellpadding='0'>
+							<tr valign="top"><td>
 
-				<div id='newpatternw'>
-				<table align='center'>
-				<tr><td align='center' colspan='2'>
-					<i>Hints for patterns:<br>
-					<table align='center'>
-						<tr><td><b>N</b></td><td>Any digit from 2 to 9</td></tr>
-						<tr><td><b>X</b></td><td>Any digit from 0 to 9</td></tr>
-						<tr><td><b>.</b></td><td>Any number of additional digits</td></tr>
-					</table>
-				</td></tr>
-				<tr><td>Pattern:</td><td><input size='18' id='name'>
-						<div id="combobox_div">
-						  <select size=5 id="combosel" style="font-family: Verdana, Arial, Helvetica, Sans-Serif;font-size: 11px;">
-							<option value="_9NXXXXXX">_9NXXXXXX (Seven Digit Dial)</option>
-							<option value="_9NXXNXXXXXX">_9NXXNXXXXXX (Ten Digit Dial)</option>
-							<option value='_91NXXNXXXXXX'>_91NXXNXXXXXX (1+ Dial)</option>
-							<option value='_9011.'>_9011. (International Dial)</option>
-							<option value='_9911.'>_9911. (Emergency)</option>
-						  </select>
-						  </div>
-						<SCRIPT LANGUAGE="JavaScript">
-						<!--
-						combo_box('name', "combobox_div","combosel");
-						//-->
-						</SCRIPT>
-				</td></tr>
-				<tr><td>Trunk:</td><td><select id='trunk'></select><input size='4' id='priority' pattern='^\d*$' type=hidden><input size='4' id='realpriority' pattern='^\d*$'  type=hidden></td></tr>
+								<div id='newpatternw'>
+								<table align='center'>
+								<tr><td align='center' colspan='2'  class="field_text"><i>Hints for patterns:</i><br>
+													<table align='center' cellpadding=0 cellspacing=0>
+														<tr><td class="field_text"><b>N&nbsp;&nbsp;</b></td><td class="field_text">Any digit from 2 to 9</td></tr>
+														<tr><td class="field_text"><b>X&nbsp;&nbsp;</b></td><td class="field_text">Any digit from 0 to 9</td></tr>
+														<tr><td class="field_text"><b>.&nbsp;&nbsp;</b></td><td class="field_text">Any number of additional digits</td></tr>
+													</table>
+								</td></tr>
+								<tr><td class="field_text">Pattern:</td><td><input size='18' id='name' class="input8">
+										<div id="combobox_div">
+										  <select size=5 id="combosel" style="font-family: Verdana, Arial, Helvetica, Sans-Serif;font-size: 11px;"  class="input8">
+											<option value="_9NXXXXXX">_9NXXXXXX (Seven Digit Dial)</option>
+											<option value="_9NXXNXXXXXX">_9NXXNXXXXXX (Ten Digit Dial)</option>
+											<option value='_91NXXNXXXXXX'>_91NXXNXXXXXX (1+ Dial)</option>
+											<option value='_9011.'>_9011. (International Dial)</option>
+											<option value='_9911.'>_9911. (Emergency)</option>
+										  </select>
+										  </div>
+										<SCRIPT LANGUAGE="JavaScript">
+										<!--
+										combo_box('name', "combobox_div","combosel");
+										//-->
+										</SCRIPT>
+								</td></tr>
+								<tr><td class="field_text">Trunk:</td><td><select id='trunk' class="input8"></select><input size='4' id='priority' pattern='^\d*$' type=hidden><input size='4' id='realpriority' pattern='^\d*$'  type=hidden></td></tr>
 
-				<tr><td colspan='2' align='center'><div style="height:15px" id='status'></div></td></tr>
-				<tr><td colspan='2'></td></tr>
-				</table>
-				</div>
+								<tr><td colspan='2' align='center'><div style="height:15px" id='status'></div></td></tr>
+								<tr><td colspan='2'></td></tr>
+								</table>
+								</div>
 
-			</td>
-			</tr>
-			<tr><td><img id="split" onClick="togglefeatures()" src="images/split-v.png"></td></tr>
-			<tr><td>
-				<div style="background-image:url(images/slice-v.png)" id='advancedw'>
-				<table id='advancedi' align='center'><tr><td>
-				<tr><td><NOBR>Customize Plans</NOBR></td><td><input type='checkbox' id='modplan' onClick='updateplandel()'></td></tr>
-				<tr><td>Plan Ident</td><td><input size='14' type='text' id='planident'></td></tr>
-				<tr><td>Plan Comment</td><td><input size='14' type='text' id='comment' disabled='yes'></td></tr>
-				<tr><td>Builds On</td><td><input size='14' type='text' id='include'></td></tr>
-				<tr><td colspan='2' align='center'><input style='width:80' type='button' id='new' value='New Plan'></td></tr>
-				</table>
-				</div>
-			</td></tr>
-			<tr><td>
-				<img onClick="togglefeatures()" src="images/adv-v.png">
-			</td>
-			</tr>
-		</table>
+							</td>
+							</tr>
+							<tr><td><img id="split" onClick="togglefeatures()" src="images/split-v.png"></td></tr>
+							<tr><td>
+								<div style="background-image:url(images/slice-v.png)" id='advancedw'>
+								<table id='advancedi' align='center'><tr><td>
+								<tr><td class="field_text"><NOBR>Customize Plans</NOBR></td><td><input type='checkbox' id='modplan' onClick='updateplandel()'></td></tr>
+								<tr><td class="field_text">Plan Ident</td><td><input size='14' type='text' id='planident' class="input8"></td></tr>
+								<tr><td class="field_text">Plan Comment</td><td><input size='14' type='text' id='comment' disabled='yes' class="input8"></td></tr>
+								<tr><td class="field_text">Builds On</td><td><input size='14' type='text' id='include' class="input8"></td></tr>
+								<tr><td colspan='2' align='center' height=5></td></tr>
+								<tr><td colspan='2' align='center'><input type='button' id='new' value='New Plan' class="buttonbold"></td></tr>
+								</table>
+								</div>
+							</td></tr>
+							<tr><td>
+								<img onClick="togglefeatures()" src="images/adv-v.png">
+							</td>
+							</tr>
+						</table>
 		</div>
 		</td>
-
 	</tr><tr>
+		<td align='center' colspan='2'><input  class="buttonbold" type='button' id='newitem' value='Add Pattern'>&nbsp;<input  class="buttonbold" type='button' id='delete' value='Delete'></td>
 		<td align='center' colspan='2'>
-			<table>
-			<tr align='center'><td>
-			<input style='width:80' type='button' id='newitem' value='Add Pattern'>
-			</td><td>
-			<input style='width:80' type='button' id='delete' value='Delete'>
-			</td></tr>
-			</table>
-		</td>
-		<td align='center' colspan='2'>
-				<input style='width:80' type='button' id='save' value='Save'>
-				&nbsp;
-				<input style='width:80' type='button' id='cancel' value='Cancel'>
-				&nbsp;
-		<div style='visibility:hidden;overflow:hidden;width:0px;height:0px'>
-		</div>
+				<input class="buttonbold" type='button' id='save' value='Save'>&nbsp;<input class="buttonbold" type='button' id='cancel' value='Cancel'>
+				&nbsp;<div style='visibility:hidden;overflow:hidden;width:0px;height:0px'>
 		</td>				
 	</tr>
 </table>

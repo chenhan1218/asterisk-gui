@@ -1,0 +1,200 @@
+<!--
+ * Asterisk -- An open source telephony toolkit.
+ *
+ * Configuration for "Users" generally
+ *
+ * Copyright (C) 1999 - 2006, Digium, Inc.
+ *
+ * Mark Spencer <markster@digium.com>
+ *
+ * See http://www.asterisk.org for more information about
+ * the Asterisk project. Please do not directly contact
+ * any of the maintainers of this project for assistance;
+ * the project provides a web site, mailing lists and IRC
+ * channels for your use.
+ *
+ * This program is free software, distributed under the terms of
+ * the GNU General Public License Version 2. See the LICENSE file
+ * at the top of the source tree.
+ *
+-->
+<script src="scripts/prototype.js"></script>
+<script src="scripts/rico.js"></script>
+<script src="scripts/astman.js"></script>
+<script src="scripts/tooltip.js"></script>
+<link href="stylesheets/rico.css" media="all" rel="Stylesheet" type="text/css" />
+<link href="stylesheets/schwing.css" media="all" rel="Stylesheet" type="text/css" />
+<script>
+var sysinfocallbacks = new Object;
+var tabs = new Array('tab1', 'tab2', 'tab3');
+var divs_tohide = new Array('osversion_div', 'uptime_div', 'asterisk_div', 'today_div','hostname_div','ifconfig_div','df_div','memory_div');
+
+sysinfocallbacks.format = function(t, x) {
+		if ( t.name == 'uname' && x==undefined ){	 				// if is a category
+			return t.name;
+		}else if( t.name == 'uname' && x==0 ){	 // if is a subcategory
+			$('osversion').innerHTML = t.fields[x] ; 
+		}else if ( t.name == 'uptime' && x==undefined ){	 				// if is a category
+			return t.name;
+		}else if( t.name == 'uptime' ){	 // if is a subcategory
+			$('uptime').innerHTML =  t.fields[x] ; 
+		}else if ( t.name == 'asterisk' && x==undefined ){	 				// if is a category
+			return t.name;
+		}else if( t.name == 'asterisk' ){	 // if is a subcategory
+			$('asterisk').innerHTML =  t.fields[x] ; 
+		}else if ( t.name == 'today' && x==undefined ){	 				// if is a category
+			return t.name;
+		}else if( t.name == 'today' ){	 // if is a subcategory
+			$('today').innerHTML =  t.fields[x] ; 
+		}else if ( t.name == 'hostname' && x==undefined ){	 				// if is a category
+			return t.name;
+		}else if( t.name == 'hostname' ){	 // if is a subcategory
+			$('hostname').innerHTML =  t.fields[x] ; 
+		}else if ( t.name == 'ifconfig' && x==undefined ){	 				// if is a category
+			return t.name;
+		}else if( t.name == 'ifconfig' ){	 // if is a subcategory
+			$('ifconfig').innerHTML =  $('ifconfig').innerHTML + t.fields[x]  + "<BR>"; 
+		}else if ( t.name == 'du' && x==undefined ){	 				// if is a category
+			return t.name;
+		}else if( t.name == 'du' ){	 // if is a subcategory
+			$('diskusage').innerHTML =  $('diskusage').innerHTML + t.fields[x]  + "<BR>"; 
+		}else if ( t.name == 'free' && x==undefined ){	 				// if is a category
+			return t.name;
+		}else if( t.name == 'free' ){	 // if is a subcategory
+			$('memoryusage').innerHTML =  $('memoryusage').innerHTML + t.fields[x]  + "<BR>"; 
+		}else{	
+			return false;
+		}
+}
+sysinfocallbacks.loaded = function(){
+	var divs_toshow = new Array('osversion_div', 'uptime_div', 'asterisk_div', 'today_div','hostname_div');
+	for(var i=0; i < divs_toshow.length; i++ ){
+		$(divs_toshow[i]).style.display = "block";
+	}
+
+	document.getElementById(tabs[0]).style.background = 'white';
+	document.getElementById(tabs[0]).style.borderBottom = '4px solid #000000';
+	document.getElementById(tabs[0]).style.fontWeight = 'bold';
+	document.getElementById(tabs[0]).style.fontSize = '13px';
+}
+sysinfocallbacks.eachline = true;
+sysinfocallbacks.includecats = true;
+
+
+
+function show_window(x){
+		for(i=0; i < tabs.length ; i++){
+			document.getElementById(tabs[i]).style.background = '#DDDDEE';
+			document.getElementById(tabs[i]).style.borderBottom = '0px solid #777788';
+			document.getElementById(tabs[0]).style.fontWeight = 'bold';
+			document.getElementById(tabs[0]).style.fontSize = '11px';
+		}
+		document.getElementById(tabs[x-1]).style.background = '#FFFFFF';
+		document.getElementById(tabs[x-1]).style.borderBottom = '4px solid #000000';
+		document.getElementById(tabs[x-1]).style.fontWeight = 'bold';
+		document.getElementById(tabs[x-1]).style.fontSize= '13px';
+		document.getElementById(tabs[x-1]).selected = false;
+		
+		if(x==1)
+			var divs_toshow = new Array('osversion_div', 'uptime_div', 'asterisk_div', 'today_div','hostname_div');
+		else if (x==2)
+			var divs_toshow = new Array('ifconfig_div');
+		else if (x==3)
+			var divs_toshow = new Array('df_div','memory_div');
+
+		for(var i=0; i < divs_tohide.length; i++ )
+				$(divs_tohide[i]).style.display = "none";
+		for(var i=0; i < divs_toshow.length; i++ )
+			$(divs_toshow[i]).style.display = "block";
+		return false;
+}
+
+function update_sysinfo(){
+	var opt = {
+			method: 'get',
+			asynchronous: true,
+			onSuccess: function() { 
+					$('status_message').style.display='none';
+					// then load the gui_sysinfo.conf
+					parent.astmanEngine.config2list("gui_sysinfo.conf", $('sysinfo'), new Array(), sysinfocallbacks);
+					// instead of the above line make a raw Ajax request and use //onComplete: showResponse, to get raw output
+			},		
+			onFailure: function(t) {
+				$('status_message').style.display='none';
+				alert("Config Error: " + t.status + ": " + t.statusText);
+			}
+		};
+		opt.parameters="action=originate&channel=" + encodeURIComponent("Local/sysinfo@tools") + "&application=noop&timeout=60000";
+		var tmp = new Ajax.Request("../../rawman", opt);
+		return;
+}
+
+function showResponse(originalRequest)	{
+		var v = originalRequest.responseText;
+}
+
+function localajaxinit(){
+	// call the tool (sysinfo)
+	$('status_message').style.display="block";
+	$('message_text').innerHTML = "Loading system Information ...";
+	parent.loadscreen(this);
+	update_sysinfo();
+}
+
+
+</script>
+<body id="foo" onload="localajaxinit()" bgcolor="EFEFEF">
+<div class="mainscreenTitleBar"><span style="margin-left: 4px;font-weight:bold">System Information</span></div>
+<div class="mainscreenContentBox" id="userscontent">
+<table class="mainscreenTable" align="center">
+	<tr valign="top" height="18">	
+			<td align="left">
+
+				<a href="#" class="tab" onclick="return show_window(1);" id="tab1">General</a>&nbsp;&nbsp;
+				<a href="#" class="tab" onclick="return show_window(2);" id="tab2">ifconfig</a>&nbsp;&nbsp;
+				<a href="#" class="tab" onclick="return show_window(3);" id="tab3">Resources</a>&nbsp;&nbsp;
+				<select id="sysinfo" style="display:none"></select>
+
+				<div id="information" style=" border: solid 0px black; background: transparent; padding: 4px; height:440px; width:95%;">
+						<BR>
+						<div id="osversion_div" style="display:none">
+								OS Version: <div id="osversion" style="font-family:courier; font-size:10pt;"></div><BR>
+						</div>
+						<div id="uptime_div" style="display:none">
+								Uptime: <div id="uptime" style="font-family:courier; font-size:10pt;"></div><BR>
+						</div>
+						<div id="asterisk_div" style="display:none">
+								Asterisk Build: <div id="asterisk" style="font-family:courier; font-size:10pt;"></div><BR>
+						</div>
+						<div id="today_div" style="display:none">
+								Server Date & TimeZone: <div id="today" style="font-family:courier; font-size:10pt;"></div><BR>
+						</div>
+						<div id="hostname_div" style="display:none">
+								Hostname: <div id="hostname" style="font-family:courier; font-size:10pt;"></div><BR>
+						</div>
+						<div id="ifconfig_div" style="display:none; height:430px; ">
+								ifconfig:<PRE><div id="ifconfig" style="font-family:courier; font-size:8.5pt; height:410px; overflow :auto;"></div></PRE>
+						</div>
+						<div id="df_div" style="display:none;">
+								Disk Usage:<PRE><div id="diskusage" style="font-family:courier; font-size:10pt;"></div></PRE>
+						</div>
+						<div id="memory_div" style="display:none;">
+								Memory Usage:<PRE><div id="memoryusage" style="font-family:courier; font-size:8.5pt;"></div></PRE>
+						</div>
+						<BR>
+						
+						
+						<BR><BR>
+				</div>
+			</td>
+	</tr>
+	<tr><td valign="top" align=center><div  id='status'></div></td></tr>
+	<tr><td></td></tr>
+</table>
+</div>
+<SCRIPT LANGUAGE="JavaScript">
+<!--
+showdiv_statusmessage();
+//-->
+</SCRIPT>
+</body>

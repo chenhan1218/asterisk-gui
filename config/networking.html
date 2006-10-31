@@ -107,22 +107,15 @@
 </script>
 
 
-<body id="foo" onload="localajaxinit()">
-
+<body id="foo" onload="localajaxinit()"  bgcolor="EFEFEF">
 <div class="mainscreenTitleBar">
 	<span style="margin-left: 4px;font-weight:bold">Networking Configuration</span>
 </div>
 <div class="mainscreenContentBox" id="mailboxcontent">
 <table class="mainscreenTable" align="center">
+	<tr valign="top"><td height=20></td>	</tr>
 	<tr valign="top">
-		<td colspan='2'>
-		</td>
-	</tr>
-	<tr valign="top">
-		<td>
-		<div style='height:300'></div>
-		</td>
-		<td>
+		<td height=395 align=center>
 		<div id='adjustments'>
 		<table cellspacing='0' cellpadding='0'>
 			<tr valign="top"><td>
@@ -214,7 +207,7 @@
 			<tr><td>
 				<div style="background-image:url(images/slice-v.png)" id='advancedw'>
 				<table id='advancedi' align='center'>
-				<tr><td></td><td width='50'></td><td></td></tr>
+				<tr><td></td><td width='50' height=5></td><td></td></tr>
 				<tr><td>Local Subnet</td><td><input type='text' size='16' id='SUBBLOCK'></td></tr>
 				<tr><td>Alternate Local Subnet</td><td><input size='16' type='text' id='ALTSUBBLOCK'></td></tr>
 				<tr><td>Netmask</td><td><input type='text' size='16' id='NETMASK'></td></tr>
@@ -230,23 +223,15 @@
 		</table>
 		</div>
 		</td>
-
-	</tr><tr>
-		<td align='center'>
-		</td>
-		<td align='center' colspan='2'>
-				<input type='hidden' id='name'>
-				<input style='width:80' type='button' id='save' value='Save'>
-				&nbsp;
-				<input style='width:80' type='button' id='cancel' value='Cancel'>
-				&nbsp;
-		<div style='visibility:hidden;overflow:hidden;width:0px;height:0px'>
-			<select id='hiddenusers'>
-			</select>
-			<select id='hiddennetworking'>
-			</select>
-		</div>
-		</td>				
+	</tr>
+	<tr><td align='center' colspan='2'>
+						<input type='hidden' id='name'>
+						<input style='width:80' type='button' id='save' value='Save'>&nbsp;&nbsp;<input style='width:80' type='button' id='cancel' value='Cancel'>
+						<div style='visibility:hidden;overflow:hidden;width:0px;height:0px'>
+								<select id='hiddenusers'>	</select>
+								<select id='hiddennetworking'></select>
+						</div>
+			</td>				
 	</tr>
 </table>
 </div>

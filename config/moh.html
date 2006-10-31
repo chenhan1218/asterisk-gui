@@ -53,7 +53,7 @@ function localajaxinit() {
 			return;
 }
 </script>
-<body id="foo" onload="localajaxinit()">
+<body id="foo" onload="localajaxinit()"  bgcolor="EFEFEF">
 <div class="mainscreenTitleBar">
 	<span style="margin-left: 4px;font-weight:bold">Music on Hold Classes</span>
 </div>
@@ -65,22 +65,24 @@ function localajaxinit() {
 		</td>
 	</tr>
 	<tr valign="top">
-		<td>
-		<select size="28" id="moh_classes" style="width:220px">
-		<option>Loading...</option>
-		</select>
+		<td height="415">
+				<select size="20" id="moh_classes" style="width:220px;height: 415px">
+						<option>Loading...</option>
+				</select>
 		</td>
-		<td colspan='3'>
-		<div id='adjustments' style='width:350'>
+		<td colspan='3' height=415>
+		<div id='adjustments' style='width:308'>
 		<table cellspacing='0' cellpadding='0'>
 			<tr valign="top"><td>
 				<table>
-						<tr><td>Class:</td>						<td>&nbsp;<input size='12' id='name'></td></tr>
-						<tr><td>Mode:</td>						<td>&nbsp;<select id='mode'><option value="quietmp3">mp3 (Quiet)</option><option value="mp3">mp3 (Loud)</option><option value="mp3nb">mp3 (Unbuffered)</option><option value="quietmp3nb ">mp3 (Quiet Unbuffered)</option><option value="custom">Custom</option><option value="files">files</option></select></td></tr>
-						<tr><td>Directory:</td>					<td>&nbsp;<input size='20' id='directory'></td></tr>
-						<tr><td>Application:</td>				<td>&nbsp;<input size='25' id='application'></td></tr>
-						<tr><td>Format:</td>					<td>&nbsp;<input size='12' id='format'></td></tr>
-						<tr><td>Random:</td>					<td><input type=checkbox id='random'></td></tr>
+						<tr><td class="field_text">Class:</td>						<td>&nbsp;<input size='12' id='name' class="input8"></td></tr>
+						<tr><td class="field_text">Mode:</td>						<td>&nbsp;<select id='mode'  class="input8">
+																																			<option value="quietmp3">mp3 (Quiet)</option><option value="mp3">mp3 (Loud)</option><option value="mp3nb">mp3 (Unbuffered)</option><option value="quietmp3nb ">mp3 (Quiet Unbuffered)</option><option value="custom">Custom</option><option value="files">files</option>
+																																		</select></td></tr>
+						<tr><td class="field_text">Directory:</td>					<td>&nbsp;<input size='20' id='directory' class="input8"></td></tr>
+						<tr><td class="field_text">Application:</td>				<td>&nbsp;<input size='25' id='application' class="input8"></td></tr>
+						<tr><td class="field_text">Format:</td>					<td>&nbsp;<input size='12' id='format' class="input8"></td></tr>
+						<tr><td class="field_text">Random:</td>					<td><input type=checkbox id='random'></td></tr>
 						<tr><td colspan='2' align='center'><div style="height:15px" id='status'></div></td></tr>
 				</table>
 			</td>
@@ -90,19 +92,10 @@ function localajaxinit() {
 		</td></tr>				
 		<tr>
 		<td align='center'>
-			<table>
-			<tr align='center'><td>
-			<input style='width:80' type='button' id='new' value='New'>
-			</td><td>
-			<input style='width:80' type='button' id='delete' value='Delete'>
-			</td></tr>
-			</table>
+				<input type='button' id='new' value='New' class="buttonbold">&nbsp;&nbsp;<input type='button' id='delete' value='Delete' class="buttonbold">
 		</td>
-		<td colspan='1' align='right'>
-				<input style='width:80' type='button' id='save' value='Save'>
-				&nbsp;
-				<input style='width:80' type='button' id='cancel' value='Cancel'>
-				&nbsp;
+		<td colspan='1' align='center'>
+				<input type='button' id='save' value='Save' class="buttonbold">&nbsp;<input type='button' id='cancel' value='Cancel'  class="buttonbold">
 		</td>
 	</tr><tr>
 	</tr>
