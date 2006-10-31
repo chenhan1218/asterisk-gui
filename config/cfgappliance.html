@@ -98,7 +98,7 @@
 		loggedon = onoff;
 		if (loggedon == 1) {
 			for (var i = 0; i < panels.length; i++) {
-				if (panels[i].name == 'home'){
+				if (panels[i].name == 'homeapp'){
 					continue;
 				}
 				$(panels[i].name).onclick = $(panels[i].name).realonclick;
@@ -107,7 +107,7 @@
 			}
 		} else {
 			for (var i = 0; i < panels.length; i++) {
-				if (panels[i].name == 'home'){
+				if (panels[i].name == 'homeapp'){
 					// class :: accordionTabContentBox panelHeight = 474;
 					continue;
 				}
@@ -144,13 +144,13 @@
 
 	function registerajax() {
 		var pnameheight = 22;
-		var pheight = (505  - (pnameheight*panels.length) )  - 4 ;
+		var pheight = (503  - (pnameheight*panels.length) )  ;
 		accordion = new Rico.Accordion( $('configpanel'), { panelHeight: pheight,onHideTab:fademainscreen,onShowTab:showmainscreen });
 		//$('borderbox').style.height = $('screenholder').clientHeight;
 		//$('titlebar').style.width = $('borderbox').clientWidth - 12;
 		for (var i = 0; i < panels.length; i++) {
 			if (panels[i].name == 'home'){
-				$(panels[i].name).style.height = pnameheight + "px";
+				$(panels[i].name).style.height = "19px";
 				continue;
 			}
 			$(panels[i].name).realonclick = $(panels[i].name).onclick;
