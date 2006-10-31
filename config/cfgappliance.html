@@ -161,6 +161,23 @@
 
 	astmanEngine.setURL('../../rawman');
 	astmanEngine.setEventCallback(eventeater.eventcb);
+
+	function Logoff() {
+		var opt2 = {
+			method: 'get',
+			asynchronous: true,
+			onSuccess: function() {	 
+					// reload the browser URL
+					window.location.href=window.location.href;
+			},
+			onFailure: function(t) {
+				alert("Config Error: " + t.status + ": " + t.statusText);
+			}
+		};
+		opt2.parameters ="action=logoff";
+		var tmp2 = new Ajax.Request("../../rawman", opt2);
+	}
+
 </script>
 <head>
 	<title>Asterisk Configuration GUI</title>
@@ -194,7 +211,7 @@
 				<iframe width="540" height="505" frameborder="0" border="0" marginheight="0" marginwidth="0" src="homeapp.html" id="mainscreen" style="position:absolute;top:48px;" SCROLLING=no></iframe>
 		</td>
 		<td valign=top width=250 height="505">
-			<div class="mainscreenTooltipBar"><span style="font-weight:bold">&nbsp;</span></div>
+			<div id="logoutlink" class="mainscreenTooltipBar" align=right style="font-weight:bold">&nbsp;</div>
 			<div style="margin-left: 4px;">
 			<BR>
 			<font style="margin-left:4px; font-family : Trebuchet MS, Arial, Helvetica, sans-serif;font-size: 11px; font-weight: bold">Tooltips:</font>

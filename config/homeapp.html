@@ -55,6 +55,8 @@
 		localloggedon = 1;
 		updateButtons();
 		$('statusbar').innerHTML = "<i>Connected!</i>";
+		parent.document.getElementById('logoutlink').innerHTML = "Logout";
+		parent.document.getElementById('logoutlink').onclick = parent.Logoff ;
 		parent.astmanEngine.pollEvents();
 	}
 	
@@ -62,6 +64,7 @@
 		if ((parent.loggedon == 0) && (localloggedon == 0))
 			return;
 		parent.setLoggedOn(0);
+		parent.document.getElementById('logoutlink').innerHTML = "&nbsp;";
 		localloggedon = 0;
 		updateButtons();
 	}
