@@ -70,7 +70,7 @@ function show_tooltip(lang, file,tip){
 
 	tooltips['queues'].en[0] = "<B>Queue:</B> This option defines the numbered extension that may be dialed to reach this Queue.";
 	tooltips['queues'].en[1] = "<B>Full Name:</B> This option defines a name for this Queue, i.e. \"Sales\"";
-	tooltips['queues'].en[2] = "<B>Strategy:</B>This option sets the Ringing Strategy for this Queue.  The options are: <LI>RingAll - Ring All available Agents until one answers. <LI>RoundRobin - Take turns ringing each available Agent <LI>LeastRecent - Ring the Agent which was least recently called <LI>FewestCalls - Ring the Agent with the fewest completed calls <LI>Random - Ring a Random Agent <LI>RRmemory - RoundRobin with Memory, Rembers where it left off in the last ring pass";
+	tooltips['queues'].en[2] = "<B>Strategy:</B>This option sets the Ringing Strategy for this Queue.  The options are:<OL><LI>RingAll - Ring All available Agents until one answers. <LI>RoundRobin - Take turns ringing each available Agent <LI>LeastRecent - Ring the Agent which was least recently called <LI>FewestCalls - Ring the Agent with the fewest completed calls <LI>Random - Ring a Random Agent <LI>RRmemory - RoundRobin with Memory, Rembers where it left off in the last ring pass</OL>";
 	tooltips['queues'].en[3] = "<B>Agents:</B> This selection shows all Users defined as Agents in their User conf.  Checking a User here makes them a member of the current Queue.";
 	tooltips['queues'].en[4] = "<B>Advanced:</B> Advanced Queue Configuration Options";
 	tooltips['queues'].en[5] = "<B>Timeout:</B> This option defines the time in seconds that an Agent's phone rings before the next Agent is rung, i.e. \"15\" ";

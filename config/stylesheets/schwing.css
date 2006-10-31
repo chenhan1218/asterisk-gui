@@ -93,6 +93,7 @@ td {
 
 .field_text{
 	font-size: 9pt;
+	cursor: help;
 }
 
 .buttonbold{

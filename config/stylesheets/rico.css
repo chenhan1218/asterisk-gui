@@ -43,6 +43,8 @@ div.header {margin: 0px 8px 0px 8px; padding: 0px;}
 	border-bottom-color : #182052;
    border-width        : 1px 0px 1px 0px;
    height : 16px;
+   cursor: pointer;
+   cursor: hand;
 }
 
 .accordionTabTitleBarHover {
@@ -56,6 +58,7 @@ div.header {margin: 0px 8px 0px 8px; padding: 0px;}
    border           : 1px solid #1f669b;
    border-top-width : 0px;
    padding          : 0px 8px 0px 8px;
+	cursor: default;
 }
 
 #accordionExample {
@@ -68,7 +71,7 @@ div.header {margin: 0px 8px 0px 8px; padding: 0px;}
 	font-size   : 11px;
 }
 
-body,td,a,p,.h{font-family:arial,sans-serif,Helvetica,Trebuchet MS; font-size   : 10px; }
+body,td,a,p,.h{font-family:arial,sans-serif,Helvetica,Trebuchet MS; font-size   : 10px; cursor: default;}
 
 a:visited, a:link, a:hover  {
 	font-family : Trebuchet MS, Arial, Helvetica, sans-serif;
