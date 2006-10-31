@@ -49,6 +49,8 @@
 		localloggedon = 1;
 		updateButtons();
 		$('statusbar').innerHTML = "<i>Connected!</i>";
+		parent.document.getElementById('logoutlink').innerHTML = "Logout";
+		parent.document.getElementById('logoutlink').onclick = parent.Logoff ;
 		parent.astmanEngine.pollEvents();
 	}
 	
@@ -56,6 +58,7 @@
 		if ((parent.loggedon == 0) && (localloggedon == 0))
 			return;
 		parent.setLoggedOn(0);
+		parent.document.getElementById('logoutlink').innerHTML = "&nbsp;";
 		localloggedon = 0;
 		updateButtons();
 	}
@@ -127,9 +130,32 @@
 				  </div>
 				</td></tr>
 
-				<tr><td align='center' colspan='2'><input type="submit" id="login" value="Login" disabled=1 onClick="doLogin()" class="input">
-				&nbsp;&nbsp;&nbsp;&nbsp;
-				<input type="submit" id="logoff" value="Logoff" disabled=1 onClick="doLogoff()" class="input"></td></tr>
+				<tr><td align='center' colspan='2'>
+							<input type="submit" id="login" value="Login" disabled=1 onClick="doLogin()" class="input">
+							&nbsp;&nbsp;&nbsp;&nbsp;
+							<input type="submit" id="logoff" value="Logoff" disabled=1 onClick="doLogoff()" class="input">
+
+
+
+
+
+
+
+
+							<div style="display:none">
+									<TABLE cellpadding=2 cellspacing=1 border=0 bgcolor="#D7D7D7" width=400>
+									<TR><TD bgcolor="#F3F5F6" height="25"><font face="arial" size="2" color="#727986"><B>&nbsp;&nbsp;&nbsp;Welcome to Asterisk GUI</B></font></TD></TR>
+									<TR><TD bgcolor="#FFFFFF">
+												<div ><font face="arial" size="2" color="#727986">Welcome to Asterisk Configuration GUI - You can do blah blah blah using this tool. If you need help or further explanation about anything, just move your mouse on to the field and a brief description about the item will be displayed in the tooltip area.</font>
+												</div>
+												</TD>
+									</TR>
+									</TABLE>
+							</div>
+
+
+						</td>
+				</tr>
 			</table>
 		</td>
 	</tr>

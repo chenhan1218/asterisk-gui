@@ -47,6 +47,7 @@
 			astmanEngine.pollEvents();
 	}
 
+
 	panels.push( 
 
 		new PanelDef("home", "Home", "home.png",
@@ -161,6 +162,26 @@
 
 	astmanEngine.setURL('../../rawman');
 	astmanEngine.setEventCallback(eventeater.eventcb);
+
+
+	function Logoff() {
+		var opt2 = {
+			method: 'get',
+			asynchronous: true,
+			onSuccess: function() {	 
+					// reload the browser URL
+					window.location.href=window.location.href;
+			},
+			onFailure: function(t) {
+				alert("Config Error: " + t.status + ": " + t.statusText);
+			}
+		};
+		opt2.parameters ="action=logoff";
+		var tmp2 = new Ajax.Request("../../rawman", opt2);
+}
+
+
+
 </script>
 <head>
 	<title>Asterisk Configuration GUI</title>
@@ -168,7 +189,9 @@
 <body onload="javascript:registerajax()" topmargin=1>
 <table border="0" align="center" cellspacing="0" cellpadding="0" bgcolor="#dddddd" width=950 height=570>
 <tr height=47><td valign="bottom" align='right' bgcolor='white' height=47><img align='left' src="images/digiumlogo.gif" align="left"></td>
-							<td valign='bottom' align='right' bgcolor='white' colspan=2><a target='_extern' href="http://www.digium.com/astguibasic/about">About Digium</a>&nbsp;|&nbsp;<a target='_extern' href="http://www.digium.com/astguibasic/help">Help</a>&nbsp;</td>
+							<td valign='bottom' align='right' bgcolor='white' colspan=2>
+									<a target='_extern' href="http://www.digium.com/astguibasic/about">About Digium</a>&nbsp;|&nbsp;<a target='_extern' href="http://www.digium.com/astguibasic/help">Help</a>&nbsp;
+							</td>
 </tr>
 <tr><td height="505"><div id="configpanel" style="width:150px; height: 505px;">
 										<script>
@@ -194,7 +217,7 @@
 				<iframe width="540" height="505" frameborder="0" border="0" marginheight="0" marginwidth="0" src="home.html" id="mainscreen" style="position:absolute;top:48px;" SCROLLING=no></iframe>
 		</td>
 		<td valign=top width=250 height="505">
-			<div class="mainscreenTooltipBar"><span style="font-weight:bold">&nbsp;</span></div>
+			<div id="logoutlink" class="mainscreenTooltipBar" align=right style="font-weight:bold">&nbsp;</div>
 			<div style="margin-left: 4px;">
 			<BR>
 			<font style="margin-left:4px; font-family : Trebuchet MS, Arial, Helvetica, sans-serif;font-size: 11px; font-weight: bold">Tooltips:</font>
