@@ -120,8 +120,47 @@ function select_menu (my_field_options, menustring){
 		newoption.text = tmp1[0] ; 
 		newoption.value = tmp1[0] ;
 		$(my_field_options).options.add(newoption);
+		$(my_field_options).options[y].style.fontWeight = 'bold';
 		$(my_field_options).options[y].selected = true;
+		$(my_field_options).style.color = '#CC0000';
 }
+
+function add_newvmenu_tolistofkeymenus(){
+	for (var k=0; k< keys.length; k++){
+			var current_key_menus='keypress_'+ keys[k] + '_menus';
+			var newoption = document.createElement("option"); 
+			newoption.text = $('comment').value; 
+			newoption.value = $('vmenus').options[$('vmenus').selectedIndex].value ;
+			$(current_key_menus).options.add(newoption);
+	}
+}
+
+function delete_vmenu_fromlistofmenus(){
+	for (var k=0; k< keys.length; k++){
+			var current_key_menus='keypress_'+ keys[k] + '_menus';
+					for(var i=0; i< $(current_key_menus).options.length; i++){
+								if( $(current_key_menus).options[i].text == $('comment').value ){
+										// delete this option from the $(current_key_menus)
+										$(current_key_menus).remove(i);
+										break;
+								}
+					}
+	}
+}
+
+function change_vmenuname_inlistofmenus(oldname,newname){
+	for (var k=0; k< keys.length; k++){
+			var current_key_menus='keypress_'+ keys[k] + '_menus';
+					for(var i=0; i< $(current_key_menus).options.length; i++){
+								if( $(current_key_menus).options[i].text == oldname ){
+										// delete this option from the $(current_key_menus)
+										$(current_key_menus).options[i].text = newname;
+										break;
+								}
+					}
+	}
+}
+
 
 
 function  key_action(a, field){
@@ -297,6 +336,9 @@ function save_vmenu(){
 							// update vmenus
 							$('vmenus').options[$('vmenus').selectedIndex].text = "VoiceMenu - " + $('comment').value;
 							$('vmenus').options[$('vmenus').selectedIndex].value = current_vmenu;
+							select_vmenu();
+							// add the new menu to the list of menus being displayed in the keypad options
+							add_newvmenu_tolistofkeymenus();
 
 					}else{ // if editing existing keypress options
 							for (var k=0; k< keys.length; k++){
@@ -334,6 +376,8 @@ function save_vmenu(){
 			var current_vmenu = $('vmenus').value;
 			if(  voicemenusdata[current_vmenu].comment != $('comment').value ){
 					uri += build_action('update', p, current_vmenu ,"comment", $('comment').value ); p = p+1;
+					change_vmenuname_inlistofmenus(voicemenusdata[current_vmenu].comment,$('comment').value);
+					 voicemenusdata[current_vmenu].comment = $('comment').value;
 			}
 			
 			 if( voicemenusdata[current_vmenu].include =="default" && !$('allowexten').checked ){
@@ -539,8 +583,7 @@ function update_newstep_var(){
 }
 
 
-
-menuscallbacks.postselect = function() {
+function select_vmenu(){
 	// show al lthe //s, lines in the select box - 
 	if($('vmenus').selectedIndex	==-1){ return true;}
 	current_context = $('vmenus').value;
@@ -647,6 +690,10 @@ menuscallbacks.postselect = function() {
 }
 
 
+menuscallbacks.postselect = function() {
+	select_vmenu();
+}
+
 menuscallbacks.format = function(t, x) {
 		var tmp = t.name.split('general');
 		var exten_fields;
@@ -704,6 +751,20 @@ menuscallbacks.includecats = true;
 menuscallbacks.cancelnewcategory =function(){
 	$('comment').disabled = true;
 	$('keypressoptions').style.display = "none";
+}
+
+menuscallbacks.oncategorydelete =function(){
+	delete_vmenu_fromlistofmenus();
+	$('comment').disabled = true;
+	$('keypressoptions').style.display = "none";
+	$('savevmenu').disabled = true;
+	$('steps').options.length =0;
+	$('newstep_action').disabled = true;
+	$('newstep_var').disabled = true;
+	$('addstep').disabled = true;
+	$('steps').disabled = true;
+	$('stepUp').disabled = true;
+	$('stepDown').disabled = true;
 }
 
 menuscallbacks.cancelchanges =function(){

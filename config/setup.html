@@ -18,11 +18,11 @@
  * at the top of the source tree.
  *
 -->
-
 <script src="scripts/prototype.js"></script>
+<script src="scripts/rico.js"></script>
+<script src="scripts/astman.js"></script>
 <link href="stylesheets/rico.css" media="all" rel="Stylesheet" type="text/css" />
 <link href="stylesheets/schwing.css" media="all" rel="Stylesheet" type="text/css" />
-
 <script>
 	var demo = new Object;
 	var localloggedon = -1;
@@ -32,17 +32,11 @@
 			$('username').disabled = 1;
 			$('secret').disabled = 1;
 			$('logoff').disabled = 0;
-			$('reboot').disabled = 0;
-			$('factorydefault').disabled = 0;
-			$('saveconfig').disabled = 0;
 			$('login').disabled = 1;
 		} else {
 			$('username').disabled = 0;
 			$('secret').disabled = 0;
 			$('logoff').disabled = 1;
-			$('reboot').disabled = 1;
-			$('factorydefault').disabled = 1;
-			$('saveconfig').disabled = 1;
 			$('login').disabled = 0;
 			$('username').focus();
 		}
@@ -67,25 +61,6 @@
 		parent.document.getElementById('logoutlink').innerHTML = "&nbsp;";
 		localloggedon = 0;
 		updateButtons();
-	}
-	
-	function doSaveConfig() {
-		parent.astmanEngine.run_tool("save_config");
-		alert("Configuration Saved");
-	}
-	
-	function doReboot() {
-		if (confirm("Are you sure you want to reboot the Atom?")) {
-			parent.astmanEngine.run_tool("reboot");
-			alert("Rebooting!");
-		}
-	}
-	
-	function doFactoryDefault() {
-		if (confirm("Are you sure you want to reset to factory defaults?")) {
-			parent.astmanEngine.run_tool("factory_default");
-			alert("Resetting to defaults.  Please reboot!");
-		}
 	}
 	
 	demo.logoffs = function(msgs) {
@@ -133,8 +108,11 @@
 		localajaxinit();
 		localajaminit();
 	}
+
 </script>
-<body id="foo" onload="localinit()"  bgcolor="EFEFEF">
+
+
+<body id="foo" onload="localinit()" topmargin=0  bgcolor="EFEFEF">
 <div class="mainscreenTitleBar">
 	<span style="margin-left: 4px;font-weight:bold">Welcome to the Asterisk Configuration Panel</span>
 </div>
@@ -144,22 +122,32 @@
 		<td colspan=2>
 			<table align="center">
 				<tr><td colspan="2"><h2>Asterisk&trade; Configuration Engine</h2></td>
-				<tr><td>Username:</td><td><input disabled=1 id="username"></td></tr>
-				<tr><td>Secret:</td><td><input disabled=1 type="password" id="secret"></td></tr>
+				<tr><td>Username:</td><td><input disabled=1 id="username"  class="input9" size=12></td></tr>
+				<tr><td>Secret:</td><td><input disabled=1 type="password" id="secret" class="input9" size=12></td></tr>
 				<tr><td colspan=2 align="center">
 				  <div id="statusbar">
 					<span style="margin-left: 4px;font-weight:bold">&nbsp;</span>
 				  </div>
 				</td></tr>
 
-				<tr><td align='center' colspan='2'><input type="submit" id="login" value="Login" disabled=1 onClick="doLogin()">
-				&nbsp;&nbsp;&nbsp;&nbsp;
-				<input type="submit" id="logoff" value="Logoff" disabled=1 onClick="doLogoff()"></td></tr>
-				<tr><td align='center' colspan='2'><input type="submit" id="saveconfig" value="Save Config" disabled=1 onClick="doSaveConfig()">
-				&nbsp;&nbsp;&nbsp;&nbsp;
-				<input type="submit" id="reboot" value="Reboot" disabled=1 onClick="doReboot()">
-				&nbsp;&nbsp;&nbsp;&nbsp;
-				<input type="submit" id="factorydefault" value="Factory Defaults" disabled=1 onClick="doFactoryDefault()"></td></tr>
+				<tr><td align='center' colspan='2'>
+							<input type="submit" id="login" value="Login" disabled=1 onClick="doLogin()" class="input">
+							&nbsp;&nbsp;&nbsp;&nbsp;
+							<input type="submit" id="logoff" value="Logoff" disabled=1 onClick="doLogoff()" class="input">
+
+							<div style="display:none">
+									<TABLE cellpadding=2 cellspacing=1 border=0 bgcolor="#D7D7D7" width=400>
+									<TR><TD bgcolor="#F3F5F6" height="25"><font face="arial" size="2" color="#727986"><B>&nbsp;&nbsp;&nbsp;Welcome to Asterisk GUI</B></font></TD></TR>
+									<TR><TD bgcolor="#FFFFFF">
+												<div ><font face="arial" size="2" color="#727986">Welcome to Asterisk Configuration GUI - You can do blah blah blah using this tool. If you need help or further explanation about anything, just move your mouse on to the field and a brief description about the item will be displayed in the tooltip area.</font>
+												</div>
+												</TD>
+									</TR>
+									</TABLE>
+							</div>
+
+						</td>
+				</tr>
 			</table>
 		</td>
 	</tr>

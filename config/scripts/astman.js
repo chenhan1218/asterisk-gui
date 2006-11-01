@@ -409,6 +409,8 @@ function delete_item(box, value, noconfirm) {
 		asynchronous: true,
 		onSuccess: function(t) { 
 //			if(action_issuccess(t.responseText) ){
+				if (box.callbacks.oncategorydelete) 
+						box.callbacks.oncategorydelete();
 				if (box.widgets['status']) 
 					box.widgets['status'].innerHTML = "<i>Deleted.</i>";
 				if (box.callbacks.delchanges)
