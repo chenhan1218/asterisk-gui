@@ -144,6 +144,16 @@ function originate_recordrequest(should_save, newvmenu_ext, filename_torecord){
 }
 
 function record_new(){
+	if($('newvmenu_name').value == "" ){ 
+			alert("Please Enter a name for the new Voice Menu");
+			$('newvmenu_name').focus();
+			return true;
+	}else if ( $('newvmenu_ext').value == ""){
+			alert("Please Select an extension to record the VoiceMenu");
+			$('newvmenu_ext').focus();
+			return true;
+	}
+
 	var filename_torecord = $('newvmenu_name').value + "." + $('format').value;
 	originate_recordrequest("YES", $('newvmenu_ext').value, filename_torecord);
 }

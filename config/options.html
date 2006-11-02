@@ -110,6 +110,24 @@ function	update_guisettings_manager(){
 
 
 function update_guisettings_http(){
+
+if($('bindaddr').value==""){
+	alert("Please enter a Bind Address");
+	$('bindaddr').focus();
+	return true;
+}
+if($('bindport').value==""){
+	alert("Please enter a Port number");
+	$('bindport').focus();
+	return true;
+}
+
+if($('httptimeout').value==""){
+	alert("Please enter Http TimeOut in seconds");
+	$('httptimeout').focus();
+	return true
+}
+
 $('status_message').style.display="block";
 	var opt = {
 			method: 'get',

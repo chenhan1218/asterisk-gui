@@ -202,7 +202,6 @@ function sortNumber(a,b){
 }
 
 function add_newstep(){
-	$('status_message').style.display="block";
 	if( !$('newstep_action').value ){
 		alert("Please select an action for this step");
 		$('newstep_action').focus();
@@ -214,6 +213,8 @@ function add_newstep(){
 		$('newstep_var').focus();
 		return;
 	}
+
+	$('status_message').style.display="block";
 
 	// prepare a request to add the new step to the voicemenu
 	// make a request to append

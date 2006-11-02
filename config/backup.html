@@ -46,6 +46,11 @@ function save_bkpfilename( newbkp_name ){
 
 
 function backup_new(){
+		if( $('newbkp_name').value == "" ){
+			alert("Please Enter a name for the backup");
+			$('newbkp_name').focus();
+			return true;
+		}
 		$('status_message').style.display="block";
 		var opt = {
 				method: 'get',
