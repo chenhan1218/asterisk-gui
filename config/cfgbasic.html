@@ -165,6 +165,9 @@
 
 
 	function Logoff() {
+		t=confirm("Are you sure ?")
+		if(t == false)
+			return true;
 		var opt2 = {
 			method: 'get',
 			asynchronous: true,
