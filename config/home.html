@@ -48,7 +48,7 @@
 		parent.setLoggedOn(1);
 		localloggedon = 1;
 		updateButtons();
-		$('statusbar').innerHTML = "<i>Connected!</i>";
+		$('statusbar').innerHTML = "<img src='images/tick.gif'><i>Connected!</i>";
 		parent.document.getElementById('logoutlink').innerHTML = "Logout";
 		parent.document.getElementById('logoutlink').onclick = parent.Logoff ;
 		parent.astmanEngine.pollEvents();
@@ -151,10 +151,6 @@ function submitOnEnter(e){
 							<input type="submit" id="login" value="Login" disabled=1 onClick="doLogin()" class="input">
 							&nbsp;&nbsp;&nbsp;&nbsp;
 							<input type="submit" id="logoff" value="Logoff" disabled=1 onClick="doLogoff()" class="input">
-
-							<div style="display:none">
-							</div>
-
 						</td>
 				</tr>
 			</table>
