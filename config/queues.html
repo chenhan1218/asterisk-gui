@@ -268,6 +268,11 @@ callbacks.format = function (t,x){
 
 
 // Queue Call Backs
+queuecallbacks.oncategorydelete = function(){
+	$('testmulti').innerHTML = "";
+}
+
+
 queuecallbacks.postselect = function(box, val ) {
 		if($('queues').selectedIndex	==-1){ 	$('save_q').disabled=true; 	return true; 	} 
 		// show all member entires listed under the queue member - $('queues').value
