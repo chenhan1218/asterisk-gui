@@ -159,7 +159,13 @@ function record_new(){
 }
 
 function record_existing(filename){
+	t=confirm("Are you sure you want to Record over an existing Voicemenu?")
+	if(t == false)
+		return true;
 	var extension = prompt("Please enter an Extension to call ",""); 
+	if(!extension){
+		return false;
+	}
 	originate_recordrequest("NO", extension, filename);
 }
 

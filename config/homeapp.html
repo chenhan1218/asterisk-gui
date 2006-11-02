@@ -129,6 +129,7 @@
 				$('secret').focus();
 				return true;			
 		}
+		parent.document.getElementById('login_name').value = $('username').value ;
 
 		$('statusbar').innerHTML = "<i>Logging in...</i>";
 		parent.astmanEngine.sendRequest('action=login&username=' + $('username').value + "&secret=" + $('secret').value, demo.logins);
