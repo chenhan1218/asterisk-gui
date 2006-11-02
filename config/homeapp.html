@@ -118,6 +118,18 @@
 	}
 
 	function doLogin() {
+		if( $('username').value == "" ){
+				alert("Please enter a Username");
+				$('username').focus();
+				return true;			
+		}
+
+		if( $('secret').value == "" ){
+				alert("Please enter a Secret");
+				$('secret').focus();
+				return true;			
+		}
+
 		$('statusbar').innerHTML = "<i>Logging in...</i>";
 		parent.astmanEngine.sendRequest('action=login&username=' + $('username').value + "&secret=" + $('secret').value, demo.logins);
 	}
@@ -133,6 +145,13 @@
 		localajaxinit();
 		localajaminit();
 	}
+
+	function submitOnEnter(e){ 
+			if(e.keyCode == 13){ 
+				doLogin();
+				return false;
+			}
+	}
 </script>
 <body id="foo" onload="localinit()"  bgcolor="EFEFEF">
 <div class="mainscreenTitleBar">
@@ -144,8 +163,8 @@
 		<td colspan=2>
 			<table align="center">
 				<tr><td colspan="2"><h2>Asterisk&trade; Configuration Engine</h2></td>
-				<tr><td>Username:</td><td><input disabled=1 id="username"></td></tr>
-				<tr><td>Secret:</td><td><input disabled=1 type="password" id="secret"></td></tr>
+				<tr><td>Username:</td><td><input disabled=1 id="username" class="input9" size=12></td></tr>
+				<tr><td>Secret:</td><td><input disabled=1 type="password" id="secret" class="input9" size=12  onKeyPress="submitOnEnter(event)"></td></tr>
 				<tr><td colspan=2 align="center">
 				  <div id="statusbar">
 					<span style="margin-left: 4px;font-weight:bold">&nbsp;</span>

@@ -96,6 +96,8 @@ function	update_guisettings_manager(){
 				$('save').disabled=true;
 				$('cancel').disabled=true;
 				default_bindaddress = $('bindaddr').value; default_port = $('bindport').value ; default_httptimeout = $('httptimeout').value;
+				// Inform the user that he is being redirected to the new URL : PORT : 
+
 			},
 			onFailure: function(t) {
 				$('status_message').style.display='none';
