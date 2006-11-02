@@ -93,7 +93,6 @@ function add_extension(a){
 
 
 function save_queue(){
-		$('status_message').style.display="block";
 		var p = 0;
 		var q = 0;
 		var r = 0;
@@ -103,7 +102,7 @@ function save_queue(){
 			method: 'get',
 			asynchronous: true,
 			onSuccess: function() { 
-					setTimeout("$('status_message').style.display='none'",sc_displaytime);
+					$('status_message').style.display='none';
 					$('status').innerHTML = "<i>Updated.</i>";
 					$('new').disabled = false;
 					$('save_q').disabled = true;
@@ -148,10 +147,17 @@ function save_queue(){
 
 		}
 		if(!$('name').value.length){
-				alert("Sorry, a Queue Name must be specified!");
+				alert("Sorry, an Extension must be specified for this Queue!");
+				$('name').focus();
+				return;
+		}
+		if(!$('fullname').value.length){
+				alert("Sorry, a Full Name must be specified !");
+				$('fullname').focus();
 				return;
 		}
 
+		$('status_message').style.display="block";
 		p = 0;
 		uri = "";
 		if( $('queues').options[$('queues').selectedIndex].innerHTML=='New Entry' ){
@@ -273,10 +279,10 @@ queuecallbacks.postselect = function(box, val ) {
 			selectedagent = "selectedagent" + k;
 			if( InArray( queueagents [j], $('agents').options[k].innerHTML.substr(0,4) ) ){
 				$('agents').options[k].selected = true;	
-				$('testmulti').innerHTML += '<INPUT id="' + selectedagent + '" TYPE="CHECKBOX" VALUE="'+ $('agents').options[k].innerHTML.substr(0,4) + '" checked onclick="$(\'save_q\').disabled=false; $(\'cancel\').disabled=false;">' + $('agents').options[k].innerHTML.substr(8) + '<BR>';
+				$('testmulti').innerHTML += '<LABEL FOR=' + selectedagent + '><INPUT id="' + selectedagent + '" TYPE="CHECKBOX" VALUE="'+ $('agents').options[k].innerHTML.substr(0,4) + '" checked onclick="$(\'save_q\').disabled=false; $(\'cancel\').disabled=false;">&nbsp;' + $('agents').options[k].innerHTML.substr(8) +' (' + $('agents').options[k].innerHTML.substr(0,4) + ')' + '</LABEL><BR>';
 			}else{
 				$('agents').options[k].selected = false;
-				$('testmulti').innerHTML += '<INPUT id="' + selectedagent + '" TYPE="CHECKBOX" VALUE="'+ $('agents').options[k].innerHTML.substr(0,4) + '" onclick="$(\'save_q\').disabled=false; $(\'cancel\').disabled=false;">' + $('agents').options[k].innerHTML.substr(8) + '<BR>';
+				$('testmulti').innerHTML += '<LABEL FOR=' + selectedagent + '><INPUT id="' + selectedagent + '" TYPE="CHECKBOX" VALUE="'+ $('agents').options[k].innerHTML.substr(0,4) + '" onclick="$(\'save_q\').disabled=false; $(\'cancel\').disabled=false;">&nbsp;' + $('agents').options[k].innerHTML.substr(8) +' (' + $('agents').options[k].innerHTML.substr(0,4) + ')' +  '</LABEL><BR>';
 			}
 		}
 		$('save_q').disabled = false;
@@ -292,7 +298,7 @@ queuecallbacks.newcategory = function(t) {
 		for (k=0;k< $('agents').length ;k++ ){
 				selectedagent = "selectedagent" + k;
 				$('agents').options[k].selected = false;
-				$('testmulti').innerHTML += '<INPUT id="' + selectedagent + '" TYPE="CHECKBOX" VALUE="'+ $('agents').options[k].innerHTML.substr(0,4) + '" onclick="$(\'save_q\').disabled=false; $(\'cancel\').disabled=false;">' + $('agents').options[k].innerHTML.substr(8) + '<BR>';
+				$('testmulti').innerHTML += '<LABEL FOR=' + selectedagent + '><INPUT id="' + selectedagent + '" TYPE="CHECKBOX" VALUE="'+ $('agents').options[k].innerHTML.substr(0,4) + '" onclick="$(\'save_q\').disabled=false; $(\'cancel\').disabled=false;">&nbsp;' + $('agents').options[k].innerHTML.substr(8) +' (' + $('agents').options[k].innerHTML.substr(0,4) + ')' +  '</LABEL><BR>';
 		}
 	return tmp;
 }
