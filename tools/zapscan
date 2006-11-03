@@ -2,8 +2,8 @@
 if [ -f /etc/zaptel.conf.zapscan ] && [ -f /etc/asterisk/zapata.conf.zapscan ]; then
 	rm -f /etc/zaptel.conf
 	rm -f /etc/asterisk/zapata.conf
-	cp -f /etc/zaptel.conf.zapscan /etc/zaptel.conf
-	cp -f /etc/asterisk/zapata.conf.zapscan /etc/asterisk/zapata.conf
+	( echo "# Created by zapscan -- edit zaptel.conf.zapscan instead" ; cat /etc/zaptel.conf.zapscan ) > /etc/zaptel.conf
+	( echo "; Created by zapscan -- edit zapata.conf.zapscan instead" ; cat /etc/asterisk/zapata.conf.zapscan ) > /etc/asterisk/zapata.conf
 	rm -f /etc/asterisk/zapscan.conf
 	echo -n "Scanning for zaptel devices..."
 	if /sbin/zapscan.bin; then
