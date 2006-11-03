@@ -17,6 +17,7 @@ zapscan.bin: zapscan.o
 	$(CC) -o zapscan.bin zapscan.o
 
 install:
+	mkdir -p $(DESTDIR)/sbin
 	$(INSTALL) -m 755 zapscan $(DESTDIR)/sbin
 	$(INSTALL) -m 755 zapscan.bin $(DESTDIR)/sbin
 
