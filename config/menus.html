@@ -82,6 +82,24 @@ function format_step(this_step){
 		temp[2] = temp[2].replace(/\)/, "");
 		return "Wait '"+ temp[2] + "' sec";
 	}
+
+	if( temp[2].match("Goto") && temp[2].match("voicemenu-")  ){
+		var tmp = temp[2].split('(');
+		var tmp1 = tmp[1].split('|');
+		try{
+			return "Goto Menu '"+  voicemenusdata[tmp1[0]].comment  + "'";
+		}
+		catch(e){
+			return "Goto Menu '"+  tmp1[0] + "'";
+		}
+	}
+	
+	if( temp[2].match("Goto") && !temp[2].match("voicemenu-")  ){
+		var tmp = temp[2].split('(');
+		var tmp1 = tmp[1].split('|');
+		return "Goto Exten '"+ tmp1[0] + "'";
+	}
+	
 	if( temp[2].match("Hangup") )
 		return "Hangup";
 
@@ -137,6 +155,11 @@ function add_newvmenu_tolistofkeymenus(){
 			newoption.value = $('vmenus').options[$('vmenus').selectedIndex].value ;
 			$(current_key_menus).options.add(newoption);
 	}
+			// and also add it to $('add_newstep_menus')
+			var newoption = document.createElement("option"); 
+			newoption.text = $('comment').value; 
+			newoption.value = $('vmenus').options[$('vmenus').selectedIndex].value ;
+			$('add_newstep_menus').options.add(newoption);
 }
 
 function delete_vmenu_fromlistofmenus(){
@@ -150,6 +173,12 @@ function delete_vmenu_fromlistofmenus(){
 								}
 					}
 	}
+					for(var i=0; i< $('add_newstep_menus').options.length; i++){
+								if( $('add_newstep_menus').options[i].text == $('comment').value ){
+										$('add_newstep_menus').remove(i);
+										break;
+								}
+					}
 }
 
 function change_vmenuname_inlistofmenus(oldname,newname){
@@ -247,7 +276,6 @@ function add_newstep(){
 				update_updown();
 				$('newstep_var').value= "";
 				$('newstep_var').style.display = "none" ;
-				$('combodiv_sounds').value= "";
 				$('combodiv_sounds').style.display = "none" ;
 				$('newstep_var_digit').value= "";
 				$('newstep_var_digit').style.display= "none" ;
@@ -289,6 +317,10 @@ function add_newstep(){
 		action_string = "s,"+ newpriority+ ",Wait(" + $('newstep_var').value + ")";
 	}else if ( $('newstep_action').value == 'WaitExten'  ){
 		action_string = "s,"+ newpriority+ ",WaitExten(" + $('newstep_var').value + ")";
+	}else if ( $('newstep_action').value == 'GotoMenu'  ){
+		action_string = "s,"+ newpriority+ ",Goto(" + $('newstep_var').value + "|s|1)";
+	}else if ( $('newstep_action').value == 'GotoExtension'  ){
+		action_string = "s,"+ newpriority+ ",Goto(" + $('newstep_var').value + "|1)";
 	}else if ( $('newstep_action').value == 'Hangup'  ){
 		action_string = "s,"+ newpriority+ ",Hangup";
 	}
@@ -574,23 +606,28 @@ function delete_step(){
 
 
 function update_newstep_var(){
-	if( $('newstep_action').value== "Answer"  || $('newstep_action').value== "Hangup"  ){
+		$('newstep_var').value = "";
 		$('newstep_var').style.display = "none";
 		$('newstep_var_digit').style.display= "none" ;
 		$('combodiv_sounds').style.display = "none" ;
+		$('add_newstep_extensions').style.display = "none";
+		$('add_newstep_menus').style.display = "none";
+
+	if( $('newstep_action').value== "" || $('newstep_action').value== "Answer"  || $('newstep_action').value== "Hangup"  ){
+
 	}else if( $('newstep_action').value== "Background"  || $('newstep_action').value== "SetMusicOnHold" || $('newstep_action').value== "Playback" ){
 		$('newstep_var').style.display = "";
 		$('newstep_var').size= 12;
-		$('newstep_var_digit').style.display= "none" ;
 	}else if( $('newstep_action').value== "DigitTimeout"  || $('newstep_action').value== "ResponseTimeout" ||  $('newstep_action').value== "Wait"  ||  $('newstep_action').value== "WaitExten" ){
-		$('newstep_var').style.display = "none" ;
-		$('combodiv_sounds').style.display = "none" ;
 		$('newstep_var_digit').style.display= "" ;
-	}else if  ($('newstep_action').value== ""){
-		$('newstep_var').style.display = "none" ;
-		$('combodiv_sounds').style.display = "none" ;
-		$('newstep_var_digit').style.display= "none" ;
+	}else if($('newstep_action').value== "GotoMenu"  ){
+			$('newstep_var').value = $('add_newstep_menus').value;
+			$('add_newstep_menus').style.display = "";
+	}else if($('newstep_action').value== "GotoExtension"  ){
+			$('newstep_var').value = $('add_newstep_extensions').value;
+			$('add_newstep_extensions').style.display = "";
 	}
+
 }
 
 
@@ -751,6 +788,8 @@ menuscallbacks.loaded = function(){
 				load_extensions(current_key_exts);
 				load_menus(current_key_menus);
 			}
+			load_extensions('add_newstep_extensions');
+			load_menus('add_newstep_menus');
 }
 
 menuscallbacks.identifier = "extension";
@@ -887,8 +926,6 @@ usercallbacks.loaded = function (){
 }
 
 </script>
-
-
 <body id="foo" onload="localajaxinit()"  bgcolor="EFEFEF">
 <div class="mainscreenTitleBar">
 	<span style="margin-left: 4px;font-weight:bold">Voice Menus Configuration</span>
@@ -919,7 +956,8 @@ usercallbacks.loaded = function (){
 						</tr>
 						<tr  onmouseover="show_tooltip('en', 'menus',2);"><td colspan=2 class="field_text" height=4></td></tr>
 						<tr  onmouseover="show_tooltip('en', 'menus',2);"><td colspan=2 class="field_text">Add a new Step:</td></tr>
-						<tr><td colspan=2>&nbsp;
+						<tr><td colspan=2>
+								<NOBR>
 								<select id='newstep_action' disabled onChange="update_newstep_var()" class="input8">
 									<option value=""> -- Select --</option>
 									<option value="Answer">Answer</option>
@@ -930,9 +968,13 @@ usercallbacks.loaded = function (){
 									<option value="Playback">Playback</option>
 									<option value="Wait">Wait</option>
 									<option value="WaitExten">WaitExten</option>
+									<option value="GotoMenu">Goto Menu</option>
+									<option value="GotoExtension">Goto Extension</option>
 									<option value="Hangup">Hangup</option>
 								</select>&nbsp;
 								<input type=text id="newstep_var" style="display:none" size=4 disabled>
+								<select id='add_newstep_extensions' style="display:none"   onChange=" $('newstep_var').value = $('add_newstep_extensions').value;"   class="input8"></select>
+								<select id='add_newstep_menus' style="display:none"    onChange=" $('newstep_var').value = $('add_newstep_menus').value;"   class="input8"></select>
 											<div id="combodiv_sounds">
 													<select size=5 id="combosel_sounds" style="font-family: Verdana, Arial, Helvetica, Sans-Serif;font-size: 11px;" class="input8">
 															<option value="" style="font-weight: bold">Agent Related</option>
@@ -1147,12 +1189,14 @@ usercallbacks.loaded = function (){
 											</div>
 											<input type=text id="newstep_var_digit" size=3 style="display:none;" onChange=" $('newstep_var').value = $('newstep_var_digit').value;"  pattern='^\d*$' class="input8">&nbsp;
 											<SCRIPT LANGUAGE="JavaScript">combo_box('newstep_var', "combodiv_sounds","combosel_sounds"); </SCRIPT>
-								&nbsp;<input type=button style='width:45' id='addstep' onclick="add_newstep()"  value="Add" disabled  class="buttonbold">
+								<input type=button style='width:45' id='addstep' onclick="add_newstep()"  value="Add" disabled  class="buttonbold">
 								&nbsp;<input type=button style='width:50' id='deletestep' onclick="delete_step()"  value="Delete" disabled  class="buttonbold">
+								</NOBR>
 								</td>
 						</tr>
 						
-						<tr onmouseover="show_tooltip('en', 'menus', 3);"><td colspan=2 class="field_text">&nbsp;<input type=checkbox id=allowexten disabled onclick="$('savevmenu').disabled=false;$('cancel').disabled=false;"> Dial other Extensions?&nbsp;</td></tr>
+						<tr onmouseover="show_tooltip('en', 'menus', 3);"><td colspan=2 class="field_text">
+						<label FOR="allowexten">&nbsp;<input type=checkbox id=allowexten disabled onclick="$('savevmenu').disabled=false;$('cancel').disabled=false;"> Dial other Extensions?</LABEL>&nbsp;</td></tr>
 						<tr><td colspan=2 height=6></td></tr>
 						<tr onmouseover="show_tooltip('en', 'menus', 4);"><td colspan=2 class="field_text">'Keypress' Events</td></tr>
 						<tr><td colspan=2>
