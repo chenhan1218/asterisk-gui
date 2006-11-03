@@ -15,6 +15,10 @@
 INSTALL?=install
 BASENAME?=basename
 
+export INSTALL
+export DESTDIR
+export BASENAME
+
 # Overwite config files on "make samples"
 OVERWRITE=y
 
@@ -52,16 +56,21 @@ ifeq ($(HTTPPREFIXBASE),)
   HTTPPREFIX=asterisk
 endif
 HTTPURL=http://$(HTTPHOST):$(HTTPBINDPORT)/$(HTTPPREFIX)/static/config/cfgbasic.html
-
+SUBDIRS=tools
 # Nothing to do yet for building, but one day there could be...
 
-all:
+all: _all
 	@echo " +------- Asterisk-GUI Build Complete -------+"
 	@echo " + Asterisk-GUI has successfully been built, +"
 	@echo " + and can be installed by running:          +"
 	@echo " +                                           +"
 	@echo " +               make install                +"
 	@echo " +-------------------------------------------+"
+
+_all:
+	for x in $(SUBDIRS); do \
+		make -C $$x all ; \
+	done
 
 checkconfig:
 	@echo " --- Checking Asterisk configuration to see if it will support the GUI ---"
@@ -133,8 +142,11 @@ checkconfig:
 	@echo ""
 	@echo " --- Good luck! ---	"
 
-_install:
+_install: _all
 	@echo "Installing into $(HTTPDIR)"
+	for x in $(SUBDIRS); do \
+		make -C $$x install ; \
+	done
 	mkdir -p $(CONFIGDIR)
 	mkdir -p $(CONFIGDIR)/images
 	mkdir -p $(CONFIGDIR)/scripts
@@ -182,6 +194,11 @@ install:_install
 	@echo " +               $(MAKE) checkconfig            +"
 	@echo " +                                           +"
 	@echo " +-------------------------------------------+"
+
+clean:
+	for x in $(SUBDIRS); do \
+		make -C $$x clean ; \
+	done
 
 samples:
 	mkdir -p $(DESTDIR)$(ASTETCDIR)
