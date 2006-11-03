@@ -1598,7 +1598,7 @@ function Astman() {
 	specials = new Array;
 	specials.push(
 		new Special("VoiceMailMain", null, "Check Voicemail"),
-		new Special("MeetMe", null, "Conference Room"),
+		new Special("MeetMe", null, "Conference Bridge"),
 		new Special("Queue", null, "Call Queue")
 	);
 

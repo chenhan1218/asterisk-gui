@@ -73,7 +73,11 @@ function format_step(this_step){
 		temp[2] = temp[2].replace(/\)/, "");
 		return "Play '" + temp[2] + "' & Donot Listen for KeyPress";
 	}
-	if( temp[2].match("Wait") ){
+	if( temp[2].match("WaitExten") ){
+		temp[2] = temp[2].replace(/WaitExten\(/, "");
+		temp[2] = temp[2].replace(/\)/, "");
+		return "WaitExten '"+ temp[2] + "' sec";
+	}else if( temp[2].match("Wait") ){
 		temp[2] = temp[2].replace(/Wait\(/, "");
 		temp[2] = temp[2].replace(/\)/, "");
 		return "Wait '"+ temp[2] + "' sec";
@@ -238,10 +242,15 @@ function add_newstep(){
 				// empty this textbox & disable this button, select the newly added item to the steps options box
 				$('newstep_action').selectedIndex = 0;
 					$('deletestep').disabled = false;
-				$('newstep_var').value= "";
 				$('steps').selectedIndex = $('steps').length - 1 ;
 				$('status').innerHTML = "<i>New step added !</i>";
 				update_updown();
+				$('newstep_var').value= "";
+				$('newstep_var').style.display = "none" ;
+				$('combodiv_sounds').value= "";
+				$('combodiv_sounds').style.display = "none" ;
+				$('newstep_var_digit').value= "";
+				$('newstep_var_digit').style.display= "none" ;
 			},
 			onFailure: function(t) {
 				$('status_message').style.display='none';
@@ -278,6 +287,8 @@ function add_newstep(){
 		action_string = "s,"+ newpriority+ ",Playback(" + $('newstep_var').value + ")";
 	}else if ( $('newstep_action').value == 'Wait'  ){
 		action_string = "s,"+ newpriority+ ",Wait(" + $('newstep_var').value + ")";
+	}else if ( $('newstep_action').value == 'WaitExten'  ){
+		action_string = "s,"+ newpriority+ ",WaitExten(" + $('newstep_var').value + ")";
 	}else if ( $('newstep_action').value == 'Hangup'  ){
 		action_string = "s,"+ newpriority+ ",Hangup";
 	}
@@ -567,20 +578,19 @@ function update_newstep_var(){
 		$('newstep_var').style.display = "none";
 		$('newstep_var_digit').style.display= "none" ;
 		$('combodiv_sounds').style.display = "none" ;
-	}
-
-	if( $('newstep_action').value== "Background"  || $('newstep_action').value== "SetMusicOnHold" || $('newstep_action').value== "Playback" ){
+	}else if( $('newstep_action').value== "Background"  || $('newstep_action').value== "SetMusicOnHold" || $('newstep_action').value== "Playback" ){
 		$('newstep_var').style.display = "";
 		$('newstep_var').size= 12;
 		$('newstep_var_digit').style.display= "none" ;
-	}
-
-	if( $('newstep_action').value== "DigitTimeout"  || $('newstep_action').value== "ResponseTimeout" ||  $('newstep_action').value== "Wait" ){
+	}else if( $('newstep_action').value== "DigitTimeout"  || $('newstep_action').value== "ResponseTimeout" ||  $('newstep_action').value== "Wait"  ||  $('newstep_action').value== "WaitExten" ){
 		$('newstep_var').style.display = "none" ;
 		$('combodiv_sounds').style.display = "none" ;
 		$('newstep_var_digit').style.display= "" ;
+	}else if  ($('newstep_action').value== ""){
+		$('newstep_var').style.display = "none" ;
+		$('combodiv_sounds').style.display = "none" ;
+		$('newstep_var_digit').style.display= "none" ;
 	}
-
 }
 
 
@@ -919,6 +929,7 @@ usercallbacks.loaded = function (){
 									<option value="ResponseTimeout">ResponseTimeout</option>
 									<option value="Playback">Playback</option>
 									<option value="Wait">Wait</option>
+									<option value="WaitExten">WaitExten</option>
 									<option value="Hangup">Hangup</option>
 								</select>&nbsp;
 								<input type=text id="newstep_var" style="display:none" size=4 disabled>
