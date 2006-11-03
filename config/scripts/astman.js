@@ -704,6 +704,11 @@ function apply_uri(box, uri)
 
 
 function save_item(box) {
+	if (box.callbacks.beforeSaving){	 // like for field validations etc.
+		var tmp =	box.callbacks.beforeSaving();
+		if ( tmp == false )
+			return false;
+	}
 	var opt = {
 		method: 'get',
 		asynchronous: true,
@@ -1358,8 +1363,13 @@ function Astman() {
 							pattern = this.getAttribute('pattern');
 							if (pattern && check_pattern(pattern, this.oldvalue) && !check_pattern(pattern, this.value)) {
 									this.value = this.oldvalue;
-							} else
+									if (widgets['status']) 
+										widgets['status'].innerHTML = "<font size='-1' color=red>Invalid Character !</font>";
+							} else{
+									if (widgets['status']) 
+										widgets['status'].innerHTML = "";
 								this.savewidget.activateSave();
+							}
 							return true;
 						}
 					}

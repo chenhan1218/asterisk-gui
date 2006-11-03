@@ -85,7 +85,17 @@
 		return tmp;
 	}
 	callbacks.identifier = "extension";
-	
+	callbacks.beforeSaving = function(){
+		if(!$('fullname').value.length){
+				alert("Sorry, a User Name must be specified !");
+				$('fullname').focus();
+				return false;
+		}
+
+		return true;
+	}
+
+
 	phonecallbacks.format = function(t) {
 		if (t.fieldbyname['port'] == 'fxo')
 			return "Analog Port #" + t.name;

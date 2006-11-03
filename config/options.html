@@ -161,7 +161,10 @@ function changepassword(){
 
 
 function compare_passwords(){
-	if( $('newpass').value==$('newpass_rep').value && $('newpass').value.length > 3 ){
+	if( $('newpass').value.length < 4 ){
+		$('dopwdsmatch').style.color = "#EE0000";
+		$('dopwdsmatch').innerHTML = "Password should be atleast 4 characters !" ;
+	}else if ( $('newpass').value==$('newpass_rep').value){
 		$('dopwdsmatch').style.color = "#005D2E";
 		$('dopwdsmatch').innerHTML = "Passwords Match !" ;
 	}else{
