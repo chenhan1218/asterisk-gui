@@ -66,11 +66,13 @@ specifically:
 
 1) In http.conf:
 
+	[general]
 	enabled = yes
 	enablestatic = yes
 	
 2) In manager.conf
 
+	[general]
 	enabled = yes
 	webenabled = yes
 	
