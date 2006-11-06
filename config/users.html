@@ -95,6 +95,31 @@
 		return true;
 	}
 
+	callbacks.postselect = function(box, val) {
+		parent.$('tooltip').innerHTML = parent.tooltip_default ; 
+		if( box.selectedIndex == -1)
+			return true;
+		if(val == "reserved" ){
+				if( box.options[box.selectedIndex].text.toLowerCase().match("-- call queue")     ){
+					//parent.$('tooltip').innerHTML = " <font size=\"-2\" color=\"#FF0000\">Click on \'Call Queues\' panel to edit call queues </font>";
+					box.selectedIndex = -1;
+					alert(" You can not edit the selected entry from here.\n Please click on the \'Call Queues\' panel to edit the selected entry");
+					return true;
+				}
+				if( box.options[box.selectedIndex].text.toLowerCase().match("-- conference bridge")     ){
+					//parent.$('tooltip').innerHTML = " <font size=\"-2\" color=\"#FF0000\">Click on \'Conferencing\' panel to edit a Conference Bridge</font>";
+					box.selectedIndex = -1;
+					alert(" You can not edit the selected entry from here.\n Please click on the \'Conferencing\' panel to edit the selected entry");
+					return true;
+				}
+				if( box.options[box.selectedIndex].text.toLowerCase().match("-- check voicemail")     ){
+					box.selectedIndex = -1;
+					//parent.$('tooltip').innerHTML = " <font size=\"-2\" color=\"#FF0000\">Click on \'Voicemail\' panel to edit Voicemail Preferences</font>";
+					alert(" You can not edit the selected entry from here.\n Please click on the \'Voicemail\' panel to edit the selected entry");
+					return true;
+				}
+		}
+	}
 
 	phonecallbacks.format = function(t) {
 		if (t.fieldbyname['port'] == 'fxo')

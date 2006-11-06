@@ -116,7 +116,8 @@
 			tmp = $('extensions').options[x].value.split(']');
 			if (tmp.length > 1) {
 				if ($('extensions').stored_config.catbyname[tmp[0]].subfields[tmp[1]]['app'].toLowerCase() != "meetme") {
-					$('extensions').options[x].disabled = true;
+					//$('extensions').options[x].disabled = true;
+					$('extensions').options[x].style.color = "#ABABAB";
 					$('extensions').options[x].value= "reserved";
 				}
 			}
@@ -145,6 +146,28 @@
 		tmp['room'] = '';
 		tmp['>'] = true;
 		return new Array(specialcontext, 'exten', tmp);
+	}
+	callbacks.postselect = function(box, val) {
+		parent.$('tooltip').innerHTML = parent.tooltip_default ; 
+		if( box.selectedIndex == -1)
+				return true;
+		if(val == "reserved" ){
+				if( box.options[box.selectedIndex].text.toLowerCase().match("-- call queue")     ){
+					//parent.$('tooltip').innerHTML = " <font size=\"-2\" color=\"#FF0000\">Click on \'Call Queues\' panel to edit call queues </font>";
+					box.selectedIndex = -1;
+					alert(" You can not edit the selected entry from here.\n Please click on the \'Call Queues\' panel to edit the selected entry");
+					return true;
+				}
+				if( box.options[box.selectedIndex].text.toLowerCase().match("-- check voicemail")     ){
+					//parent.$('tooltip').innerHTML = " <font size=\"-2\" color=\"#FF0000\">Click on \'Voicemail\' panel to edit Voicemail Preferences</font>";
+					box.selectedIndex = -1;
+					alert(" You can not edit the selected entry from here.\n Please click on the \'Voicemail\' panel to edit the selected entry");
+					return true;
+				}
+				box.selectedIndex = -1;
+				alert(" You can not edit the selected entry from here.\n Please click on the \'Users\' panel to edit the selected entry");
+				return true;
+		}
 	}
 	callbacks.newcategory = function() {
 		var tmp = null;

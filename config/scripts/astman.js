@@ -1689,6 +1689,7 @@ function merge_extensions(u, e) {			// read e and add into u according to sort o
 						var oOption = document.createElement("OPTION");
 						oOption.text=e.options[x].innerHTML;
 						oOption.value="reserved";
+						oOption.style.color = "#ABABAB";
 						var z = u.options.length;
 						for(var y=0; y < u.options.length; y++){
 									if(e.options[x].innerHTML  < u.options[y].innerHTML ){
@@ -1704,7 +1705,8 @@ function merge_extensions(u, e) {			// read e and add into u according to sort o
 			while(e.options.length) {
 				opt = e.options[0];
 				opt.value = 'reserved';
-				opt.disabled = true;
+				//opt.disabled = true;
+				opt.style.color = "#ABABAB";
 				for (x=0;x<u.options.length + 1;x++) {
 					if (!u.options[x] || (opt.innerHTML < u.options[x].innerHTML)) {
 						u.options.add(opt, x);
