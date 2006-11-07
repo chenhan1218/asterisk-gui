@@ -447,7 +447,8 @@
 </script>
 <body id="foo" onload="localajaxinit()"  bgcolor="EFEFEF">
 <div class="mainscreenTitleBar">
-	<span style="margin-left: 4px;font-weight:bold">Numberplan Configuration</span>
+	<span style="margin-left: 4px;font-weight:bold;margin-right: 310px;">Numberplan Configuration</span>
+	<span style="cursor: pointer; cursor: hand;" onclick="window.location.href=window.location.href;" ><img src="images/refresh.png" border=0 > Refresh</></span>
 </div>
 <div class="mainscreenContentBox" id="mailboxcontent">
 <table class="mainscreenTable" align="center">
@@ -458,7 +459,7 @@
 			<input  class="buttonbold" style="width:40px" type='button' id='pridown' value='Down' onClick="priority_down();">
 		</td>
 		<td colspan='2'>
-		Extensions:
+		Calling Plans:
 		</td>
 	</tr>
 	<tr valign="top">
@@ -505,23 +506,31 @@
 
 							</td>
 							</tr>
-							<tr><td style="cursor: pointer; cursor: hand;"><img id="split" onClick="togglefeatures()" src="images/split-v.png"></td></tr>
-							<tr><td>
-								<div style="background-image:url(images/slice-v.png)" id='advancedw'>
-								<table id='advancedi' align='center'><tr><td>
-								<tr><td class="field_text"><NOBR>Customize Plans</NOBR></td><td><input type='checkbox' id='modplan' onClick='updateplandel()'></td></tr>
-								<tr><td class="field_text">Plan Ident</td><td><input size='14' type='text' id='planident' class="input8"></td></tr>
-								<tr><td class="field_text">Plan Comment</td><td><input size='14' type='text' id='comment' disabled='yes' class="input8"></td></tr>
-								<tr><td class="field_text">Builds On</td><td><input size='14' type='text' id='include' class="input8"></td></tr>
-								<tr><td colspan='2' align='center' height=5></td></tr>
-								<tr><td colspan='2' align='center'><input type='button' id='new' value='New Plan' class="buttonbold"></td></tr>
-								</table>
-								</div>
-							</td></tr>
-							<tr><td style="cursor: pointer; cursor: hand;">
-								<img onClick="togglefeatures()" src="images/adv-v.png">
+
+							<tr><td colspan='2' height=180 valign="top">
+									<table cellpadding=0 cellspacing=0 border=0>
+									<tr><td style="cursor: pointer; cursor: hand;"><img id="split" onClick="togglefeatures()" src="images/split-v.png"></td></tr>
+									<tr><td>
+										<div style="background-image:url(images/slice-v.png)" id='advancedw'>
+										<table id='advancedi' align='center'><tr><td>
+										<tr><td class="field_text"><NOBR>Customize Plans</NOBR></td><td><input type='checkbox' id='modplan' onClick='updateplandel()'></td></tr>
+										<tr><td class="field_text">Plan Ident</td><td><input size='14' type='text' id='planident' class="input8"></td></tr>
+										<tr><td class="field_text">Plan Comment</td><td><input size='14' type='text' id='comment' disabled='yes' class="input8"></td></tr>
+										<tr><td class="field_text">Builds On</td><td><input size='14' type='text' id='include' class="input8"></td></tr>
+										<tr><td colspan='2' align='center' height=5></td></tr>
+										<tr><td colspan='2' align='center'><input type='button' id='new' value='New Plan' class="buttonbold"></td></tr>
+										</table>
+										</div>
+									</td></tr>
+									<tr><td style="cursor: pointer; cursor: hand;">
+											<img onClick="togglefeatures()" src="images/adv-v.png">
+											</td>
+									</tr>
+									</table>
 							</td>
 							</tr>
+							
+							<tr><td style="cursor: help;"><font size="-1">Note: To add a Custom Plan - Check 'Customize Plans' in Advanced, click the 'New Plan' button and click Save.</font></td></tr>
 						</table>
 		</div>
 		</td>
