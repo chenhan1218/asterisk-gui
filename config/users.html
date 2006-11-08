@@ -118,6 +118,13 @@
 					alert(" You can not edit the selected entry from here.\n Please click on the \'Voicemail\' panel to edit the selected entry");
 					return true;
 				}
+				if( box.options[box.selectedIndex].text.toLowerCase().match("-- voice menu")     ){
+					box.selectedIndex = -1;
+					//parent.$('tooltip').innerHTML = " <font size=\"-2\" color=\"#FF0000\">Click on \'Voicemail\' panel to edit Voicemail Preferences</font>";
+					alert(" You can not edit the selected entry from here.\n Please click on the \'Voice Menus\' panel to edit the selected entry");
+					return true;
+				}
+
 		}
 	}
 

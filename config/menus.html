@@ -168,17 +168,34 @@ function delete_vmenu_fromlistofmenus(){
 					for(var i=0; i< $(current_key_menus).options.length; i++){
 								if( $(current_key_menus).options[i].text == $('comment').value ){
 										// delete this option from the $(current_key_menus)
+										var deleted_voicmenu = $(current_key_menus).options[i].value ;
 										$(current_key_menus).remove(i);
 										break;
 								}
 					}
 	}
-					for(var i=0; i< $('add_newstep_menus').options.length; i++){
-								if( $('add_newstep_menus').options[i].text == $('comment').value ){
-										$('add_newstep_menus').remove(i);
-										break;
-								}
+	for(var i=0; i< $('add_newstep_menus').options.length; i++){
+				if( $('add_newstep_menus').options[i].text == $('comment').value ){
+						$('add_newstep_menus').remove(i);
+						break;
+				}
+	}
+	// use the deleted_voicmenu to delete the alias (if it exists) in the default
+	if($('alias_exten').value.length > 0){
+				var opt = {
+					method: 'get',
+					asynchronous: true,
+					onSuccess: function(t) { 									
+					},
+					onFailure: function(t) {
+						alert("Config Error: " + t.status + ": " + t.statusText);
 					}
+				};
+			var existing_alias_string = voicemenusdata[deleted_voicmenu].alias_exten + ",1,Goto(" + deleted_voicmenu + "|s|1)"  ;
+			var uri = build_action('delete', 0, specialcontext ,"exten", "", existing_alias_string ); 
+			opt.parameters="action=updateconfig&reload=yes&srcfilename=" + encodeURIComponent("extensions.conf") + "&dstfilename=" + encodeURIComponent("extensions.conf") + uri;
+			var tmp = new Ajax.Request("../../rawman", opt);
+	}
 }
 
 function change_vmenuname_inlistofmenus(oldname,newname){
@@ -276,6 +293,8 @@ function add_newstep(){
 				update_updown();
 				$('newstep_var').value= "";
 				$('newstep_var').style.display = "none" ;
+				$('add_newstep_extensions').style.display = "none";
+				$('add_newstep_menus').style.display = "none";
 				$('combodiv_sounds').style.display = "none" ;
 				$('newstep_var_digit').value= "";
 				$('newstep_var_digit').style.display= "none" ;
@@ -367,6 +386,7 @@ function save_vmenu(){
 					if( $('vmenus').options[$('vmenus').selectedIndex].innerHTML=='New Entry' ){ // (if new Voicemenu 
 							voicemenusdata[current_vmenu] = new Object();	
 							voicemenusdata[current_vmenu].comment =  $('comment').value;
+							voicemenusdata[current_vmenu].alias_exten =  $('alias_exten').value;
 							voicemenusdata[current_vmenu].extensions = new Object();
 							// add the "s,1,Answer" data to voicemenus data
 							voicemenusdata[current_vmenu].extensions['s'] = new Array();
@@ -411,6 +431,13 @@ function save_vmenu(){
 			var current_vmenu = next_freevmenu();
 			uri += build_action('newcat', p, current_vmenu,"", ""); p = p+1;
 			uri += build_action('append', p, current_vmenu,"comment", $('comment').value); p = p+1;
+			uri += build_action('append', p, current_vmenu,"alias_exten", $('alias_exten').value); p = p+1;
+			if($('alias_exten').value.length > 0){
+				// alias for this voicemenu in [default] section of extensions.conf
+				var alias_string = $('alias_exten').value + ",1,Goto(" + current_vmenu + "|s|1)"  ;
+				uri += build_action('append', p, specialcontext ,"exten", alias_string ); p = p+1;
+			}
+
 			if( $('allowexten').checked){
 				uri += build_action('append', p, current_vmenu,"include", "default"); p = p+1;
 			}
@@ -422,6 +449,21 @@ function save_vmenu(){
 					uri += build_action('update', p, current_vmenu ,"comment", $('comment').value ); p = p+1;
 					change_vmenuname_inlistofmenus(voicemenusdata[current_vmenu].comment,$('comment').value);
 					 voicemenusdata[current_vmenu].comment = $('comment').value;
+			}
+			
+			if(  voicemenusdata[current_vmenu].alias_exten != $('alias_exten').value ){
+					var existing_alias_string = voicemenusdata[current_vmenu].alias_exten + ",1,Goto(" + current_vmenu + "|s|1)"  ;
+					if( $('alias_exten').value.length > 0 ){
+						// change alias for this voicemenu in 'default' section of extensions.conf
+						var new_alias_string = $('alias_exten').value + ",1,Goto(" + current_vmenu + "|s|1)"  ;
+						uri += build_action('update', p, specialcontext ,"exten", new_alias_string,existing_alias_string); p = p+1;
+					}else{
+						// if the user is deleting the alias for this voicemenu, then delete the defined alias in the [default] extensions.conf
+						uri += build_action('delete', p, specialcontext ,"exten", "",existing_alias_string); p = p+1;
+					}
+
+					uri += build_action('update', p, current_vmenu ,"alias_exten", $('alias_exten').value ); p = p+1;
+					 voicemenusdata[current_vmenu].alias_exten = $('alias_exten').value;
 			}
 			
 			 if( voicemenusdata[current_vmenu].include =="default" && !$('allowexten').checked ){
@@ -574,6 +616,7 @@ function swap_step(a,b){
 
 
 
+
 function delete_step(){
 	// delete the selected step and update voicemenusdata and update 'select' object - steps
 	$('status_message').style.display="block";
@@ -647,6 +690,12 @@ function select_vmenu(){
 	//$('keypressoptions').innerHTML = "";
 	$('steps').options.length =0;
 	$('comment').value = voicemenusdata[current_context].comment;
+	$('alias_exten').disabled = false; 
+	if( voicemenusdata[current_context].alias_exten ){
+		$('alias_exten').value = voicemenusdata[current_context].alias_exten;
+	}else{
+		$('alias_exten').value = ""; 
+	}
 
 	if(voicemenusdata[current_context].extensions['s']){
 		for (x=0;x<voicemenusdata[current_context].extensions['s'].length ; x++ ){
@@ -758,6 +807,10 @@ menuscallbacks.format = function(t, x) {
 					voicemenusdata[current_context].extensions = new Object();
 					return false;
 				}
+				if (t.names[x]=='alias_exten'){
+					voicemenusdata[current_context].alias_exten =  t.fields[x];
+					return false;
+				}
 				if (t.names[x]=='include'){
 					voicemenusdata[current_context].include=  t.fields[x];
 					return false;
@@ -815,6 +868,8 @@ menuscallbacks.oncategorydelete =function(){
 	$('steps').disabled = true;
 	$('stepUp').disabled = true;
 	$('stepDown').disabled = true;
+	$('alias_exten').value = "";
+	$('alias_exten').disabled = true;
 }
 
 menuscallbacks.cancelchanges =function(){
@@ -855,9 +910,13 @@ menuscallbacks.newcategory = function(t) {
 		$('steps').disabled = true;
 	//  4. Reset Comment
 		$('keypressoptions').style.display = "";
+		
+		$('alias_exten').disabled = false;
+		$('alias_exten').value = "";
 		$('comment').disabled = false;
 		$('comment').value = "";
 		$('comment').focus();
+
 }
 
 
@@ -881,21 +940,23 @@ extencallbacks.format = function(t, x) {
 	var qname;
 	if ((t.name != specialcontext))
 		return null;
+
+		// check whether the extension is an alias to a custom voice menu
+		try{
+					var temp = t.fields[x].split(',') ;
+					if ( temp[2].match("Goto") && temp[2].match("voicemenu-custom-" )  ){
+							return null ;
+					}
+		}
+		catch(e){
+
+		}
+
 	res = format_extension($('extensions'), t, x);
-	//if (t.subfields[x]['app'] == 'Queue') {
-	//	return null;
-	//}
 	return res;
 }
 
 extencallbacks.loaded = function() {
-	// all extensions loaded will be in the format of "ext -- name" format
-	// but we need only ext
-	for (var p=0; p < $('extensions').length ; p++){
-		var tmp = $('extensions').options[p].text.split (" -- ");
-		$('extensions').options[p].text = tmp[0];
-	}
-
 	parent.astmanEngine.config2list("users.conf", $('users'), new Array(), usercallbacks);
 }
 
@@ -916,7 +977,8 @@ usercallbacks.identifier = "extension";
 
 usercallbacks.loaded = function (){
 	for(var p=0; p < $('extensions').length; p++){
-		extensions_array.push ($('extensions').options[p].text);
+		var tmp = $('extensions').options[p].text.split (" -- ");
+		extensions_array.push (tmp[0]);
 	}
 	for(var p=0; p < $('users').length; p++){
 		extensions_array.push ($('users').options[p].text);
@@ -947,7 +1009,13 @@ usercallbacks.loaded = function (){
 		</td>
 		<td valign=top align="right" width=346 height=415>
 						<table align="center" width="346">
-						<tr onmouseover="show_tooltip('en', 'menus', 0);"><td width="50" align=left class="field_text">Name:</td><td align=left><input id='comment'  onKeyUp="enable_savecancel()"  pattern='^[a-zA-Z_0-9 ]*$' disabled  class="input8"></td></tr>
+						<tr onmouseover="show_tooltip('en', 'menus', 0);">
+								<td width="50" align=left class="field_text">Name:</td>
+								<td align=left class="field_text">
+										<input id='comment'  size=15 onKeyUp="enable_savecancel()"  pattern='^[a-zA-Z_0-9 ]*$' disabled  class="input8">&nbsp;
+										Extension: <input id="alias_exten"  onKeyUp="enable_savecancel()"  size=4 disabled class="input8">
+								</td>
+						</tr>
 						<tr onmouseover="show_tooltip('en', 'menus', 1);">
 									<td class="field_text">Steps:<BR>
 														<input  style='width:45'  type="button" id="stepUp" value="Up" disabled onClick="step_up()" class="buttonbold"><BR><BR>

@@ -1635,6 +1635,26 @@ function Astman() {
 			return null;
 		tmp = t.fields[x].split(',');
 		priority = tmp[1];
+
+
+		// if it is a Voicemenu alias .. return "extension -- Voicemenu"
+		if ( tmp[2].match("Goto") && tmp[2].match("voicemenu-custom-" )  ){
+
+			t.subfields[x]['context'] = t.name;
+			t.subfields[x]['name'] = tmp[0];
+			t.subfields[x]['app'] = "Goto";
+			t.subfields[x]['label'] = "Voice Menu";
+			t.subfields[x]['args'] = "";
+			t.subfields[x]['priority'] = priority;
+
+				box.calcname = tmp[0];
+				box.calccontext = t.name;
+				box.calcpriority = priority;
+				return tmp[0] + " -- Voice Menu"  ;
+		}
+		//
+
+
 		if (!multipriority && (tmp[1] != '1'))
 			return null;
 		exten = tmp[0];
@@ -1661,7 +1681,7 @@ function Astman() {
 		t.subfields[x]['label'] = label;
 		t.subfields[x]['args'] = args;
 		t.subfields[x]['priority'] = priority;
-
+		//alert( "t.name = " + t.name + "\n exten: " + exten + " \n app: " + app + " \n label:" + label + " \n args:" + args + " \n priority: " + priority );
 
 		if (priority == 'n') {
 			if ((box.calcname == exten) && (box.calccontext == t.name))

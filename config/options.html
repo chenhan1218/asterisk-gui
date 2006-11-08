@@ -214,6 +214,12 @@ function localajaxinit(){
 		widgets[fieldnames[x]] = $(fieldnames[x]);
 		widgets[fieldnames[x]].disabled = true;
 	}
+
+	// if not appliance - hide the gui_accesssettings DIV
+	if ( !parent.window.location.href.match("cfgappliance.html") ){
+		$('gui_accesssettings').style.display="none";
+	}
+
 	parent.astmanEngine.config2list("http.conf", $('hiddenfield'), widgets, httpconf_callbacks);
 	return;
 }
@@ -239,13 +245,11 @@ function localajaxinit(){
 			</td>
 	</tr>
 	<tr valign="top" height="18">	<td></td></tr>
-	<tr valign="top" height="18">	<td align="center">
-														<TABLE align="center" border=0 cellpadding=0 cellpadding=0 width=320><TR><TD align=left><B>GUI - access settings: </B></TD></TR></TABLE>
-														</td>
-	</tr>
 	<tr>	<td align="center" valign="top">
 					<div id="gui_accesssettings" class="chanlist_small"  style="width: 320px; height:120">
-					<table>	<tr>	<td colspan=2 height=5></td></tr>
+					<table>	
+					<TR><TD colspan=2 align=center><B>GUI - access settings: </B></TD></TR>
+					<tr>	<td colspan=2 height=5></td></tr>
 									<tr  onmouseover="show_tooltip('en', 'options', 3);">
 													<td class="field_text">Bind Address:</td>		<td><input size=14 id='bindaddr' dfalt="127.0.0.1" onkeydown="$('save').disabled=false; $('cancel').disabled=false;"  class="input8"></td>
 									</tr>
