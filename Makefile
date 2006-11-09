@@ -151,6 +151,7 @@ _install: _all
 	mkdir -p $(CONFIGDIR)/images
 	mkdir -p $(CONFIGDIR)/scripts
 	mkdir -p $(CONFIGDIR)/stylesheets
+	mkdir -p $(CONFIGDIR)/bkps
 	for x in gui_configs/*; do \
 		cp $$x $(ASTETCDIR)/ ; \
 	done
