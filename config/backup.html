@@ -66,7 +66,7 @@ function backup_new(){
 					alert("Config Error: " + t.status + ": " + t.statusText);
 				}
 		};
-		opt.parameters="action=originate&channel=" + encodeURIComponent("Local/takebackup@"+asterisk-guitools) + "&Variable=var1%3d"+ encodeURIComponent( bkp_path + $('newbkp_name').value +".tar" )+"&application=noop&timeout=60000";
+		opt.parameters="action=originate&channel=" + encodeURIComponent("Local/takebackup@"+asterisk_guitools) + "&Variable=var1%3d"+ encodeURIComponent( bkp_path + $('newbkp_name').value +".tar" )+"&application=noop&timeout=60000";
 		var tmp = new Ajax.Request("../../rawman", opt);
 }
 
@@ -110,7 +110,7 @@ function delete_bkps(filename){
 					alert("Config Error: " + t.status + ": " + t.statusText);
 				}
 			};
-			opt.parameters="action=originate&channel=" + encodeURIComponent("Local/removefile@" + asterisk-guitools) + "&Variable=var1%3d"+ encodeURIComponent( bkp_path + filename+".tar" )+"&application=noop&timeout=60000";
+			opt.parameters="action=originate&channel=" + encodeURIComponent("Local/removefile@" + asterisk_guitools) + "&Variable=var1%3d"+ encodeURIComponent( bkp_path + filename+".tar" )+"&application=noop&timeout=60000";
 			var tmp = new Ajax.Request("../../rawman", opt);
 	}
 	else{

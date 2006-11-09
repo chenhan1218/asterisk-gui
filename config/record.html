@@ -42,7 +42,7 @@ function play_existing(filename){
 				alert("Config Error: " + t.status + ": " + t.statusText);
 			}
 		};
-		opt.parameters ="action=originate&channel=Local/"+extension + "&context="+asterisk-guitools+"&exten=play_file&priority=1&Variable=var1%3d"+ encodeURIComponent( filename );
+		opt.parameters ="action=originate&channel=Local/"+extension + "&context="+asterisk_guitools+"&exten=play_file&priority=1&Variable=var1%3d"+ encodeURIComponent( filename );
 		var tmp = new Ajax.Request("../../rawman", opt);
 }
 
@@ -82,7 +82,7 @@ function delete_sounds(filename){
 					alert("Config Error: " + t.status + ": " + t.statusText);
 				}
 			};
-			opt.parameters="action=originate&channel=" + encodeURIComponent("Local/removefile@"+asterisk-guitools) + "&Variable=var1%3d"+ encodeURIComponent("/var/lib/asterisk/sounds/" + filename )+"&application=noop&timeout=60000";
+			opt.parameters="action=originate&channel=" + encodeURIComponent("Local/removefile@"+asterisk_guitools) + "&Variable=var1%3d"+ encodeURIComponent("/var/lib/asterisk/sounds/" + filename )+"&application=noop&timeout=60000";
 			var tmp = new Ajax.Request("../../rawman", opt);
 	}
 	else{
@@ -139,7 +139,7 @@ function originate_recordrequest(should_save, newvmenu_ext, filename_torecord){
 				alert("Config Error: " + t.status + ": " + t.statusText);
 			}
 		};
-		opt.parameters ="action=originate&channel=Local/"+newvmenu_ext + "&context="+asterisk-guitools+"&exten=record_vmenu&priority=1&Variable=var1%3d"+ encodeURIComponent( filename_torecord );
+		opt.parameters ="action=originate&channel=Local/"+newvmenu_ext + "&context="+asterisk_guitools+"&exten=record_vmenu&priority=1&Variable=var1%3d"+ encodeURIComponent( filename_torecord );
 
 		var tmp = new Ajax.Request("../../rawman", opt);
 }
