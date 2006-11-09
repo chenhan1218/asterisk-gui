@@ -56,6 +56,8 @@ ifeq ($(HTTPPREFIXBASE),)
   HTTPPREFIX=asterisk
 endif
 HTTPURL=http://$(HTTPHOST):$(HTTPBINDPORT)/$(HTTPPREFIX)/static/config/cfgbasic.html
+HTTPSETUPURL=http://$(HTTPHOST):$(HTTPBINDPORT)/$(HTTPPREFIX)/static/config/setup.html
+
 SUBDIRS=tools
 # Nothing to do yet for building, but one day there could be...
 
@@ -132,6 +134,8 @@ checkconfig:
 
 	@echo " --- Everything looks good ---	"
 	@echo " * GUI should be available at $(HTTPURL) "
+	@echo " * Before using the GUI, Please run the install script at $(HTTPSETUPURL) "
+	@echo "" 
 	@echo " * The login and password should be an entry from $(ASTETCDIR)/manager.conf"
 	@echo "   which has 'config' permission in read and write.  For example:"
 	@echo ""
