@@ -137,7 +137,7 @@
 		for( var i=0; i < fields_to_disable.length; i ++ ){
 				$(fields_to_disable[i]).disabled = false;
 		}
-		$('cancel').disabled = false;
+		//$('cancel').disabled = false;
 	}
 
 	callbacks.identifier = "extension";
@@ -246,7 +246,7 @@
 										<table cellspacing='0' cellpadding='0'>
 											<tr valign="top"><td>
 																			<table>
-																					<tr onmouseover="show_tooltip('en', 'voicemail', 0);" ><td class="field_text">Extension for checking messages:</td><td>&nbsp;<input size='5' id='name' pattern='^\d*$' class="input8"></td></tr>
+																					<tr onmouseover="show_tooltip('en', 'voicemail', 0);" ><td class="field_text">Extension for checking messages:</td><td>&nbsp;<input size='5' id='name' pattern='^\d*$' onKeyUp="$('cancel').disabled=false;" class="input8" ></td></tr>
 																					<tr onmouseover="show_tooltip('en', 'voicemail', 1);" ><td class="field_text">Attach recordings to e-mail:</td><td><input type='checkbox' id='attach'></td></tr>
 																					<tr onmouseover="show_tooltip('en', 'voicemail', 2);" ><td class="field_text">Say message Caller-ID:</td><td><input type='checkbox' id='saycid'></td></tr>
 																					<tr onmouseover="show_tooltip('en', 'voicemail', 3);" ><td class="field_text">Say message duration:</td><td><input type='checkbox' id='sayduration'></td></tr>

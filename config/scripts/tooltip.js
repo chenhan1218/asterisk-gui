@@ -204,4 +204,5 @@ function show_tooltip(lang, file,tip){
 	tooltips['menus'].en[2] = "<B>Add a new step:</B>Add additional steps performed during the menu.";
 	tooltips['menus'].en[3] = "<B>Dial other Extensions:</B>Is the caller allowed to dial extensions other than the ones defined below?";
 	tooltips['menus'].en[4] = "<B>Keypress Events:</B>Define the actions that occur when a user presses the corresponding digit.";
+	tooltips['menus'].en[5] = "<B>Extension(optional):</B> If you want this Voicemenu to be accessible by dialing an extension, then enter that extension number";
 	

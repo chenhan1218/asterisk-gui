@@ -28,7 +28,7 @@
 <script>
 var callbacks = new Object;
 var rfilescallbacks = new Object;
-
+var custom_voicemenusfile = "gui_custommenus.conf";
 
 function play_existing(filename){
 	var extension = prompt("Please enter an Extension on which you want to listen to the file",""); 
@@ -42,7 +42,7 @@ function play_existing(filename){
 				alert("Config Error: " + t.status + ": " + t.statusText);
 			}
 		};
-		opt.parameters ="action=originate&channel=Local/"+extension + "&context=play_file&exten=1&priority=1&Variable=var1%3d"+ encodeURIComponent( filename );
+		opt.parameters ="action=originate&channel=Local/"+extension + "&context="+asterisk-guitools+"&exten=play_file&priority=1&Variable=var1%3d"+ encodeURIComponent( filename );
 		var tmp = new Ajax.Request("../../rawman", opt);
 }
 
@@ -75,14 +75,14 @@ function delete_sounds(filename){
 							}
 						};	
 						var uri = build_action('delcat', 0, filename,"", ""); 
-						opt2.parameters = "action=updateconfig&srcfilename=" + encodeURIComponent("customvoicemenus.conf") + "&dstfilename=" + encodeURIComponent("customvoicemenus.conf") + uri;
+						opt2.parameters = "action=updateconfig&srcfilename=" + encodeURIComponent(custom_voicemenusfile) + "&dstfilename=" + encodeURIComponent(custom_voicemenusfile) + uri;
 						var tmp2 = new Ajax.Request('../../rawman', opt2);
 				},
 				onFailure: function(t) {
 					alert("Config Error: " + t.status + ": " + t.statusText);
 				}
 			};
-			opt.parameters="action=originate&channel=" + encodeURIComponent("Local/removefile@tools") + "&Variable=var1%3d"+ encodeURIComponent("/var/lib/asterisk/sounds/" + filename )+"&application=noop&timeout=60000";
+			opt.parameters="action=originate&channel=" + encodeURIComponent("Local/removefile@"+asterisk-guitools) + "&Variable=var1%3d"+ encodeURIComponent("/var/lib/asterisk/sounds/" + filename )+"&application=noop&timeout=60000";
 			var tmp = new Ajax.Request("../../rawman", opt);
 	}
 	else{
@@ -92,7 +92,7 @@ function delete_sounds(filename){
 
 
 function save_recordedvmenuname( filename_torecord ){
-	// open customvoicemenus.conf
+	// open custom_voicemenusfile
 		var opt2 = {
 			method: 'get',
 			asynchronous: true,
@@ -109,7 +109,7 @@ function save_recordedvmenuname( filename_torecord ){
 		};
 					
 		var uri = build_action('newcat', 0, filename_torecord ,"", ""); 
-		opt2.parameters ="action=updateconfig&reload=yes&srcfilename=" + encodeURIComponent("customvoicemenus.conf") + "&dstfilename=" + encodeURIComponent("customvoicemenus.conf") + uri;
+		opt2.parameters ="action=updateconfig&reload=yes&srcfilename=" + encodeURIComponent(custom_voicemenusfile) + "&dstfilename=" + encodeURIComponent(custom_voicemenusfile) + uri;
 		var tmp2 = new Ajax.Request("../../rawman", opt2);
 }
 
@@ -139,7 +139,8 @@ function originate_recordrequest(should_save, newvmenu_ext, filename_torecord){
 				alert("Config Error: " + t.status + ": " + t.statusText);
 			}
 		};
-		opt.parameters ="action=originate&channel=Local/"+newvmenu_ext + "&context=record_vmenu&exten=1&priority=1&Variable=var1%3d"+ encodeURIComponent( filename_torecord );
+		opt.parameters ="action=originate&channel=Local/"+newvmenu_ext + "&context="+asterisk-guitools+"&exten=record_vmenu&priority=1&Variable=var1%3d"+ encodeURIComponent( filename_torecord );
+
 		var tmp = new Ajax.Request("../../rawman", opt);
 }
 
@@ -208,7 +209,7 @@ rfilescallbacks.loaded= function() {
 }
 
 function localajaxinit() {
-	parent.astmanEngine.config2list("customvoicemenus.conf", $('recorded_files'), new Array, rfilescallbacks);
+	parent.astmanEngine.config2list(custom_voicemenusfile, $('recorded_files'), new Array, rfilescallbacks);
 	parent.astmanEngine.config2list("users.conf", $('newvmenu_ext'), new Array, callbacks);
 	$('message_text').innerHTML = "Please wait while the system <BR> Calls the specified Extension ... ";
 }

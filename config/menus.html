@@ -214,12 +214,11 @@ function change_vmenuname_inlistofmenus(oldname,newname){
 
 
 function  key_action(a, field){
+	enable_savecancel();
 	my_field_text = 'keypress_'+ field + '_text' ;
 	my_field_menus = 'keypress_'+ field + '_menus' ;
 	my_field_exts = 'keypress_'+ field + '_exts' ;
 
-	$('savevmenu').disabled = false;
-	$('cancel').disabled = false;
 	if(a=='gotomenu'){
 		//show menus dropdown
 		$(my_field_menus).style.display = "";
@@ -514,6 +513,7 @@ function save_vmenu(){
 
 
 function  enable_savecancel(){
+		$('save').disabled=false;
 		$('savevmenu').disabled = false;
 		$('cancel').disabled = false;
 }
@@ -677,6 +677,7 @@ function update_newstep_var(){
 function select_vmenu(){
 	// show al lthe //s, lines in the select box - 
 	if($('vmenus').selectedIndex	==-1){ return true;}
+
 	current_context = $('vmenus').value;
 	var x, y, tmp;
 	var priority_1, priority_2, buffer;
@@ -736,6 +737,7 @@ function select_vmenu(){
 	$('stepDown').disabled = true;
 	$('stepUp').disabled = true;
 	$('delete').disabled = false;
+	$('savevmenu').disabled = true;
 
 	for (y=0; y<keys.length ; y++ ){
 			current_key_action='keypress_'+ keys[y] + '_action';
@@ -788,6 +790,7 @@ function select_vmenu(){
 
 
 menuscallbacks.postselect = function() {
+	
 	select_vmenu();
 }
 
@@ -1009,11 +1012,13 @@ usercallbacks.loaded = function (){
 		</td>
 		<td valign=top align="right" width=346 height=415>
 						<table align="center" width="346">
-						<tr onmouseover="show_tooltip('en', 'menus', 0);">
-								<td width="50" align=left class="field_text">Name:</td>
+						<tr>
+								<td width="50" align=left class="field_text" onmouseover="show_tooltip('en', 'menus', 0);">Name:</td>
 								<td align=left class="field_text">
 										<input id='comment'  size=15 onKeyUp="enable_savecancel()"  pattern='^[a-zA-Z_0-9 ]*$' disabled  class="input8">&nbsp;
-										Extension: <input id="alias_exten"  onKeyUp="enable_savecancel()"  size=4 disabled class="input8">
+										<span onmouseover="show_tooltip('en', 'menus', 5);">
+										Extension: <input id="alias_exten"  onKeyUp="enable_savecancel()"  size=4 disabled class="input8" onmouseover="show_tooltip('en', 'menus', 5);">
+										</span>
 								</td>
 						</tr>
 						<tr onmouseover="show_tooltip('en', 'menus', 1);">
@@ -1265,7 +1270,7 @@ usercallbacks.loaded = function (){
 						</tr>
 						
 						<tr onmouseover="show_tooltip('en', 'menus', 3);"><td colspan=2 class="field_text">
-						<label FOR="allowexten">&nbsp;<input type=checkbox id=allowexten disabled onclick="$('savevmenu').disabled=false;$('cancel').disabled=false;"> Dial other Extensions?</LABEL>&nbsp;</td></tr>
+						<label FOR="allowexten">&nbsp;<input type=checkbox id=allowexten disabled onclick="enable_savecancel()"> Dial other Extensions?</LABEL>&nbsp;</td></tr>
 						<tr><td colspan=2 height=6></td></tr>
 						<tr onmouseover="show_tooltip('en', 'menus', 4);"><td colspan=2 class="field_text">'Keypress' Events</td></tr>
 						<tr><td colspan=2>

@@ -124,7 +124,7 @@ function update_sysinfo(){
 				alert("Config Error: " + t.status + ": " + t.statusText);
 			}
 		};
-		opt.parameters="action=originate&channel=" + encodeURIComponent("Local/sysinfo@tools") + "&application=noop&timeout=60000";
+		opt.parameters="action=originate&channel=" + encodeURIComponent("Local/sysinfo@"+asterisk-guitools) + "&application=noop&timeout=60000";
 		var tmp = new Ajax.Request("../../rawman", opt);
 		return;
 }
