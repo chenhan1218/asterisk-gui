@@ -1,0 +1,36 @@
+#!/bin/sh
+/bin/echo "[uname]" > /etc/asterisk/gui_sysinfo.conf
+UNAME="`/bin/uname -srmpio`"
+/bin/echo "output =  $UNAME "  >> /etc/asterisk/gui_sysinfo.conf
+
+
+/bin/echo "[uptime]" >> /etc/asterisk/gui_sysinfo.conf
+UPTIME="`/usr/bin/uptime`"
+/bin/echo "output = $UPTIME" >> /etc/asterisk/gui_sysinfo.conf
+
+/bin/echo "[asterisk]" >> /etc/asterisk/gui_sysinfo.conf
+ASTERISK="`/usr/sbin/asterisk -V`"
+/bin/echo "output = $ASTERISK" >> /etc/asterisk/gui_sysinfo.conf
+
+
+/bin/echo "[today]" >> /etc/asterisk/gui_sysinfo.conf
+TODAY="`/bin/date`"
+/bin/echo "output = $TODAY" >> /etc/asterisk/gui_sysinfo.conf
+
+
+/bin/echo "[hostname]" >> /etc/asterisk/gui_sysinfo.conf
+HOSTNAME="`/bin/hostname -f`"
+/bin/echo "output = $HOSTNAME" >> /etc/asterisk/gui_sysinfo.conf
+
+/bin/echo "[ifconfig]" >> /etc/asterisk/gui_sysinfo.conf
+IFCONFIG=`/sbin/ifconfig | sed -e "s/^/output = /g"`
+/bin/echo "$IFCONFIG" >> /etc/asterisk/gui_sysinfo.conf 
+
+
+/bin/echo "[du]" >> /etc/asterisk/gui_sysinfo.conf
+DISKUSAGE=`/bin/df -h | sed -e "s/^/output = /g"`
+/bin/echo "$DISKUSAGE" >> /etc/asterisk/gui_sysinfo.conf 
+
+/bin/echo "[free]" >> /etc/asterisk/gui_sysinfo.conf
+MEMORYUSAGE=`/bin/free | sed -e "s/^/output = /g"`
+/bin/echo "$MEMORYUSAGE" >> /etc/asterisk/gui_sysinfo.conf 

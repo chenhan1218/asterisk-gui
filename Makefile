@@ -151,6 +151,9 @@ _install: _all
 	mkdir -p $(CONFIGDIR)/images
 	mkdir -p $(CONFIGDIR)/scripts
 	mkdir -p $(CONFIGDIR)/stylesheets
+	for x in gui_configs/*; do \
+		cp $$x $(ASTETCDIR)/ ; \
+	done
 	for x in config/images/*; do \
 		$(INSTALL) -m 644 $$x $(CONFIGDIR)/images/ ; \
 	done
