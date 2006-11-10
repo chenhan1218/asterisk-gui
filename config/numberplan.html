@@ -186,54 +186,64 @@
 	}
 
 	callbacks.postselect = function(box, val) {
-	// called "ON page load" and when the  extensions select box is clicked
-		var tmp;
-		tmp = val.split(']');
-		$('combobox_div').style.display = "none";
-
-		if (tmp.length > 1) {
-				/* Found an entry */
-				// Clicked on a SubMenu
-				$('priup').disabled = !matches(box, tmp[0], tmp[1], box.selectedIndex - 1)
-				$('pridown').disabled = !matches(box, tmp[0], tmp[1], box.selectedIndex + 1);
-				$('planident').disabled = true;
-				$('trunk').disabled = false;
-				$('planident').value =  '';
-				$('include').disabled = true;
-				$('comment').disabled = true;
-				$('newitem').disabled=true; // "Add new Pattern" is disabled
-		} else {
-				// Clicked a MainMenu - The blue ones
-				$('priup').disabled = true;
-				$('pridown').disabled = true;
-				$('trunk').disabled = true;
-				$('planident').value = $('name').value.substr(11);
-				$('name').disabled = true;
-				$('newitem').disabled=false; // "Add new Pattern" is Enabled
-				if ($('modplan').checked) {
-					$('planident').disabled = false;
-					$('comment').disabled = false;
-					$('include').disabled = false;
-					$('delete').disabled=false;
-					$('save').disabled=false;
-				}else{
-					$('delete').disabled=true;
-					$('save').disabled=true;
-					$('planident').disabled = true;
-					$('comment').disabled = true;
-					$('include').disabled = true;
-				}
-		}
-		$('new').disabled = !$('modplan').checked;
-		$('priority').disabled = true;
-		$('realpriority').disabled = true;
+		callbacks_postselect(box, val);
 	}
 
+	function callbacks_postselect(box, val){
+			// called "ON page load" and when the  extensions select box is clicked
+				var tmp;
+				tmp = val.split(']');
+				$('combobox_div').style.display = "none";
+				$('advancedi').style.display = "" ;
 
+				if (tmp.length > 1) {
+						/* Found an entry */
+						// Clicked on a SubMenu
+						$('priup').disabled = !matches(box, tmp[0], tmp[1], box.selectedIndex - 1)
+						$('pridown').disabled = !matches(box, tmp[0], tmp[1], box.selectedIndex + 1);
+						$('planident').disabled = true;
+						$('trunk').disabled = false;
+						$('planident').value =  '';
+						$('include').disabled = true;
+						$('comment').disabled = true;
+						$('newitem').disabled=true; // "Add new Pattern" is disabled
+						$('advancedi').style.display = "none" ;
+							// Hide the Advanced Panel
+							adstatus = "hidden";
+							new Rico.Effect.Size('advancedw', null, 1, 120, 8, {complete:function() { $('advancedw').style.height=1;} } );
+
+				} else {
+						// Clicked a MainMenu - The blue ones
+						$('priup').disabled = true;
+						$('pridown').disabled = true;
+						$('trunk').disabled = true;
+						$('planident').value = $('name').value.substr(11);
+						$('name').disabled = true;
+						$('newitem').disabled=false; // "Add new Pattern" is Enabled
+
+						if ($('modplan').checked) {
+							$('planident').disabled = false;
+							$('comment').disabled = false;
+							$('include').disabled = false;
+							$('delete').disabled=false;
+							$('save').disabled=true;
+						}else{
+							$('delete').disabled=true;
+							$('save').disabled=true;
+							$('planident').disabled = true;
+							$('comment').disabled = true;
+							$('include').disabled = true;
+						}
+				}
+				$('new').disabled = !$('modplan').checked;
+				$('priority').disabled = true;
+				$('realpriority').disabled = true;
+	}
 
 
 	function updateplandel() {
 	// called "onpage load" and when the  'Customize Plans' checkbox  is  flipped
+
 		var tmp;
 		var x;
 		for (x=0;x<$('extensions').options.length;x++) {
@@ -255,10 +265,8 @@
 
 	callbacks.savechanges = function() {
 	// called when a New Plan or new Pattern is added
+		callbacks_postselect($('extensions'), $('extensions').value  );
 		updateplandel();
-		//$('new').disabled=true;
-		$('newitem').disabled=true;
-		return false;
 	}
 
 
@@ -268,6 +276,7 @@
 		updateplandel();
 		parent.loadscreen(this);
 		$('newitem').disabled=true;
+		$('combosel').addEventListener('click', function(){	$('save').disabled = false; $('cancel').disabled = false; }, false);
 	}
 
 	
@@ -284,11 +293,17 @@
 		var gen;
 		tmp['name'] = $('combosel').options[0].value;
 		numplan = $('extensions').value ;
+							// Hide the Advanced Panel
+							adstatus = "hidden";
+							new Rico.Effect.Size('advancedw', null, 1, 120, 8, {complete:function() { $('advancedw').style.height=1;} } );
+							$('advancedi').style.display = "none" ;
+
 		return new Array(numplan, 'exten', tmp);
 	}
 	
 	
 	callbacks.newcategory = function() {
+		
 		var tmp = null;
 		var x;
 		if ($('extensions').stored_config.catbyname['general'])
@@ -301,6 +316,7 @@
 			tmp.fieldbyname['planident'] = 'custom-' + x;
 			tmp.fieldbyname['include'] = 'default';
 		}
+
 		return tmp;
 	}
 	

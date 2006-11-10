@@ -85,7 +85,6 @@
 			alert("Looks like a default Voicemail Extension is not yet configured \n\n Please set an \'Extension for Checking messages\'  and \n click on 'save' button");
 		}
 		parent.loadscreen(this);
-		$('extensions').selectedIndex = -1;
 	}
 	
 	callbacks.fields2val = function() {
@@ -104,7 +103,7 @@
 	}
 	
 	callbacks.postselect = function(box, val) {
-		var fields_to_disable  = new Array(attach, saycid, sayduration, emailonly, maxmsg, maxmessage, minmessage, operator, attachfmt, review, envelope, maxgreet);
+		var fields_to_disable  = new Array('attach', 'saycid', 'sayduration', 'emailonly', 'maxmsg', 'maxmessage', 'minmessage', 'operator', 'attachfmt', 'review', 'envelope', 'maxgreet');
 		parent.$('tooltip').innerHTML = parent.tooltip_default ; 
 		if( box.selectedIndex == -1)
 			return true;
@@ -250,7 +249,7 @@
 										<table cellspacing='0' cellpadding='0'>
 											<tr valign="top"><td>
 																			<table>
-																					<tr onmouseover="show_tooltip('en', 'voicemail', 0);" ><td class="field_text">Extension for checking messages:</td><td>&nbsp;<input size='5' id='name' pattern='^\d*$' class="input8" ></td></tr>
+																					<tr onmouseover="show_tooltip('en', 'voicemail', 0);" ><td class="field_text">Extension for checking messages:</td><td>&nbsp;<input size='5' id='name' pattern='^\d*$' onKeyUp="$('cancel').disabled=false;"  class="input8" ></td></tr>
 																					<tr onmouseover="show_tooltip('en', 'voicemail', 1);" ><td class="field_text">Attach recordings to e-mail:</td><td><input type='checkbox' id='attach'></td></tr>
 																					<tr onmouseover="show_tooltip('en', 'voicemail', 2);" ><td class="field_text">Say message Caller-ID:</td><td><input type='checkbox' id='saycid'></td></tr>
 																					<tr onmouseover="show_tooltip('en', 'voicemail', 3);" ><td class="field_text">Say message duration:</td><td><input type='checkbox' id='sayduration'></td></tr>

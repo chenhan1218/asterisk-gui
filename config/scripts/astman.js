@@ -50,60 +50,61 @@ function combo_box(a, b, c ){
 		combo_selectdiv.style.left = "0px";
 //		combo_selectdiv.style.z-index = 10000;
 		combo_selectdiv.style.display = "none";
-		combo_text.onkeychange = function(){
-			combobox_activate();
-		};
-		combo_text.onfocus = function(){
-			combobox_activate();
-		};
-		combo_text.onfocusout = function(){
-			combo_selectdiv.style.display ='none';
-		};
-		combo_text.onkeypress = function(event){
-				if( event.keyCode == ENTER || event.keyCode == ESC || event.keyCode == TAB){
-						combo_selectdiv.style.display = "none";
+
+		combo_text.addEventListener('keychange',combobox_activate,false);
+		combo_text.addEventListener('focus',combobox_activate,false);
+		combo_text.addEventListener('focusout', function(){ combo_selectdiv.style.display ='none'; } ,false);
+		combo_text.addEventListener('keypress',  function(event){
+							if( event.keyCode == ENTER || event.keyCode == ESC || event.keyCode == TAB){
+									combo_selectdiv.style.display = "none";
+									return false;
+							}else if( event.keyCode == KEYDN ||  event.keyCode == KEYUP ){
+									combo_selectbox.focus();
+									return false;
+							}else if( event.keyCode == BKSPACE && combo_text.value.length ==0 ){
+									combo_selectdiv.style.display = "none";
+									return false;
+							}else{
+									combo_selectdiv.style.display = "";
+									return true;
+							}
+				}, false);
+		combo_text.addEventListener('keyup', function(event){
+						if( event.keyCode == ENTER || event.keyCode == ESC || event.keyCode == TAB){
 						return false;
-				}else if( event.keyCode == KEYDN ||  event.keyCode == KEYUP ){
-						combo_selectbox.focus();
-						return false;
-				}else if( event.keyCode == BKSPACE && combo_text.value.length ==0 ){
-						combo_selectdiv.style.display = "none";
-						return false;
-				}else{
-						combo_selectdiv.style.display = "";
-						return true;
-				}
-		};
-		combo_text.onkeyup = function(event){
-				if( event.keyCode == ENTER || event.keyCode == ESC || event.keyCode == TAB){
-				return false;
-				}
-				for (var i=0; i < combo_selectbox.options.length; i++){
-						if(	combo_selectbox.options[i].value.toLowerCase().match(combo_text.value.toLowerCase()) ){
-							combo_selectbox.selectedIndex = i;
-							return true;
 						}
-				}
-				combo_selectdiv.style.display = "none";				
-		};
-		combo_selectbox.onkeypress= function(event) {
-				if( event.keyCode == ENTER ){
+						for (var i=0; i < combo_selectbox.options.length; i++){
+								if(	combo_selectbox.options[i].value.toLowerCase().match(combo_text.value.toLowerCase()) ){
+									combo_selectbox.selectedIndex = i;
+									return true;
+								}
+						}
+						combo_selectdiv.style.display = "none";				
+				},false);
+
+
+
+		combo_selectbox.addEventListener('keypress', function(event) {
+					if( event.keyCode == ENTER ){
+							combo_text.value = combo_selectbox.value;
+							combo_text.focus();
+							combo_selectdiv.style.display = "none";
+							return false;
+					}else if( event.keyCode == ESC ){
+							combo_text.focus();
+							combo_selectdiv.style.display = "none";
+					}else{
+							return true;
+					}
+			},false);
+
+
+		combo_selectbox.addEventListener('click', function(event) {
 						combo_text.value = combo_selectbox.value;
 						combo_text.focus();
 						combo_selectdiv.style.display = "none";
-						return false;
-				}else if( event.keyCode == ESC ){
-						combo_text.focus();
-						combo_selectdiv.style.display = "none";
-				}else{
-						return true;
-				}
-		};
-		combo_selectbox.onclick= function() {
-					combo_text.value = combo_selectbox.value;
-					combo_text.focus();
-					combo_selectdiv.style.display = "none";
-		};
+			},false);
+
 		function combobox_activate(){
 				var tmp_left = combo_text.offsetLeft;
 				var tmp_top = combo_text.offsetTop + combo_text.offsetHeight;
@@ -283,14 +284,23 @@ function select_item(box, errmsg) {
 			box.oldselect = -1;
 			box.stored_config.catbyname[tmp[0]].subfields.splice(tmp[1], 1);
 			box.stored_config.catbyname[tmp[0]].names.splice(tmp[1], 1);
+			try{
 			box.stored_config.catbyname[tmp[0]].values.splice(tmp[1], 1);
+			}
+			catch(err){
+			
+			}
 		} else if (box.options[box.oldselect].value == "") {
 			box.remove(box.oldselect);
 			box.oldselect = -1;
 			box.stored_config.catbyname[""] = null;
 			box.stored_config.categories[--box.stored_config.catcnt] = null;
+		} else if (box.options[box.oldselect].text == "New Entry") {
+			box.remove(box.oldselect);
+			box.oldselect = -1;
 		}
 	}
+
 	if (tmp.length > 1) {
 		category = box.stored_config.catbyname[tmp[0]].subfields[tmp[1]];
 	} else {
@@ -333,8 +343,10 @@ function cancel_item(box) {
 	var tmp = box.options[box.selectedIndex].value.split(']');
 	if (tmp.length > 1) {
 		if (box.stored_config.catbyname[tmp[0]].subfields[tmp[1]].name.length < 1) {
-			if (select_item(box,"Discard new entry?") && box.widgets['status'])
+			if (select_item(box,"Discard new entry?") && box.widgets['status']){
 				box.widgets['status'].innerHTML = "<i>New entry cancelled!</i>";
+				box.selectedIndex = -1;
+			}
 		} else {
 			if (select_item(box) && box.widgets['status'])
 				box.widgets['status'].innerHTML = "<i>Changes cancelled!</i>";
@@ -343,6 +355,7 @@ function cancel_item(box) {
 		if (box.options[box.selectedIndex].value == "") {
 			if (select_item(box,"Discard new entry?") && box.widgets['status']){
 					box.widgets['status'].innerHTML = "<i>New entry cancelled!</i>";
+					//box.selectedIndex = -1;
 					if (box.callbacks.cancelnewcategory) 
 							box.callbacks.cancelnewcategory();
 			}
@@ -543,13 +556,12 @@ function new_item(box) {
 	var category = null;
 	var name = null;
 
-	var newoption = document.createElement("option");
-	newoption.text = "New Entry";
-	newoption.value = "";
-	box.options.add(newoption);
-	box.selectedIndex = box.options.length - 1;
-	box.oldselect = box.options.length - 1;
-
+	if (box.widgets['save'] && box.widgets['save'].disabled == false){
+			if (!confirm( "Discard changes?")) {
+				box.selectedIndex = box.oldselect;
+				return false;
+			}
+	}
 	if (box.callbacks.newcategory) {
 		category = box.callbacks.newcategory();
 	}
@@ -558,6 +570,13 @@ function new_item(box) {
 		category.fieldbyname = new Array;
 		category.fields = new Array;
 	}
+
+	var newoption = document.createElement("option");
+	newoption.text = "New Entry";
+	newoption.value = "";
+	box.options.add(newoption);
+	box.selectedIndex = box.options.length - 1;
+	box.oldselect = box.options.length - 1;
 	box.stored_config.catbyname[""] = category;
 	box.stored_config.categories[box.stored_config.catcnt++] = category;
 	name = category.name;
