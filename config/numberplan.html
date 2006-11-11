@@ -220,7 +220,7 @@
 						$('planident').value = $('name').value.substr(11);
 						$('name').disabled = true;
 						$('newitem').disabled=false; // "Add new Pattern" is Enabled
-
+						$('modplan').disabled = false;
 						if ($('modplan').checked) {
 							$('planident').disabled = false;
 							$('comment').disabled = false;
@@ -316,7 +316,7 @@
 			tmp.fieldbyname['planident'] = 'custom-' + x;
 			tmp.fieldbyname['include'] = 'default';
 		}
-
+		$('modplan').disabled = true;
 		return tmp;
 	}
 	
@@ -529,12 +529,12 @@
 									<tr><td>
 										<div style="background-image:url(images/slice-v.png)" id='advancedw'>
 										<table id='advancedi' align='center'><tr><td>
-										<tr><td class="field_text"><NOBR>Customize Plans</NOBR></td><td><input type='checkbox' id='modplan' onClick='updateplandel()'></td></tr>
 										<tr><td class="field_text">Plan Ident</td><td><input size='14' type='text' id='planident' class="input8"></td></tr>
 										<tr><td class="field_text">Plan Comment</td><td><input size='14' type='text' id='comment' disabled='yes' class="input8"></td></tr>
 										<tr><td class="field_text">Builds On</td><td><input size='14' type='text' id='include' class="input8"></td></tr>
 										<tr><td colspan='2' align='center' height=5></td></tr>
-										<tr><td colspan='2' align='center'><input type='button' id='new' value='New Plan' class="buttonbold"></td></tr>
+										<tr><td class="field_text"><NOBR>Customize Plans</NOBR></td><td><input type='checkbox' id='modplan' onClick='updateplandel()'></td></tr>
+										<tr><td colspan='2' align='center'><input type='button' id='new' value='Create New Calling Plan' class="buttonbold"></td></tr>
 										</table>
 										</div>
 									</td></tr>

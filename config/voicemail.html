@@ -178,6 +178,7 @@
 			if (vmexten.length) {
 				if (!$('name').value.length) {
 					delete_item($('extensions'),null,1);
+					alert("Default Voicemail Extension has been removed");
 				} else {
 					save_item($('extensions'));
 				}
