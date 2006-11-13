@@ -648,13 +648,14 @@ function new_subitem(box) {
 	box.oldselect = box.options.length - 1;
 
 	category = box.stored_config.catbyname[subcat];
-	pos = category.names.length;
+	pos = category.fields.length;
 	category.subfields[pos] = subitem;
 	category.names[pos] = subname;
 	category.fields[pos] = null;
 	newoption.value = subcat + "]" + pos;
 	newoption.core_name = category.subfields[pos].name;
-	box.value = newoption.value;
+	//box.value = newoption.value;	// Causing a bug - like when adding 2nd pattern in 1st category 
+
 	name = subitem.name;
 	subitem.name = '';
 	box.engine.cat2fields(box.widgets, subitem);
