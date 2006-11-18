@@ -959,7 +959,6 @@ function Astman() {
 		tmp = new Ajax.Request(this.url, opt);
 	}
 
-
 	this.clickChannel = function(ev) {
 		var target = ev.target;
 		// XXX This is icky, we statically use astmanEngine to call the callback XXX 
@@ -969,8 +968,13 @@ function Astman() {
 			target=target.parentNode;
 		me.selecttarget = target.id;
 		target.className = "chanlistselected";
-		me.chancallback(target.id);
+
+		if(channelsCallback ){
+			channelsCallback (target.id);
+		}
+		//me.chancallback(target.id);
 	};
+
 	this.restoreTarget = function(targetname) {
 		var other;
 		target = $(targetname);
@@ -1492,6 +1496,9 @@ function Astman() {
 		me.eventcallback(msgs);
 	};
 	this.eventResponse = function(t) {
+		if( t.responseText.match("Message: Authentication Required") ){
+				parent.window.location.href = parent.window.location.href ;
+		}
 		me.parseResponse(t, me.doEvents);
 	};
 	this.gotConfig = function(t, box) {

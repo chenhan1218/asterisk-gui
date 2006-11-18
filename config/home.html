@@ -38,7 +38,7 @@
 			$('secret').disabled = 0;
 			$('logoff').disabled = 1;
 			$('login').disabled = 0;
-			$('username').focus();
+			try{ $('username').focus();	}catch(err){ }
 		}
 	}
 	
@@ -46,11 +46,13 @@
 		if ((parent.loggedon == 1) && (localloggedon == 1))
 			return;
 		parent.setLoggedOn(1);
+		parent.loggedon = 1;
 		localloggedon = 1;
 		updateButtons();
 		$('statusbar').innerHTML = "<img src='images/tick.gif'><i>Connected!</i>";
 		parent.document.getElementById('logoutlink').innerHTML = "Logout";
 		parent.document.getElementById('logoutlink').onclick = parent.Logoff ;
+
 		parent.astmanEngine.pollEvents();
 	}
 	

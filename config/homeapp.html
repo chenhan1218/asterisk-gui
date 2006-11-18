@@ -52,6 +52,7 @@
 		if ((parent.loggedon == 1) && (localloggedon == 1))
 			return;
 		parent.setLoggedOn(1);
+		parent.loggedon = 1;
 		localloggedon = 1;
 		updateButtons();
 		$('statusbar').innerHTML = "<img src='images/tick.gif'><i>Connected!</i>";
