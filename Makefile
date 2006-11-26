@@ -71,7 +71,7 @@ all: _all
 
 _all:
 	for x in $(SUBDIRS); do \
-		make -C $$x all ; \
+		$(MAKE) -C $$x all ; \
 	done
 
 checkconfig:
@@ -149,7 +149,7 @@ checkconfig:
 _install: _all
 	@echo "Installing into $(HTTPDIR)"
 	for x in $(SUBDIRS); do \
-		make -C $$x install ; \
+		$(MAKE) -C $$x install ; \
 	done
 	mkdir -p $(CONFIGDIR)
 	mkdir -p $(CONFIGDIR)/images
@@ -205,7 +205,7 @@ install:_install
 
 clean:
 	for x in $(SUBDIRS); do \
-		make -C $$x clean ; \
+		$(MAKE) -C $$x clean ; \
 	done
 
 samples:
