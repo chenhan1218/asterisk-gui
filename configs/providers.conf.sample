@@ -5,4 +5,7 @@ protocol = iax
 providerdesc = Iaxtel.com allows Asterisk users and IAX clients to connect with each other over the Inter-Asterisk eXchange protocol. Once registered with IAXtel, each user get a unique 1.700 telephone number that will ring their IAX compatible client from any where on the Asterisk network.
 hasiax =  yes
 hassip = no
+registeriax = yes
+registersip = no 
+host = iaxtel.com
 
