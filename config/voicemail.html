@@ -38,6 +38,7 @@
 	var voicemailcallbacks = new Object;
 	var vmfields = new Array('status', 'save', 'cancel','attach','maxmsg','minmessage','maxmessage','saycid','sayduration', 'emailonly','review','attachfmt','maxgreet','operator','envelope');
 
+
 	var fields = new Array('name');
 	
 	function changed_extension() {
@@ -83,6 +84,8 @@
 		$('name').disabled = false;
 		if (whichexten.length ==0 ){
 			alert("Looks like a default Voicemail Extension is not yet configured \n\n Please set an \'Extension for Checking messages\'  and \n click on 'save' button");
+		}else{
+			
 		}
 		parent.loadscreen(this);
 	}
@@ -172,7 +175,11 @@
 		}
 	}
 	
-	
+	voicemailcallbacks.cancelchanges = function(){
+		$('name').value = vmexten ; 
+	}
+
+
 	voicemailcallbacks.savechanges = function() {
 		if (vmexten != $('name').value) {
 			if (vmexten.length) {

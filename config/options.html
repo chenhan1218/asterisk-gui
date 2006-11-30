@@ -209,6 +209,10 @@ httpconf_callbacks.loaded = function() {
 }
 
 
+function tosetup(){
+	parent.window.location.href = "./setup/install.html";
+}
+
 function localajaxinit(){
 	for (var x =0; x < fieldnames.length; x++) {
 		widgets[fieldnames[x]] = $(fieldnames[x]);
@@ -245,6 +249,9 @@ function localajaxinit(){
 			</td>
 	</tr>
 	<tr valign="top" height="18">	<td></td></tr>
+<!-- 	<tr valign="top" height="18">	<td align="center"><A href="#" onclick="tosetup();">Run Setup Wizard</A></td>
+	</tr>
+	<tr valign="top" height="18">	<td></td></tr> -->
 	<tr>	<td align="center" valign="top">
 					<div id="gui_accesssettings" class="chanlist_small"  style="width: 320px; height:120">
 					<table>	

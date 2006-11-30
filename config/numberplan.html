@@ -367,14 +367,14 @@
 	}
 
 	function priority_up(){
-		a =  $('extensions').selectedIndex;
-		b = a-1;
+		var a =  $('extensions').selectedIndex;
+		var b = a-1;
 		swap_priorities(a,b);
 	}
 
 	function priority_down(){
-		a =  $('extensions').selectedIndex;
-		b = a+1;
+		var a =  $('extensions').selectedIndex;
+		var b = a+1;
 		swap_priorities(a,b);
 	}
 
@@ -426,9 +426,9 @@
 			sela = $('extensions').options[a].selected;
 			selb = $('extensions').options[b].selected;
 
-			v = $('extensions').selectedIndex;
-			t_pattern1 = $('extensions').options[a].value.split(']');
-			t_pattern2 = $('extensions').options[b].value.split(']');
+			var v = $('extensions').selectedIndex;
+			var t_pattern1 = $('extensions').options[a].value.split(']');
+			var t_pattern2 = $('extensions').options[b].value.split(']');
 
 			function subfield_value(n,field){
 				if (n ==1)
@@ -437,15 +437,15 @@
 					return box.stored_config.catbyname[t_pattern2[0]].subfields[t_pattern2[1]][field];
 			}
 			
-			value_one =  subfield_value(1,'name')+ "," +   subfield_value(2,'priority') + ","+ subfield_value(1,'app') +"(" + subfield_value(1,'args') +")";
-			match_one =  subfield_value(1,'name')+ "," +   subfield_value(1,'priority') + ","+ subfield_value(1,'app') +"(" + subfield_value(1,'args') +")";
-			uri = build_action('update', 0, subfield_value(1,'context'),'exten', value_one, match_one);
+			var value_one =  subfield_value(1,'name')+ "," +   subfield_value(2,'priority') + ","+ subfield_value(1,'app') +"(" + subfield_value(1,'args') +")";
+			var match_one =  subfield_value(1,'name')+ "," +   subfield_value(1,'priority') + ","+ subfield_value(1,'app') +"(" + subfield_value(1,'args') +")";
+			var uri = build_action('update', 0, subfield_value(1,'context'),'exten', value_one, match_one);
 
-			value_two =  subfield_value(1,'name')+ "," +   subfield_value(1,'priority') + ","+ subfield_value(2,'app') +"(" + subfield_value(2,'args') +")";
-			match_two =  subfield_value(1,'name')+ "," +   subfield_value(2,'priority') + ","+ subfield_value(2,'app') +"(" + subfield_value(2,'args') +")";
+			var value_two =  subfield_value(1,'name')+ "," +   subfield_value(1,'priority') + ","+ subfield_value(2,'app') +"(" + subfield_value(2,'args') +")";
+			var match_two =  subfield_value(1,'name')+ "," +   subfield_value(2,'priority') + ","+ subfield_value(2,'app') +"(" + subfield_value(2,'args') +")";
 			uri += build_action('update', 1, subfield_value(2,'context'),'exten', value_two, match_two);
 			opt.parameters="action=updateconfig&reload=yes&srcfilename=" + encodeURIComponent(box.config_file) + "&dstfilename=" + encodeURIComponent(box.config_file) + uri;
-			tmp = new Ajax.Request(box.engine.url, opt);
+			var tmp = new Ajax.Request(box.engine.url, opt);
 			
 			box.stored_config.catbyname[t_pattern1[0]].fields[t_pattern1[1]] = value_one;
 			box.stored_config.catbyname[t_pattern2[0]].fields[t_pattern2[1]] = value_two;

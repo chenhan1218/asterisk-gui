@@ -96,6 +96,10 @@
 	}
 
 	callbacks.postselect = function(box, val) {
+		if (adstatus == "hidden") {
+			adstatus = "shown";
+			 togglefeatures() ;
+		}
 		parent.$('tooltip').innerHTML = parent.tooltip_default ; 
 		if( box.selectedIndex == -1)
 			return true;
@@ -124,7 +128,6 @@
 					alert(" You can not edit the selected entry from here.\n Please click on the \'Voice Menus\' panel to edit the selected entry");
 					return true;
 				}
-
 		}
 	}
 
@@ -218,9 +221,9 @@
 												</table>
 										</td>
 									</tr>
-									<tr><td style="cursor: pointer; cursor: hand;"><img id="split" onClick="togglefeatures()" src="images/split-v.png"></td></tr>
+									<tr><td style="cursor: pointer; cursor: hand;"><img id="split" onClick="togglefeatures()" src="images/split-v.gif"></td></tr>
 									<tr><td align="center">
-											<div style="background-image:url(images/slice-v.png); height:1px" id='features'>
+											<div style="background-image:url(images/slice-v.gif); height:1px" id='features'>
 												<table align='center'  width='60%'  cellpadding=0 cellspacing=0>
 												<tr onmouseover="show_tooltip('en', 'users', 8);"><td class="field_text">Voicemail:</td><td><input type='checkbox' id='hasvoicemail'></td></tr>
 												<tr onmouseover="show_tooltip('en', 'users', 9);"><td class="field_text">In Directory:</td><td><input type='checkbox' id='hasdirectory'></td></tr>
@@ -229,13 +232,13 @@
 												<tr onmouseover="show_tooltip('en', 'users', 12);"><td class="field_text">CTI:</td><td><input type='checkbox' id='hasmanager'></td></tr>
 												<tr onmouseover="show_tooltip('en', 'users', 13);"><td class="field_text">Call&nbsp;Waiting:</td><td><input type='checkbox' id='callwaiting'></td></tr>
 												<tr onmouseover="show_tooltip('en', 'users', 14);"><td class="field_text">3-Way&nbsp;Calling:</td><td><input type='checkbox' id='threewaycalling'></td></tr>
-												<tr onmouseover="show_tooltip('en', 'users', 15);"><td class="field_text">Is&nbsp;Agent:</td><td><input type='checkbox' id='hasagent'><input type='hidden' dfalt='dynamic' id='host'></td>
+												<tr onmouseover="show_tooltip('en', 'users', 15);"><td class="field_text">Is&nbsp;Agent:</td><td><input type='checkbox' id='hasagent' dfalt='1'><input type='hidden' dfalt='dynamic' id='host'></td>
 												</tr>
 												</table>
 											</div>
 											</td>
 									</tr>
-									<tr><td style="cursor: pointer; cursor: hand;"><img onClick="togglefeatures()" src="images/adv-v.png"></td></tr>
+									<tr><td style="cursor: pointer; cursor: hand;"><img onClick="togglefeatures()" src="images/adv-v.gif"></td></tr>
 								</table>
 							</div>
 		</td></tr>				
