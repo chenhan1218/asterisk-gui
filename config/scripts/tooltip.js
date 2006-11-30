@@ -44,6 +44,7 @@ function show_tooltip(lang, file,tip){
 	tooltips['meetme'] .en[8] = "<B>Quiet Mode:</B> This option enables Quiet mode.  If this option is checked, all users entering this conference will be marked as quiet, and will be in Listen-Only mode.";
 	tooltips['meetme'] .en[9] = "<B>Wait for Market User:</B> If this option is set, then users joining the conference will not be able to speak to one-another until the marked user has joined the conference.";
 	tooltips['meetme'] .en[10] = "<B>Set Marked User:</B> This option sets the person that enters the bridge using this extension as Marked.  This option works in conjunction with the obove \"Wait for marked user\" option.";
+	tooltips['meetme'] .en[11] = "<B>Set Marked User:</B> Record this conference in a WAV format. Default filename is meetme-conf-rec-${Conference Number}-${UNIQUEID}.";
 
 // Tooltips for Voicemail
 	tooltips['voicemail']= new Object;
