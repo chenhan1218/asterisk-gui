@@ -34,6 +34,7 @@
 	var meetmes;
 	var callbacks = new Object;
 	var usercallbacks = new Object;
+	var localextenlength;
 	var fieldnames = new Array(
 				'name', 'delete', 'status', 'newitem', 
 				'music','menu', 'announce',
@@ -189,12 +190,27 @@
 		}
 		return tmp;
 	}
+	callbacks.beforeSaving = function(){
+		// check whether the length of extension is valid
+		if( localextenlength !=  $('name').value.length){
+				alert("Sorry, An Extension must be  "+ localextenlength  + " digits !");
+				$('name').focus();
+				return false;
+		}
+		return true;
+	}
 	callbacks.identifier = "extension";
 	callbacks.eachline = true;
 	
 	usercallbacks.format = function(t) {
-		if ((t.name == 'general'))
+		if ((t.name == 'general')){
+			if (t.fieldbyname['localextenlength'] && t.fieldbyname['localextenlength'].length){
+				localextenlength =  t.fieldbyname['localextenlength'] ;
+			}else{
+				localextenlength = 4;
+			}
 			return null;
+		}
 		if (t.name.substring(0,6) == 'trunk_')
 			return null;
 		if (t.fieldbyname['fullname'] && t.fieldbyname['fullname'].length) {

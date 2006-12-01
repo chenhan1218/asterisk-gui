@@ -39,7 +39,7 @@
 	var keys = new Array('0','1','2','3','4','5','6','7','8','9','*','#','t','i');
 	var extensions_array = new Array;
 	var answer_call_string = "s,1,Answer";
-
+	var localextenlength ;
 
 function format_step(this_step){
 	var temp = this_step.split(',');
@@ -371,6 +371,13 @@ function next_freevmenu(){	 // return the next smallest available voicemenu name
 
 
 function save_vmenu(){
+
+	if( $('alias_exten').value.length > 0 && localextenlength !=  $('alias_exten').value.length){
+			alert("Sorry, An Extension must be  "+ localextenlength  + " digits !");
+			$('alias_exten').focus();
+			return false;
+	}
+
 	$('status_message').style.display="block";
 	var opt = {
 			method: 'get',
@@ -968,8 +975,14 @@ extencallbacks.eachline = true;
 
 // user callbacks
 usercallbacks.format = function (t,x){
-		if ((t.name == 'general'))
+		if ((t.name == 'general')){
+			if (t.fieldbyname['localextenlength'] && t.fieldbyname['localextenlength'].length){
+				localextenlength =  t.fieldbyname['localextenlength'] ;
+			}else{
+				localextenlength =  4 ;
+			}
 			return null;
+		}
 		if (t.name.substring(0,6) == 'trunk_')
 			return null;
 		else

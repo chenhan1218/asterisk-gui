@@ -24,6 +24,17 @@
  var asterisk_guitoolsversion = "0.7";
  var asterisk_guiversion = "0.7.140";
 
+function check_patternonfields(fields){
+	// for checking validity of field contents before form submitting 
+	for (var i=0; i < fields.length; i++){
+			x = document.getElementById(fields[i]);
+			if( x.getAttribute('pattern') && !check_pattern(x.getAttribute('pattern') , x.value)   ){
+						alert("Invalid Characters in "+ fields[i]);
+						return false;
+			}
+	}
+}
+
 function showdiv_statusmessage(){
 		document.write ("<div ID=\"status_message\"  STYLE=\"display:none; position: absolute; left: 170; top: 190; width:350; height:115;  background-color:#F4EFE5;   border-width: 1px; border-color: #7E5538; border-style: solid;\">");
 		document.write ("<BR><BR>");

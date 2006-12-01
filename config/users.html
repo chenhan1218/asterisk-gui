@@ -34,6 +34,7 @@
 	var extencallbacks = new Object;
 	var numcallbacks = new Object;
 	var fieldnames = new Array( 'delete', 'status', 'new', 'save', 'cancel','name','fullname','secret','email','cid_number','zapchan','context', 'hasvoicemail','hasdirectory','hassip','hasiax','hasmanager','callwaiting','threewaycalling','mailbox','hasagent','group','host');
+	var localextenlength;
 
 	extencallbacks.format = function(t, x) {
 		if ((t.name != specialcontext))
@@ -49,8 +50,14 @@
 	extencallbacks.eachline = true;
 
 	callbacks.format = function(t) {
-		if ((t.name == 'general'))
+		if ((t.name == 'general')){
+			if (t.fieldbyname['localextenlength'] && t.fieldbyname['localextenlength'].length){
+				localextenlength =  t.fieldbyname['localextenlength'] ;
+			}else{
+				localextenlength = 4;
+			}
 			return null;
+		}
 		if (t.name.substring(0,6) == 'trunk_')
 			return null;
 		if (t.fieldbyname['fullname'] && t.fieldbyname['fullname'].length) {
@@ -85,13 +92,20 @@
 		return tmp;
 	}
 	callbacks.identifier = "extension";
+
 	callbacks.beforeSaving = function(){
+		//check_patternonfields(fieldnames);
 		if(!$('fullname').value.length){
 				alert("Sorry, a User Name must be specified !");
 				$('fullname').focus();
 				return false;
 		}
-
+		// check whether the length of extension is valid
+		if( localextenlength !=  $('name').value.length){
+				alert("Sorry, User Extension must be  "+ localextenlength  + " digits !");
+				$('name').focus();
+				return false;
+		}
 		return true;
 	}
 
