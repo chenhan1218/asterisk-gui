@@ -112,6 +112,12 @@
 		}
 	}
 
+	callbacks.beforeSaving = function(){
+				if (	$('trunkstylecustomvoip').checked) {
+						//
+				}
+	}
+
 	callbacks.savechanges = function() {
 		var uri;
 		var newvalue;
@@ -222,6 +228,7 @@
 						// Custom VOIP Provider
 						$('trunkname').value = "Custom - " + $('customvoip_name').value;
 						provider = $('customvoip_name').value;
+						$('provider').selectedIndex  = -1;
 						$('username').value = $('customvoip_username').value;
 						$('secret').value = $('customvoip_secret').value;
 						if( $('customvoip_protocol').value == "iax" ){
