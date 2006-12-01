@@ -189,6 +189,11 @@
 							$('group').value = '';
 		} else if ($('trunkstyleanalog').checked) {
 				// Analog
+						if( $('zapchan').options.length ==0){
+							alert("No analog line hardware installed on the system");
+							return true;
+						}
+
 						if (!$('zapchan').value) {
 							alert("When using Analog, at least one port must be selected.");
 							return true;
@@ -304,12 +309,17 @@
 				$('zapchan_analoglines').style.display = "block";
 				$('zapchan_analoglines').innerHTML ="";
 				$('customvoip').style.display = "none" ;
-				for (k=0;k< $('zapchan').length ;k++ ){
-						var selectedline = "selectedline" + k;
-						if($('zapchan').options[k].selected){
-							$('zapchan_analoglines').innerHTML += '<INPUT id="' + selectedline + '" TYPE="CHECKBOX" VALUE="'+ $('zapchan').options[k].value+ '" checked onclick="update_zapchan()">' + $('zapchan').options[k].text + '<BR>';
-						}else{
-							$('zapchan_analoglines').innerHTML += '<INPUT id="' + selectedline + '" TYPE="CHECKBOX" VALUE="'+ $('zapchan').options[k].value+ '" onclick="update_zapchan()">' + $('zapchan').options[k].text + '<BR>';
+
+				if($('zapchan').options.length ==0){
+					$('zapchan_analoglines').innerHTML = "No analog line hardware installed on the system";
+				}else{
+						for (k=0;k< $('zapchan').length ;k++ ){
+								var selectedline = "selectedline" + k;
+								if($('zapchan').options[k].selected){
+									$('zapchan_analoglines').innerHTML += '<INPUT id="' + selectedline + '" TYPE="CHECKBOX" VALUE="'+ $('zapchan').options[k].value+ '" checked onclick="update_zapchan()">' + $('zapchan').options[k].text + '<BR>';
+								}else{
+									$('zapchan_analoglines').innerHTML += '<INPUT id="' + selectedline + '" TYPE="CHECKBOX" VALUE="'+ $('zapchan').options[k].value+ '" onclick="update_zapchan()">' + $('zapchan').options[k].text + '<BR>';
+								}
 						}
 				}
 		}else if ($('trunkstylevoip').checked) {
