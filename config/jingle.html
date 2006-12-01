@@ -125,7 +125,7 @@ function cancel_ordercodecs(){
 function update_div_setordercodecs(){
 	if($('JingleUsers').selectedIndex	==-1){ return true;}
 		$('disallowed').innerHTML=""; 	$('allowed').innerHTML="";
-		if( $('disallow').value == "all"){
+		if( $('disallow').value == "all" || $('disallow').value == ""){
 			$('disallow_all').checked = true;
 			selectbox_add("disallowed", "ulaw");
 			selectbox_add("disallowed", "alaw");

@@ -132,13 +132,13 @@ function askforRelogin(){
 
 function changepassword(){
 	if( $('newpass').value!=$('newpass_rep').value ){
-		alert( "Passwords donot match  !") ;
+		alert( "Passwords do not match  !") ;
 		$('newpass').focus();
 		return true;
 	}
 
 	if( $('newpass').value.length < 4 ){
-		alert( "Password should be atleast 4 characters !") ;
+		alert( "Password should be at least 4 characters !") ;
 		$('newpass').focus();
 		return true;
 	}
@@ -163,13 +163,13 @@ function changepassword(){
 function compare_passwords(){
 	if( $('newpass').value.length < 4 ){
 		$('dopwdsmatch').style.color = "#EE0000";
-		$('dopwdsmatch').innerHTML = "Password should be atleast 4 characters !" ;
+		$('dopwdsmatch').innerHTML = "Password should be at least 4 characters !" ;
 	}else if ( $('newpass').value==$('newpass_rep').value){
 		$('dopwdsmatch').style.color = "#005D2E";
 		$('dopwdsmatch').innerHTML = "Passwords Match !" ;
 	}else{
 		$('dopwdsmatch').style.color = "#EE0000";
-		$('dopwdsmatch').innerHTML = "Passwords donot match  !" ;
+		$('dopwdsmatch').innerHTML = "Passwords do not match  !" ;
 	}
 }
 
