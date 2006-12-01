@@ -41,7 +41,7 @@ sysinfocallbacks.format = function(t, x) {
 		}else if ( t.name == 'asterisk' && x==undefined ){	 				// if is a category
 			return t.name;
 		}else if( t.name == 'asterisk' ){	 // if is a subcategory
-			$('asterisk').innerHTML =  t.fields[x] ; 
+			$('asterisk').innerHTML =  t.fields[x] +"<BR>" + "Asterisk GUI-version "+ asterisk_guiversion ; 
 		}else if ( t.name == 'today' && x==undefined ){	 				// if is a category
 			return t.name;
 		}else if( t.name == 'today' ){	 // if is a subcategory

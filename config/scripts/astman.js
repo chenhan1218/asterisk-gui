@@ -21,6 +21,8 @@
 
  var sc_displaytime = 1000;
  var asterisk_guitools = "asterisk_guitools";
+ var asterisk_guitoolsversion = "0.7";
+ var asterisk_guiversion = "0.7.140";
 
 function showdiv_statusmessage(){
 		document.write ("<div ID=\"status_message\"  STYLE=\"display:none; position: absolute; left: 170; top: 190; width:350; height:115;  background-color:#F4EFE5;   border-width: 1px; border-color: #7E5538; border-style: solid;\">");
