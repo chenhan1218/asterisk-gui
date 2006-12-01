@@ -40,6 +40,7 @@ var k =0;
 var j = -1; 
 var extensions_conf_qs = new Array;
 var localextenlength ;
+var userbase;
 
 function togglefeatures() {
 	if (adstatus == "shown") {
@@ -264,6 +265,7 @@ callbacks.postselect = function (){	 }
 callbacks.format = function (t,x){
 		if ((t.name == 'general')){
 			if ( t.fieldbyname['localextenlength'] && t.fieldbyname['localextenlength'].length){ localextenlength =  t.fieldbyname['localextenlength'] ; }
+			if ( t.fieldbyname['userbase'] && t.fieldbyname['userbase'].length){ userbase =  t.fieldbyname['userbase'] ; }
 			return null;
 		}
 		if (t.name.substring(0,6) == 'trunk_')
@@ -336,7 +338,8 @@ queuecallbacks.newcategory = function(t) {
 		var tmp = null;
 		$('save_q').disabled=false;
 		if ($('queues').stored_config.catbyname['general']){ tmp = objcopy($('queues').stored_config.catbyname['general']);	}
-		tmp.name="";
+		tmp.name = first_free_exten($('queues'), userbase);
+
 		$('testmulti').innerHTML ="";
 		for (k=0;k< $('agents').length ;k++ ){
 				selectedagent = "selectedagent" + k;
