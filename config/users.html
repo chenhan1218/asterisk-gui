@@ -50,20 +50,28 @@
 	extencallbacks.eachline = true;
 
 	callbacks.format = function(t) {
-		if ((t.name == 'general')){
-			if (t.fieldbyname['localextenlength'] && t.fieldbyname['localextenlength'].length){
-				localextenlength =  t.fieldbyname['localextenlength'] ;
-			}else{
-				localextenlength = 4;
+			if ((t.name == 'general')){
+						if (t.fieldbyname['localextenlength'] && t.fieldbyname['localextenlength'].length){
+							localextenlength =  t.fieldbyname['localextenlength'] ;
+						}else{
+							localextenlength = 4;
+						}
+				return null;
 			}
-			return null;
-		}
-		if (t.name.substring(0,6) == 'trunk_')
-			return null;
-		if (t.fieldbyname['fullname'] && t.fieldbyname['fullname'].length) {
-			return t.name + " -- " + t.fieldbyname['fullname'];
-		} else
-			return t.name;
+			
+			if (t.name.substring(0,6) == 'trunk_')
+				return null;
+			
+			if (t.fieldbyname['fullname'] && t.fieldbyname['fullname'].length ) {
+					if(	sortbynames ){
+						return t.fieldbyname['fullname'] + "  (" + t.name +")";
+					}else{
+						return t.name + " -- " + t.fieldbyname['fullname'];
+					}
+
+			} else{
+				return t.name;
+			}
 	}
 	callbacks.loaded = function() {
 		$('devices').contentEditable = 'true';
@@ -118,25 +126,25 @@
 		if( box.selectedIndex == -1)
 			return true;
 		if(val == "reserved" ){
-				if( box.options[box.selectedIndex].text.toLowerCase().match("-- call queue")     ){
+				if( box.options[box.selectedIndex].text.toLowerCase().match("-- call queue") || box.options[box.selectedIndex].text.toLowerCase().match('call queue ')  ){
 					//parent.$('tooltip').innerHTML = " <font size=\"-2\" color=\"#FF0000\">Click on \'Call Queues\' panel to edit call queues </font>";
 					box.selectedIndex = -1;
 					alert(" You can not edit the selected entry from here.\n Please click on the \'Call Queues\' panel to edit the selected entry");
 					return true;
 				}
-				if( box.options[box.selectedIndex].text.toLowerCase().match("-- conference bridge")     ){
+				if( box.options[box.selectedIndex].text.toLowerCase().match("-- conference bridge") || box.options[box.selectedIndex].text.toLowerCase().match('conference bridge ')  ){
 					//parent.$('tooltip').innerHTML = " <font size=\"-2\" color=\"#FF0000\">Click on \'Conferencing\' panel to edit a Conference Bridge</font>";
 					box.selectedIndex = -1;
 					alert(" You can not edit the selected entry from here.\n Please click on the \'Conferencing\' panel to edit the selected entry");
 					return true;
 				}
-				if( box.options[box.selectedIndex].text.toLowerCase().match("-- check voicemail")     ){
+				if( box.options[box.selectedIndex].text.toLowerCase().match("-- check voicemail") || box.options[box.selectedIndex].text.toLowerCase().match('check voicemail ') ){
 					box.selectedIndex = -1;
 					//parent.$('tooltip').innerHTML = " <font size=\"-2\" color=\"#FF0000\">Click on \'Voicemail\' panel to edit Voicemail Preferences</font>";
 					alert(" You can not edit the selected entry from here.\n Please click on the \'Voicemail\' panel to edit the selected entry");
 					return true;
 				}
-				if( box.options[box.selectedIndex].text.toLowerCase().match("-- voice menu")     ){
+				if( box.options[box.selectedIndex].text.toLowerCase().match("-- voice menu") || box.options[box.selectedIndex].text.toLowerCase().match('voice menu ')     ){
 					box.selectedIndex = -1;
 					//parent.$('tooltip').innerHTML = " <font size=\"-2\" color=\"#FF0000\">Click on \'Voicemail\' panel to edit Voicemail Preferences</font>";
 					alert(" You can not edit the selected entry from here.\n Please click on the \'Voice Menus\' panel to edit the selected entry");
@@ -169,8 +177,9 @@
 	numcallbacks.format = function(t) {
 		if ((t.name.substr(0,11) != 'numberplan-'))
 			return null;
-		if (t.fieldbyname['comment'])
+		if (t.fieldbyname['comment']){
 			return t.fieldbyname['comment'];
+		}
 		return t.name;
 	}
 
@@ -189,6 +198,13 @@
 		}
 	}
 	function localajaxinit() {
+		if(window.location.href.match("sortbynames") ){
+			sortbynames = true;
+			$('link_sortby').innerHTML = " <A href=\"users.html\">Sort By Extensions</A> ";
+		}else{
+			$('link_sortby').innerHTML = " <A href=\"users.html?sortbynames\">Sort By Name</A> ";
+		}
+
 		$('features').style.overflow = "hidden";
 		$('features').style.height = 1;
 		$('features').style.width = 302;
@@ -209,7 +225,9 @@
 </div>
 <div class="mainscreenContentBox" id="userscontent">
 <table class="mainscreenTable" align="center">
-	<tr valign="top"><td colspan='2'>Extensions:</td>	</tr>
+	<tr valign="top">
+		<td colspan=2>Extensions: ( <span id="link_sortby"></span>) </td>	
+	</tr>
 	<tr valign="top">
 		<td>	<select disabled size="28" id="devices" style="width:220px; height: 415px"  class="input10">
 						<option>Loading...</option>

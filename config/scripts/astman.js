@@ -23,6 +23,7 @@
  var asterisk_guitools = "asterisk_guitools";
  var asterisk_guitoolsversion = "0.7";
  var asterisk_guiversion = "0.7.140";
+var sortbynames = false;
 
 function check_patternonfields(fields){
 	// for checking validity of field contents before form submitting 
@@ -1691,7 +1692,11 @@ function Astman() {
 				box.calcname = tmp[0];
 				box.calccontext = t.name;
 				box.calcpriority = priority;
-				return tmp[0] + " -- Voice Menu"  ;
+				if( sortbynames ){
+					return " Voice Menu ("  + tmp[0] + ")" ;
+				}else{
+					return tmp[0] + " -- Voice Menu"  ;
+				}
 		}
 		//
 
@@ -1735,7 +1740,11 @@ function Astman() {
 		t.subfields[x]['realpriority'] = box.calcpriority;
 		box.calcname = exten;
 		box.calccontext = t.name;
-		return exten + " -- " + label;
+		if( sortbynames ){
+			return label+" ("  + exten + ")" ;
+		}else{
+			return exten + " -- " + label;
+		}
 	}	
 
 
