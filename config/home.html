@@ -73,9 +73,10 @@
 	demo.logins = function(msgs) {
 		$('statusbar').innerHTML = msgs[0].headers['message'];
 		resp = msgs[0].headers['response'];
-		if (resp == "Success")
+		if (resp == "Success" || msgs[0].headers['message'] == "Invalid/unknown command" ){
+			$('statusbar').innerHTML = "<img src='images/tick.gif'><i>Connected!</i>";
 			loggedOn();
-		else
+		}else
 			loggedOff();
 	};
 	
