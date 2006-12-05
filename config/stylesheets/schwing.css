@@ -111,6 +111,17 @@ td {
 	background-color : #f1f1f1;
 }
 
+.table_black{
+	margin-top: 10px;
+	color: #000000;
+	background: #C4C4C4;
+	font-size: 85%;
+	/*font-weight: bold;*/
+}
+
+.field_text9{
+	font-size: 10pt;
+}
 
 /* From astman.css - for use in status tab to show active channels */
 .chanlist {

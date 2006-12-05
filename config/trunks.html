@@ -73,6 +73,8 @@
 	callbacks.loaded = function() {
 		$('devices').contentEditable = 'true';
 		$('devices').disabled = 0;
+		$('new').addEventListener("click", showSPdetails, false); 
+		loadServiceProvidersintotable();
 		parent.loadscreen(this);
 	}
 
@@ -367,53 +369,179 @@
 		}
 		parent.astmanEngine.config2list("zapscan.conf", $('zapchan'), new Array(), phonecallbacks);
 	}
+
+
+
+
+
+
+
+
+
+
+function loadServiceProvidersintotable(){
+	for( var i=0; i <  $('serviceproviderstable').rows.length; ){
+			 $('serviceproviderstable').deleteRow(i);
+	}
+
+	for(i=0; i< $('devices').length; i++){
+		addrow_totable($('devices').options[i].text, $('devices').options[i].value);
+	}
+}
+
+
+
+function addrow_totable(sp_text, sp_value){
+		var sno = $('serviceproviderstable').rows.length + 1;
+		var newRow = $('serviceproviderstable').insertRow(-1);
+		newRow.id = "row" + sp_value; 
+
+		var newCell0 = newRow.insertCell(0);
+		newCell0 .innerHTML = sno ;
+		newCell0 .style.width = 40;
+
+		var newCell1 = newRow.insertCell(1);
+		newCell1 .innerHTML = sp_text ;
+		newCell1 .style.width = 200;
+
+		var newCell2 = newRow.insertCell(2);
+		switch ( $('devices').stored_config.catbyname[sp_value].fieldbyname['trunkstyle'] ){
+		case "customvoip":
+			newCell2 .innerHTML =  "Custom Voip";
+			break;
+		case "analog":
+			newCell2 .innerHTML =  "Analog";
+			break;
+		case "voip":
+			newCell2 .innerHTML =  "Voip";
+			break;
+		default : 
+			newCell2 .innerHTML =  "?";
+		}
+
+		var newCell3 = newRow.insertCell(3);
+		newCell3 .innerHTML = "<A href=\"#\" onclick=\"editSP('"+ sp_value +"');\" class=\"field_text9\">Edit</A>&nbsp;&nbsp;&nbsp;&nbsp;<A href=\"#\" onclick=\"deleteSP('"+ sp_value +"');\"  class=\"field_text9\">Delete</A>" ;
+		newCell3 .style.width = 120;
+		newCell3 .align = "center";
+
+}
+
+function editSP(sp_value){
+	for(var i=0; i< $('devices').length; i++){
+			if(sp_value == $('devices').options[i].value ){
+					$('devices').selectitem(i);
+					showSPdetails();
+					break;
+			}
+	}
+}
+
+function saveSPdetails(){
+		hideSPdetails();
+		loadServiceProvidersintotable();
+}
+
+function hideSPdetails(){
+		$('userscontent').style.display = "none";
+}
+
+callbacks.delchanges = function(a,b,c){
+	deletesp_fromui(b);
+}
+
+callbacks.savechanges = function(){
+	saveSPdetails();
+}
+
+callbacks.cancelnewcategory = function(){
+	hideSPdetails();
+}
+
+callbacks.cancelchanges = function(){
+	hideSPdetails();
+}
+
+
+
+function showSPdetails(){
+		$('cancel').disabled = false;
+		$('userscontent').style.display = "block";
+}
+
+function deleteSP(trunk){
+	for(var i=0; i< $('devices').length; i++){
+				if($('devices').options[i].value == trunk){
+							$('devices').selectedIndex = i ;
+							$('delete').disabled = 0;
+							if( !$('delete').click() ){
+								return;
+							}
+						break;
+				}
+	}
+}
+
+function deletesp_fromui(trunk){
+		var delete_id = "row" + trunk;
+		for( var i=0; i <  $('serviceproviderstable'). rows.length; i++){
+			if  ( $('serviceproviderstable'). rows[i].id == delete_id  ){
+				 $('serviceproviderstable').deleteRow(i);
+				 loadServiceProvidersintotable();
+				 break;
+			}
+		}
+}
+
+
 </script>
 
 
 <body id="foo" onload="localajaxinit()"  bgcolor="EFEFEF">
-
 <div class="mainscreenTitleBar">
 	<span style="margin-left: 4px;font-weight:bold;">Service Providers</span>
 	<span style="cursor: pointer; cursor: hand;" onclick="window.location.href=window.location.href;" >&nbsp;<img src="images/refresh.png" title=" Refresh " border=0 >&nbsp;</span>
 </div>
-<div class="mainscreenContentBox" id="userscontent">
-<table class="mainscreenTable" align="center">
-	<tr valign="top">
-		<td colspan='2'>
-		Trunks:
-		</td>
+
+<select disabled size="1" id="devices" style="display:none"></select><input type='button' id='delete' value='Delete' style="display:none">
+<BR>
+<center>
+<font size="+1">List of Service Providers</font>
+<table class="table_black" cellpadding=2 cellspacing=2 border=0 align=center width=500>
+	<tr>	<td width=40>S.no</td>
+			<td eidth="200">Service Provider</td>
+			<td>Type</td>
+			<td width="120" align=center>Options</td>
 	</tr>
-	<tr valign="top">
-		<td>
-		<select disabled size="15" id="devices" style="width:220px" class="input10">
-		<option>Loading...</option>
-		</select>
-		</td>
-		<td colspan='3'>
-		<div id='cabinet' style='height:0;width:0;overflow:hidden'>
-			<select id='hiddenglobals'></select>
-		</div>
-		<div id='adjustments' style='width:350'>
-		<table cellspacing='0' cellpadding='0'>
-			<tr   onmouseover="show_tooltip('en', 'trunks', 0);"><td class="field_text">
-				<LABEL FOR="trunkstyleanalog"><input name='trunkstyle' type='radio' id='trunkstyleanalog' onclick='activateanalogvoip()' value='analog'>Analog</LABEL>
-				<LABEL FOR="trunkstylevoip"><input name='trunkstyle' type='radio' id='trunkstylevoip' onclick='activateanalogvoip()' value='voip'>VoIP</LABEL>
+</table>
+<table id="serviceproviderstable" cellpadding=2 cellspacing=1 border=0 align=center width=500>
+</table>
+<div style="height:25px;color: #FF0000;" id='status'  class="field_text9"></div>
+<input type='button' id='new' value='Add Service Provider'>
+</center>
+
+<div id="userscontent" STYLE="display:none; position: absolute; left: 20; top: 40; width:500; height:400;  background-color:#F4EFE5;   border-width: 1px; border-color: #7E5538; border-style: solid;">
+
+<table align="center" width=450>
+<tr>
+<td onmouseover="show_tooltip('en', 'trunks', 0);"  class="field_text" width=130 valign="top" align="left">
+<!-- Provider type -->
+				<div id='cabinet' style='height:0;width:0;overflow:hidden'><select id='hiddenglobals'></select></div>
+				<LABEL FOR="trunkstyleanalog"><input name='trunkstyle' type='radio' id='trunkstyleanalog' onclick='activateanalogvoip()' value='analog'>Analog</LABEL><BR>
+				<LABEL FOR="trunkstylevoip"><input name='trunkstyle' type='radio' id='trunkstylevoip' onclick='activateanalogvoip()' value='voip'>VoIP</LABEL><BR>
 				<LABEL FOR="trunkstylecustomvoip"><input name='trunkstyle' type='radio' id='trunkstylecustomvoip' onclick='activateanalogvoip()' value='customvoip'>Custom VoIP</LABEL>
-			</td></tr>
-			<tr valign="top"><td align="center">
-				<div id='analogvoipcontainer' style='height:350;overflow:hidden' align="center">
-				<div id='analog' style='height:0;overflow:hidden' align="center">
+<!-- Provider type -->
+</td>
+<td>
+<!-- Provider options -->
+			<div id='analogvoipcontainer' style='height:350;overflow:hidden' align="center">
+			<div id='analog' style='height:0;overflow:hidden' align="center">
 							<table align="center">
 							<tr onmouseover="show_tooltip('en', 'trunks', 2);"><td style='width:80px' valign='top' class="field_text">Lines:</td>
 									<td><select size="12" multiple='true' id='zapchan' style='width:200px' class="input8"></select>
 											<div id="zapchan_analoglines" style='height:110px; width: 200px; overflow :auto; display:none'></div>
 									</td>
 							</tr>
-							<tr><td colspan='2' style='width:80px' valign='top' align='center'>
-								<div style='width:250'>
-									<!-- <i>Use CTRL+click and/or SHIFT+click to select more than one port.</i> -->
-								</div>
-							</td></tr>
+							<tr><td colspan='2' style='width:80px' valign='top' align='center'></td></tr>
 							</table>
 				</div>
 				<div id='voip' style='height:0;overflow:hidden' align="center">
@@ -472,24 +600,13 @@
 										<td class="field_text">Password:</td>
 										<td><input type="text" id="customvoip_secret" size=14 onkeyup=" $('cancel').disabled= false;$('save').disabled= false;"  class="input8"></td>
 									</tr>
-
-
 						</table>
 				</div>
 				</div>
-			</td>
-			</tr>
-			</tr>
-		</table>
-		</div>
-		</td></tr>				
-		<tr>
-		<td align='center'><input type='button' id='new' value='New' class="buttonbold" class="buttonbold">&nbsp;<input type='button' id='delete' value='Delete' class="buttonbold"></td>
-		<td align='center'>
-				<input type='button' id='save' value='Save' class="buttonbold">&nbsp;<input type='button' id='cancel' value='Cancel' class="buttonbold">
-		</td>
-	</tr><tr>
-	</tr>
+<!-- Provider options -->
+</td>
+</tr>
+<tr><td></td><td align="center"><input type='button' id='save' value='Save' class="buttonbold">&nbsp;<input type='button' id='cancel' value='Cancel' class="buttonbold"></td></tr>
 </table>
 </div>
 </body>
