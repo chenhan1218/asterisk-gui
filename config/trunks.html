@@ -70,6 +70,14 @@
 		return t.fieldbyname['trunkname'];
 	}
 
+	callbacks.cancelnewcategory = function(){
+		hideSPdetails();
+	}
+
+	callbacks.cancelchanges = function(){
+		hideSPdetails();
+	}
+
 	callbacks.loaded = function() {
 		$('devices').contentEditable = 'true';
 		$('devices').disabled = 0;
@@ -105,6 +113,7 @@
 
 
 	callbacks.delchanges = function(box, value) {
+		deletesp_fromui(value);
 		var oldvalue = $('hiddenglobals').stored_config.catbyname['globals'].fieldbyname[value];
 		if (oldvalue) {
 			uri = build_action('delete', 0, 'globals', value, "");
@@ -121,6 +130,7 @@
 	}
 
 	callbacks.savechanges = function() {
+		saveSPdetails();
 		var uri;
 		var newvalue;
 		var tmp = $('devices').value.split('_');
@@ -325,9 +335,9 @@
 						for (k=0;k< $('zapchan').length ;k++ ){
 								var selectedline = "selectedline" + k;
 								if($('zapchan').options[k].selected){
-									$('zapchan_analoglines').innerHTML += '<INPUT id="' + selectedline + '" TYPE="CHECKBOX" VALUE="'+ $('zapchan').options[k].value+ '" checked onclick="update_zapchan()">' + $('zapchan').options[k].text + '<BR>';
+									$('zapchan_analoglines').innerHTML += '<LABEL FOR="' + selectedline + '"><INPUT id="' + selectedline + '" TYPE="CHECKBOX" VALUE="'+ $('zapchan').options[k].value+ '" checked onclick="update_zapchan()">' + $('zapchan').options[k].text + '</LABEL><BR>';
 								}else{
-									$('zapchan_analoglines').innerHTML += '<INPUT id="' + selectedline + '" TYPE="CHECKBOX" VALUE="'+ $('zapchan').options[k].value+ '" onclick="update_zapchan()">' + $('zapchan').options[k].text + '<BR>';
+									$('zapchan_analoglines').innerHTML += '<LABEL FOR="'+ selectedline+'"><INPUT id="' + selectedline + '" TYPE="CHECKBOX" VALUE="'+ $('zapchan').options[k].value+ '" onclick="update_zapchan()">' + $('zapchan').options[k].text + '</LABEL><BR>';
 								}
 						}
 				}
@@ -380,13 +390,25 @@
 
 
 function loadServiceProvidersintotable(){
+
 	for( var i=0; i <  $('serviceproviderstable').rows.length; ){
 			 $('serviceproviderstable').deleteRow(i);
 	}
 
+	if($('devices').length == "0" ){
+		$('table_one').style.display="none";
+		var newRow = $('serviceproviderstable').insertRow(-1);
+		var newCell0 = newRow.insertCell(0);
+		newCell0 .align = "center";
+		newCell0 .innerHTML = "<BR>A <I>Serive Provider</I> is not defined<BR><BR> Please click on the 'Add Service Provider' button<BR> to add a service provider<BR><BR>" ;
+		return true;
+	}
+
+	$('table_one').style.display="";	
 	for(i=0; i< $('devices').length; i++){
 		addrow_totable($('devices').options[i].text, $('devices').options[i].value);
 	}
+
 }
 
 
@@ -445,24 +467,6 @@ function hideSPdetails(){
 		$('userscontent').style.display = "none";
 }
 
-callbacks.delchanges = function(a,b,c){
-	deletesp_fromui(b);
-}
-
-callbacks.savechanges = function(){
-	saveSPdetails();
-}
-
-callbacks.cancelnewcategory = function(){
-	hideSPdetails();
-}
-
-callbacks.cancelchanges = function(){
-	hideSPdetails();
-}
-
-
-
 function showSPdetails(){
 		$('cancel').disabled = false;
 		$('userscontent').style.display = "block";
@@ -506,11 +510,11 @@ function deletesp_fromui(trunk){
 <BR>
 <center>
 <font size="+1">List of Service Providers</font>
-<table class="table_black" cellpadding=2 cellspacing=2 border=0 align=center width=500>
+<table class="table_black" cellpadding=2 cellspacing=2 border=0 align=center width=500 id="table_one">
 	<tr>	<td width=40>S.no</td>
-			<td eidth="200">Service Provider</td>
+			<td width="200">Service Provider</td>
 			<td>Type</td>
-			<td width="120" align=center>Options</td>
+			<td width="120" align="center">Options</td>
 	</tr>
 </table>
 <table id="serviceproviderstable" cellpadding=2 cellspacing=1 border=0 align=center width=500>

@@ -123,6 +123,16 @@ td {
 	font-size: 10pt;
 }
 
+#serviceproviderstable{
+	color: #4C4C4C;
+	font-size: 75%;
+	background: #C4C4C4;
+}
+
+#serviceproviderstable tr{
+	background: #FFFFFF;
+}
+
 /* From astman.css - for use in status tab to show active channels */
 .chanlist {
 	border           : 1px solid #1f669b;
