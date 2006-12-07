@@ -9,18 +9,25 @@
 #
 # This program is free software, distributed under the terms of
 # the GNU General Public License
-#
-all: zapscan.bin
 
+ifeq ($(PBX_ZAPTEL),1)
+TOOLS:=zapscan.bin
+endif
+
+all: $(TOOLS)
 
 zapscan.bin: zapscan.o
-	$(CC) -o zapscan.bin zapscan.o
+	$(CC) -o $@ $^
+
+zapscan.o: CFLAGS+=$(ZAPTEL_INCLUDE) $(ASTCFLAGS)
 
 install:
 	mkdir -p $(DESTDIR)/sbin
-	$(INSTALL) -m 755 zapscan $(DESTDIR)/sbin
-	$(INSTALL) -m 755 zapscan.bin $(DESTDIR)/sbin
+	$(INSTALL) -m 755 zapscan $(ASTSBINDIR)
+	$(INSTALL) -m 755 zapscan.bin $(ASTSBINDIR)
 
 clean: 
 	rm -f zapscan.o
 	rm -f zapscan.bin
+
+.PHONY: all install clean

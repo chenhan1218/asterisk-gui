@@ -11,16 +11,31 @@
 # the GNU General Public License
 #
 
-# Basics...
-INSTALL?=install
-BASENAME?=basename
+# even though we could use '-include makeopts' here, use a wildcard
+# lookup anyway, so that make won't try to build makeopts if it doesn't
+# exist (other rules will force it to be built if needed)
+ifneq ($(wildcard makeopts),)
+  include makeopts
+endif
 
+export CC
+export CPP
 export INSTALL
 export DESTDIR
 export BASENAME
+export PBX_ZAPTEL
+export ZAPTEL_INCLUDE
+export ASTSBINDIR
+export ASTCFLAGS
+export ASTLDFLAGS
+
+ifneq ($(findstring BSD,$(OSARCH)),)
+  ASTCFLAGS+=-I/usr/local/include
+  ASTLDFLAGS+=-L/usr/local/lib
+endif
 
 # Overwite config files on "make samples"
-OVERWRITE=y
+OVERWRITE:=y
 
 # Staging directory
 # Files are copied here temporarily during the install process
@@ -28,49 +43,74 @@ OVERWRITE=y
 # /tmp/asterisk/etc/asterisk
 # !!! Watch out, put no spaces or comments after the value !!!
 #DESTDIR?=/tmp/asterisk-gui
-#
-# Asterisk var/lib directory...
-#
-ASTVARLIB?=$(shell cat $(DESTDIR)/etc/asterisk/asterisk.conf  2>/dev/null | grep -v ^\; | grep astvarlibdir | cut -f 3 -d ' ')
-ifeq ($(ASTVARLIB),)
-  ASTVARLIB=/var/lib/asterisk
+
+ifeq ($(OSARCH),SunOS)
+  ASTETCDIR:=$(DESTDIR)/var/etc/asterisk
+else
+  ASTETCDIR:=$(DESTDIR)$(sysconfdir)/asterisk
 endif
-ASTETCDIR?=$(shell cat $(DESTDIR)/etc/asterisk/asterisk.conf  2>/dev/null | grep -v ^\; | grep astetcdir | cut -f 3 -d ' ')
+ASTETCDIR:=$(shell cat $(ASTETCDIR)  2>/dev/null | grep -v ^\; | grep astetcdir | cut -f 3 -d ' ')
 ifeq ($(ASTETCDIR),)
-  ASTETCDIR=/etc/asterisk
+  ifeq ($(OSARCH),SunOS)
+    ASTETCDIR:=$(DESTDIR)/var/etc/asterisk
+  else
+    ASTETCDIR:=$(DESTDIR)$(sysconfdir)/asterisk
+  endif
 endif
-HTTPDIR=$(DESTDIR)$(ASTVARLIB)/static-http
-CONFIGDIR=$(HTTPDIR)/config
-ASTETCDIR?=$(shell cat $(DESTDIR)/etc/asterisk/asterisk.conf  2>/dev/null | grep -v ^\; | grep astetcdir | cut -f 3 -d ' ')
-ifeq ($(ASTETCDIR),)
-  ASTETCDIR=/etc/asterisk
+
+ASTVARLIBDIR?=$(shell cat $(ASTETCDIR)  2>/dev/null | grep -v ^\; | grep astvarlibdir | cut -f 3 -d ' ')
+ifeq ($(ASTVARLIBDIR),)
+  ifeq ($(OSARCH),SunOS)
+    ASTVARLIBDIR:=$(DESTDIR)/var/opt/asterisk
+  else
+    ifeq ($(OSARCH),FreeBSD)
+      ASTVARLIBDIR:=$(DESTDIR)$(prefix)/share/asterisk
+    else
+      ASTVARLIBDIR:=$(DESTDIR)$(localstatedir)/lib/asterisk
+    endif
+  endif
 endif
+
+
+ASTSBINDIR?=$(shell cat $(ASTETCDIR)  2>/dev/null | grep -v ^\; | grep astsbindir | cut -f 3 -d ' ')
+ifeq ($(ASTSBINDIR),)
+  ifeq ($(OSARCH),SunOS)
+    ASTSBINDIR:=$(DESTDIR)/opt/asterisk/sbin
+  else
+    ASTSBINDIR:=$(DESTDIR)$(sbindir)
+  endif
+endif
+
+HTTPDIR:=$(DESTDIR)$(ASTVARLIBDIR)/static-http
+CONFIGDIR:=$(HTTPDIR)/config
+
 HTTPHOST?=$(shell hostname)
-HTTPBINDPORT?=$(shell cat $(DESTDIR)/etc/asterisk/http.conf  2>/dev/null | grep -v ^\; | grep bindport | cut -f 2 -d '=')
+HTTPBINDPORT?=$(shell cat $(ASTETCDIR)/http.conf  2>/dev/null | grep -v ^\; | grep bindport | cut -f 2 -d '=')
 ifeq ($(HTTPBINDPORT),)
-  HTTPBINDPORT=8088
+  HTTPBINDPORT:=8088
 endif
-HTTPPREFIXBASE?=$(shell cat $(DESTDIR)/etc/asterisk/http.conf  2>/dev/null | grep -v ^\; | grep prefix )
+HTTPPREFIXBASE?=$(shell cat $(ASTETCDIR)/http.conf  2>/dev/null | grep -v ^\; | grep prefix )
 HTTPPREFIX?=$(shell echo $(HTTPPREFIXBASE) | cut -f 2 -d '=')
 ifeq ($(HTTPPREFIXBASE),)
-  HTTPPREFIX=asterisk
+  HTTPPREFIX:=asterisk
 endif
-HTTPURL=http://$(HTTPHOST):$(HTTPBINDPORT)/$(HTTPPREFIX)/static/config/cfgbasic.html
-HTTPSETUPURL=http://$(HTTPHOST):$(HTTPBINDPORT)/$(HTTPPREFIX)/static/config/setup.html
+HTTPURL:=http://$(HTTPHOST):$(HTTPBINDPORT)/$(HTTPPREFIX)/static/config/cfgbasic.html
+HTTPSETUPURL:=http://$(HTTPHOST):$(HTTPBINDPORT)/$(HTTPPREFIX)/static/config/setup.html
 
-SUBDIRS=tools
-# Nothing to do yet for building, but one day there could be...
+SUBDIRS:=tools
+SUBDIRS_CLEAN:=$(SUBDIRS:%=%-clean)
+SUBDIRS_INSTALL:=$(SUBDIRS:%=%-install)
 
 all: _all
 	@echo " +------- Asterisk-GUI Build Complete -------+"
 	@echo " + Asterisk-GUI has successfully been built, +"
 	@echo " + and can be installed by running:          +"
 	@echo " +                                           +"
-	@echo " +               make install                +"
+	@echo " +               $(MAKE) install                +"
 	@echo " +-------------------------------------------+"
 
-_all:
-	for x in $(SUBDIRS); do \
+_all: makeopts
+	@for x in $(SUBDIRS); do \
 		$(MAKE) -C $$x all ; \
 	done
 
@@ -146,37 +186,41 @@ checkconfig:
 	@echo ""
 	@echo " --- Good luck! ---	"
 
-_install: _all
+$(SUBDIRS_INSTALL):
+	@ASTSBINDIR="$(ASTSBINDIR)" $(MAKE) -C $(@:-install=) install
+
+_install: _all $(SUBDIRS_INSTALL)
 	@echo "Installing into $(HTTPDIR)"
-	for x in $(SUBDIRS); do \
-		$(MAKE) -C $$x install ; \
-	done
 	mkdir -p $(CONFIGDIR)
 	mkdir -p $(CONFIGDIR)/images
 	mkdir -p $(CONFIGDIR)/scripts
 	mkdir -p $(CONFIGDIR)/stylesheets
 	mkdir -p $(CONFIGDIR)/bkps
-	for x in gui_configs/*; do \
+	@for x in gui_configs/*; do \
+		echo "$$x  -->  $(ASTETCDIR)" ; \
 		cp $$x $(ASTETCDIR)/ ; \
 	done
-	for x in config/images/*; do \
+	@for x in config/images/*; do \
+		echo "$$x  -->  $(CONFIGDIR)/images/" ; \
 		$(INSTALL) -m 644 $$x $(CONFIGDIR)/images/ ; \
 	done
-	for x in config/scripts/*; do \
+	@for x in config/scripts/*; do \
+		echo "$$x  -->  $(CONFIGDIR)/scripts/" ; \
 		$(INSTALL) -m 644 $$x $(CONFIGDIR)/scripts/ ; \
 	done
-	for x in config/stylesheets/*; do \
+	@for x in config/stylesheets/*; do \
+		echo "$$x  -->  $(CONFIGDIR)/stylesheets/" ; \
 		$(INSTALL) -m 644 $$x $(CONFIGDIR)/stylesheets/ ; \
 	done
-	for x in config/*.html; do \
+	@for x in config/*.html; do \
+		echo "$$x  -->  $(CONFIGDIR)" ; \
 		$(INSTALL) -m 644 $$x $(CONFIGDIR)/ ; \
 	done
 	@if [ -x /usr/sbin/asterisk-gui-post-install ]; then \
 		/usr/sbin/asterisk-gui-post-install $(DESTDIR) . ; \
 	fi
 
-install:_install
-	
+install: _install
 	@echo " +---- Asterisk GUI Installation Complete ---+"
 	@echo " +                                           +"
 	@echo " +    YOU MUST READ THE SECURITY DOCUMENT    +"
@@ -203,10 +247,13 @@ install:_install
 	@echo " +                                           +"
 	@echo " +-------------------------------------------+"
 
-clean:
-	for x in $(SUBDIRS); do \
-		$(MAKE) -C $$x clean ; \
-	done
+$(SUBDIRS_CLEAN):
+	@$(MAKE) -C $(@:-clean=) clean
+
+clean: $(SUBDIRS_CLEAN)
+
+distclean: clean
+	rm -f makeopts autom4te.cache
 
 samples:
 	mkdir -p $(DESTDIR)$(ASTETCDIR)
@@ -225,3 +272,11 @@ samples:
 		fi ; \
 		$(INSTALL) -m 644 $$x $(DESTDIR)$(ASTETCDIR)/`$(BASENAME) $$x .sample` ;\
 	done
+
+makeopts: configure
+	@echo "****"
+	@echo "**** The configure script must be executed before running '$(MAKE)'."
+	@echo "****"
+	@exit 1
+
+.PHONY: samples clean all install _all _install checkconfig distclean $(SUBDIRS_CLEAN) $(SUBDIRS_INSTALL)
