@@ -1,0 +1,93 @@
+<!--
+ * Asterisk -- An open source telephony toolkit.
+ *
+ * Configuration for "Users" generally
+ *
+ * Copyright (C) 1999 - 2006, Digium, Inc.
+ *
+ * Mark Spencer <markster@digium.com>
+ *
+ * See http://www.asterisk.org for more information about
+ * the Asterisk project. Please do not directly contact
+ * any of the maintainers of this project for assistance;
+ * the project provides a web site, mailing lists and IRC
+ * channels for your use.
+ *
+ * This program is free software, distributed under the terms of
+ * the GNU General Public License Version 2. See the LICENSE file
+ * at the top of the source tree.
+ *
+-->
+<script src="scripts/prototype.js"></script>
+<script src="scripts/rico.js"></script>
+<script src="scripts/astman.js"></script>
+<script src="scripts/tooltip.js"></script>
+<link href="stylesheets/rico.css" media="all" rel="Stylesheet" type="text/css" />
+<link href="stylesheets/schwing.css" media="all" rel="Stylesheet" type="text/css" />
+<script>
+var usercallbacks = new Object;
+var fieldnames = new Array('status', 'save','userbase','localextenlength');
+var widgets = new Array;
+
+
+usercallbacks.format =  function(t) {
+	if(t.name == "general" ){
+			return t.name;
+	}
+	return null;
+}
+
+usercallbacks.savechanges = function(){
+	//
+}
+
+usercallbacks.loaded = function(){
+		$('devices').selectitem(0);
+		
+		if ( typeof $('devices').stored_config.catbyname['general'].fieldbyname['localextenlength'] == "undefined" ){ 
+				var opt = {
+						method: 'get',
+						asynchronous: true,
+						onSuccess: function(t) { 
+									$('localextenlength').selectedIndex = 2 ;
+						},
+						onFailure: function(t) {
+							alert("Config Error: " + t.status + ": " + t.statusText);
+						}
+					};
+					opt.parameters="action=updateconfig&reload=yes&srcfilename=" + encodeURIComponent("users.conf") + "&dstfilename=" + encodeURIComponent("users.conf") + "&Action-000000=update&Cat-000000=general&Var-000000=localextenlength&Value-000000=4"; ;
+					var tmp = new Ajax.Request("../../rawman", opt);
+		}
+}
+
+
+
+function localajaxinit(){
+			for (var x =0 ; x < fieldnames.length ; x++ ) {
+				widgets[fieldnames[x]] = $(fieldnames[x]);
+				widgets[fieldnames[x]].disabled = true;
+			}
+			parent.astmanEngine.config2list("users.conf", $('devices'),widgets, usercallbacks);
+}
+</script>
+<body id="foo" onload="localajaxinit()" bgcolor="EFEFEF">
+<div class="mainscreenTitleBar"><span style="margin-left: 4px;font-weight:bold">Admin Options - Local Extension Settings</span></div>
+<div class="mainscreenContentBox" id="userscontent">
+<table class="mainscreenTable" align="center">
+	<tr valign="top" height="18">	<td align="center"><B>Local Extension Settings</B></td></tr>
+	<tr>	<td align="center" valign="top">
+					<select id="devices" style="display:none"></select> 
+					<p class="subheading">	Local Extensions are <select id="localextenlength"><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option></select>digits long&nbsp;</p>
+					<p class="subheading">	Starting point of Allocation of extensions : <input type=text id="userbase" size=5>	</p>
+					<center>
+							<div style="height:15px" id='status'></div><BR>
+							<input type=button id="save" value="Save">
+					</center>
+			</td>
+	</tr>
+	<tr valign="top" height="18">	<td></td></tr>
+	<tr valign="top" height="18">	<td align="center"><A href="options.html">Back</A></td></tr>
+	<tr valign="top" height="18">	<td></td></tr>
+</table>
+</div>
+</body>
