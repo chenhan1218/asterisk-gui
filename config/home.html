@@ -45,6 +45,16 @@
 	function loggedOn() {
 		if ((parent.loggedon == 1) && (localloggedon == 1))
 			return;
+		if($('secret').value=="password"){
+			parent.loggedon = 1;
+			localloggedon = 1;
+			parent.document.getElementById('logoutlink').innerHTML = "Logout";
+			parent.document.getElementById('logoutlink').onclick = parent.Logoff ;
+			parent.astmanEngine.pollEvents();
+			alert("You are using the default password provided by AsteriskNOW !! \n\n It is strongly recommended that you chnage your default password ");
+			window.location.href="options.html";
+			return;
+		}
 		parent.setLoggedOn(1);
 		parent.loggedon = 1;
 		localloggedon = 1;
@@ -52,7 +62,6 @@
 		$('statusbar').innerHTML = "<img src='images/tick.gif'><i>Connected!</i>";
 		parent.document.getElementById('logoutlink').innerHTML = "Logout";
 		parent.document.getElementById('logoutlink').onclick = parent.Logoff ;
-
 		parent.astmanEngine.pollEvents();
 	}
 	
