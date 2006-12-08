@@ -186,6 +186,7 @@ function delete_vmenu_fromlistofmenus(){
 					method: 'get',
 					asynchronous: true,
 					onSuccess: function(t) { 									
+						delete voicemenusdata[deleted_voicmenu];
 					},
 					onFailure: function(t) {
 						alert("Config Error: " + t.status + ": " + t.statusText);
@@ -196,6 +197,7 @@ function delete_vmenu_fromlistofmenus(){
 			opt.parameters="action=updateconfig&reload=yes&srcfilename=" + encodeURIComponent("extensions.conf") + "&dstfilename=" + encodeURIComponent("extensions.conf") + uri;
 			var tmp = new Ajax.Request("../../rawman", opt);
 	}
+	delete voicemenusdata[deleted_voicmenu];
 }
 
 function change_vmenuname_inlistofmenus(oldname,newname){
@@ -310,7 +312,7 @@ function add_newstep(){
 	// algorithm 4 calculate new priority
 	if(voicemenusdata[$('vmenus').value].extensions['s'] && voicemenusdata[$('vmenus').value].extensions['s'].length > 0 ){
 		for( var p=0; p < voicemenusdata[$('vmenus').value].extensions['s'].length; p ++){
-			var temp  = voicemenusdata[$('vmenus').value].extensions['s'][p].split(',');			
+			var temp  = voicemenusdata[$('vmenus').value].extensions['s'][p].split(',');
 			priorities.push(temp[1]);
 		}
 		priorities = priorities.sort(sortNumber);
@@ -352,20 +354,9 @@ function add_newstep(){
 
 
 function next_freevmenu(){	 // return the next smallest available voicemenu name
-	var current_names = new Array;
-	for(var i=0; i < $('vmenus').length; i++ ){
-		if ( $('vmenus').options[i].value.match('voicemenu-custom-') )
-			current_names.push( $('vmenus').options[i].value.replace( /voicemenu-custom-/ ,"") );
-	}
-	if ( current_names.length ){
-		for(var i=0; i<current_names.length-1; i++){
-			if( current_names[i+1] -  current_names[i] > 1 )
-				break;
-		}
-		var temp =  parseInt(current_names[i]) +1;
-		return 'voicemenu-custom-' + temp ;
-	}
-	return 'voicemenu-custom-1' ;
+	var x=1;
+	while(typeof voicemenusdata['voicemenu-custom-'+x] != 'undefined' ) x++;
+	return 'voicemenu-custom-'+x ;
 }
 
 

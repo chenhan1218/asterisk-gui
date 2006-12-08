@@ -475,7 +475,7 @@ function showSPdetails(){
 function deleteSP(trunk){
 	for(var i=0; i< $('devices').length; i++){
 				if($('devices').options[i].value == trunk){
-							$('devices').selectedIndex = i ;
+							$('devices').selectitem(i) ;
 							$('delete').disabled = 0;
 							if( !$('delete').click() ){
 								return;
@@ -511,7 +511,7 @@ function deletesp_fromui(trunk){
 <center>
 <font size="+1">List of Service Providers</font>
 <table class="table_black" cellpadding=2 cellspacing=2 border=0 align=center width=500 id="table_one">
-	<tr>	<td width=40>S.no</td>
+	<tr>	<td width=40>S.No</td>
 			<td width="200">Service Provider</td>
 			<td>Type</td>
 			<td width="120" align="center">Options</td>
@@ -524,12 +524,20 @@ function deletesp_fromui(trunk){
 </center>
 
 <div id="userscontent" STYLE="display:none; position: absolute; left: 20; top: 40; width:500; height:400;  background-color:#F4EFE5;   border-width: 1px; border-color: #7E5538; border-style: solid;">
+	<table width="100%" cellpadding=0 cellspacing=0>
+		<TR bgcolor="#7E5538" ><TD Height="20" align="right">
+					<A href="#" onclick="$('cancel').click();"><font style="color:#FFFFFF; font-size: 12px; font-weight:bold;">X</font></A>
+				</TD>
+				<TD width=4></TD>
+		</TR>
+	</table>
 
 <table align="center" width=450>
 <tr>
 <td onmouseover="show_tooltip('en', 'trunks', 0);"  class="field_text" width=130 valign="top" align="left">
 <!-- Provider type -->
 				<div id='cabinet' style='height:0;width:0;overflow:hidden'><select id='hiddenglobals'></select></div>
+				<B>Provider Type:</B><BR>
 				<LABEL FOR="trunkstyleanalog"><input name='trunkstyle' type='radio' id='trunkstyleanalog' onclick='activateanalogvoip()' value='analog'>Analog</LABEL><BR>
 				<LABEL FOR="trunkstylevoip"><input name='trunkstyle' type='radio' id='trunkstylevoip' onclick='activateanalogvoip()' value='voip'>VoIP</LABEL><BR>
 				<LABEL FOR="trunkstylecustomvoip"><input name='trunkstyle' type='radio' id='trunkstylecustomvoip' onclick='activateanalogvoip()' value='customvoip'>Custom VoIP</LABEL>
