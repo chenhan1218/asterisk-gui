@@ -93,6 +93,23 @@ function add_extension(a){
 	tmp0 = new Ajax.Request('../../rawman', opt0);
 }
 
+function delete_extension(a){
+	// delete extension 'a' in extensions.conf 
+	var opt0 = {
+				method: 'get',
+				asynchronous: true,
+				onSuccess: function() { 
+					return true;	
+				},
+				onFailure: function(t) {
+					alert("Config Error: " + t.status + ": " + t.statusText);
+					return false;
+				}
+	};
+	uri0 = build_action('delete', 0, specialcontext ,'exten', '',a+',1,Queue(${EXTEN})'); 
+	opt0.parameters="action=updateconfig&reload=yes&srcfilename=" + encodeURIComponent("extensions.conf") + "&dstfilename=" + encodeURIComponent("extensions.conf") + uri0;
+	tmp0 = new Ajax.Request('../../rawman', opt0);
+}
 
 function save_queue(){
 		var p = 0;
@@ -278,8 +295,9 @@ callbacks.format = function (t,x){
 
 
 // Queue Call Backs
-queuecallbacks.oncategorydelete = function(){
+queuecallbacks.oncategorydelete = function(value){
 	$('testmulti').innerHTML = "";
+	delete_extension(value);
 }
 
 

@@ -55,6 +55,11 @@
 			window.location.href="options.html";
 			return;
 		}
+		// parse extensions.conf 
+		//if(!asterisk_guitools  || !correct version || !hasSetup ){
+				// redirect to setup
+		//}
+
 		parent.setLoggedOn(1);
 		parent.loggedon = 1;
 		localloggedon = 1;
@@ -63,6 +68,13 @@
 		parent.document.getElementById('logoutlink').innerHTML = "Logout";
 		parent.document.getElementById('logoutlink').onclick = parent.Logoff ;
 		parent.astmanEngine.pollEvents();
+
+		if(navigator.appName.match("Microsoft")){
+			alert("Asterisk Configuration GUI is currently not supported in Microsoft Internet Explorer \n"+
+			"It is recommended that you use Firefox (1.5 or above) or Opera 9.x \n\n" +
+			"Support for Microsoft Internet Explorer is under development \n"+
+			" and will be supported in future versions");
+		}
 	}
 	
 	function loggedOff() {
