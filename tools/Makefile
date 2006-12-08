@@ -22,9 +22,10 @@ zapscan.bin: zapscan.o
 zapscan.o: CFLAGS+=$(ZAPTEL_INCLUDE) $(ASTCFLAGS)
 
 install:
-	mkdir -p $(DESTDIR)/sbin
-	$(INSTALL) -m 755 zapscan $(ASTSBINDIR)
+ifeq ($(PBX_ZAPTEL),1)
+	mkdir -p $(ASTSBINDIR)
 	$(INSTALL) -m 755 zapscan.bin $(ASTSBINDIR)
+endif
 
 clean: 
 	rm -f zapscan.o

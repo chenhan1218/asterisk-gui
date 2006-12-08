@@ -81,7 +81,7 @@ ifeq ($(ASTSBINDIR),)
   endif
 endif
 
-HTTPDIR:=$(DESTDIR)$(ASTVARLIBDIR)/static-http
+HTTPDIR:=$(ASTVARLIBDIR)/static-http
 CONFIGDIR:=$(HTTPDIR)/config
 
 HTTPHOST?=$(shell hostname)
@@ -190,6 +190,7 @@ $(SUBDIRS_INSTALL):
 	@ASTSBINDIR="$(ASTSBINDIR)" $(MAKE) -C $(@:-install=) install
 
 _install: _all $(SUBDIRS_INSTALL)
+	mkdir -p $(ASTETCDIR)
 	@echo "Installing into $(HTTPDIR)"
 	mkdir -p $(CONFIGDIR)
 	mkdir -p $(CONFIGDIR)/images
@@ -256,21 +257,21 @@ distclean: clean
 	rm -f makeopts autom4te.cache
 
 samples:
-	mkdir -p $(DESTDIR)$(ASTETCDIR)
+	mkdir -p $(ASTETCDIR)
 	for x in configs/*.sample; do \
-		if [ -f $(DESTDIR)$(ASTETCDIR)/`$(BASENAME) $$x .sample` ]; then \
+		if [ -f $(ASTETCDIR)/`$(BASENAME) $$x .sample` ]; then \
 			if [ "$(OVERWRITE)" = "y" ]; then \
-				if cmp -s $(DESTDIR)$(ASTETCDIR)/`$(BASENAME) $$x .sample` $$x ; then \
+				if cmp -s (ASTETCDIR)/`$(BASENAME) $$x .sample` $$x ; then \
 					echo "Config file $$x is unchanged"; \
 					continue; \
 				fi ; \
-				mv -f $(DESTDIR)$(ASTETCDIR)/`$(BASENAME) $$x .sample` $(DESTDIR)$(ASTETCDIR)/`$(BASENAME) $$x .sample`.old ; \
+				mv -f $(ASTETCDIR)/`$(BASENAME) $$x .sample` $(ASTETCDIR)/`$(BASENAME) $$x .sample`.old ; \
 			else \
 				echo "Skipping config file $$x"; \
 				continue; \
 			fi ;\
 		fi ; \
-		$(INSTALL) -m 644 $$x $(DESTDIR)$(ASTETCDIR)/`$(BASENAME) $$x .sample` ;\
+		$(INSTALL) -m 644 $$x $(ASTETCDIR)/`$(BASENAME) $$x .sample` ;\
 	done
 
 makeopts: configure
