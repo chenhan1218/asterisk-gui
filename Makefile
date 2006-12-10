@@ -261,7 +261,7 @@ samples:
 	for x in configs/*.sample; do \
 		if [ -f $(ASTETCDIR)/`$(BASENAME) $$x .sample` ]; then \
 			if [ "$(OVERWRITE)" = "y" ]; then \
-				if cmp -s (ASTETCDIR)/`$(BASENAME) $$x .sample` $$x ; then \
+				if cmp -s $(ASTETCDIR)/`$(BASENAME) $$x .sample` $$x ; then \
 					echo "Config file $$x is unchanged"; \
 					continue; \
 				fi ; \
