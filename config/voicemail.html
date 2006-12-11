@@ -67,6 +67,9 @@
 				$('name').focus();
 				return false;
 		}
+		if (!check_patternonfields( ['name', 'maxgreet'] ) ){
+			return false;
+		}
 		return true;
 	}
 

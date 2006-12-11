@@ -197,6 +197,9 @@
 				$('name').focus();
 				return false;
 		}
+		if (!check_patternonfields( ['name', 'pin' , 'pinadmin', 'room'] ) ){
+			return false;
+		}
 		return true;
 	}
 	callbacks.identifier = "extension";

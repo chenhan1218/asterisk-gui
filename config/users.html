@@ -102,7 +102,6 @@
 	callbacks.identifier = "extension";
 
 	callbacks.beforeSaving = function(){
-		//check_patternonfields(fieldnames);
 		if(!$('fullname').value.length){
 				alert("Sorry, a User Name must be specified !");
 				$('fullname').focus();
@@ -113,6 +112,9 @@
 				alert("Sorry, User Extension must be  "+ localextenlength  + " digits !");
 				$('name').focus();
 				return false;
+		}
+		if (!check_patternonfields( ['name', 'fullname', 'secret','email', 'cid_number'] ) ){
+			return false;
 		}
 		return true;
 	}

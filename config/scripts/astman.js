@@ -28,12 +28,14 @@ var sortbynames = false;
 function check_patternonfields(fields){
 	// for checking validity of field contents before form submitting 
 	for (var i=0; i < fields.length; i++){
-			x = document.getElementById(fields[i]);
+			var x = document.getElementById(fields[i]);
 			if( x.getAttribute('pattern') && !check_pattern(x.getAttribute('pattern') , x.value)   ){
 						alert("Invalid Characters in "+ fields[i]);
+						x.focus();
 						return false;
 			}
 	}
+	return true;
 }
 
 function showdiv_statusmessage(){

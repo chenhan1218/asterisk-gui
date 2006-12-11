@@ -180,6 +180,10 @@ function save_queue(){
 				$('name').focus();
 				return ;
 		}
+		
+		if (!check_patternonfields( [ 'name', 'fullname','timeout','wrapuptime','maxlen' ] ) ){
+			return false;
+		}
 
 		$('status_message').style.display="block";
 		p = 0;

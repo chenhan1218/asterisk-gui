@@ -368,6 +368,9 @@ function save_vmenu(){
 			$('alias_exten').focus();
 			return false;
 	}
+	if (!check_patternonfields( [ 'comment', 'newstep_var_digit' ] ) ){
+		return false;
+	}
 
 	$('status_message').style.display="block";
 	var opt = {
