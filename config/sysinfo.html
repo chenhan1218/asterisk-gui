@@ -26,8 +26,8 @@
 <link href="stylesheets/schwing.css" media="all" rel="Stylesheet" type="text/css" />
 <script>
 var sysinfocallbacks = new Object;
-var tabs = new Array('tab1', 'tab2', 'tab3');
-var divs_tohide = new Array('osversion_div', 'uptime_div', 'asterisk_div', 'today_div','hostname_div','ifconfig_div','df_div','memory_div');
+var tabs = new Array('tab1', 'tab2', 'tab3','tab4');
+var divs_tohide = new Array('osversion_div', 'uptime_div', 'asterisk_div', 'today_div','hostname_div','ifconfig_div','df_div','memory_div','today_log');
 
 sysinfocallbacks.format = function(t, x) {
 		if ( t.name == 'uname' && x==undefined ){	 				// if is a category
@@ -67,11 +67,12 @@ sysinfocallbacks.format = function(t, x) {
 		}
 }
 sysinfocallbacks.loaded = function(){
+
+	load_todayslog();
 	var divs_toshow = new Array('osversion_div', 'uptime_div', 'asterisk_div', 'today_div','hostname_div');
 	for(var i=0; i < divs_toshow.length; i++ ){
 		$(divs_toshow[i]).style.display = "block";
 	}
-
 	document.getElementById(tabs[0]).style.background = 'white';
 	document.getElementById(tabs[0]).style.borderBottom = '4px solid #000000';
 	document.getElementById(tabs[0]).style.fontWeight = 'bold';
@@ -80,6 +81,23 @@ sysinfocallbacks.loaded = function(){
 sysinfocallbacks.eachline = true;
 sysinfocallbacks.includecats = true;
 
+
+function 	load_todayslog(){
+		var opt = {
+			method: 'get',
+			asynchronous: true,
+			onComplete: function(originalRequest){
+				$('todaylog').innerHTML = originalRequest.responseText;
+			},
+			onFailure: function(t) {
+				$('status_message').style.display='none';
+				alert("Config Error: " + t.status + ": " + t.statusText);
+			}
+		};
+		opt.parameters="";
+		var tmp = new Ajax.Request("./bkps/today_log.html", opt);
+		return true;
+}
 
 
 function show_window(x){
@@ -95,13 +113,22 @@ function show_window(x){
 		document.getElementById(tabs[x-1]).style.fontSize= '13px';
 		document.getElementById(tabs[x-1]).selected = false;
 		
-		if(x==1)
-			var divs_toshow = new Array('osversion_div', 'uptime_div', 'asterisk_div', 'today_div','hostname_div');
-		else if (x==2)
-			var divs_toshow = new Array('ifconfig_div');
-		else if (x==3)
-			var divs_toshow = new Array('df_div','memory_div');
 
+		switch(x){
+			case 1:
+			var divs_toshow = new Array('osversion_div', 'uptime_div', 'asterisk_div', 'today_div','hostname_div');
+			break;
+			case 2:
+			var divs_toshow = new Array('ifconfig_div');
+			break;
+			case 3:
+			var divs_toshow = new Array('df_div','memory_div');
+			break;
+			case 4:
+			var divs_toshow = new Array('today_log');
+			break;
+		}
+		
 		for(var i=0; i < divs_tohide.length; i++ )
 				$(divs_tohide[i]).style.display = "none";
 		for(var i=0; i < divs_toshow.length; i++ )
@@ -117,7 +144,7 @@ function update_sysinfo(){
 					$('status_message').style.display='none';
 					// then load the gui_sysinfo.conf
 					parent.astmanEngine.config2list("gui_sysinfo.conf", $('sysinfo'), new Array(), sysinfocallbacks);
-					// instead of the above line make a raw Ajax request and use //onComplete: showResponse, to get raw output
+					
 			},		
 			onFailure: function(t) {
 				$('status_message').style.display='none';
@@ -156,6 +183,7 @@ function localajaxinit(){
 				<a href="#" class="tab" onclick="return show_window(1);" id="tab1">General</a>&nbsp;&nbsp;
 				<a href="#" class="tab" onclick="return show_window(2);" id="tab2">ifconfig</a>&nbsp;&nbsp;
 				<a href="#" class="tab" onclick="return show_window(3);" id="tab3">Resources</a>&nbsp;&nbsp;
+				<a href="#" class="tab" onclick="return show_window(4);" id="tab4">Logs</a>&nbsp;&nbsp;
 				<select id="sysinfo" style="display:none"></select>
 
 				<div id="information" style=" border: solid 0px black; background: transparent; padding: 4px; height:440px; width:95%;">
@@ -184,10 +212,9 @@ function localajaxinit(){
 						<div id="memory_div" style="display:none;">
 								Memory Usage:<PRE><div id="memoryusage" style="font-family:courier; font-size:8.5pt;"></div></PRE>
 						</div>
-						<BR>
-						
-						
-						<BR><BR>
+						<div id="today_log" style="display:none;">
+								Asterisk Log messages (today):<PRE><div id="todaylog" style="font-family:courier; font-size:8.5pt; width:522px; height:405px; overflow :auto;"></div></PRE>
+						</div>
 				</div>
 			</td>
 	</tr>

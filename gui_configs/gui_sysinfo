@@ -34,3 +34,8 @@ DISKUSAGE=`/bin/df -h | sed -e "s/^/output = /g"`
 /bin/echo "[free]" >> /etc/asterisk/gui_sysinfo.conf
 MEMORYUSAGE=`/bin/free | sed -e "s/^/output = /g"`
 /bin/echo "$MEMORYUSAGE" >> /etc/asterisk/gui_sysinfo.conf 
+
+THISMONTH=`/bin/date +%b`
+THISDAY=`/bin/date +%d`
+/bin/grep /var/log/asterisk/messages -e "$THISMONTH $THISDAY" > /var/lib/asterisk/static-http
+/config/bkps/today_log.html
