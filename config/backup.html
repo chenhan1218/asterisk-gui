@@ -41,31 +41,35 @@ return x;
 }
 
 function removebkpfile(){
-	$('status_message').style.display='none';
+	$('message_text').innerHTML = "Please wait while the system <BR> Generates a Backup ... ";
+	$('status_message').style.display="block";
 	//remove bkpfile on server 
 			var opt = {
 				method: 'get',
 				asynchronous: true,
 				onSuccess: function(t) { 
 					// file deleted on server
+					download_bkp();
 				},
 				onFailure: function(t) {
 					// file not deleted on server
 				}
 			};
-			opt.parameters="action=originate&channel=" + encodeURIComponent("Local/removefile@" + asterisk_guitools) + "&Variable=var1%3d"+ encodeURIComponent( bkp_path+ bkpfile)+"&application=noop&timeout=60000";
+			opt.parameters="action=originate&channel=" + encodeURIComponent("Local/removefile@" + asterisk_guitools) + "&Variable=var1%3d"+ encodeURIComponent( bkp_path+ "conf_* -f")+"&application=noop&timeout=60000";
 			var tmp = new Ajax.Request("../../rawman", opt);	
+			return true;
 }
 
 
 function showremovebkpfile(){
-	$('message_text').innerHTML =  "<A href=\"#\" onclick=\"removebkpfile()\">I have downloaded the file</A><BR><BR>" + "<A href=\"./bkps/"+ bkpfile  +"\" onclick=\"showremovebkpfile()\">ReDownload</A>";
+	$('status_message').style.display='none';
+//	$('message_text').innerHTML =  "<A href=\"#\" onclick=\"removebkpfile()\">I have downloaded the file</A><BR><BR>" + "<A href=\"./bkps/"+ bkpfile  +"\" onclick=\"showremovebkpfile()\">ReDownload</A>";
 }
 
 
 
 function download_bkp(){
-		$('message_text').innerHTML = "Please wait while the system <BR> Generates a Backup ... ";
+
 		var today=new Date()
 		var year = today.getFullYear();
 		var month = addzero(today.getMonth() + 1);
@@ -74,8 +78,6 @@ function download_bkp(){
 		var minute =addzero(today.getMinutes());
 		var seconds =addzero(today.getSeconds());
 		bkpfile =  "conf_" + year + month + day + hour  + minute +seconds  +".tar";
-
-		$('status_message').style.display="block";
 		var opt = {
 				method: 'get',
 				asynchronous: true,
@@ -90,8 +92,6 @@ function download_bkp(){
 		};
 		opt.parameters="action=originate&channel=" + encodeURIComponent("Local/takebackup@"+asterisk_guitools) + "&Variable=var1%3d"+ encodeURIComponent( bkp_path + bkpfile)+"&application=noop&timeout=60000";
 		var tmp = new Ajax.Request("../../rawman", opt);
-
-
 }
 
 </script>
@@ -106,7 +106,7 @@ function download_bkp(){
 	<tr>
 		<td valign="top" align="center">
 			<BR><BR>
-			<Input type="button" onclick="download_bkp()" value="Download a Configuration backup">	
+			<Input type="button" onclick="removebkpfile()" value="Download a Configuration backup">	
 		</td>
 	</tr>
 	<tr>
