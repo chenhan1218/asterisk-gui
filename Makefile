@@ -109,10 +109,10 @@ all: _all
 	@echo " +               $(MAKE) install                +"
 	@echo " +-------------------------------------------+"
 
-_all: makeopts
-	@for x in $(SUBDIRS); do \
-		$(MAKE) -C $$x all ; \
-	done
+_all: makeopts $(SUBDIRS)
+
+$(SUBDIRS):
+	@$(MAKE) -C $@
 
 checkconfig:
 	@echo " --- Checking Asterisk configuration to see if it will support the GUI ---"
@@ -280,4 +280,4 @@ makeopts: configure
 	@echo "****"
 	@exit 1
 
-.PHONY: samples clean all install _all _install checkconfig distclean $(SUBDIRS_CLEAN) $(SUBDIRS_INSTALL)
+.PHONY: samples clean all install _all _install checkconfig distclean $(SUBDIRS_CLEAN) $(SUBDIRS_INSTALL) $(SUBDIRS)
