@@ -110,8 +110,8 @@ phonecallbacks.loaded = function() {
 numcallbacks.format = function(t) {
 	if ((t.name.substr(0,11) != 'numberplan-'))
 		return null;
-	if (t.fieldbyname['comment'])
-		return t.fieldbyname['comment'];
+	if (t.fieldbyname['plancomment'])
+		return t.fieldbyname['plancomment'];
 	return t.name;
 }
 
