@@ -1,0 +1,131 @@
+<HTML>
+<HEAD>
+	<TITLE> Asterik GUI Setup Wizard</TITLE>
+	<link href="setup.css" media="all" rel="Stylesheet" type="text/css" />
+</HEAD>
+<script src="../scripts/prototype.js"></script>
+<SCRIPT LANGUAGE="JavaScript">
+<!--
+var rawman_url;
+var usercallbacks = new Object;
+var fieldnames = new Array( 'save','userbase','localextenlength');
+var widgets = new Array;
+var go = "";
+var nextpage = "4.html";
+var prevpage = "2.html";
+
+function localinit(){
+	parent.$('next').disabled = true;
+	parent.$('next').onclick = function(){	 
+			if( !$('save').disabled ){
+					go = nextpage;
+					$('save').click();
+			}else{
+				window.location.href=nextpage; 
+			}
+	};			
+	parent.$('back').disabled = true;
+	parent.$('back').onclick  = function(){	 
+			if( !$('save').disabled ){
+					go = prevpage;
+					$('save').click();
+			}else{
+				window.location.href=prevpage; 
+			}
+	};
+	rawman_url = parent.rawman_url ;
+	parent.astmanEngine.setURL(rawman_url);
+	ping();
+}
+
+function ping(){
+		var opt = {
+			method: 'get',
+			asynchronous: true,
+			onComplete: isloggedin
+		};
+		opt.parameters="action=ping" ;
+		var tmp = new Ajax.Request(rawman_url , opt);
+}
+
+function isloggedin(originalRequest){
+		if ( originalRequest.responseText.match("Error") ) {
+			// User is not logged in , show him the login screen
+			parent.window.location.href = parent.window.location.href ; 
+		}
+
+		if ( originalRequest.responseText.match("Pong") ) {
+			// read users.conf to get localextenlength and userbase
+			for (var x =0 ; x < fieldnames.length ; x++ ) {
+				widgets[fieldnames[x]] = $(fieldnames[x]);
+				widgets[fieldnames[x]].disabled = true;
+			}
+			parent.astmanEngine.config2list("users.conf", $('devices'),widgets, usercallbacks);
+		}
+}
+
+usercallbacks.format =  function(t) {
+	if(t.name == "general" ){
+			return t.name;
+	}
+	return null;
+}
+
+usercallbacks.savechanges = function(){
+	window.location.href= go; 
+}
+
+usercallbacks.loaded = function(){
+		$('devices').selectitem(0);
+		parent.$('next').disabled = false;	
+		parent.$('back').disabled = false;
+		if ( typeof $('devices').stored_config.catbyname['general'].fieldbyname['localextenlength'] == "undefined" ){ 
+				var opt = {
+						method: 'get',
+						asynchronous: true,
+						onSuccess: function(t) { 
+									$('localextenlength').selectedIndex = 2 ;
+						},
+						onFailure: function(t) {
+							alert("Config Error: " + t.status + ": " + t.statusText);
+						}
+					};
+					opt.parameters="action=updateconfig&reload=yes&srcfilename=" + encodeURIComponent("users.conf") + "&dstfilename=" + encodeURIComponent("users.conf") + "&Action-000000=update&Cat-000000=general&Var-000000=localextenlength&Value-000000=4"; ;
+					var tmp = new Ajax.Request(rawman_url, opt);
+		}
+}
+
+//-->
+</SCRIPT>
+<BODY bgcolor="#FFFFFF" onload="localinit()" topmargin=0 leftmargin=0>
+<table width="100%" height="100%" border=0 cellpadding=0 cellspacing=0>
+	<tr><td width="190" valign=top align=left>
+					<div id="menu">
+					<table cellpadding=3 cellspacing=2 border=0 id="sidelist">
+						<tr><td width=3></td><td>Start</td></tr>
+						<tr><td></td><td>Verify Analog Ports</td></tr>
+						<tr><td></td><td>Date & Time</td></tr>
+						<tr><td></td><td class="slselected">Local Extension Settings</td></tr>
+						<tr><td></td><td>Service Providers</td></tr>
+						<tr><td></td><td>Calling Rules</td></tr>
+						<tr><td></td><td>VoiceMail Settings</td></tr>
+						<tr><td></td><td>User Extensions</td></tr>
+						<!-- <tr><td></td><td>VoiceMenus</td></tr> -->
+						<tr><td></td><td>Finish</td></tr>
+					</table>
+					</div>
+			</td>
+			<td valign=top align=center>
+			<!--  this page -->
+					<select id="devices" style="display:none"></select> <input type=button id="save" value="Submit" style="display:none">
+					<div class="heading">Step 3 of <script>document.write(parent.numberofsteps);</script>&nbsp;&nbsp;- Local Extension Settings</div>
+					<p class="subheading">	Local Extensions are <select id="localextenlength">
+																	<option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option></select> digits long&nbsp;
+					</p>
+					<p class="subheading">	Starting point of Allocation of extensions : <input type=text id="userbase" size=5>	</p>
+			<!--  this page -->
+			</td>
+		</tr>
+</table>
+</BODY>
+</HTML>

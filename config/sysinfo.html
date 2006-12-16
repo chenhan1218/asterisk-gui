@@ -137,23 +137,12 @@ function show_window(x){
 }
 
 function update_sysinfo(){
-	var opt = {
-			method: 'get',
-			asynchronous: true,
-			onSuccess: function() { 
+	parent.astmanEngine.run_tool("sh /etc/asterisk/gui_sysinfo", onSuccess = function() { 
 					$('status_message').style.display='none';
-					// then load the gui_sysinfo.conf
 					parent.astmanEngine.config2list("gui_sysinfo.conf", $('sysinfo'), new Array(), sysinfocallbacks);
-					
-			},		
-			onFailure: function(t) {
-				$('status_message').style.display='none';
-				alert("Config Error: " + t.status + ": " + t.statusText);
-			}
-		};
-		opt.parameters="action=originate&channel=" + encodeURIComponent("Local/sysinfo@"+asterisk_guitools) + "&application=noop&timeout=60000";
-		var tmp = new Ajax.Request("../../rawman", opt);
-		return;
+				}
+	);
+	return;
 }
 
 function showResponse(originalRequest)	{

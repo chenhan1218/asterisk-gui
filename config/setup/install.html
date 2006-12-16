@@ -1,0 +1,63 @@
+<!--
+ * Asterisk -- An open source telephony toolkit.
+ *
+ * Initial login screen
+ *
+ * Copyright (C) 1999 - 2006, Digium, Inc.
+ *
+ * Mark Spencer <markster@digium.com>
+ *
+ * See http://www.asterisk.org for more information about
+ * the Asterisk project. Please do not directly contact
+ * any of the maintainers of this project for assistance;
+ * the project provides a web site, mailing lists and IRC
+ * channels for your use.
+ *
+ * This program is free software, distributed under the terms of
+ * the GNU General Public License Version 2. See the LICENSE file
+ * at the top of the source tree.
+ *
+-->
+<HTML>
+<HEAD>
+<TITLE> Asterik GUI Setup Wizard</TITLE>
+	<link rel="shortcut icon" href="../images/favicon.ico" />
+	<link href="setup.css" media="all" rel="Stylesheet" type="text/css" />
+</HEAD>
+<script src="../scripts/prototype.js"></script>
+<script src="../scripts/astman.js"></script>
+<script>
+var rawman_url = "../../../rawman";
+var asterisk_guitools = "asterisk_guitools";
+var fxoports = new Array();
+var fxsports = new Array();
+var numberofsteps = 7;
+function localinit(){
+
+}
+
+</script>
+<body onload="localinit()" topmargin=0  bgcolor="FFFFFF">
+<TABLE width=800 cellpadding=0 cellspacing=0 border=0 align="center" style="border: 1px solid #660000; margin-top: 8px;">
+	<TR><TD height=70 bgcolor="#EFEFEF" align="center">
+		<TABLE cellpadding=0 cellspacing=0 border=0 width=780 align="center" >
+		<TR><TD><IMG src="digiumlogo.gif" border=0></TD>
+		    <TD><FONT SIZE="+1" COLOR="#666666">Welcome to Asterisk GUI setup wizard</FONT></TD>
+		</TR>
+		</TABLE>
+	     </TD>
+	</TR>
+	<TR><TD height=400><iframe width=785 height=396 frameborder="0" border="0" marginheight="0" marginwidth="0" src="1.html" id="mainscreen" SCROLLING=no></iframe></TD>
+	</TR>
+	<TR><TD height=50 bgcolor="#DBDBDB"  align="right" valign="middle">
+		<TABLE cellpadding=0 cellspacing=0 width="130" border=0 align="right">
+		<TR>	<TD><input type="button" id="back" value="Back"></TD>
+					<TD align=right><input type="button" id="next" value="Next">&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+		</TR>
+		</TABLE>
+  	     </TD>
+	</TR>
+</TABLE>
+<div id="copyright">Copyright &copy;2006 Digium, Inc.  Digium&reg; and Asterisk&reg; are registered <a href="http://www.digium.com/trademarks">trademarks</a> of Digium, Inc. All Rights Reserved. <i><a href="http://www.digium.com/gui_legal">Legal Information</a></i></div>
+</body>
+</html>

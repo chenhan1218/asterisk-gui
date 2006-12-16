@@ -71,20 +71,20 @@
 	}
 	
 	function doSaveConfig() {
-		parent.astmanEngine.run_tool("save_config");
+		parent.astmanEngine.run_tool("/bin/save_config");
 		alert("Configuration Saved");
 	}
 	
 	function doReboot() {
 		if (confirm("Are you sure you want to reboot the appliance?")) {
-			parent.astmanEngine.run_tool("reboot");
+			parent.astmanEngine.run_tool("/bin/reboot");
 			alert("Rebooting!");
 		}
 	}
 	
 	function doFactoryDefault() {
 		if (confirm("Are you sure you want to reset to factory defaults?")) {
-			parent.astmanEngine.run_tool("factory_default");
+			parent.astmanEngine.run_tool("/bin/reset_config");
 			alert("Resetting to defaults.  Please reboot!");
 		}
 	}

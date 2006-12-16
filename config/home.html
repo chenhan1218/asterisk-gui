@@ -22,10 +22,11 @@
 <script src="scripts/prototype.js"></script>
 <link href="stylesheets/rico.css" media="all" rel="Stylesheet" type="text/css" />
 <link href="stylesheets/schwing.css" media="all" rel="Stylesheet" type="text/css" />
-
 <script>
 	var demo = new Object;
 	var localloggedon = -1;
+	var asterisk_guitools = parent.asterisk_guitools;
+
 	function updateButtons()
 	{
 		if (parent.loggedon) {
@@ -55,10 +56,14 @@
 			window.location.href="options.html";
 			return;
 		}
-		// parse extensions.conf 
+
 		//if(!asterisk_guitools  || !correct version || !hasSetup ){
 				// redirect to setup
 		//}
+	
+		if( parent.asterisk_guitools_inextconf == 0){
+			checkessentials();
+		}
 
 		parent.setLoggedOn(1);
 		parent.loggedon = 1;
@@ -153,6 +158,42 @@ function submitOnEnter(e){
 			return false;
 		}
 }
+
+
+
+
+
+function checkessentials(){
+	// see if asterisk_guitools exists in extensions.conf
+	//if everything ok set  asterisk_guitools_inextconf = 1;
+		var opt = {
+			method: 'get',
+			asynchronous: true,
+			onComplete: checkExtconfig
+		};
+		opt.parameters="action=getconfig&filename=extensions.conf" ;
+		var tmp = new Ajax.Request("../../rawman", opt);
+}
+
+
+function checkExtconfig(originalRequest){
+	var lines = originalRequest.responseText.split("\n");
+	for( var i=0 ; i < lines.length ; i++){
+			if ( lines[i].substr(0,9) == "Category-"  ){
+				var tmp = lines[i].split(": ");
+				if( tmp[1].match(asterisk_guitools) ){
+						parent.asterisk_guitools_inextconf = 1;
+				}
+			}
+	}
+	
+	if(parent.asterisk_guitools_inextconf == 0 ){
+		// not found
+		parent.window.location.href = "./setup/install.html";
+	}
+
+}
+
 </script>
 <body id="foo" onload="localinit()" topmargin=0  bgcolor="EFEFEF">
 <div class="mainscreenTitleBar">

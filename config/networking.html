@@ -79,7 +79,7 @@
 		$('hiddennetworking').selectedIndex = 0;
 		if ($('hiddennetworking').onchange)
 			$('hiddennetworking').onchange($('hiddenvoicemail'));
-		parent.loadscreen(this);
+		//parent.loadscreen(this);
 	}
 	
 	networkingcallbacks.format = function(t) {
@@ -89,6 +89,10 @@
 	}
 	
 	function localajaxinit() {
+	parent.loadscreen(this);
+	return;
+
+
 		$('advancedw').style.overflow = "hidden";
 		$('advancedw').style.height = 1;
 		$('advancedw').style.width = $('split').width;
@@ -114,13 +118,51 @@
 </div>
 <div class="mainscreenContentBox" id="mailboxcontent">
 <table class="mainscreenTable" align="center">
-	<tr valign="top"><td height=20></td>	</tr>
-	<tr valign="top">
-		<td height=395 align=center>
-		<div id='adjustments'>
-		<table cellspacing='0' cellpadding='0'>
-			<tr valign="top"><td>
-				<table>
+		<TR>
+			<TD valign="top" align="right">WAN Settings:</TD>
+			<TD>
+			<!--  wan settings -->
+					<TABLE>
+						<TR>
+							<TD><input type=radio id="wan_type" name="want_itype" value="dhcp">DHCP</TD>
+							<TD><input type=radio id="wan_type" name="want_itype" value="static">Static</TD>
+						</TR>
+						<TR>
+							<TD>IP</TD>
+							<TD><input size=14 id="wan_staticip"></TD>
+						</TR>
+						<TR>
+							<TD>SubNet</TD>
+							<TD><input size=14 id="wan_staticsubnet"></TD>
+						</TR>
+						<TR>
+							<TD>Gateway</TD>
+							<TD><input size=14 id="wan_staticgateway"></TD>
+						</TR>
+					</TABLE>
+			<!--  wan settings -->
+			</TD>
+		</TR>
+		<TR>
+			<TD  valign="top" align="right">LAN Settings:</TD>
+			<TD>
+			<!--  Lan settings -->
+				<table align='center'>
+				<tr><td>Local Subnet</td><td><input type='text' size='16' id='LAN_SUBBLOCK'></td></tr>
+				<tr><td>Alternate Local Subnet</td><td><input size='16' type='text' id='LAN_ALTSUBBLOCK'></td></tr>
+				<tr><td>Netmask</td><td><input type='text' size='16' id='LAN_NETMASK'></td></tr>
+				<tr><td>DHCP Start unit</td><td><input type='text' size='5' id='LAN_DHCPSTARTUNIT'></td></tr>
+				<tr><td>DHCP Count</td><td><input type='text' size='5' id='LAN_DHCPCOUNT'></td></tr>
+				</table>
+			<!--  Lan settings -->
+			</TD>
+		</TR>
+		<TR>
+			<TD valign="top" align="right">WIRELESS Settings:</TD>
+			<TD>
+			<!--  wireless settings -->
+
+<table>
 				<tr><td>Operating Mode:</td><td><select id='OPERMODE'>
 					<option value='FCC'>FCC (US, Canada)</option>
 					<option value='TBR21'>TBR21 (Most of Europe)</option>
@@ -197,43 +239,29 @@
 					<option value="YEMEN">Yemen</option>
 				</select></td></tr>
 				<tr><td>Hostname:</td><td><input type='text' id='HOSTNAME'></td></tr>
-				<tr><td>ESSID:</td><td><input type='text' id='ESSID'></td></tr>
-				<tr><td>WEP Key:</td><td><input type='text' id='WEPKEY'></td></tr>
-				<tr><td>SSH Access:</td><td><select id='SSHACCESS'><option value=''>Disabled</option><option value='yes'>Enabled</option></select></td></tr>
-				<tr><td colspan='2' align='center'><div style="height:15px" id='status'></div></td></tr>
+				<tr><td>ESSID:</td><td><input type='text' id='WL_ESSID'></td></tr>
+				<tr><td>WEP Key:</td><td><input type='text' id='WL_WEPKEY'></td></tr>
+						<TR>
+							<TD><input type=radio id="WL_type" name="wl_itype" value="dhcp">DHCP</TD>
+							<TD><input type=radio id="WL_type" name="wl_itype" value="static">Static</TD>
+						</TR>
+						<TR>
+							<TD>IP</TD>
+							<TD><input size=14 id="wl_staticip"></TD>
+						</TR>
+						<TR>
+							<TD>SubNet</TD>
+							<TD><input size=14 id="wl_staticsubnet"></TD>
+						</TR>
+						<TR>
+							<TD>Gateway</TD>
+							<TD><input size=14 id="wl_staticgateway"></TD>
+						</TR>
 				</table>
-			</td>
-			</tr>
-			<tr><td><img id="split" onClick="togglefeatures()" src="images/split-v.gif"></td></tr>
-			<tr><td>
-				<div style="background-image:url(images/slice-v.gif)" id='advancedw'>
-				<table id='advancedi' align='center'>
-				<tr><td></td><td width='50' height=5></td><td></td></tr>
-				<tr><td>Local Subnet</td><td><input type='text' size='16' id='SUBBLOCK'></td></tr>
-				<tr><td>Alternate Local Subnet</td><td><input size='16' type='text' id='ALTSUBBLOCK'></td></tr>
-				<tr><td>Netmask</td><td><input type='text' size='16' id='NETMASK'></td></tr>
-				<tr><td>DHCP Start unit</td><td><input type='text' size='5' id='DHCPSTARTUNIT'></td></tr>
-				<tr><td>DHCP Count</td><td><input type='text' size='5' id='DHCPCOUNT'></td></tr>
-				</table>
-				</div>
-			</td></tr>
-			<tr><td>
-				<img onClick="togglefeatures()" src="images/adv-v.gif">
-			</td>
-			</tr>
-		</table>
-		</div>
-		</td>
-	</tr>
-	<tr><td align='center' colspan='2'>
-						<input type='hidden' id='name'>
-						<input style='width:80' type='button' id='save' value='Save'>&nbsp;&nbsp;<input style='width:80' type='button' id='cancel' value='Cancel'>
-						<div style='visibility:hidden;overflow:hidden;width:0px;height:0px'>
-								<select id='hiddenusers'>	</select>
-								<select id='hiddennetworking'></select>
-						</div>
-			</td>				
-	</tr>
+			<!--  wireless settings -->
+			</TD>
+		</TR>
+
 </table>
 </div>
 </body>

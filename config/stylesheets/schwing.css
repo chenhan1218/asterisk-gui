@@ -119,6 +119,30 @@ td {
 	/*font-weight: bold;*/
 }
 
+.table_blacksm{
+	margin-top: 10px;
+	color: #000000;
+	background: #C4C4C4;
+	font-size: 60%;
+	/*font-weight: bold;*/
+}
+
+#callingRulesTable{
+	color: #4C4C4C;
+	font-size: 8.5pt;
+	background: #C4C4C4;
+}
+
+#callingRulesTable tr{
+	background: #FFFFFF;
+}
+
+#callingRulesTable td{
+	font-size: 8pt;
+	vertical-align: top;
+}
+
+
 .field_text9{
 	font-size: 10pt;
 }

@@ -1,30 +1,13 @@
+<HTML>
+<HEAD>
+	<TITLE> Asterik GUI Setup Wizard</TITLE>
+	<link href="setup.css" media="all" rel="Stylesheet" type="text/css" />
+</HEAD>
+<script src="../scripts/prototype.js"></script>
+<script src="../scripts/astman.js"></script>
+<SCRIPT LANGUAGE="JavaScript">
 <!--
- * Asterisk -- An open source telephony toolkit.
- *
- * Configuration for "MeetMe Extensions"
- *
- * Copyright (C) 1999 - 2006, Digium, Inc.
- *
- * Mark Spencer <markster@digium.com>
- *
- * See http://www.asterisk.org for more information about
- * the Asterisk project. Please do not directly contact
- * any of the maintainers of this project for assistance;
- * the project provides a web site, mailing lists and IRC
- * channels for your use.
- *
- * This program is free software, distributed under the terms of
- * the GNU General Public License Version 2. See the LICENSE file
- * at the top of the source tree.
- *
--->
-<script src="scripts/prototype.js"></script>
-<script src="scripts/rico.js"></script>
-<script src="scripts/astman.js"></script>
-<script src="scripts/tooltip.js"></script>
-<link href="stylesheets/rico.css" media="all" rel="Stylesheet" type="text/css" />
-<link href="stylesheets/schwing.css" media="all" rel="Stylesheet" type="text/css" />
-<script>
+var rawman_url;
 var trunks_desc = new Object;
 var trunkcallbacks = new Object;
 var numplan_callbacks = new Object;
@@ -36,6 +19,40 @@ var isnewrule ;
 var iscustom ;
 var pattern_beingedited ;
 var pattern_beingedited_priority ;
+
+function localinit(){
+	//parent.$('next').disabled = true;
+	parent.$('next').onclick = function(){	 window.location.href="6.html"; };
+	parent.$('back').disabled = false;
+	parent.$('back').onclick  = function(){	 window.location.href="4.html"; };
+	rawman_url = parent.rawman_url ;
+	parent.astmanEngine.setURL(rawman_url);
+	ping();
+}
+
+function ping(){
+			var opt = {
+				method: 'get',
+				asynchronous: true,
+				onComplete: isloggedin
+			};
+			opt.parameters="action=ping" ;
+			var tmp = new Ajax.Request(rawman_url , opt);
+}
+
+function isloggedin(originalRequest){
+			if ( originalRequest.responseText.match("Error") ) {
+				// User is not logged in , show him the login screen
+				parent.window.location.href = parent.window.location.href ; 
+			}
+
+			if ( originalRequest.responseText.match("Pong") ) {
+				$('message_text').innerHTML ="Saving Changes...";
+				parent.astmanEngine.config2list("users.conf", $('trunks'), new Array(), trunkcallbacks);
+			}
+}
+
+
 
 
 function addthe_default_callingplan(){
@@ -59,7 +76,7 @@ function addthe_default_callingplan(){
 		}
 	};
 	opt.parameters= "action=updateconfig&reload=yes&srcfilename=" + encodeURIComponent("extensions.conf") + "&dstfilename=" + encodeURIComponent("extensions.conf") + uri;
-	var tmp = new Ajax.Request("../../rawman", opt);
+	var tmp = new Ajax.Request(rawman_url, opt);
 }
 
 
@@ -101,7 +118,6 @@ numplan_callbacks.format = function(t, x) {
 }
 
 numplan_callbacks.loaded = function() {
-	parent.loadscreen(this);
 	if(!default_numberplan){
 			// Redirect To creating a default Number Plan
 			addthe_default_callingplan();
@@ -154,8 +170,7 @@ numplan_callbacks.loaded = function() {
 				}				
 				if ( default_np_data[x][sorted_priorities[z]].trunk  == "" || trunk_exists == 0 ){
 						if(default_np_data[x][sorted_priorities[z]].trunk  == "" ){
-							alert("A Service Provider is not defined for this Rule ("+default_np_data[x][sorted_priorities[z]].rulename+")\n"
-						+" You will now be asked to choose a Service Provider ");
+							alert(" You will now be asked to choose a Service Provider \n and other settings for handling '"+default_np_data[x][sorted_priorities[z]].rulename +"' Calls");
 						}else if( trunk_exists == 0 ){
 							alert("Calling Rule ("+default_np_data[x][sorted_priorities[z]].rulename+") has an invalid Service Provider\n"
 						+" You will now be asked to choose from a list of existing Service Providers ");
@@ -230,7 +245,7 @@ function delete_callingrule(a,b,oncomplete){
 		opt.parameters= "action=updateconfig&reload=yes&srcfilename=" + encodeURIComponent("extensions.conf") + "&dstfilename=" + encodeURIComponent("extensions.conf") + uri;
 		$('userscontent').style.display="none";
 		$('status_message').style.display="block";
-		var tmp = new Ajax.Request("../../rawman", opt);
+		var tmp = new Ajax.Request(rawman_url, opt);
 }
 
 
@@ -366,7 +381,7 @@ function add_rule_fromeditform( this_priority, oncomplete ){
 					opt.parameters= "action=updateconfig&reload=yes&srcfilename=" + encodeURIComponent("extensions.conf") + "&dstfilename=" + encodeURIComponent("extensions.conf") + uri;
 					$('userscontent').style.display="none";
 					$('status_message').style.display="block";
-					var tmp = new Ajax.Request("../../rawman", opt);
+					var tmp = new Ajax.Request(rawman_url, opt);
 }
 
 
@@ -408,22 +423,30 @@ function	buildpatternstring(){
 	$('pattern').value = pattern;
 }
 
-function localajaxinit(){
-	$('message_text').innerHTML ="Saving Changes...";
-	parent.astmanEngine.config2list("users.conf", $('trunks'), new Array(), trunkcallbacks);
-}
-</script>
-<body id="foo" onload="localajaxinit()"  bgcolor="EFEFEF">
-<div class="mainscreenTitleBar">
-	<span style="margin-left: 4px;font-weight:bold;">Calling Rules</span>
-	<span style="cursor: pointer; cursor: hand;" onclick="window.location.href=window.location.href;" >&nbsp;<img src="images/refresh.png" title=" Refresh " border=0 >&nbsp;</span>
-</div>
-<div class="mainscreenContentBox" id="mailboxcontent">
-		<select id="extensions" style="display:none"></select>
-		<BR>
-		<CENTER><font size="+1">List of Calling Rules </font><BR>
-						in default dial plan - 'DialPlan1'
-		</CENTER>
+//-->
+</SCRIPT>
+<BODY bgcolor="#FFFFFF" onload="localinit()" topmargin=0 leftmargin=0>
+<table width="100%" height="100%" border=0 cellpadding=0 cellspacing=0>
+	<tr><td width="170" valign=top align=left>
+					<div id="menu">
+					<table cellpadding=3 cellspacing=2 border=0 id="sidelist">
+						<tr><td width=3></td><td>Start</td></tr>
+						<tr><td></td><td>Verify Analog Ports</td></tr>
+						<tr><td></td><td>Date & Time</td></tr>
+						<tr><td></td><td>Local Extension Settings</td></tr>
+						<tr><td></td><td>Service Providers</td></tr>
+						<tr><td></td><td class="slselected">Calling Rules</td></tr>
+						<tr><td></td><td>VoiceMail Settings</td></tr>
+						<tr><td></td><td>User Extensions</td></tr>
+						<!-- <tr><td></td><td>VoiceMenus</td></tr> -->
+						<tr><td></td><td>Finish</td></tr>
+					</table>
+					</div>
+			</td>
+			<td valign=top align=center>
+			<!--  this page -->
+					<select id="extensions" style="display:none"></select>
+					<div class="heading">Step 5 of <script>document.write(parent.numberofsteps);</script>&nbsp;&nbsp;-  Calling Rules</div>
 			<table class="table_blacksm" cellpadding=2 cellspacing=2 border=0 align=center width=500 id="table_one">
 				<tr>	<td width=35>S.No</td>
 						<td width=90>RuleName</td>
@@ -433,15 +456,14 @@ function localajaxinit(){
 				</tr>
 			</table>
 			<div id="callingRulesTable_div" style="height:250px;width=100%; overflow :auto; padding : 0px 0px 0px 0px;">
-			<table id="callingRulesTable" cellpadding=2 cellspacing=1 border=0 align=center width=500></table>
+				<table id="callingRulesTable" cellpadding=2 cellspacing=1 border=0 align=center width=500></table>
 			</div>
-		</font>
 
-		<center><div style="height:25px;color: #FF0000;" id='status'  class="field_text9"></div></center>
+<center><div style="height:25px;color: #FF0000;" id='status'  class="field_text9"></div></center>
 		<BR>
 		<center><input type="button" id="addrule" value="Add a Calling Rule" onclick="add_callingrule();"></center>
 		
-		<div id="userscontent" STYLE="display:none; position: absolute; left: 20; top: 40; width:500; height:290;  background-color:#F4EFE5;   border-width: 1px; border-color: #7E5538; border-style: solid;">
+		<div id="userscontent" STYLE="display:none; position: absolute; left: 225; top: 40; width:500; height:290;  background-color:#F4EFE5;   border-width: 1px; border-color: #7E5538; border-style: solid;">
 		<table width="100%" cellpadding=0 cellspacing=0>
 		<TR bgcolor="#7E5538" ><TD Height="20" align="right">
 					<A href="#" onclick="$('cancel_a').click();"><font style="color:#FFFFFF; font-size: 12px; font-weight:bold;">X</font></A>
@@ -452,23 +474,23 @@ function localajaxinit(){
 
 		<TABLE	align=center cellpadding=2 cellspacing=2 border=0 width="480">
 		<TR>
-			<TD align="right" width=175>Rule Name:</TD>
+			<TD align="right" width=175  class="field_text">Rule Name:</TD>
 			<TD><input type="text" id="rulename" size="" onChange="enablesave();" onkeyup="enablesave();"></TD>
 		</TR>
 		<TR>
-			<TD  align="right" height=40> Place this call through :</TD>
+			<TD  align="right" height=40  class="field_text"> Place this call through :</TD>
 			<TD><select id="trunks"></select></TD>
 		</TR>
 		<TR id="define_usual" height=100>
-			<TD valign="top" align=right>Dialing Rules :</TD>
-			<TD valign="top"> If the number begins with <input id="beginswith" type='text' size=6 onChange="enablesave();" onkeyup="enablesave();"> and 
+			<TD valign="top" align=right  class="field_text">Dialing Rules :</TD>
+			<TD valign="top"  class="field_text"> If the number begins with <input id="beginswith" type='text' size=6 onChange="enablesave();" onkeyup="enablesave();"> and 
 					followed by <input id="followedby" type='text' size=1> digits <input type="checkbox" id="ormore" onChange="enablesave();"> or more <BR>
 					<A href="#" onclick="ownpattern();">(define a custom pattern)</A>
 			</TD>
 		</TR>
 		
 		<TR id="define_advanced"  height=100>
-			<TD valign="top" align=right>
+			<TD valign="top" align=right  class="field_text">
 				Custom Pattern:
 			</TD>
 			<TD valign=top>
@@ -482,7 +504,7 @@ function localajaxinit(){
 		</TR>
 
 		<TR>
-			<TD colspan=2 align=center>Strip <input type="text" id="strip" size="1"  onChange="enablesave();" onkeyup="enablesave();"> digits from the front before dialing:</TD>
+			<TD colspan=2 align=center  class="field_text">Strip <input type="text" id="strip" size="1"  onChange="enablesave();" onkeyup="enablesave();"> digits from the front before dialing:</TD>
 		</TR>
 		<TR>
 			<TD colspan=2 align=center height=50 valign=middle>  
@@ -492,12 +514,15 @@ function localajaxinit(){
 		</TR>
 		</TABLE>
 
-		</div>
-
-</div>
+		</div>					
+			<!--  this page -->
+			</td>
+		</tr>
+</table>
 <SCRIPT LANGUAGE="JavaScript">
 <!--
 showdiv_statusmessage();
 //-->
 </SCRIPT>
-</body>
+</BODY>
+</HTML>

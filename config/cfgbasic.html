@@ -41,6 +41,7 @@
 	var accordion;
 	var copyright = "Copyright &copy;2006 Digium, Inc.  All Rights Reserved. &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
 	var tooltip_default = "Move the mouse over to a field to see tooltips";
+	var asterisk_guitools_inextconf = 0;
 
 	eventeater.eventcb = function(msgs) {
 		if (loggedon == 1){
@@ -74,6 +75,9 @@
 
 		new PanelDef("numberplan", "Calling Rules", "accordion-icon.gif",
 			"The Calling Rules define dialing permissions and least cost routing rules."),
+
+		new PanelDef("incoming", "Incoming Calls", "accordion-icon.gif",
+			"Define how your incoming calls should be handled & configure DID (Direct inward Dialing)"),
 
 //		new PanelDef("musiconhold", "Music On Hold", "accordion-icon.gif",
 //			"Music on hold sometimes keeps people less angry while they wait for an answer."),
@@ -183,8 +187,6 @@
 		opt2.parameters ="action=logoff";
 		var tmp2 = new Ajax.Request("../../rawman", opt2);
 	}
-
-
 
 </script>
 <head>

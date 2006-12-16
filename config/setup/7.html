@@ -1,0 +1,371 @@
+<HTML>
+<HEAD>
+	<TITLE> Asterik GUI Setup Wizard</TITLE>
+	<link href="setup.css" media="all" rel="Stylesheet" type="text/css" />
+</HEAD>
+<script src="../scripts/prototype.js"></script>
+<script src="../scripts/astman.js"></script>
+<SCRIPT LANGUAGE="JavaScript">
+<!--
+var rawman_url;
+var origwidth;
+var widgets = new Array;
+var adstatus;
+var callbacks = new Object;
+var phonecallbacks = new Object;
+var numcallbacks = new Object;
+var extencallbacks = new Object;
+var fieldnames = new Array( 'delete', 'status', 'new', 'save', 'cancel','name','fullname','secret','email','cid_number','zapchan','context','hasvoicemail','hasdirectory','hassip','hasiax','hasmanager','callwaiting','threewaycalling','mailbox','hasagent','group','host');
+
+callbacks.format = function(t) {
+	if ((t.name == 'general'))
+		return null;
+	if (t.name.substring(0,6) == 'trunk_')
+		return null;
+	if (t.fieldbyname['fullname'] && t.fieldbyname['fullname'].length) {
+		return t.name + " -- " + t.fieldbyname['fullname'];
+	} else
+		return t.name;
+}
+
+callbacks.savechanges = function(){
+	saveuserdetails();
+}
+
+callbacks.cancelnewcategory = function(){
+	hideuserdetails();
+}
+
+callbacks.cancelchanges = function(){
+	hideuserdetails();
+}
+
+
+callbacks.loaded = function() {
+	$('devices').contentEditable = 'true';
+	$('devices').disabled = 0;
+	// 
+	//$('cancel').addEventListener("click", hideuserdetails, false); 
+	//$('save').addEventListener("click", saveuserdetails, false); 
+	$('new').addEventListener("click", showuserdetails, false); 
+	loadusersintotable();
+}
+
+callbacks.sortfunc = function(a,b) {
+	return (a.name < b.name) ? -1 : 1;
+}
+
+callbacks.checkparams = function(box) {
+	$('mailbox').value = $('name').value;
+	$('group').value = '';
+	return false;
+}
+
+callbacks.newcategory = function() {
+	var tmp = null;
+	var x;
+	if ($('devices').stored_config.catbyname['general'])
+		tmp = objcopy($('devices').stored_config.catbyname['general']);
+	if (tmp) {
+		x = tmp.fieldbyname['userbase'];
+		if (x) {
+			tmp.name = first_free_exten($('devices'), x);
+		}
+	}
+	return tmp;
+}
+callbacks.identifier = "extension";
+callbacks.beforeSaving = function(){
+	if(!$('fullname').value.length){
+			alert("Sorry, a User Name must be specified !");
+			$('fullname').focus();
+			return false;
+	}
+	return true;
+}
+
+callbacks.postselect = function(box, val) {
+	if (adstatus == "hidden") {
+		adstatus = "shown";
+		 togglefeatures() ;
+	}
+	if( box.selectedIndex == -1)
+		return true;
+}
+
+phonecallbacks.format = function(t) {
+	if (t.fieldbyname['port'] == 'fxo')
+		return "Analog Port #" + t.name;
+	return null;
+}
+
+phonecallbacks.loaded = function() {
+	var noneopt = document.createElement("OPTION");
+	$('zapchan').options.add(noneopt,0);
+	noneopt.value = "";
+	noneopt.innerText = "None";
+	parent.astmanEngine.config2list("extensions.conf", $('context'), new Array(), numcallbacks);
+}
+
+numcallbacks.format = function(t) {
+	if ((t.name.substr(0,11) != 'numberplan-'))
+		return null;
+	if (t.fieldbyname['comment'])
+		return t.fieldbyname['comment'];
+	return t.name;
+}
+
+numcallbacks.loaded = function() {
+	parent.astmanEngine.config2list("users.conf", $('devices'), widgets, callbacks);
+}
+
+function localinit(){
+	//parent.$('next').disabled = true;
+	parent.$('next').onclick = function(){	 window.location.href="10.html"; };
+	parent.$('back').disabled = false;
+	parent.$('back').onclick  = function(){	 window.location.href="6.html"; };
+	rawman_url = parent.rawman_url ;
+	parent.astmanEngine.setURL(rawman_url);
+	ping();
+}
+
+function ping(){
+			var opt = {
+				method: 'get',
+				asynchronous: true,
+				onComplete: isloggedin
+			};
+			opt.parameters="action=ping" ;
+			var tmp = new Ajax.Request(rawman_url , opt);
+}
+
+function isloggedin(originalRequest){
+			if ( originalRequest.responseText.match("Error") ) {
+				// User is not logged in , show him the login screen
+				parent.window.location.href = parent.window.location.href ; 
+			}
+
+			if ( originalRequest.responseText.match("Pong") ) {
+					// start here
+					for (var x in fieldnames) {
+						widgets[fieldnames[x]] = $(fieldnames[x]);
+						widgets[fieldnames[x]].disabled = true;
+					}
+					parent.astmanEngine.config2list("zapscan.conf", $('zapchan'), new Array(), phonecallbacks);
+			}
+}
+
+
+function addrow_totable(username, extension){
+		var sno = $('userstable').rows.length + 1;
+		var newRow = $('userstable').insertRow(-1);
+		newRow.id = "row" + extension; 
+
+		var newCell0 = newRow.insertCell(0);
+		newCell0 .innerHTML = sno ;
+		newCell0 .style.width = 40;
+
+		var newCell1 = newRow.insertCell(1);
+		newCell1 .innerHTML = extension ;
+		newCell1 .style.width = 80;
+		newCell1 .align = "center";
+
+		var newCell2 = newRow.insertCell(2);
+		newCell2 .innerHTML = username ;
+
+		var newCell3 = newRow.insertCell(3);
+		newCell3 .innerHTML = " <A href=\"#\" onclick=\"edituser("+ extension +");\">Edit</A>&nbsp;&nbsp;&nbsp;&nbsp;<A href=\"#\" onclick=\"deleteuser("+ extension +");\">Delete</A>" ;
+		newCell3 .style.width = 120;
+		newCell3 .align = "center";
+
+}
+
+
+
+function edituser(extension){
+			for(var i=0; i< $('devices').length; i++){
+					//get username and get extension 
+					var tmp = $('devices').options[i].text.split(" -- ");
+					if(tmp[0] == extension){
+							$('devices').selectitem(i);
+							showuserdetails();
+							break;
+					}
+			}
+}
+
+
+function saveuserdetails(){
+		hideuserdetails();
+		loadusersintotable();
+}
+
+
+function hideuserdetails(){
+		$('usersettings').style.display = "none";
+}
+
+function showuserdetails(){
+		$('cancel').disabled = false;
+		$('usersettings').style.display = "block";
+}
+
+
+callbacks.delchanges = function(a,b,c){
+	deleteuser_fromui(b);
+}
+
+function deleteuser(extension){
+	// delete from users.conf
+	for(var i=0; i< $('devices').length; i++){
+				//get username and get extension 
+				var tmp = $('devices').options[i].text.split(" -- ");
+				if(tmp[0] == extension){
+							$('devices').selectedIndex = i ;
+							$('delete').disabled = 0;
+							if( !$('delete').click() ){
+								return;
+							}
+						break;
+				}
+	}
+}
+
+function deleteuser_fromui(extension){
+		// delete from UI
+		var delete_id = "row" + extension;
+		for( var i=0; i <  $('userstable'). rows.length; i++){
+			if  ( $('userstable'). rows[i].id == delete_id  ){
+				 $('userstable').deleteRow(i);
+				 loadusersintotable();
+				 break;
+			}
+		}
+}
+
+
+function loadusersintotable(){
+		for( var i=0; i <  $('userstable').rows.length; ){
+				 $('userstable').deleteRow(i);
+		}
+
+	for(i=0; i< $('devices').length; i++){
+		//get username and get extension 
+		var tmp = $('devices').options[i].text.split(" -- ");
+		addrow_totable(tmp[1], tmp[0]);
+	}
+}
+
+//-->
+</SCRIPT>
+<BODY bgcolor="#FFFFFF" onload="localinit()" topmargin=0 leftmargin=0>
+<table width="100%" height="100%" border=0 cellpadding=0 cellspacing=0>
+	<tr><td width="170" valign=top align=left>
+					<div id="menu">
+					<table cellpadding=3 cellspacing=2 border=0 id="sidelist">
+						<tr><td width=3></td><td>Start</td></tr>
+						<tr><td></td><td>Verify Analog Ports</td></tr>
+						<tr><td></td><td>Date & Time</td></tr>
+						<tr><td></td><td>Local Extension Settings</td></tr>
+						<tr><td></td><td>Service Providers</td></tr>
+						<tr><td></td><td>Calling Rules</td></tr>
+						<tr><td></td><td>VoiceMail Settings</td></tr>
+						<tr><td></td><td class="slselected">User Extensions</td></tr>
+						<!-- <tr><td></td><td>VoiceMenus</td></tr> -->
+						<tr><td></td><td>Finish</td></tr>
+					</table>
+					</div>
+			</td>
+			<td valign=top align=center>
+			<!--  this page -->
+				<div style="display:none">
+						<select id="devices" ></select>						
+						<select id='extensions' style="display:none" ></select>
+ 						<input type='button' id='delete' value='Delete'>
+				</div>
+				<div ID="usersettings"  STYLE="display:none; position: absolute; left: 240; top: 40; width:530; height:250;  background-color:#F4EFE5;   border-width: 1px; border-color: #7E5538; border-style: solid;">
+						<table width="100%" cellpadding=0 cellspacing=0>
+							<TR bgcolor="#7E5538" ><TD Height="20" align="right">
+										<A href="#" onclick="$('cancel').click();"><font style="color:#FFFFFF; font-size: 12px; font-weight:bold;">X</font></A>
+									</TD>
+									<TD width=4></TD>
+							</TR>
+						</table>						
+						<TABLE cellpadding=0 cellspacing=2 border=0 class="userdetails">
+						<TR>
+							<TD>User Extension</TD>
+							<TD><input size='5' id='name' pattern='^\d*$' class="input8"></TD>
+							<TD>Full Name:</TD>
+							<TD><input size='20' id='fullname' pattern='^[a-zA-Z_0-9 ]*$' class="input8"></TD>
+						</TR>
+						<TR>
+							<TD>Password:</TD>
+							<TD><input size='5' id='secret' pattern='^\d*$'  class="input8"></TD>
+							<TD>Email:</TD>
+							<TD><input size='20' id='email' pattern='^[0-9a-zA-Z\.\-\_\@]*$' class="input8"></TD>
+						</TR>
+						<TR>
+							<TD>Called Id:</TD>
+							<TD><input size='12' id='cid_number'  pattern='^[\d\-]*$' class="input8"></TD>
+							<TD>Analog Phone:</TD>
+							<TD><select size="1" id='zapchan' style='width:120px' class="input8"></select></TD>
+						</TR>
+						<TR>
+							<TD>Calling Rule:</TD>
+							<TD><select size='1' id='context' style='width:120px' class="input8"></select>
+										<input type='hidden' id='mailbox'><input type='hidden' id='group'>
+							</TD>
+							<TD>VoiceMail:</TD>
+							<TD><input type='checkbox' id='hasvoicemail'></TD>
+						</TR>
+						<TR>
+							<TD>In Directory:</TD>
+							<TD><input type='checkbox' id='hasdirectory'></TD>
+							<TD>SIP:</TD>
+							<TD><input type='checkbox' id='hassip'></TD>
+						</TR>
+						<TR>
+							<TD>CTI:</TD>
+							<TD><input type='checkbox' id='hasmanager'></TD>
+							<TD>IAX:</TD>
+							<TD><input type='checkbox' id='hasiax'></TD>
+						</TR>
+						<TR>
+							<TD>CallWaiting:</TD>
+							<TD><input type='checkbox' id='callwaiting'></TD>
+							<TD>3-Way Calling:</TD>
+							<TD><input type='checkbox' id='threewaycalling'></TD>
+						</TR>
+						<TR>
+							<TD>Is Agent:</TD>
+							<TD><input type='checkbox' id='hasagent'><input type='hidden' dfalt='dynamic' id='host'></TD>
+							<TD></TD>
+							<TD></TD>
+						</TR>
+						<TR>
+							<TD colspan=4 align=center>
+									<input type='button' id='save' value='Save'  class="buttonbold">&nbsp;&nbsp;
+									<input type='button' id='cancel' value='Cancel' class="buttonbold">
+							</TD>
+						</TR>
+						</TABLE>
+				</div>
+				<div class="heading">Step 7 of <script>document.write(parent.numberofsteps);</script>&nbsp;&nbsp;-  User Extensions </div>
+				<div class="subheading">List of User Extensions</div>
+				<table class="table_black" cellpadding=2 cellspacing=2 border=0 align=center width=600>
+					<tr>	<td width=40>S.no</td>
+							<td width="80">Extension</td>
+							<td>Name</td>
+							<td width="120" align=center>Options</td>
+					</tr>
+				</table>
+				<table id="userstable" cellpadding=2 cellspacing=1 border=0 align=center width=600>
+				</table>
+				<div style="height:25px" id='status'></div>
+				<input type='button' id='new' value='Add User Extension'>
+			<!--  this page -->
+			</td>
+		</tr>
+</table>
+</BODY>
+</HTML>

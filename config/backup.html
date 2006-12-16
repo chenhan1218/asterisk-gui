@@ -44,20 +44,7 @@ function removebkpfile(){
 	$('message_text').innerHTML = "Please wait while the system <BR> Generates a Backup ... ";
 	$('status_message').style.display="block";
 	//remove bkpfile on server 
-			var opt = {
-				method: 'get',
-				asynchronous: true,
-				onSuccess: function(t) { 
-					// file deleted on server
-					download_bkp();
-				},
-				onFailure: function(t) {
-					// file not deleted on server
-				}
-			};
-			opt.parameters="action=originate&channel=" + encodeURIComponent("Local/removefile@" + asterisk_guitools) + "&Variable=var1%3d"+ encodeURIComponent( bkp_path+ "conf_* -f")+"&application=noop&timeout=60000";
-			var tmp = new Ajax.Request("../../rawman", opt);	
-			return true;
+	parent.astmanEngine.run_tool("/bin/rm " + bkp_path+ "conf_* -f", download_bkp );
 }
 
 
@@ -78,20 +65,10 @@ function download_bkp(){
 		var minute =addzero(today.getMinutes());
 		var seconds =addzero(today.getSeconds());
 		bkpfile =  "conf_" + year + month + day + hour  + minute +seconds  +".tar";
-		var opt = {
-				method: 'get',
-				asynchronous: true,
-				onSuccess: function(t) { 
+		parent.astmanEngine.run_tool("/bin/tar -cf "+ bkp_path + bkpfile +" /etc/asterisk/", callback=function(){
 							$('status').innerHTML = " <I> Finished generating Backup ! </I>";
 							$('message_text').innerHTML = "<A href=\"./bkps/"+ bkpfile  +"\" onclick=\"showremovebkpfile()\">Click Here to Download</A>";
-				},
-				onFailure: function(t) {
-					$('status_message').style.display='none';
-					alert("Config Error: " + t.status + ": " + t.statusText);
-				}
-		};
-		opt.parameters="action=originate&channel=" + encodeURIComponent("Local/takebackup@"+asterisk_guitools) + "&Variable=var1%3d"+ encodeURIComponent( bkp_path + bkpfile)+"&application=noop&timeout=60000";
-		var tmp = new Ajax.Request("../../rawman", opt);
+		} );
 }
 
 </script>
