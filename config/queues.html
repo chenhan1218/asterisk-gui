@@ -199,7 +199,7 @@ function save_queue(){
 				q =0;
 				for (k=0;k< $('agents').length ;k++ ){
 						if( $('agents').options[k].selected ){
-							queueagents [r][q] = $('agents').options[k].innerHTML.substr(0,4);
+							queueagents [r][q] = $('agents').options[k].innerHTML.substr(0,localextenlength);
 							q = q+1;
 						}
 				}
@@ -226,7 +226,7 @@ function save_queue(){
 				for (k=0;k< $('agents').length ;k++ ){
 						selectedagent = "selectedagent" + k;
 						if( $(selectedagent).checked  ){
-							queueagents [j][q] = $('agents').options[k].innerHTML.substr(0,4);
+							queueagents [j][q] = $('agents').options[k].innerHTML.substr(0,localextenlength);
 							$('agents').options[k].selected = true;
 							q = q+1;
 						}else{
@@ -285,7 +285,7 @@ callbacks.identifier = "extension";
 callbacks.postselect = function (){	 }
 callbacks.format = function (t,x){
 		if ((t.name == 'general')){
-			if ( t.fieldbyname['localextenlength'] && t.fieldbyname['localextenlength'].length){ localextenlength =  t.fieldbyname['localextenlength'] ; }
+			if ( t.fieldbyname['localextenlength'] && t.fieldbyname['localextenlength'].length){ localextenlength =  parseInt(t.fieldbyname['localextenlength']) ; }
 			if ( t.fieldbyname['userbase'] && t.fieldbyname['userbase'].length){ userbase =  t.fieldbyname['userbase'] ; }
 			return null;
 		}
@@ -344,12 +344,12 @@ queuecallbacks.postselect = function(box, val ) {
 		$('testmulti').innerHTML ="";		
 		for (k=0;k< $('agents').length ;k++ ){
 			selectedagent = "selectedagent" + k;
-			if( InArray( queueagents [j], $('agents').options[k].innerHTML.substr(0,4) ) ){
+			if( InArray( queueagents [j], $('agents').options[k].innerHTML.substr(0,localextenlength) ) ){
 				$('agents').options[k].selected = true;	
-				$('testmulti').innerHTML += '<LABEL FOR=' + selectedagent + '><INPUT id="' + selectedagent + '" TYPE="CHECKBOX" VALUE="'+ $('agents').options[k].innerHTML.substr(0,4) + '" checked onclick="$(\'save_q\').disabled=false; $(\'cancel\').disabled=false;">&nbsp;' + $('agents').options[k].innerHTML.substr(8) +' (' + $('agents').options[k].innerHTML.substr(0,4) + ')' + '</LABEL><BR>';
+				$('testmulti').innerHTML += '<LABEL FOR=' + selectedagent + '><INPUT id="' + selectedagent + '" TYPE="CHECKBOX" VALUE="'+ $('agents').options[k].innerHTML.substr(0,localextenlength) + '" checked onclick="$(\'save_q\').disabled=false; $(\'cancel\').disabled=false;">&nbsp;' + $('agents').options[k].innerHTML.substr(localextenlength+4) +' (' + $('agents').options[k].innerHTML.substr(0,localextenlength) + ')' + '</LABEL><BR>';
 			}else{
 				$('agents').options[k].selected = false;
-				$('testmulti').innerHTML += '<LABEL FOR=' + selectedagent + '><INPUT id="' + selectedagent + '" TYPE="CHECKBOX" VALUE="'+ $('agents').options[k].innerHTML.substr(0,4) + '" onclick="$(\'save_q\').disabled=false; $(\'cancel\').disabled=false;">&nbsp;' + $('agents').options[k].innerHTML.substr(8) +' (' + $('agents').options[k].innerHTML.substr(0,4) + ')' +  '</LABEL><BR>';
+				$('testmulti').innerHTML += '<LABEL FOR=' + selectedagent + '><INPUT id="' + selectedagent + '" TYPE="CHECKBOX" VALUE="'+ $('agents').options[k].innerHTML.substr(0,localextenlength) + '" onclick="$(\'save_q\').disabled=false; $(\'cancel\').disabled=false;">&nbsp;' + $('agents').options[k].innerHTML.substr(localextenlength+4) +' (' + $('agents').options[k].innerHTML.substr(0,localextenlength) + ')' +  '</LABEL><BR>';
 			}
 		}
 		$('save_q').disabled = false;
@@ -366,7 +366,7 @@ queuecallbacks.newcategory = function(t) {
 		for (k=0;k< $('agents').length ;k++ ){
 				selectedagent = "selectedagent" + k;
 				$('agents').options[k].selected = false;
-				$('testmulti').innerHTML += '<LABEL FOR=' + selectedagent + '><INPUT id="' + selectedagent + '" TYPE="CHECKBOX" VALUE="'+ $('agents').options[k].innerHTML.substr(0,4) + '" onclick="$(\'save_q\').disabled=false; $(\'cancel\').disabled=false;">&nbsp;' + $('agents').options[k].innerHTML.substr(8) +' (' + $('agents').options[k].innerHTML.substr(0,4) + ')' +  '</LABEL><BR>';
+				$('testmulti').innerHTML += '<LABEL FOR=' + selectedagent + '><INPUT id="' + selectedagent + '" TYPE="CHECKBOX" VALUE="'+ $('agents').options[k].innerHTML.substr(0,localextenlength) + '" onclick="$(\'save_q\').disabled=false; $(\'cancel\').disabled=false;">&nbsp;' + $('agents').options[k].innerHTML.substr(localextenlength+4) +' (' + $('agents').options[k].innerHTML.substr(0,localextenlength) + ')' +  '</LABEL><BR>';
 		}
 	return tmp;
 }
