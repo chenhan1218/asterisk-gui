@@ -197,6 +197,7 @@ _install: _all $(SUBDIRS_INSTALL)
 	mkdir -p $(CONFIGDIR)/scripts
 	mkdir -p $(CONFIGDIR)/stylesheets
 	mkdir -p $(CONFIGDIR)/bkps
+	mkdir -p $(CONFIGDIR)/setup
 	@for x in gui_configs/*; do \
 		echo "$$x  -->  $(ASTETCDIR)" ; \
 		cp $$x $(ASTETCDIR)/ ; \
@@ -208,6 +209,10 @@ _install: _all $(SUBDIRS_INSTALL)
 	@for x in config/scripts/*; do \
 		echo "$$x  -->  $(CONFIGDIR)/scripts/" ; \
 		$(INSTALL) -m 644 $$x $(CONFIGDIR)/scripts/ ; \
+	done
+	@for x in config/scripts/*; do \
+		echo "$$x  -->  $(CONFIGDIR)/setup/" ; \
+		$(INSTALL) -m 644 $$x $(CONFIGDIR)/setup/ ; \
 	done
 	@for x in config/stylesheets/*; do \
 		echo "$$x  -->  $(CONFIGDIR)/stylesheets/" ; \
