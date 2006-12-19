@@ -53,21 +53,11 @@ function isloggedin(originalRequest){
 
 
 function update_sysinfo(){
-	var opt = {
-			method: 'get',
-			asynchronous: true,
-			onSuccess: function() { 
-					// then load the gui_sysinfo.conf
+	parent.astmanEngine.run_tool("sh /etc/asterisk/gui_sysinfo", onSuccess = function() { 
 					parent.astmanEngine.config2list("gui_sysinfo.conf", $('sysinfo'), new Array(), sysinfocallbacks);
-			},		
-			onFailure: function(t) {
-				$('status_message').style.display='none';
-				alert("Config Error: " + t.status + ": " + t.statusText);
-			}
-		};
-		opt.parameters="action=originate&channel=" + encodeURIComponent("Local/sysinfo@"+parent.asterisk_guitools) + "&application=noop&timeout=60000";
-		var tmp = new Ajax.Request(rawman_url, opt);
-		return;
+				}
+	);
+	return;
 }
 
 sysinfocallbacks.format = function(t, x) {
@@ -105,8 +95,16 @@ sysinfocallbacks.loaded = function(){
 		}
 
 		var temp = timeofday.split(':');
+
+		if(parseInt(temp[0]) <=12 ){
+				var hourofday = parseInt(temp[0]);
+				$('ampm').selectedIndex = 0;
+		}else{
+				var hourofday = parseInt(temp[0]) -12 ;
+				$('ampm').selectedIndex = 1;
+		}
 		for(var i=0; i < $('hod').length; i++){
-					if (  $('hod').options[i].value == parseFloat(temp[0])  ){
+					if (  $('hod').options[i].value ==  hourofday ){
 							$('hod').selectedIndex = i;
 							break;
 					}
@@ -151,8 +149,14 @@ function update_systemdate(){
 		};
 
 		// prepare commands to set the date 
+		if( $('ampm').value == "AM"  ){
+			var hourofday = $('hod').value;
+		}else if( $('ampm').value == "PM"  ){
+			var hourofday = parseInt( $('hod').value) + 12 ;
+		}
+
 		var newdate = $('year').value + "-" + ($('moy').selectedIndex +1) + "-" + $('dom').value + " " 
-		+$('hod').value + ":" + $('minute').value + ":" + $('second').value ;
+		+ hourofday + ":" + $('minute').value + ":" + $('second').value ;
 
 		opt.parameters="action=originate&channel=" + encodeURIComponent("Local/executecommand@"+parent.asterisk_guitools ) + "&Variable=command%3d"+ encodeURIComponent("date --set='" + newdate + "'" ) + "&application=noop&timeout=60000";
 		var tmp = new Ajax.Request(rawman_url, opt);
@@ -210,7 +214,7 @@ function update_systemdate(){
 						<!-- Time -->
 								<select id="hod" onchange="updated();">
 								<SCRIPT LANGUAGE="JavaScript">
-										for(var i=1; i < 24; i++){
+										for(var i=1; i < 13; i++){
 											var x = '';
 											if( i < 10) { x = '0' ; }
 											document.write( '<option value="' + x + i + '">' + x +i + '</option>' ); 
@@ -232,6 +236,7 @@ function update_systemdate(){
 											document.write( '<option value="' + x +i + '">' + x +i + '</option>' ); 
 										}
 								</SCRIPT>
+								&nbsp;<select id="ampm" onchange="updated();"><option value="AM">AM</option><option value="PM">PM</option></select>
 								</select>
 						<!-- Time -->
 						</TD>
@@ -257,7 +262,3 @@ function update_systemdate(){
 </table>
 </BODY>
 </HTML>
-
-
-
-
