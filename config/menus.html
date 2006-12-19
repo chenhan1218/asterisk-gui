@@ -139,8 +139,8 @@ function select_menu (my_field_options, menustring){
 		}
 		// if not in the current list of voicemenus/extensions then add it to the menu
 		var newoption = document.createElement("option"); 
-		newoption.text = tmp1[0] ; 
-		newoption.value = tmp1[0] ;
+		newoption.text = tmp1[1] ; 
+		newoption.value = tmp1[1] ;
 		$(my_field_options).options.add(newoption);
 		$(my_field_options).options[y].style.fontWeight = 'bold';
 		$(my_field_options).options[y].selected = true;
