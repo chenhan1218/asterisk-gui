@@ -67,7 +67,9 @@ function download_bkp(){
 		bkpfile =  "conf_" + year + month + day + hour  + minute +seconds  +".tar";
 		parent.astmanEngine.run_tool("/bin/tar -cf "+ bkp_path + bkpfile +" /etc/asterisk/", callback=function(){
 							$('status').innerHTML = " <I> Finished generating Backup ! </I>";
-							$('message_text').innerHTML = "<A href=\"./bkps/"+ bkpfile  +"\" onclick=\"showremovebkpfile()\">Click Here to Download</A>";
+							$('status_message').style.display="none";
+							window.location.href = "./bkps/"+ bkpfile ;
+							//$('message_text').innerHTML = "<A href=\"./bkps/"+ bkpfile  +"\" onclick=\"showremovebkpfile()\">Click Here to Download</A>";
 		} );
 }
 

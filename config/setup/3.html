@@ -75,6 +75,15 @@ usercallbacks.savechanges = function(){
 	window.location.href= go; 
 }
 
+usercallbacks.beforeSaving= function(){
+		if(	$('localextenlength').value != $('userbase').value.length ){
+			alert("'length of Local Extensions' does not match \n the 'length of the Starting point of Allocation'");
+			return false;
+		}
+	return true;
+}
+
+
 usercallbacks.loaded = function(){
 		$('devices').selectitem(0);
 		parent.$('next').disabled = false;	

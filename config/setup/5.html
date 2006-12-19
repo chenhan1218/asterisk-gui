@@ -19,6 +19,7 @@ var isnewrule ;
 var iscustom ;
 var pattern_beingedited ;
 var pattern_beingedited_priority ;
+var oldselect;
 
 function localinit(){
 	//parent.$('next').disabled = true;
@@ -97,8 +98,14 @@ trunkcallbacks.format = function(t) {
 }
 
 trunkcallbacks.loaded = function(){
-	$('trunks').addEventListener('change',enablesave,false);
+	$('trunks').addEventListener('click',hackenablesave,false);
 	parent.astmanEngine.config2list("extensions.conf", $('extensions'), new Array(), numplan_callbacks);
+}
+
+function hackenablesave(){
+	if( oldselect != $('trunks').value ){
+		enablesave();
+	}
 }
 
 numplan_callbacks.format = function(t, x) {
@@ -260,7 +267,7 @@ function delete_callingrule(a,b,oncomplete){
 function editcallingrule(a,b){
 	pattern_beingedited = a ;
 	pattern_beingedited_priority = b ;
-
+	oldselect = $('trunks').value;
 	isnewrule = false;
 	$('rulename').value = default_np_data[a][b].rulename;
 	$('trunks').selectedIndex = -1 ;

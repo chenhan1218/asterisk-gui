@@ -36,7 +36,7 @@ var isnewrule ;
 var iscustom ;
 var pattern_beingedited ;
 var pattern_beingedited_priority ;
-
+var oldselect;
 
 function addthe_default_callingplan(){
 	t=confirm("A default Dial Plan is not found. \n" + " Do you want to create a default Dial Plan ");
@@ -80,8 +80,14 @@ trunkcallbacks.format = function(t) {
 }
 
 trunkcallbacks.loaded = function(){
-	$('trunks').addEventListener('change',enablesave,false);
+	$('trunks').addEventListener('click',hackenablesave,false);
 	parent.astmanEngine.config2list("extensions.conf", $('extensions'), new Array(), numplan_callbacks);
+}
+
+function hackenablesave(){
+	if( oldselect != $('trunks').value ){
+		enablesave();
+	}
 }
 
 numplan_callbacks.format = function(t, x) {
@@ -153,15 +159,13 @@ numplan_callbacks.loaded = function() {
 						}
 				}				
 				if ( default_np_data[x][sorted_priorities[z]].trunk  == "" ){
-							alert("A Service Provider is not defined for this Rule ("+default_np_data[x][sorted_priorities[z]].rulename+")\n"
-						+" You will now be asked to choose a Service Provider ");
+							alert("Note: A Service Provider is not defined for this Rule ("+default_np_data[x][sorted_priorities[z]].rulename+")\n");
 							$('trunks').selectedIndex = -1;
 						//editcallingrule(x , sorted_priorities[z]);
 						//return true;
 						addrowtotable( x , sorted_priorities[z] , "undefined" , default_np_data[x][sorted_priorities[z]].digits2strip );
 				}else if(trunk_exists == 0){
-							alert("Calling Rule ("+default_np_data[x][sorted_priorities[z]].rulename+") has an invalid Service Provider\n"
-						+" You will now be asked to choose from a list of existing Service Providers ");
+							alert("Note: Calling Rule ("+default_np_data[x][sorted_priorities[z]].rulename+") has an invalid Service Provider\n");
 							$('trunks').selectedIndex = -1;							
 						addrowtotable( x , sorted_priorities[z] , "invalid" , default_np_data[x][sorted_priorities[z]].digits2strip );							
 				}else{
@@ -249,7 +253,7 @@ function delete_callingrule(a,b,oncomplete){
 function editcallingrule(a,b){
 	pattern_beingedited = a ;
 	pattern_beingedited_priority = b ;
-
+	oldselect = $('trunks').value;
 	isnewrule = false;
 	$('rulename').value = default_np_data[a][b].rulename;
 	$('trunks').selectedIndex = -1 ;
