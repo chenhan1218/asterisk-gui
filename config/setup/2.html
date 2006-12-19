@@ -96,19 +96,36 @@ sysinfocallbacks.loaded = function(){
 
 		var temp = timeofday.split(':');
 
-		if(parseInt(temp[0]) <=12 ){
-				var hourofday = parseInt(temp[0]);
-				$('ampm').selectedIndex = 0;
+		var hourofday = parseInt(temp[0]);
+		if(hourofday <=12 ){
+				if(hourofday == 0){
+							$('hod').selectedIndex = 11;
+							$('ampm').selectedIndex = 0;
+				}else if(hourofday == 12){
+							$('hod').selectedIndex = 11;
+							$('ampm').selectedIndex = 1;
+				}else{
+							for(var i=0; i < $('hod').length; i++){
+									if (  $('hod').options[i].value ==  hourofday ){
+											$('hod').selectedIndex = i;
+											break;
+									}
+							}
+							$('ampm').selectedIndex = 0;
+				}
 		}else{
 				var hourofday = parseInt(temp[0]) -12 ;
 				$('ampm').selectedIndex = 1;
+				for(var i=0; i < $('hod').length; i++){
+						if (  $('hod').options[i].value ==  hourofday ){
+								$('hod').selectedIndex = i;
+								break;
+						}
+				}
 		}
-		for(var i=0; i < $('hod').length; i++){
-					if (  $('hod').options[i].value ==  hourofday ){
-							$('hod').selectedIndex = i;
-							break;
-					}
-		}
+
+
+		
 		for(var i=0; i < $('minute').length; i++){
 					if (  $('minute').options[i].value == parseFloat(temp[1])  ){
 							$('minute').selectedIndex = i;
@@ -150,9 +167,17 @@ function update_systemdate(){
 
 		// prepare commands to set the date 
 		if( $('ampm').value == "AM"  ){
-			var hourofday = $('hod').value;
-		}else if( $('ampm').value == "PM"  ){
-			var hourofday = parseInt( $('hod').value) + 12 ;
+				if( $('hod').value == "12"  ){
+					var hourofday = "00";
+				}else{
+					var hourofday = $('hod').value;
+				}
+		}else if( $('ampm').value == "PM"){
+				if( $('hod').value == "12" ){
+					var hourofday = parseInt( $('hod').value) ;
+				}else{
+					var hourofday = parseInt( $('hod').value) + 12 ;				 
+				}
 		}
 
 		var newdate = $('year').value + "-" + ($('moy').selectedIndex +1) + "-" + $('dom').value + " " 
