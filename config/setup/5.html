@@ -259,9 +259,10 @@ function editcallingrule(a,b){
 	$('rulename').value = default_np_data[a][b].rulename;
 	$('trunks').selectedIndex = -1 ;
 	for(var i=0; i < $('trunks').length ; i++ ){
-			if( $('trunks').options[i].value == default_np_data[a][b].trunk )
+			if( $('trunks').options[i].value == default_np_data[a][b].trunk ){
 			$('trunks').selectedIndex = i ;
 			break;
+			}
 	}
 	$('pattern').value = a;
 	$('strip').value = default_np_data[a][b].digits2strip;
