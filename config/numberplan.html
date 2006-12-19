@@ -152,18 +152,21 @@ numplan_callbacks.loaded = function() {
 							break;
 						}
 				}				
-				if ( default_np_data[x][sorted_priorities[z]].trunk  == "" || trunk_exists == 0 ){
-						if(default_np_data[x][sorted_priorities[z]].trunk  == "" ){
+				if ( default_np_data[x][sorted_priorities[z]].trunk  == "" ){
 							alert("A Service Provider is not defined for this Rule ("+default_np_data[x][sorted_priorities[z]].rulename+")\n"
 						+" You will now be asked to choose a Service Provider ");
-						}else if( trunk_exists == 0 ){
+							$('trunks').selectedIndex = -1;
+						//editcallingrule(x , sorted_priorities[z]);
+						//return true;
+						addrowtotable( x , sorted_priorities[z] , "undefined" , default_np_data[x][sorted_priorities[z]].digits2strip );
+				}else if(trunk_exists == 0){
 							alert("Calling Rule ("+default_np_data[x][sorted_priorities[z]].rulename+") has an invalid Service Provider\n"
 						+" You will now be asked to choose from a list of existing Service Providers ");
-						}
-						editcallingrule(x , sorted_priorities[z]);
-						return true;
+							$('trunks').selectedIndex = -1;							
+						addrowtotable( x , sorted_priorities[z] , "invalid" , default_np_data[x][sorted_priorities[z]].digits2strip );							
+				}else{
+						addrowtotable( x , sorted_priorities[z] , default_np_data[x][sorted_priorities[z]].trunk , default_np_data[x][sorted_priorities[z]].digits2strip );
 				}
-				addrowtotable( x , sorted_priorities[z] , default_np_data[x][sorted_priorities[z]].trunk , default_np_data[x][sorted_priorities[z]].digits2strip );
 			}
 	} 
 }
@@ -189,9 +192,16 @@ function addrowtotable(a,b,c,d){	// a is pattern, b is priority, c is trunk, d i
 		var newCell2 = newRow.insertCell(2);
 		newCell2.innerHTML =  default_np_data[a][b].ruledesc ; 
 
-		var newCell3 = newRow.insertCell(3);
-		newCell3.innerHTML = trunks_desc[c].comment  ;
-		newCell3.width=85;
+
+		if(c == "invalid" || c== "undefined"  ){
+			var newCell3 = newRow.insertCell(3);
+			newCell3.innerHTML = "<B><font color=red>" + c + " trunk </font></B>"  ;
+			newCell3.width=85;
+		}else{
+			var newCell3 = newRow.insertCell(3);
+			newCell3.innerHTML = trunks_desc[c].comment  ;
+			newCell3.width=85;
+		}
 
 		var newCell4 = newRow.insertCell(4);
 		newCell4.innerHTML = "<A href=\"#\" onclick=\"editcallingrule('"+ a +"', '"+ b +"')\">Edit</A>&nbsp;&nbsp;<A href=\"#\" onclick=\"deletecallingrule('"+ a +"', '"+ b +"')\">Delete</A>";
