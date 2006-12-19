@@ -210,7 +210,7 @@ _install: _all $(SUBDIRS_INSTALL)
 		echo "$$x  -->  $(CONFIGDIR)/scripts/" ; \
 		$(INSTALL) -m 644 $$x $(CONFIGDIR)/scripts/ ; \
 	done
-	@for x in config/scripts/*; do \
+	@for x in config/setup/*; do \
 		echo "$$x  -->  $(CONFIGDIR)/setup/" ; \
 		$(INSTALL) -m 644 $$x $(CONFIGDIR)/setup/ ; \
 	done
