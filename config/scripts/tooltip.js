@@ -191,7 +191,7 @@ function show_tooltip(lang, file,tip){
 	// Tooltips for Service Providers (trunks)
 	tooltips['trunks']= new Object;
 	tooltips['trunks'].en = new Array;
-	tooltips['trunks'].en[0] = "<B>Analog/Voip Trunks:</B> Analog lines attached to analog interfaces of the PBX where as a Voice over IP (VoIP) connection provided by an Internet Telephony Service Provide (ITSP).";
+	tooltips['trunks'].en[0] = "<B>Analog/Voip Trunks:</B> Analog lines are attached to analog interfaces of the PBX using FXO cards. Voice over IP (VoIP) connections are provided by an Internet Telephony Service Provider (ITSP).";
 	tooltips['trunks'].en[1] = "<B>Provider:</B> Please select provider of your voice transport service.";
 	tooltips['trunks'].en[2] = "<B>Lines:</B> Individual lines of the PBX Ex: Analog Port #3: The third analog port of the PBX.";
 	tooltips['trunks'].en[3] = "<B>Username:</B> The username for your account with the provider - please contact your provider if you do not know it.";

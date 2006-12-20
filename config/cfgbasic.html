@@ -188,6 +188,11 @@
 		var tmp2 = new Ajax.Request("../../rawman", opt2);
 	}
 
+	function system_link(){
+		var newwindow_href = location.protocol + '//' + location.hostname + ':8003';
+		window.open(newwindow_href ,'mainwindow','width=1024,height=768,resizable=no, scrollbars=no, toolbar=no, location=no,status=yes, menubar=no')
+	}
+
 </script>
 <head>
 	<title>Asterisk Configuration GUI</title>
@@ -197,6 +202,7 @@
 <table border="0" align="center" cellspacing="0" cellpadding="0" bgcolor="#dddddd" width=950 height=570>
 <tr height=47><td valign="bottom" align='right' bgcolor='white' height=47><img align='left' src="images/digiumlogo.gif" align="left"></td>
 							<td valign='bottom' align='right' bgcolor='white' colspan=2>
+									<!-- <a href="#" onclick=" system_link()">System Configuration</a>&nbsp;|&nbsp; -->
 									<a target='_extern' href="http://www.digium.com/en/company/profile/">About Digium</a>&nbsp;|&nbsp;<a href="#">Help</a>&nbsp;
 									<input type="hidden" id="login_name">
 							</td>
@@ -234,7 +240,7 @@
 		</td>
 </tr>
 <tr><td colspan="3" align=center height=18>
-		<div id="status" class="statusbar">Copyright &copy;2006 Digium, Inc.  Digium&reg; and Asterisk&reg; are registered <a href="http://www.digium.com/en/company/profile/trademarkpolicy.php">trademarks</a> of Digium, Inc.  All Rights Reserved. <i><a href="#">Legal Information</a></i></div>
+		<div id="status" class="statusbar">Copyright &copy;2006-2007 Digium, Inc.  Digium&reg; and Asterisk&reg; are registered <a href="http://www.digium.com/en/company/profile/trademarkpolicy.php">trademarks</a> of Digium, Inc.  All Rights Reserved. <i><a href="#">Legal Information</a></i></div>
 		</td>
 </tr>
 </table>
