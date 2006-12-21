@@ -6,7 +6,7 @@ if [ -f /etc/zaptel.conf.zapscan ] && [ -f /etc/asterisk/zapata.conf.zapscan ]; 
 	( echo "; Created by zapscan -- edit zapata.conf.zapscan instead" ; cat /etc/asterisk/zapata.conf.zapscan ) > /etc/asterisk/zapata.conf
 	rm -f /etc/asterisk/zapscan.conf
 	echo -n "Scanning for zaptel devices..."
-	if /sbin/zapscan.bin; then
+	if /usr/sbin/zapscan.bin; then
 		echo "OK"
 	else
 		echo "Failed!"
