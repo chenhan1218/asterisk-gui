@@ -22,7 +22,7 @@
  var sc_displaytime = 1000;
  var asterisk_guitools = "asterisk_guitools";
  var asterisk_guitoolsversion = "0.7";
- var asterisk_guiversion = "$Revision: $";
+ var asterisk_guiversion = "$Revision$";
 var sortbynames = false;
 
 function check_patternonfields(fields){
