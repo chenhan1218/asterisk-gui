@@ -24,17 +24,357 @@
 <link href="stylesheets/rico.css" media="all" rel="Stylesheet" type="text/css" />
 <link href="stylesheets/schwing.css" media="all" rel="Stylesheet" type="text/css" />
 <script>
+var numplan_callbacks = new Object;
+var user_callbacks = new Object;
+var didtrunks = new Object;
+var editstatus ;
+var old_incomingrule, old_fromprovider ;
+var  edit_pattern, edit_DIDtrunk, edit_action, edit_priority ;
 
-// ok 
-// Get list of user extensions to pick for mapping DIDs
-// 
+
+user_callbacks.format = function(t, x) {
+	var tmp = 'DID_' + t.name;
+	if ( t.name.substring(0,6) == 'trunk_' && x == undefined){
+		didtrunks[tmp] = new Object();
+		return t.name;
+	}
+	if ( t.name.substring(0,6) == 'trunk_'  && t.names[x]=='trunkname' ){
+		didtrunks[tmp].trunkname = t.fields[x];
+	}
+	return false;
+}
+
+user_callbacks.loaded = function(){
+	parent.astmanEngine.config2list("extensions.conf", $('extensions'), new Array(), numplan_callbacks);
+}
+user_callbacks.eachline = true;
+user_callbacks.includecats = true;
+
+// parse all contexts in extensions.conf that look like [DID_trunk_x]
+// and show each entry in the table
+numplan_callbacks.format = function(t, x) {
+	if (t.name.substring(0,10) == 'DID_trunk_' && x == undefined){
+		if(typeof didtrunks[t.name] == "undefined"){
+			didtrunks[t.name] = new Object();
+			didtrunks[t.name].trunkname = t.name;
+		}
+		return t.name;
+	}
+	if (t.name.substring(0,10) == 'DID_trunk_' && t.names[x]=='exten' ){
+		//get pattern & action
+		var temp = t.fields[x].split(',');
+		didtrunks[t.name][temp[0]] = new Object();
+		didtrunks[t.name][temp[0]].priority = temp[1];
+		didtrunks[t.name][temp[0]].action = temp[2];
+	}
+	return false;
+}
+
+numplan_callbacks.loaded = function() {
+	// load list of trunks to 'fromprovider'
+	var t ;
+	for ( t in didtrunks){
+		if( t == "extend")continue ;
+		  var a = document.createElement('option');
+		  a.text = didtrunks[t].trunkname ;
+		  a.value = t ;
+		  var b = document.getElementById('fromprovider');
+		  try {
+			b.add(a, null); 
+		  }
+		  catch(ex) {
+			b.add(a); 
+		  }
+	}
+	parent.loadscreen(this);
+	// load the object didtrunks into the table callingRulesTable
+	refreshtable();
+}
+
+numplan_callbacks.eachline = true;
+numplan_callbacks.includecats = true;
+
+function refreshtable(){
+	for( var i=0; i <  $('callingRulesTable').rows.length; ){
+			 $('callingRulesTable').deleteRow(i);
+	}
+	
+	for ( var i in didtrunks ){ // for each trunk
+			if( i == "extend"){ continue;}
+			for(var j in didtrunks[i]){ // for each parttern of the trunk
+				if( j == "extend" || j == "trunkname"){ continue;}
+					addrowtotable( j, i, didtrunks[i][j].action, didtrunks[i][j].priority);
+			}
+	}
+}
+
+function addrowtotable(a,b,c,d){	// a is pattern, b is DID_trunk, c is action, d is priority
+		var sno = $('callingRulesTable').rows.length + 1;
+		var newRow = $('callingRulesTable').insertRow(-1);
+		newRow.id = "row" + sno; 
+		
+		var newCell0 = newRow.insertCell(0);
+		newCell0.innerHTML = sno ;
+		newCell0.align="center";
+		newCell0.width=35;
+
+		var newCell1 = newRow.insertCell(1);
+		newCell1.innerHTML =  convert_tohuman(a,b,c) ; 
+
+		var newCell2 = newRow.insertCell(2);
+		newCell2.innerHTML = "<A href=\"#\" onclick=\"edit_incomingrule('"+ a +"', '"+ b +"', '" + c + "','" + d+"')\">Edit</A>&nbsp;&nbsp;<A href=\"#\" onclick=\"delete_incomingrule('"+ a +"', '"+ b +"', '" + c + "','" + d+"')\">Delete</A>";
+		newCell2.width=75;
+		newCell2.align="center";
+		return true;
+}
 
 
+function convert_tohuman(a,b,c) { // a is pattern, b is DID_trunk, c is action, 
+	var trunk = b.substr(4) ;
+	if( c.match("Goto") && !c.match("voicemenu-")  ){ 
+		var tmp = c.split('(');
+		var exten = tmp[1].split('|'); // extension is exten[1]
+	}
+
+	if( a == "_X."){ // handling all unmatched 
+		return " Route all unmatched incoming calls from provider '" + trunk + "' to extension '" + exten[1] + "'" ; 
+	}
+	return " Route incoming calls from provider '" + trunk + "' that macth pattern '" + a + "' to extension '" + exten[1] + "'"  ; 
+}
+
+
+function add_incomingrule(){
+	editstatus = "NEW";
+	$('incomingrule').selectedIndex = 0;
+	$('fromprovider').selectedIndex = -1;
+	old_incomingrule = "allunmatched";
+	old_fromprovider = "";
+	$('toextension').value = "";
+	$('frompattern').value = "";
+	$('save_a').disabled = true;
+	$('thatmatch').style.display = "none" ;
+	$('userscontent').style.display = "";
+}
+
+function edit_incomingrule(a,b,c,d){// a is pattern, b is DID_trunk, c is action, d is priority
+	edit_pattern = a; 
+	edit_DIDtrunk = b;
+	edit_action = c; 
+	edit_priority=d ;
+
+	editstatus = "EDIT";
+	if(a == "_X."){
+		$('incomingrule').selectedIndex = 0;
+		$('thatmatch').style.display = "none" ;
+		old_incomingrule = "allunmatched";
+	}else{
+		$('frompattern').value = a ;
+		$('incomingrule').selectedIndex = 1;
+		$('thatmatch').style.display = "" ;
+		old_incomingrule = "frompattern";
+	}
+
+	for(var i=0; i < $('fromprovider').length ; i++){
+		if($('fromprovider').options[i].value == b){
+			$('fromprovider').selectedIndex = i;		
+			old_fromprovider = b;
+			break;
+		}
+	}
+
+	if( c.match("Goto") && !c.match("voicemenu-")  ){ 
+		var tmp = c.split('(');
+		var exten = tmp[1].split('|'); // extension is exten[1]
+		$('toextension').value = exten[1];
+	}
+
+	$('userscontent').style.display = "";
+}
+
+
+function save_incomingrule(){
+	if(	editstatus == "NEW"){
+		save_new_incomingrule();
+	}else if ( editstatus == "EDIT" ){
+		update_incomingrule();
+	}
+}
+
+
+function save_new_incomingrule(){
+	// field validation 
+	if($('incomingrule').value == "frompattern" && $('frompattern').value == "" ){
+		alert("Please define an incoming call pattern !");
+		$('frompattern').focus();
+		$('frompattern').select();
+		return false;
+	}
+	if( $('fromprovider').selectedIndex == -1 ){
+		alert("Please select a serive provider !");
+		$('fromprovider').focus();
+		return false;
+	}
+	if( $('toextension').value == "" ){
+		alert("Please select an extension to which an incoming call should be routed to !");
+		$('toextension').focus();
+		return false;
+	}
+
+	// create an entry under the selected trunk
+	// $('incomingrule') == "allunmatched" or "frompattern" , $('frompattern'), $('fromprovider'), $('toextension')
+	if ($('incomingrule').value == "allunmatched" ){
+		var newpattern = "_X." ;
+	}else{
+		var newpattern = $('frompattern').value ;
+	}
+	var temp_provider = $('fromprovider').value ;
+	var temp_action = "Goto(default|" + $('toextension').value + "|1)";
+	var temp_priority = "1";
+
+	// check whether there is an existing entry with this pattern 
+	if( typeof didtrunks[temp_provider][newpattern] != "undefined" ){
+		alert("An incoming call rule is already defined \n on this trunk for the selcted pattern !! ");
+		return false;
+	}
+	
+		var opt = {
+			method: 'get',
+			asynchronous: true,
+			onSuccess: function(t) { 									
+				// add this to the global object
+				didtrunks[temp_provider][newpattern] = new Object();
+				didtrunks[temp_provider][newpattern].priority = temp_priority;
+				didtrunks[temp_provider][newpattern].action = temp_action ;
+				addrowtotable(newpattern,temp_provider,temp_action,temp_priority) ; // a is pattern, b is DID_trunk, c is action, d is priority
+				$('userscontent').style.display = "none";
+			},
+			onFailure: function(t) {
+				alert("Config Error: " + t.status + ": " + t.statusText);
+			}
+		};
+		var new_exten = newpattern  + "," + temp_priority + "," + temp_action;
+		var uri = build_action('append', 0, temp_provider ,"exten", new_exten ); 
+		opt.parameters="action=updateconfig&reload=yes&srcfilename=" + encodeURIComponent("extensions.conf") + "&dstfilename=" + encodeURIComponent("extensions.conf") + uri;
+		var tmp = new Ajax.Request("../../rawman", opt);
+	// 
+}
+
+
+function update_incomingrule(){
+	// field validation 
+	if($('incomingrule').value == "frompattern" && $('frompattern').value == "" ){
+		alert("Please define an incoming call pattern !");
+		$('frompattern').focus();
+		$('frompattern').select();
+		return false;
+	}
+	if( $('toextension').value == "" ){
+		alert("Please select an extension to which an incoming call should be routed to !");
+		$('toextension').focus();
+		return false;
+	}
+
+	// old values before editing are - edit_pattern, edit_DIDtrunk, edit_action, edit_priority
+	// check for duplicate other than old
+	if ($('incomingrule').value == "allunmatched" ){
+		var newpattern = "_X." ;
+	}else{
+		var newpattern = $('frompattern').value ;
+	}
+	var temp_provider = $('fromprovider').value ;
+	var temp_action = "Goto(default|" + $('toextension').value + "|1)";
+	var temp_priority = "1";
+
+	if( typeof didtrunks[temp_provider][newpattern] != "undefined" && ( temp_provider != edit_DIDtrunk || newpattern != edit_pattern ) ){
+		alert("An incoming call rule is already defined \n on this trunk for the selcted pattern !! ");
+		return false;
+	}
+	
+
+	// delete old entry and add new entry
+	var opt = {
+		method: 'get',
+		asynchronous: true,
+		onSuccess: function(t) { 									
+			delete didtrunks[edit_DIDtrunk][edit_pattern] ;
+			didtrunks[temp_provider][newpattern] = new Object();
+			didtrunks[temp_provider][newpattern].priority = temp_priority;
+			didtrunks[temp_provider][newpattern].action = temp_action ;
+			$('userscontent').style.display = "none";
+			refreshtable();
+		},
+		onFailure: function(t) {
+			alert("Config Error: " + t.status + ": " + t.statusText);
+		}
+	};
+	var tmp_old_string = edit_pattern  + "," + edit_priority + "," + edit_action;
+	var uri = build_action('delete', 0, edit_DIDtrunk ,"exten", "", tmp_old_string); 
+	var new_exten = newpattern  + "," + temp_priority + "," + temp_action;
+	uri+= build_action('append', 1, temp_provider ,"exten", new_exten ); 
+
+	opt.parameters="action=updateconfig&reload=yes&srcfilename=" + encodeURIComponent("extensions.conf") + "&dstfilename=" + encodeURIComponent("extensions.conf") + uri;
+	var tmp = new Ajax.Request("../../rawman", opt);
+
+}
+
+
+
+function checksave(k){
+	if( old_incomingrule == $('incomingrule').value && old_fromprovider == $('fromprovider').value ){
+		return true;
+	}
+
+	if($('incomingrule').value == "frompattern" ){
+		$('thatmatch').style.display = "" ;
+		if(k.id=="incomingrule"){
+			$('frompattern').focus();
+			$('frompattern').select();
+		}
+	}else{
+		$('thatmatch').style.display = "none" ;
+	}
+
+	$('save_a').disabled = false;
+	old_incomingrule = $('incomingrule').value ;
+	old_fromprovider = $('fromprovider').value ;
+}
+
+
+function enablesave(){
+	$('save_a').disabled = false;
+}
+
+
+
+
+function delete_incomingrule(a,b,c,d){ // a is pattern, b is DID_trunk, c is action, d is priority
+	t=confirm("Are you sure you want to delete this Incoming Calling Rule?");
+	if(t == false){ 
+		return true; 				
+	}
+
+	var tmp_match = a+","+d+","+c ;
+		var opt = {
+			method: 'get',
+			asynchronous: true,
+			onSuccess: function(t) { 									
+				// add this to the global object
+				delete didtrunks[b][a];
+				refreshtable();
+			},
+			onFailure: function(t) {
+				alert("Config Error: " + t.status + ": " + t.statusText);
+			}
+		};
+		var uri = build_action('delete',0, b, "exten" ,"", tmp_match);
+		opt.parameters="action=updateconfig&reload=yes&srcfilename=" + encodeURIComponent("extensions.conf") + "&dstfilename=" + encodeURIComponent("extensions.conf") + uri;
+		var tmp = new Ajax.Request("../../rawman", opt);
+}
 
 
 
 function localajaxinit() {
-	parent.loadscreen(this);
+	parent.astmanEngine.config2list("users.conf", $('users'), new Array(), user_callbacks);
 }
 
 </script>
@@ -43,12 +383,60 @@ function localajaxinit() {
 	<span style="margin-left: 4px;font-weight:bold;">Incoming Calls</span>
 	<span style="cursor: pointer; cursor: hand;" onclick="window.location.href=window.location.href;" >&nbsp;<img src="images/refresh.png" title=" Refresh " border=0 >&nbsp;</span>
 </div>
-<div class="mainscreenContentBox" id="userscontent">
-<table class="mainscreenTable" align="center">
-	
-</table>
-<div id="status"></div>
+<div class="mainscreenContentBox" id="mailboxcontent">
+		<select id="extensions" style="display:none"></select>
+		<select id="users" style="display:none"></select>
+		<BR>
+		<CENTER><font size="+1">Incoming Call Rules</font></CENTER>
+			<table class="table_blacksm" cellpadding=2 cellspacing=2 border=0 align=center width=500 id="table_one">
+				<tr>	<td width=35>S.No</td>
+						<td> Incoming Rule </td>
+						<td width=75 align=center>Options</td>
+				</tr>
+			</table>
+			<div id="callingRulesTable_div" style="height:250px;width=100%; overflow :auto; padding : 0px 0px 0px 0px;">
+			<table id="callingRulesTable" cellpadding=2 cellspacing=1 border=0 align=center width=500></table>
+			</div>
+		</font>
+
+		<center><div style="height:25px;color: #FF0000;" id='status'  class="field_text9"></div></center>
+		<BR>
+		<center><input type="button" id="adddid" value="Add a Incoming Rule" onclick="add_incomingrule();"></center>
+
+		<div id="userscontent" STYLE="display:none; position: absolute; left: 20; top: 40; width:475; height:190;  background-color:#F4EFE5;   border-width: 1px; border-color: #7E5538; border-style: solid;">
+			<table width="100%" cellpadding=0 cellspacing=0>
+			<TR bgcolor="#7E5538" ><TD Height="20" align="right">
+						<A href="#" onclick="$('cancel_a').click();"><font style="color:#FFFFFF; font-size: 12px; font-weight:bold;">X</font></A>
+					</TD>
+					<TD width=4></TD>
+			</TR>
+			</table>
+			<TABLE align=center cellpadding=2 cellspacing=2 border=0 width="100%">
+			<TR><TD height=10></TD></TR>
+			<TR><TD align=center>	<NOBR>Route <select id="incomingrule"  onclick="checksave(this)">
+											<option value="allunmatched">All Unmatched incoming calls</option>
+											<option value="frompattern">incoming calls that match </option>
+										</select>
+										<span id="thatmatch">pattern <input type="text" id="frompattern" size=12  onchange="enablesave();"  onkeyup="enablesave();"></span>
+										</NOBR>
+					</TD>
+			</TR>
+			<TR><TD align=center>from provider <select id="fromprovider" onclick="checksave(this)"></select></TD></TR>
+			<TR>
+				<TD align=center>to extension <input type="text" id="toextension" size=5 onchange="enablesave();"  onkeyup="enablesave();"></TD>
+			</TR>
+			<TR>
+				<TD align=center height=50 valign=middle>  
+						<input type="button" id="save_a" value="Save" onclick="save_incomingrule();">&nbsp;&nbsp;
+						<input type="button" id="cancel_a" value="Cancel" onclick="$('userscontent').style.display='none';" >
+				</TD>
+			</TR>
+			</TABLE>
+		</div>
 </div>
 <SCRIPT LANGUAGE="JavaScript">
+<!--
+showdiv_statusmessage();
+//-->
 </SCRIPT>
 </body>

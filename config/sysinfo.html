@@ -112,7 +112,7 @@ function show_window(x){
 		document.getElementById(tabs[x-1]).style.borderBottom = '4px solid #000000';
 		document.getElementById(tabs[x-1]).style.fontWeight = 'bold';
 		document.getElementById(tabs[x-1]).style.fontSize= '13px';
-		document.getElementById(tabs[x-1]).selected = false;
+		document.getElementById(tabs[x-1]).blur();
 		
 
 		switch(x){
@@ -132,8 +132,10 @@ function show_window(x){
 		
 		for(var i=0; i < divs_tohide.length; i++ )
 				$(divs_tohide[i]).style.display = "none";
-		for(var i=0; i < divs_toshow.length; i++ )
+		for(var i=0; i < divs_toshow.length; i++ ){
 			$(divs_toshow[i]).style.display = "block";
+			$(divs_toshow[i]).focus();
+		}
 		return false;
 }
 

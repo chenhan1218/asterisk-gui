@@ -41,6 +41,40 @@
 				'insecure', 'host', 'fromuser', 'fromdomain');
 				
 	var provfieldnames = new Array('providerdesc', 'providerlogo');
+	var isnewtrunk;
+
+	function add_didcontext(trunk){
+		var didcontext = "DID_" + trunk ;
+		var uri = build_action('newcat', 0, didcontext ,"", "");
+		uri += build_action('append', 1, didcontext ,"include", "default"); 
+		var opt = {
+			method: 'get',
+			asynchronous: true,
+			onSuccess: function(t) { },
+			onFailure: function(t) {
+				alert("Config Error: " + t.status + ": " + t.statusText);
+				alert("Failed to create a DID context for " + trunk);
+			}
+		};
+		opt.parameters= "action=updateconfig&reload=yes&srcfilename=" + encodeURIComponent("extensions.conf") + "&dstfilename=" + encodeURIComponent("extensions.conf") + uri;
+		var tmp = new Ajax.Request("../../rawman", opt);
+	}
+
+	function delete_didcontext(trunk){
+		var didcontext = "DID_" + trunk ;
+		var uri = build_action('delcat', 0, didcontext ,"", "");
+		var opt = {
+			method: 'get',
+			asynchronous: true,
+			onSuccess: function(t) { },
+			onFailure: function(t) {
+				alert("Config Error: " + t.status + ": " + t.statusText);
+				alert("Failed to delete DID context for " + trunk);
+			}
+		};
+		opt.parameters= "action=updateconfig&reload=yes&srcfilename=" + encodeURIComponent("extensions.conf") + "&dstfilename=" + encodeURIComponent("extensions.conf") + uri;
+		var tmp = new Ajax.Request("../../rawman", opt);
+	}
 
 	providercallbacks.format = function(t) {
 		return t.fieldbyname['providername'];
@@ -114,6 +148,7 @@
 
 	callbacks.delchanges = function(box, value) {
 		deletesp_fromui(value);
+		delete_didcontext(value);
 		var oldvalue = $('hiddenglobals').stored_config.catbyname['globals'].fieldbyname[value];
 		if (oldvalue) {
 			uri = build_action('delete', 0, 'globals', value, "");
@@ -130,6 +165,9 @@
 	}
 
 	callbacks.savechanges = function() {
+		if(isnewtrunk ==1){ //New Trunk created , add [DID_trunk_x] in extensions.conf
+			add_didcontext($('devices').value);
+		}
 		saveSPdetails();
 		var uri;
 		var newvalue;
@@ -183,10 +221,10 @@
 								$('port').value = provider.fieldbyname['port'];
 							else
 								$('port').value = '';
-							if (provider.fieldbyname['context'])
-								$('context').value = provider.fieldbyname['context'];
-							else
-								$('context').value = 'default';
+							//if (provider.fieldbyname['context'])
+							//	$('context').value = provider.fieldbyname['context'];
+							//else
+							//	$('context').value = 'default';
 							if (provider.fieldbyname['fromuser'])
 								$('fromuser').value = provider.fieldbyname['fromuser'];
 							else
@@ -257,7 +295,7 @@
 						$('callerid').value = '';
 						$('insecure').value = '';
 						$('port').value = '';
-						$('context').value = 'default';
+//						$('context').value = 'default';
 						$('fromuser').value = '';
 						$('fromdomain').value = '';
 						for (var x=0;x<$('zapchan').options.length;x++)
@@ -282,12 +320,13 @@
 			tmp.name = 'trunk_' + x;
 		}
 		tmp.fieldbyname['hasexten'] = 'no';
+		tmp.fieldbyname['context'] = 'DID_'+tmp.name;
 		$('customvoip_name').value = "";
 		$('customvoip_username').value = "";
 		$('customvoip_secret').value = "";
 		$('customvoip_protocol').selectedIndex = 0;
 		$('customvoip_host').value ="";
-
+		isnewtrunk = 1;
 		return tmp;
 
 	}
@@ -449,6 +488,7 @@ function addrow_totable(sp_text, sp_value){
 }
 
 function editSP(sp_value){
+	isnewtrunk = 0;
 	for(var i=0; i< $('devices').length; i++){
 			if(sp_value == $('devices').options[i].value ){
 					$('devices').selectitem(i);
