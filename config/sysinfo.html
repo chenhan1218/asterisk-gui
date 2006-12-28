@@ -29,60 +29,6 @@ var sysinfocallbacks = new Object;
 var tabs = new Array('tab1', 'tab2', 'tab3','tab4');
 var divs_tohide = new Array('osversion_div', 'uptime_div', 'asterisk_div', 'today_div','hostname_div','ifconfig_div','df_div','memory_div','today_log');
 
-sysinfocallbacks.format = function(t, x) {
-		if ( t.name == 'uname' && x==undefined ){	 				// if is a category
-			return t.name;
-		}else if( t.name == 'uname' && x==0 ){	 // if is a subcategory
-			$('osversion').innerHTML = t.fields[x] ; 
-		}else if ( t.name == 'uptime' && x==undefined ){	 				// if is a category
-			return t.name;
-		}else if( t.name == 'uptime' ){	 // if is a subcategory
-			$('uptime').innerHTML =  t.fields[x] ; 
-		}else if ( t.name == 'asterisk' && x==undefined ){	 				// if is a category
-			return t.name;
-		}else if( t.name == 'asterisk' ){	 // if is a subcategory
-			asterisk_guiversion = asterisk_guiversion.slice(0, -1);
-			$('asterisk').innerHTML =  t.fields[x] +"<BR>" + "Asterisk GUI-version " + asterisk_guiversion.substr(1) ;
-		}else if ( t.name == 'today' && x==undefined ){	 				// if is a category
-			return t.name;
-		}else if( t.name == 'today' ){	 // if is a subcategory
-			$('today').innerHTML =  t.fields[x] ; 
-		}else if ( t.name == 'hostname' && x==undefined ){	 				// if is a category
-			return t.name;
-		}else if( t.name == 'hostname' ){	 // if is a subcategory
-			$('hostname').innerHTML =  t.fields[x] ; 
-		}else if ( t.name == 'ifconfig' && x==undefined ){	 				// if is a category
-			return t.name;
-		}else if( t.name == 'ifconfig' ){	 // if is a subcategory
-			$('ifconfig').innerHTML =  $('ifconfig').innerHTML + t.fields[x]  + "<BR>"; 
-		}else if ( t.name == 'du' && x==undefined ){	 				// if is a category
-			return t.name;
-		}else if( t.name == 'du' ){	 // if is a subcategory
-			$('diskusage').innerHTML =  $('diskusage').innerHTML + t.fields[x]  + "<BR>"; 
-		}else if ( t.name == 'free' && x==undefined ){	 				// if is a category
-			return t.name;
-		}else if( t.name == 'free' ){	 // if is a subcategory
-			$('memoryusage').innerHTML =  $('memoryusage').innerHTML + t.fields[x]  + "<BR>"; 
-		}else{	
-			return false;
-		}
-}
-sysinfocallbacks.loaded = function(){
-
-	load_todayslog();
-	var divs_toshow = new Array('osversion_div', 'uptime_div', 'asterisk_div', 'today_div','hostname_div');
-	for(var i=0; i < divs_toshow.length; i++ ){
-		$(divs_toshow[i]).style.display = "block";
-	}
-	document.getElementById(tabs[0]).style.background = 'white';
-	document.getElementById(tabs[0]).style.borderBottom = '4px solid #000000';
-	document.getElementById(tabs[0]).style.fontWeight = 'bold';
-	document.getElementById(tabs[0]).style.fontSize = '13px';
-}
-sysinfocallbacks.eachline = true;
-sysinfocallbacks.includecats = true;
-
-
 function 	load_todayslog(){
 		var opt = {
 			method: 'get',
@@ -99,7 +45,6 @@ function 	load_todayslog(){
 		var tmp = new Ajax.Request("./bkps/today_log.html", opt);
 		return true;
 }
-
 
 function show_window(x){
 		for(i=0; i < tabs.length ; i++){
@@ -142,15 +87,50 @@ function show_window(x){
 function update_sysinfo(){
 	parent.astmanEngine.run_tool("sh /etc/asterisk/gui_sysinfo", onSuccess = function() { 
 					$('status_message').style.display='none';
-					parent.astmanEngine.config2list("gui_sysinfo.conf", $('sysinfo'), new Array(), sysinfocallbacks);
+					getsysinfohtml();
 				}
 	);
 	return;
 }
 
-function showResponse(originalRequest)	{
-		var v = originalRequest.responseText;
+
+function getsysinfohtml(){
+		var opt = {
+			method: 'get',
+			asynchronous: true,
+			onComplete: function(originalRequest){
+				$('sysinfohtml').innerHTML = originalRequest.responseText;
+				$('osversion').innerHTML = $('si_uname').innerHTML;
+				$('uptime').innerHTML = $('si_uptime').innerHTML;
+				$('asterisk').innerHTML =$('si_astver').innerHTML + "<BR>" + "Asterisk GUI-version " + asterisk_guiversion.substr(1) ;
+				$('today').innerHTML = $('si_date').innerHTML;
+				$('hostname').innerHTML =$('si_hostname').innerHTML;
+				$('ifconfig').innerHTML =$('si_ifconfig').innerHTML;
+				$('diskusage').innerHTML = $('si_du').innerHTML;
+				$('memoryusage').innerHTML =$('si_free').innerHTML;
+
+				var divs_toshow = new Array('osversion_div', 'uptime_div', 'asterisk_div', 'today_div','hostname_div');
+				for(var i=0; i < divs_toshow.length; i++ ){
+					$(divs_toshow[i]).style.display = "block";
+				}
+
+				document.getElementById(tabs[0]).style.background = 'white';
+				document.getElementById(tabs[0]).style.borderBottom = '4px solid #000000';
+				document.getElementById(tabs[0]).style.fontWeight = 'bold';
+				document.getElementById(tabs[0]).style.fontSize = '13px';
+				load_todayslog();
+
+			},
+			onFailure: function(t) {
+				$('status_message').style.display='none';
+				alert("Config Error: " + t.status + ": " + t.statusText);
+			}
+		};
+		opt.parameters="";
+		var tmp = new Ajax.Request("./bkps/sysinfo_output.html", opt);
+		return true;
 }
+
 
 function localajaxinit(){
 	// call the tool (sysinfo)
@@ -176,7 +156,7 @@ function localajaxinit(){
 				<a href="#" class="tab" onclick="return show_window(2);" id="tab2">ifconfig</a>&nbsp;&nbsp;
 				<a href="#" class="tab" onclick="return show_window(3);" id="tab3">Resources</a>&nbsp;&nbsp;
 				<a href="#" class="tab" onclick="return show_window(4);" id="tab4">Logs</a>&nbsp;&nbsp;
-				<select id="sysinfo" style="display:none"></select>
+				<div id="sysinfohtml" style="display:none"></div>
 
 				<div id="information" style=" border: solid 0px black; background: transparent; padding: 4px; height:440px; width:95%;">
 						<BR>
