@@ -54,23 +54,27 @@ function isloggedin(originalRequest){
 
 function update_sysinfo(){
 	parent.astmanEngine.run_tool("sh /etc/asterisk/gui_sysinfo", onSuccess = function() { 
-					parent.astmanEngine.config2list("gui_sysinfo.conf", $('sysinfo'), new Array(), sysinfocallbacks);
+			var opt = {
+				method: 'get',
+				asynchronous: true,
+				onComplete: function(originalRequest){
+					$('sysinfo').innerHTML = originalRequest.responseText;
+					today = $('si_date').innerHTML;
+					sysinfocallbacks_loaded();
+				},
+				onFailure: function(t) {
+					alert("Config Error: " + t.status + ": " + t.statusText);
 				}
-	);
+			};
+			opt.parameters="";
+			var tmp = new Ajax.Request("../bkps/sysinfo_output.html", opt);
+			return true;
+	});
 	return;
 }
 
-sysinfocallbacks.format = function(t, x) {
-			if ( t.name == 'today' && x==undefined ){	 				// if is a category
-				return t.name;
-			}else if( t.name == 'today' ){	 // if is a subcategory
-				today =  t.fields[x] ; 
-			}else{	
-				return false;
-			}
-}
 
-sysinfocallbacks.loaded = function(){
+function sysinfocallbacks_loaded(){
 		var temp = today.split(" ");
 			if(temp[2] == ""){ temp.splice(2,1) ; }
 		var dayofweek = temp[0]; // Fri
@@ -149,9 +153,6 @@ sysinfocallbacks.loaded = function(){
 		};
 }
 
-sysinfocallbacks.eachline = true;
-sysinfocallbacks.includecats = true;
-
 function update_systemdate(){
 	var opt = {
 			method: 'get',
@@ -209,7 +210,7 @@ function update_systemdate(){
 			</td>
 			<td valign=top align=center>
 			<!--  this page -->
-				<select id='sysinfo' style="display:none"></select>
+				<div id='sysinfo' style="display:none"></div>
 				<div class="heading">Step 2 of <script>document.write(parent.numberofsteps);</script>&nbsp;&nbsp;- Date & Time Settings</div>
 				<div class="subheading">Current System Time </div>
 					 <TABLE cellpadding=6 cellspacing=1 border=0 class="timeinfo">
