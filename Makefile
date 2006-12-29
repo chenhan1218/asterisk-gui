@@ -95,7 +95,7 @@ ifeq ($(HTTPPREFIXBASE),)
   HTTPPREFIX:=asterisk
 endif
 HTTPURL:=http://$(HTTPHOST):$(HTTPBINDPORT)/$(HTTPPREFIX)/static/config/cfgbasic.html
-HTTPSETUPURL:=http://$(HTTPHOST):$(HTTPBINDPORT)/$(HTTPPREFIX)/static/config/setup.html
+HTTPSETUPURL:=http://$(HTTPHOST):$(HTTPBINDPORT)/$(HTTPPREFIX)/static/config/setup/install.html
 
 SUBDIRS:=tools
 SUBDIRS_CLEAN:=$(SUBDIRS:%=%-clean)
@@ -259,7 +259,8 @@ $(SUBDIRS_CLEAN):
 clean: $(SUBDIRS_CLEAN)
 
 distclean: clean
-	rm -f makeopts autom4te.cache
+	-rm -f makeopts config.log config.status
+	-rm -rf autom4te.cache
 
 samples:
 	mkdir -p $(ASTETCDIR)
