@@ -24,6 +24,31 @@
  var asterisk_guitoolsversion = "0.7";
  var asterisk_guiversion = "$Revision$";
 var sortbynames = false;
+var dragdata = new Object;
+
+function startDrag(event, movethis ){
+	dragdata.movethis = movethis ;
+	dragdata.initialcursorX = event.clientX + window.scrollX;
+	dragdata.initialcursorY = event.clientY + window.scrollY;
+	dragdata.initialwindowleft = parseInt( $(dragdata.movethis).style.left) ;
+	dragdata.initialwindowtop = parseInt($(dragdata.movethis).style.top) ;
+	document.addEventListener("mousemove", movewindow, false);
+	document.addEventListener("mouseup", stopDrag, false);
+}
+
+
+function stopDrag(){
+	document.removeEventListener("mousemove", movewindow, false);
+	document.removeEventListener("mouseup", stopDrag, false);
+}
+
+function movewindow(event){
+  x = event.clientX + window.scrollX;
+  y = event.clientY + window.scrollY;
+  $(dragdata.movethis).style.left = (dragdata.initialwindowleft + x - dragdata.initialcursorX) + "px";
+  $(dragdata.movethis).style.top  = (dragdata.initialwindowtop  + y - dragdata.initialcursorY) + "px";
+}
+
 
 function check_patternonfields(fields){
 	// for checking validity of field contents before form submitting 

@@ -495,11 +495,13 @@ function saveSPdetails(){
 
 function hideSPdetails(){
 		$('userscontent').style.display = "none";
+		$('bg_transparent').style.display = "none";
 }
 
 function showSPdetails(){
 		$('cancel').disabled = false;
 		$('userscontent').style.display = "block";
+		$('bg_transparent').style.display = "block";
 }
 
 function deleteSP(trunk){
@@ -566,9 +568,9 @@ function deletesp_fromui(trunk){
 <input type='button' id='new' value='Add Service Provider'>
 </center>
 
-<div id="userscontent" STYLE="display:none; position: absolute; left: 230; top: 5; width:500; height:375;  background-color:#F4EFE5;   border-width: 1px; border-color: #7E5538; border-style: solid;">
-	<table width="100%" cellpadding=0 cellspacing=0>
-		<TR bgcolor="#7E5538" ><TD Height="20" align="right">
+<div id="userscontent" STYLE="display:none; position: absolute; left: 230; top: 5; width:500; height:375;  background-color:#F4EFE5;   border-width: 1px; border-color: #7E5538; border-style: solid;z-index:5">
+	<table width="100%" cellpadding=0 cellspacing=0  onmousedown="startDrag(event , 'userscontent');">
+		<TR bgcolor="#7E5538" ><TD Height="20" align="right"  style="cursor: move">
 					<A href="#" onclick="$('cancel').click();"><font style="color:#FFFFFF; font-size: 12px; font-weight:bold;">X</font></A>
 				</TD>
 				<TD width=4></TD>
@@ -671,6 +673,8 @@ function deletesp_fromui(trunk){
 			</td>
 		</tr>
 </table>
+<div id="bg_transparent" STYLE="display:none; position: absolute; left: 0; top: 0; width:100%; height:100%;  background-color:#FFFFFF; filter:alpha(opacity=50); -moz-opacity:.50;opacity:.50; border-width: 0px; z-index:4">
+</div>
 </BODY>
 </HTML>
 

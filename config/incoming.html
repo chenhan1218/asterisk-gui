@@ -31,7 +31,6 @@ var editstatus ;
 var old_incomingrule, old_fromprovider ;
 var  edit_pattern, edit_DIDtrunk, edit_action, edit_priority ;
 
-
 user_callbacks.format = function(t, x) {
 	var tmp = 'DID_' + t.name;
 	if ( t.name.substring(0,6) == 'trunk_' && x == undefined){
@@ -154,6 +153,7 @@ function add_incomingrule(){
 	$('save_a').disabled = true;
 	$('thatmatch').style.display = "none" ;
 	$('userscontent').style.display = "";
+	$('bg_transparent').style.display = "";
 }
 
 function edit_incomingrule(a,b,c,d){// a is pattern, b is DID_trunk, c is action, d is priority
@@ -189,6 +189,7 @@ function edit_incomingrule(a,b,c,d){// a is pattern, b is DID_trunk, c is action
 	}
 
 	$('userscontent').style.display = "";
+	$('bg_transparent').style.display ='';
 }
 
 
@@ -247,6 +248,7 @@ function save_new_incomingrule(){
 				didtrunks[temp_provider][newpattern].action = temp_action ;
 				addrowtotable(newpattern,temp_provider,temp_action,temp_priority) ; // a is pattern, b is DID_trunk, c is action, d is priority
 				$('userscontent').style.display = "none";
+				$('bg_transparent').style.display ='none';
 			},
 			onFailure: function(t) {
 				alert("Config Error: " + t.status + ": " + t.statusText);
@@ -301,6 +303,7 @@ function update_incomingrule(){
 			didtrunks[temp_provider][newpattern].priority = temp_priority;
 			didtrunks[temp_provider][newpattern].action = temp_action ;
 			$('userscontent').style.display = "none";
+			$('bg_transparent').style.display ='none';
 			refreshtable();
 		},
 		onFailure: function(t) {
@@ -376,7 +379,6 @@ function delete_incomingrule(a,b,c,d){ // a is pattern, b is DID_trunk, c is act
 function localajaxinit() {
 	parent.astmanEngine.config2list("users.conf", $('users'), new Array(), user_callbacks);
 }
-
 </script>
 <body id="foo" onload="localajaxinit()"  bgcolor="EFEFEF">
 <div class="mainscreenTitleBar">
@@ -403,9 +405,9 @@ function localajaxinit() {
 		<BR>
 		<center><input type="button" id="adddid" value="Add a Incoming Rule" onclick="add_incomingrule();"></center>
 
-		<div id="userscontent" STYLE="display:none; position: absolute; left: 20; top: 40; width:475; height:190;  background-color:#F4EFE5;   border-width: 1px; border-color: #7E5538; border-style: solid;">
-			<table width="100%" cellpadding=0 cellspacing=0>
-			<TR bgcolor="#7E5538" ><TD Height="20" align="right">
+		<div id="userscontent" STYLE="display:none; position: absolute; left: 20; top: 40; width:475; height:190;  background-color:#F4EFE5;   border-width: 1px; border-color: #7E5538; border-style: solid;z-index:5">
+			<table width="100%" cellpadding=0 cellspacing=0 onmousedown="startDrag(event , 'userscontent');">
+			<TR bgcolor="#7E5538"><TD Height="20" align="right" style="cursor: move">
 						<A href="#" onclick="$('cancel_a').click();"><font style="color:#FFFFFF; font-size: 12px; font-weight:bold;">X</font></A>
 					</TD>
 					<TD width=4></TD>
@@ -428,11 +430,13 @@ function localajaxinit() {
 			<TR>
 				<TD align=center height=50 valign=middle>  
 						<input type="button" id="save_a" value="Save" onclick="save_incomingrule();">&nbsp;&nbsp;
-						<input type="button" id="cancel_a" value="Cancel" onclick="$('userscontent').style.display='none';" >
+						<input type="button" id="cancel_a" value="Cancel" onclick="$('userscontent').style.display='none'; $('bg_transparent').style.display ='none';" >
 				</TD>
 			</TR>
 			</TABLE>
 		</div>
+</div>
+<div id="bg_transparent" STYLE="display:none; position: absolute; left: 0; top: 24; width:100%; height:100%;  background-color:#FFFFFF; filter:alpha(opacity=50); -moz-opacity:.50;opacity:.50; border-width: 1px; border-color: #7E5538; border-style: solid; z-index:4">
 </div>
 <SCRIPT LANGUAGE="JavaScript">
 <!--

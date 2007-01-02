@@ -257,6 +257,7 @@ function delete_callingrule(a,b,oncomplete){
 		};
 		opt.parameters= "action=updateconfig&reload=yes&srcfilename=" + encodeURIComponent("extensions.conf") + "&dstfilename=" + encodeURIComponent("extensions.conf") + uri;
 		$('userscontent').style.display="none";
+		$('bg_transparent').style.display='none';
 		$('status_message').style.display="block";
 		var tmp = new Ajax.Request(rawman_url, opt);
 }
@@ -295,6 +296,7 @@ function editcallingrule(a,b){
 	}
 
 	$('userscontent').style.display="";
+	$('bg_transparent').style.display='';
 	$('addrule').disabled =1;
 }
 
@@ -362,6 +364,7 @@ function add_callingrule(){
 	$('define_advanced').style.display="none";
 	$('define_usual').style.display="";
 	$('userscontent').style.display="";
+	$('bg_transparent').style.display='';
 	$('addrule').disabled =1;
 	$('beginswith').value = "";
 	$('followedby').value ="";
@@ -394,6 +397,7 @@ function add_rule_fromeditform( this_priority, oncomplete ){
 					};
 					opt.parameters= "action=updateconfig&reload=yes&srcfilename=" + encodeURIComponent("extensions.conf") + "&dstfilename=" + encodeURIComponent("extensions.conf") + uri;
 					$('userscontent').style.display="none";
+					$('bg_transparent').style.display='none';
 					$('status_message').style.display="block";
 					var tmp = new Ajax.Request(rawman_url, opt);
 }
@@ -477,9 +481,9 @@ function	buildpatternstring(){
 		<BR>
 		<center><input type="button" id="addrule" value="Add a Calling Rule" onclick="add_callingrule();"></center>
 		
-		<div id="userscontent" STYLE="display:none; position: absolute; left: 225; top: 40; width:500; height:290;  background-color:#F4EFE5;   border-width: 1px; border-color: #7E5538; border-style: solid;">
-		<table width="100%" cellpadding=0 cellspacing=0>
-		<TR bgcolor="#7E5538" ><TD Height="20" align="right">
+		<div id="userscontent" STYLE="display:none; position: absolute; left: 225; top: 40; width:500; height:290;  background-color:#F4EFE5;   border-width: 1px; border-color: #7E5538; border-style: solid; z-index:5">
+		<table width="100%" cellpadding=0 cellspacing=0 onmousedown="startDrag(event , 'userscontent');">
+		<TR bgcolor="#7E5538" ><TD Height="20" align="right" style="cursor: move">
 					<A href="#" onclick="$('cancel_a').click();"><font style="color:#FFFFFF; font-size: 12px; font-weight:bold;">X</font></A>
 				</TD>
 				<TD width=4></TD>
@@ -523,7 +527,7 @@ function	buildpatternstring(){
 		<TR>
 			<TD colspan=2 align=center height=50 valign=middle>  
 					<input type="button" id="save_a" value="Save" onclick="saverule();">&nbsp;&nbsp;
-					<input type="button" id="cancel_a" value="Cancel" onclick="$('userscontent').style.display='none';	$('addrule').disabled =0;" >
+					<input type="button" id="cancel_a" value="Cancel" onclick="$('userscontent').style.display='none'; $('bg_transparent').style.display='none'; $('addrule').disabled =0; " >
 			</TD>
 		</TR>
 		</TABLE>
@@ -533,6 +537,8 @@ function	buildpatternstring(){
 			</td>
 		</tr>
 </table>
+<div id="bg_transparent" STYLE="display:none; position: absolute; left: 0; top: 0; width:100%; height:100%;  background-color:#FFFFFF; filter:alpha(opacity=50); -moz-opacity:.50;opacity:.50; border-width: 0px; z-index:4">
+</div>
 <SCRIPT LANGUAGE="JavaScript">
 <!--
 showdiv_statusmessage();
