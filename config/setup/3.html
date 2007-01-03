@@ -85,6 +85,7 @@ usercallbacks.beforeSaving= function(){
 
 
 usercallbacks.loaded = function(){
+		parent.astmanEngine.pollEvents();
 		$('devices').selectitem(0);
 		parent.$('next').disabled = false;	
 		parent.$('back').disabled = false;

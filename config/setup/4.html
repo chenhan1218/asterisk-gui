@@ -109,11 +109,11 @@ function isloggedin(originalRequest){
 	}
 
 	callbacks.loaded = function() {
+		parent.astmanEngine.pollEvents();
 		$('devices').contentEditable = 'true';
 		$('devices').disabled = 0;
 		$('new').addEventListener("click", showSPdetails, false); 
 		loadServiceProvidersintotable();
-		parent.loadscreen(this);
 	}
 
 	callbacks.postselect = function(){

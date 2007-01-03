@@ -24,7 +24,7 @@ function localinit(){
 	parent.$('back').disabled = false;
 	parent.$('back').onclick  = function(){	 window.location.href="1.html"; };
 	rawman_url = parent.rawman_url ;
-	parent.astmanEngine.setURL(rawman_url);
+	//parent.astmanEngine.setURL(rawman_url);
 	ping();
 }
 
@@ -60,6 +60,7 @@ function update_sysinfo(){
 				onComplete: function(originalRequest){
 					$('sysinfo').innerHTML = originalRequest.responseText;
 					today = $('si_date').innerHTML;
+					parent.astmanEngine.pollEvents();
 					sysinfocallbacks_loaded();
 				},
 				onFailure: function(t) {

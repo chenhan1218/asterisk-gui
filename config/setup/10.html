@@ -39,7 +39,7 @@ function isloggedin(originalRequest){
 
 			if ( originalRequest.responseText.match("Pong") ) {
 					// load default numbnerplan settings
-
+				parent.astmanEngine.pollEvents();
 			}
 }
 

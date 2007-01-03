@@ -48,6 +48,7 @@ callbacks.loaded = function() {
 	//$('cancel').addEventListener("click", hideuserdetails, false); 
 	//$('save').addEventListener("click", saveuserdetails, false); 
 	$('new').addEventListener("click", showuserdetails, false); 
+	parent.astmanEngine.pollEvents();
 	loadusersintotable();
 }
 

@@ -125,6 +125,7 @@ numplan_callbacks.format = function(t, x) {
 }
 
 numplan_callbacks.loaded = function() {
+	parent.astmanEngine.pollEvents();
 	if(!default_numberplan){
 			// Redirect To creating a default Number Plan
 			addthe_default_callingplan();

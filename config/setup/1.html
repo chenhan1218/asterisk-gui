@@ -46,6 +46,9 @@ function isloggedin(originalRequest){
 }
 
 function getextconf(){
+	parent.loggedon = 1;
+	parent.astmanEngine.pollEvents();
+
 	var opt = {
 		method: 'get',
 		asynchronous: true,
@@ -212,7 +215,7 @@ function login(){
 										<div class="heading">Pleae enter your admin Username and Password </div>
 										<table align="center">
 													<tr><td>Username:</td>										<td><input id="username"  size=12 value=admin></td>							</tr>
-													<tr><td>Secret:</td>												<td><input type="password" id="secret" size=12 value=secret></td>		</tr>
+													<tr><td>Secret:</td>												<td><input type="password" id="secret" size=12></td>		</tr>
 													<tr><td align='center' colspan='2' height=40 valign=bottom>
 																<input type="button" id="login" value="Login" onClick="login()" >
 															</td>

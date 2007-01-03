@@ -32,10 +32,21 @@ var asterisk_guitools = "asterisk_guitools";
 var fxoports = new Array();
 var fxsports = new Array();
 var numberofsteps = 7;
+var loggedon = 0;
+var eventeater = {};
+
 function localinit(){
 
 }
 
+eventeater.eventcb = function(msgs) {
+	if (loggedon == 1){
+		astmanEngine.pollEvents();
+	}
+}
+
+astmanEngine.setURL('../../rawman');
+astmanEngine.setEventCallback(eventeater.eventcb);
 </script>
 <body onload="localinit()" topmargin=0  bgcolor="FFFFFF">
 <TABLE width=800 cellpadding=0 cellspacing=0 border=0 align="center" style="border: 1px solid #660000; margin-top: 8px;">
