@@ -19,8 +19,10 @@ function updated(){
 
 
 function localinit(){
-	parent.$('next').disabled = true;
-	parent.$('next').onclick = "";
+	parent.$('next').disabled = false;
+	parent.$('next').onclick = function(){	 
+		window.location.href="3.html"; 
+	};
 	parent.$('back').disabled = false;
 	parent.$('back').onclick  = function(){	 window.location.href="1.html"; };
 	rawman_url = parent.rawman_url ;
