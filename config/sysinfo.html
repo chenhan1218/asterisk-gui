@@ -31,7 +31,12 @@ var divs_tohide = new Array('osversion_div', 'uptime_div', 'asterisk_div', 'toda
 
 function thisday_log(){
 	$('status_message').style.display="block";
-	var tmp_command = "/bin/grep /var/log/asterisk/messages -e '" + $('log_month').value + " " + $('log_day').value + "' > /var/lib/asterisk/static-http/config/bkps/today_log.html";
+	if($('log_day').value < 10 ){
+		var tmp_command = "/bin/grep /var/log/asterisk/messages -e '" + $('log_month').value + " 0" + $('log_day').value + " ' > /var/lib/asterisk/static-http/config/bkps/today_log.html";
+		tmp_command += " ; /bin/grep /var/log/asterisk/messages -e '" + $('log_month').value + "  " + $('log_day').value + " ' >> /var/lib/asterisk/static-http/config/bkps/today_log.html";
+	}else{
+		var tmp_command = "/bin/grep /var/log/asterisk/messages -e '" + $('log_month').value + " " + $('log_day').value + " ' > /var/lib/asterisk/static-http/config/bkps/today_log.html";
+	}
 	parent.astmanEngine.run_tool( tmp_command , onSuccess = function() { 
 					$('status_message').style.display='none';
 					load_todayslog();
@@ -157,7 +162,6 @@ function localajaxinit(){
 	update_sysinfo();
 }
 
-
 </script>
 <body id="foo" onload="localajaxinit()" bgcolor="EFEFEF">
 <div class="mainscreenTitleBar">
@@ -206,10 +210,7 @@ function localajaxinit(){
 										<option value="May">May</option><option value="Jun">Jun</option><option value="Jul">Jul</option><option value="Aug">Aug</option><option value="Sep">Sep</option>
 										<option value="Oct">Oct</option><option value="Nov">Nov</option><option value="Dec">Dec</option></select>
 								<select id="log_day"><SCRIPT LANGUAGE="JavaScript">
-											for(var i=1; i < 32; i++){var x = ''; if( i < 10) { x = '0'; }
-												document.write( '<option value="' + x +i + '">' + x +i + '</option>' ); 
-											}
-									</SCRIPT></select><input type="button" value="Go" onclick="thisday_log();">
+											for(var i=1; i < 32; i++){ document.write( '<option value="' + i + '">' + i + '</option>' ); }</SCRIPT></select><input type="button" value="Go" onclick="thisday_log();">
 								<PRE><div id="todaylog" style="font-family:courier; font-size:8.5pt; width:522px; height:405px; overflow :auto;"></div></PRE>
 						</div>
 				</div>
