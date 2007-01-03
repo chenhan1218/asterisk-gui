@@ -32,8 +32,7 @@ var divs_tohide = new Array('osversion_div', 'uptime_div', 'asterisk_div', 'toda
 function thisday_log(){
 	$('status_message').style.display="block";
 	if($('log_day').value < 10 ){
-		var tmp_command = "/bin/grep /var/log/asterisk/messages -e '" + $('log_month').value + " 0" + $('log_day').value + " ' > /var/lib/asterisk/static-http/config/bkps/today_log.html";
-		tmp_command += " ; /bin/grep /var/log/asterisk/messages -e '" + $('log_month').value + "  " + $('log_day').value + " ' >> /var/lib/asterisk/static-http/config/bkps/today_log.html";
+		var tmp_command = "/bin/grep /var/log/asterisk/messages -e '" + $('log_month').value + "  " + $('log_day').value + " ' > /var/lib/asterisk/static-http/config/bkps/today_log.html";
 	}else{
 		var tmp_command = "/bin/grep /var/log/asterisk/messages -e '" + $('log_month').value + " " + $('log_day').value + " ' > /var/lib/asterisk/static-http/config/bkps/today_log.html";
 	}
