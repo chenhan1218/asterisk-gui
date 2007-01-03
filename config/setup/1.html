@@ -136,11 +136,11 @@ function scan_zapteldevices(){
 zapcallbacks.format = function(t) {
 	if (t.fieldbyname['port'] == 'fxo'){
 		parent.fxoports.push(t.name);
-		return "Analog(FXO) Port #" + t.name;
+		return "Analog(FXS) Port #" + t.name;
 	}
 	if (t.fieldbyname['port'] == 'fxs'){
 		parent.fxsports.push(t.name);
-		return "Analog(FXS) Port #" + t.name;
+		return "Analog(FXO) Port #" + t.name;
 	}
 	return null;
 }
