@@ -704,7 +704,6 @@ function select_vmenu(){
 			var newoption = document.createElement("option");
 			newoption.text = format_step(voicemenusdata[current_context].extensions['s'][x]);
 			newoption.value = voicemenusdata[current_context].extensions['s'][x];
-			console.log("FOR '" + newoption.value +"' current_context is '" + current_context + "' and x is '" + x+"'" );
 			$('steps').options.add ( newoption );
 		}
 	}
@@ -716,7 +715,6 @@ function select_vmenu(){
 					priority_1 = tmp[1];
 					tmp = $('steps').options[y-1].value.split(",") ;
 					priority_2 = tmp[1];
-					console.log("checking whether " + priority_2 +" is > " + priority_1);
 					  if (priority_2 - priority_1 > 0){
 							buffer = $('steps').options[y-1].value;
 							$('steps').options[y-1].value = $('steps').options[y].value;
