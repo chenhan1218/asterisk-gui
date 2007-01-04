@@ -86,7 +86,7 @@ function sysinfocallbacks_loaded(){
 		var timeofday = temp[3]; // 23:59:59
 		var timezone = temp[4]; // CST
 		var year = temp[5]; // 2006
-		
+
 		for(var i=0; i < $('moy').length; i++){
 			if ( $('moy').options[i].value.toLowerCase() == monthofyear.toLowerCase() ){
 					$('moy').selectedIndex = i;
@@ -130,8 +130,6 @@ function sysinfocallbacks_loaded(){
 						}
 				}
 		}
-
-
 		
 		for(var i=0; i < $('minute').length; i++){
 					if (  $('minute').options[i].value == parseFloat(temp[1])  ){
@@ -142,6 +140,12 @@ function sysinfocallbacks_loaded(){
 		for(var i=0; i < $('second').length; i++){
 					if (  $('second').options[i].value == parseFloat(temp[2])  ){
 							$('second').selectedIndex = i;
+							break;
+					}
+		}
+		for(var i=0; i < $('year').length; i++){
+					if (  $('year').options[i].value == parseFloat(year)  ){
+							$('year').selectedIndex = i;
 							break;
 					}
 		}

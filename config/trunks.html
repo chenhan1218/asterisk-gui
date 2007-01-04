@@ -326,6 +326,10 @@
 		$('customvoip_secret').value = "";
 		$('customvoip_protocol').selectedIndex = 0;
 		$('customvoip_host').value ="";
+		$('analog').style.display="none";
+		$('voip').style.display="none";
+		$('customvoip').style.display="none";
+		$('userscontent_title').innerHTML = "Add Service Provider";
 		isnewtrunk = 1;
 		return tmp;
 
@@ -360,14 +364,16 @@
 
 
 	function activateanalogvoip() {
+		$('analog').style.display = "none";
+		$('zapchan').style.display = "none";
+		$('zapchan_analoglines').style.display = "none";
+		$('zapchan_analoglines').innerHTML ="";
+		$('customvoip').style.display = "none" ;
+		$('voip').style.display= "none";
+
 		if ($('trunkstyleanalog').checked) {
 				$('analog').style.display = "block";
-				new Rico.Effect.Size('analog', null, 350, 120, 8);
-				$('zapchan').style.display = "none";
 				$('zapchan_analoglines').style.display = "block";
-				$('zapchan_analoglines').innerHTML ="";
-				$('customvoip').style.display = "none" ;
-
 				if($('zapchan').options.length ==0){
 					$('zapchan_analoglines').innerHTML = "No analog line hardware installed on the system";
 				}else{
@@ -382,20 +388,10 @@
 				}
 		}else if ($('trunkstylevoip').checked) {
 				$('voip').style.display = "block";
-				new Rico.Effect.Size('analog', null, 1, 120, 8, {complete:function() { $('analog').style.height = '0'; }});
 				$('voip').style.height =350;
-				$('zapchan_analoglines').style.display = "none";
-				$('zapchan_analoglines').innerHTML ="";		
-				$('customvoip').style.display = "none" ;
 		}else if ($('trunkstylecustomvoip').checked) {
-				$('analog').style.display= "none";
-				$('voip').style.display= "none";
 				$('customvoip').style.display = "block" ;
-				$('zapchan_analoglines').style.display = "none";
-				$('zapchan_analoglines').innerHTML ="";
 		}
-
-			
 	}
 	
 	function localajaxinit() {
@@ -489,6 +485,7 @@ function addrow_totable(sp_text, sp_value){
 
 function editSP(sp_value){
 	isnewtrunk = 0;
+	$('userscontent_title').innerHTML = "Edit Service Provider";
 	for(var i=0; i< $('devices').length; i++){
 			if(sp_value == $('devices').options[i].value ){
 					$('devices').selectitem(i);
@@ -566,11 +563,10 @@ function deletesp_fromui(trunk){
 </center>
 
 <div id="userscontent" STYLE="display:none; position: absolute; left: 20; top: 40; width:500; height:400;  background-color:#F4EFE5;   border-width: 1px; border-color: #7E5538; border-style: solid; z-index:5">
-	<table width="100%" cellpadding=0 cellspacing=0  onmousedown="startDrag(event , 'userscontent');">
-		<TR bgcolor="#7E5538" ><TD Height="20" align="right" style="cursor: move">
-					<A href="#" onclick="$('cancel').click();"><font style="color:#FFFFFF; font-size: 12px; font-weight:bold;">X</font></A>
-				</TD>
-				<TD width=4></TD>
+	<table width="100%" cellpadding=0 cellspacing=0>
+		<TR bgcolor="#7E5538" >
+				<TD  onmousedown="startDrag(event , 'userscontent');" id="userscontent_title" style="cursor: move;color:#FFFFFF; font-size: 12px; font-weight:bold;" align="center"></TD>
+				<TD Height="20" width=15 align="center"  style="color:#FFFFFF; font-size: 12px; font-weight:bold;" onclick="$('cancel').click();">X</TD>
 		</TR>
 	</table>
 
@@ -578,7 +574,7 @@ function deletesp_fromui(trunk){
 <tr>
 <td onmouseover="show_tooltip('en', 'trunks', 0);"  class="field_text" width=130 valign="top" align="left">
 <!-- Provider type -->
-				<div id='cabinet' style='height:0;width:0;overflow:hidden'><select id='hiddenglobals'></select></div>
+				<div id='cabinet' style='width:0;overflow:hidden'><select id='hiddenglobals'></select></div>
 				<B>Provider Type:</B><BR>
 				<LABEL FOR="trunkstyleanalog"><input name='trunkstyle' type='radio' id='trunkstyleanalog' onclick='activateanalogvoip()' value='analog'>Analog</LABEL><BR>
 				<LABEL FOR="trunkstylevoip"><input name='trunkstyle' type='radio' id='trunkstylevoip' onclick='activateanalogvoip()' value='voip'>VoIP</LABEL><BR>
@@ -588,7 +584,7 @@ function deletesp_fromui(trunk){
 <td>
 <!-- Provider options -->
 			<div id='analogvoipcontainer' style='height:350;overflow:hidden' align="center">
-			<div id='analog' style='height:0;overflow:hidden' align="center">
+			<div id='analog' style='overflow:hidden' align="center">
 							<table align="center">
 							<tr onmouseover="show_tooltip('en', 'trunks', 2);"><td style='width:80px' valign='top' class="field_text">Lines:</td>
 									<td><select size="12" multiple='true' id='zapchan' style='width:200px' class="input8"></select>

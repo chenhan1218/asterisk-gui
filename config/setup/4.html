@@ -22,7 +22,40 @@ var fieldnames = new Array(
 			'insecure', 'host', 'fromuser', 'fromdomain');
 			
 var provfieldnames = new Array('providerdesc', 'providerlogo');
+var isnewtrunk;
 
+	function add_didcontext(trunk){
+		var didcontext = "DID_" + trunk ;
+		var uri = build_action('newcat', 0, didcontext ,"", "");
+		uri += build_action('append', 1, didcontext ,"include", "default"); 
+		var opt = {
+			method: 'get',
+			asynchronous: true,
+			onSuccess: function(t) { },
+			onFailure: function(t) {
+				alert("Config Error: " + t.status + ": " + t.statusText);
+				alert("Failed to create a DID context for " + trunk);
+			}
+		};
+		opt.parameters= "action=updateconfig&reload=yes&srcfilename=" + encodeURIComponent("extensions.conf") + "&dstfilename=" + encodeURIComponent("extensions.conf") + uri;
+		var tmp = new Ajax.Request(rawman_url, opt);
+	}
+
+	function delete_didcontext(trunk){
+		var didcontext = "DID_" + trunk ;
+		var uri = build_action('delcat', 0, didcontext ,"", "");
+		var opt = {
+			method: 'get',
+			asynchronous: true,
+			onSuccess: function(t) { },
+			onFailure: function(t) {
+				alert("Config Error: " + t.status + ": " + t.statusText);
+				alert("Failed to delete DID context for " + trunk);
+			}
+		};
+		opt.parameters= "action=updateconfig&reload=yes&srcfilename=" + encodeURIComponent("extensions.conf") + "&dstfilename=" + encodeURIComponent("extensions.conf") + uri;
+		var tmp = new Ajax.Request(rawman_url, opt);
+	}
 
 
 
@@ -144,6 +177,7 @@ function isloggedin(originalRequest){
 
 	callbacks.delchanges = function(box, value) {
 		deletesp_fromui(value);
+		delete_didcontext(value);
 		var oldvalue = $('hiddenglobals').stored_config.catbyname['globals'].fieldbyname[value];
 		if (oldvalue) {
 			uri = build_action('delete', 0, 'globals', value, "");
@@ -160,6 +194,9 @@ function isloggedin(originalRequest){
 	}
 
 	callbacks.savechanges = function() {
+		if(isnewtrunk ==1){ //New Trunk created , add [DID_trunk_x] in extensions.conf
+			add_didcontext($('devices').value);
+		}
 		saveSPdetails();
 		var uri;
 		var newvalue;
@@ -317,7 +354,11 @@ function isloggedin(originalRequest){
 		$('customvoip_secret').value = "";
 		$('customvoip_protocol').selectedIndex = 0;
 		$('customvoip_host').value ="";
-
+		$('analog').style.display="none";
+		$('voip').style.display="none";
+		$('customvoip').style.display="none";
+		$('userscontent_title').innerHTML = "Add Service Provider";
+		isnewtrunk = 1;
 		return tmp;
 
 	}
@@ -351,14 +392,15 @@ function isloggedin(originalRequest){
 
 
 	function activateanalogvoip() {
+		$('analog').style.display = "none";
+		$('zapchan').style.display = "none";
+		$('zapchan_analoglines').style.display = "none";
+		$('zapchan_analoglines').innerHTML ="";
+		$('customvoip').style.display = "none" ;
+		$('voip').style.display= "none";
 		if ($('trunkstyleanalog').checked) {
 				$('analog').style.display = "block";
-				$('zapchan').style.display = "none";
 				$('zapchan_analoglines').style.display = "block";
-				$('zapchan_analoglines').innerHTML ="";
-				$('customvoip').style.display = "none" ;
-				$('voip').style.display= "none";
-
 				if($('zapchan').options.length ==0){
 					$('zapchan_analoglines').innerHTML = "No analog line hardware installed on the system";
 				}else{
@@ -373,20 +415,10 @@ function isloggedin(originalRequest){
 				}
 		}else if ($('trunkstylevoip').checked) {
 				$('voip').style.display = "block";
-				$('analog').style.display = 'none'; 
 				$('voip').style.height =350;
-				$('zapchan_analoglines').style.display = "none";
-				$('zapchan_analoglines').innerHTML ="";		
-				$('customvoip').style.display = "none" ;
 		}else if ($('trunkstylecustomvoip').checked) {
-				$('analog').style.display= "none";
-				$('voip').style.display= "none";
 				$('customvoip').style.display = "block" ;
-				$('zapchan_analoglines').style.display = "none";
-				$('zapchan_analoglines').innerHTML ="";
 		}
-
-			
 	}
 	
 	function localajaxinit() {
@@ -479,6 +511,8 @@ function addrow_totable(sp_text, sp_value){
 }
 
 function editSP(sp_value){
+	isnewtrunk = 0;
+	$('userscontent_title').innerHTML = "Edit Service Provider";
 	for(var i=0; i< $('devices').length; i++){
 			if(sp_value == $('devices').options[i].value ){
 					$('devices').selectitem(i);
@@ -569,11 +603,10 @@ function deletesp_fromui(trunk){
 </center>
 
 <div id="userscontent" STYLE="display:none; position: absolute; left: 230; top: 5; width:500; height:375;  background-color:#F4EFE5;   border-width: 1px; border-color: #7E5538; border-style: solid;z-index:5">
-	<table width="100%" cellpadding=0 cellspacing=0  onmousedown="startDrag(event , 'userscontent');">
-		<TR bgcolor="#7E5538" ><TD Height="20" align="right"  style="cursor: move">
-					<A href="#" onclick="$('cancel').click();"><font style="color:#FFFFFF; font-size: 12px; font-weight:bold;">X</font></A>
-				</TD>
-				<TD width=4></TD>
+	<table width="100%" cellpadding=0 cellspacing=0>
+		<TR bgcolor="#7E5538" >
+				<TD  onmousedown="startDrag(event , 'userscontent');" id="userscontent_title" style="cursor: move;color:#FFFFFF; font-size: 12px; font-weight:bold;" align="center"></TD>
+				<TD Height="20" width=15 align="center"  style="color:#FFFFFF; font-size: 12px; font-weight:bold;" onclick="$('cancel').click();">X</TD>
 		</TR>
 	</table>
 
