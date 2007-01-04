@@ -163,6 +163,12 @@ function isloggedin(originalRequest){
 							$('customvoip_protocol').selectedIndex = 0;
 						}
 						$('customvoip_host').value = $('host').value;
+						if($('registeriax').value == "yes" || $('registersip').value == "yes"){
+							$('customvoip_register').checked = true;
+						}else{
+							$('customvoip_register').checked = false;
+						}
+
 				}else if ( $('trunkstylevoip').checked ){
 					// VOIP
 						$('customvoip_name').value = "";
@@ -317,10 +323,20 @@ function isloggedin(originalRequest){
 							$('hassip').value = "yes";
 							$('hasiax').value = "no";				
 						}
+						if( $('customvoip_register').checked && $('customvoip_protocol').value == "iax"){
+							$('registeriax').value = 'yes';
+							$('registersip').value = 'no';
+						}
+						if( $('customvoip_register').checked && $('customvoip_protocol').value == "sip"){
+							$('registeriax').value = 'no';
+							$('registersip').value = 'yes';
+						}
+						if( !$('customvoip_register').checked ){
+							$('registeriax').value = 'no';
+							$('registersip').value = 'no';
+						}
 						$('host').value = $('customvoip_host').value ;
 						$('dialformat').value = '${EXTEN:1}';
-						$('registeriax').value = '';
-						$('registersip').value = '';
 						$('callerid').value = '';
 						$('insecure').value = '';
 						$('port').value = '';
@@ -562,6 +578,22 @@ function deletesp_fromui(trunk){
 		}
 }
 
+function flip_register(){
+	$('cancel').disabled= false;
+	$('save').disabled= false;
+	if( $('customvoip_register').checked && $('customvoip_protocol').value == "iax"){
+		$('registeriax').value = 'yes';
+		$('registersip').value = 'no';
+	}
+	if( $('customvoip_register').checked && $('customvoip_protocol').value == "sip"){
+		$('registeriax').value = 'no';
+		$('registersip').value = 'yes';
+	}
+	if( !$('customvoip_register').checked ){
+		$('registeriax').value = 'no';
+		$('registersip').value = 'no';
+	}
+}
 
 //-->
 </SCRIPT>
@@ -679,6 +711,10 @@ function deletesp_fromui(trunk){
 												<option value="iax">IAX</option>
 												<option value="sip">SIP</option>
 												</select></td>
+									</tr>
+									<tr>
+										<td class="field_text">Register:</td>
+										<td><input type="checkbox" id="customvoip_register" onchange="flip_register();"  class="input8"></td>
 									</tr>
 									<tr>
 										<td class="field_text">Host:</td>
