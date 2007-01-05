@@ -26,4 +26,4 @@ MEMORYUSAGE=`free`
 
 THISMONTH=`/bin/date +%b`
 THISDAY=`/bin/date +%d`
-/bin/grep /var/log/asterisk/messages -e "$THISMONTH ${THISDAY\#0\ }" > /var/lib/asterisk/static-http/config/bkps/today_log.html
+/bin/grep /var/log/asterisk/messages -e "$THISMONTH ${THISDAY/#0/ }" > /var/lib/asterisk/static-http/config/bkps/today_log.html
