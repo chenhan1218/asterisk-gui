@@ -260,6 +260,7 @@
 							alert("When using Analog, at least one port must be selected.");
 							return true;
 						}
+						$('provider').selectedIndex  = -1;
 						count = 0;
 						$('trunkname').value = "";
 						for (var x=0;x<$('zapchan').options.length;x++) {

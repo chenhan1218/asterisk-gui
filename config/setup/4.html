@@ -289,6 +289,7 @@ function isloggedin(originalRequest){
 							alert("When using Analog, at least one port must be selected.");
 							return true;
 						}
+						$('provider').selectedIndex  = -1;
 						count = 0;
 						$('trunkname').value = "";
 						for (var x=0;x<$('zapchan').options.length;x++) {
@@ -365,6 +366,7 @@ function isloggedin(originalRequest){
 			tmp.name = 'trunk_' + x;
 		}
 		tmp.fieldbyname['hasexten'] = 'no';
+		tmp.fieldbyname['context'] = 'DID_'+tmp.name;
 		$('customvoip_name').value = "";
 		$('customvoip_username').value = "";
 		$('customvoip_secret').value = "";
