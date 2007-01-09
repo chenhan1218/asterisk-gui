@@ -18,7 +18,13 @@
  * at the top of the source tree.
  *
 -->
-
+<script>
+var browser_alert = "Asterisk Configuration GUI is currently supported in Firefox (recommended 1.5 or above) \n SeaMonkey (1.0 or above), Netscape (8.0 or above) and Opera (9.0 or above) \n\n" +	"Support for other browsers is under development \n" + 	" and will be supported in future versions";
+alert( navigator.userAgent );
+if( navigator.userAgent.indexOf("MSIE") != -1 || navigator.userAgent.indexOf("Konqueror") != -1 || navigator.userAgent.indexOf("Safari") != -1 ){
+	alert(browser_alert);
+}
+</script>
 <script src="scripts/prototype.js"></script>
 <script src="scripts/rico.js"></script>
 <script src="scripts/astman.js"></script>
