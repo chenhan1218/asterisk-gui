@@ -155,6 +155,33 @@
 		}
 	}
 
+	callbacks.savechanges = function(){
+			var opt = {
+				method: 'get',
+				asynchronous: true,
+				onSuccess: function(t) { 									
+
+				},
+				onFailure: function(t) {
+					alert("Config Error: " + t.status + ": " + t.statusText);
+				}
+			};
+			var p =0;
+			var uri = "";
+			if(	$('hassip').checked	){
+				uri += build_action('update', p, $('devices').value ,"registersip", "yes" ); p++;
+			}else{
+				uri += build_action('update', p, $('devices').value ,"registersip", "no" ); p++;
+			}
+			if(	$('hasiax').checked	){
+				uri += build_action('update', p, $('devices').value ,"registeriax", "yes" ); p++;
+			}else{
+				uri += build_action('update', p, $('devices').value ,"registeriax", "no" ); p++;
+			}
+			opt.parameters="action=updateconfig&reload=yes&srcfilename=" + encodeURIComponent("users.conf") + "&dstfilename=" + encodeURIComponent("users.conf") + uri;
+			var tmp = new Ajax.Request("../../rawman", opt);
+	}
+
 	phonecallbacks.format = function(t) {
 		if (t.fieldbyname['port'] == 'fxo')
 			return "Analog Port #" + t.name;
