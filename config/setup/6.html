@@ -26,6 +26,11 @@ callbacks.savechanges = function() {
 function localinit(){
 		//parent.$('next').disabled = true;
 		parent.$('next').onclick = function(){	 
+					if( parent.localextenlength != $('name').value.length ){
+						$('name').focus();
+						alert("The Extension must be " + parent.localextenlength + " digits long" );
+						return false;
+					}
 					if( !$('save').disabled ){
 							go = nextpage;
 							$('save').click();

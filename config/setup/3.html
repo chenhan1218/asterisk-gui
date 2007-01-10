@@ -105,9 +105,14 @@ usercallbacks.loaded = function(){
 		}
 }
 
+function store_extlength(){
+	parent.localextenlength = $('localextenlength').value ;
+}
+
+
 //-->
 </SCRIPT>
-<BODY bgcolor="#FFFFFF" onload="localinit()" topmargin=0 leftmargin=0>
+<BODY bgcolor="#FFFFFF" onload="localinit()" topmargin=0 leftmargin=0 onunload="store_extlength()">
 <table width="100%" height="100%" border=0 cellpadding=0 cellspacing=0>
 	<tr><td width="190" valign=top align=left>
 					<div id="menu">
