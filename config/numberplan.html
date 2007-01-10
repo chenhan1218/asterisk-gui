@@ -165,7 +165,8 @@ numplan_callbacks.loaded = function() {
 						//return true;
 						addrowtotable( x , sorted_priorities[z] , "undefined" , default_np_data[x][sorted_priorities[z]].digits2strip );
 				}else if(trunk_exists == 0){
-							alert("Note: Calling Rule ("+default_np_data[x][sorted_priorities[z]].rulename+") has an invalid Service Provider\n");
+							rules_nosp.push(default_np_data[x][sorted_priorities[z]].rulename) ;
+							//alert("Note: Calling Rule ("+default_np_data[x][sorted_priorities[z]].rulename+") has an invalid Service Provider\n");
 							$('trunks').selectedIndex = -1;							
 						addrowtotable( x , sorted_priorities[z] , "invalid" , default_np_data[x][sorted_priorities[z]].digits2strip );							
 				}else{
