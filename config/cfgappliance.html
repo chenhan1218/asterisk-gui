@@ -206,8 +206,8 @@ if( navigator.userAgent.indexOf("MSIE") != -1 || navigator.userAgent.indexOf("Ko
 												for (var i = 0; i < panels.length; i++) {
 													document.write("<div onmouseover='show_Acctooltip(\""+ panels[i].name +"\", \""+ panels[i].content +"\")'  onmouseout='show_Acctooltip(\""+ panels[i].name +"\", \"" + tooltip_default +"\")'>");
 													document.write("	<div id='" + panels[i].name + "' class='accordionTabTitleBar'>");
-													document.write("		<img style='vertical-align:middle' src='images/" + panels[i].icon + "'>");
-													document.write("		<span style='margin-left: 4px;font-weight:bold'>" + panels[i].label + "</span>");
+													document.write("		<nobr><img style='vertical-align:middle' src='images/" + panels[i].icon + "'>");
+													document.write("		<span style='margin-left: 0px;font-weight:bold'>" + panels[i].label + "</span></nobr>");
 													document.write("    </div>");
 													document.write("	<div class='accordionTabContentBox' style='background-image:url(images/panel.png)'>");
 													document.write(panels[i].content);
