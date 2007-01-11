@@ -145,6 +145,7 @@ if( navigator.userAgent.indexOf("MSIE") != -1 || navigator.userAgent.indexOf("Ko
 	}
 
 	function show_Acctooltip(name, tip){
+		if(loggedon == 1)
 		$('tooltip').innerHTML = tip;
 	}
 
