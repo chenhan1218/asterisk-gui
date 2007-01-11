@@ -1538,6 +1538,8 @@ function Astman() {
 	};
 	this.eventResponse = function(t) {
 		if( t.responseText.match("Message: Authentication Required") ){
+				parent.window.onbeforeunload = function(){ }
+				parent.window.onunload = function(){ }				
 				parent.window.location.href = parent.window.location.href ;
 		}
 		me.parseResponse(t, me.doEvents);
