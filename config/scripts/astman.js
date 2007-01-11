@@ -32,6 +32,8 @@ function startDrag(event, movethis ){
 	dragdata.initialcursorY = event.clientY + window.scrollY;
 	dragdata.initialwindowleft = parseInt( $(dragdata.movethis).style.left) ;
 	dragdata.initialwindowtop = parseInt($(dragdata.movethis).style.top) ;
+	dragdata.maxleft = window.innerWidth - parseInt($(dragdata.movethis).style.width) ;
+	dragdata.maxtop = window.innerHeight - parseInt($(dragdata.movethis).style.height) ;
 	document.addEventListener("mousemove", movewindow, false);
 	document.addEventListener("mouseup", stopDrag, false);
 }
@@ -45,8 +47,10 @@ function stopDrag(){
 function movewindow(event){
   x = event.clientX + window.scrollX;
   y = event.clientY + window.scrollY;
-  $(dragdata.movethis).style.left = (dragdata.initialwindowleft + x - dragdata.initialcursorX) + "px";
-  $(dragdata.movethis).style.top  = (dragdata.initialwindowtop  + y - dragdata.initialcursorY) + "px";
+  var tmp_top = dragdata.initialwindowtop  + y - dragdata.initialcursorY ; 
+  var tmp_left = dragdata.initialwindowleft + x - dragdata.initialcursorX;
+  if( tmp_left > 0 && tmp_left < dragdata.maxleft ){ $(dragdata.movethis).style.left = tmp_left  + "px"; }
+  if( tmp_top > 0 && tmp_top < dragdata.maxtop ){ $(dragdata.movethis).style.top  = tmp_top + "px"; }
 }
 
 
