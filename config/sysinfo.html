@@ -155,6 +155,9 @@ function getsysinfohtml(){
 
 function localajaxinit(){
 	// call the tool (sysinfo)
+	var date = new Date() ; 
+	$('log_month').selectedIndex = date.getMonth() ;
+	$('log_day').selectedIndex = date.getDate()  - 1 ;
 	$('status_message').style.display="block";
 	$('message_text').innerHTML = "Loading system Information ...";
 	parent.loadscreen(this);
