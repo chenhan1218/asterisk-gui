@@ -30,6 +30,8 @@ var fieldnames = new Array('status', 'save','userbase','localextenlength');
 var widgets = new Array;
 
 function tosetup(){
+	parent.window.onbeforeunload = function(){ }
+	parent.window.onunload = function(){ }
 	parent.window.location.href = "./setup/install.html";
 }
 

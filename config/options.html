@@ -210,6 +210,8 @@ httpconf_callbacks.loaded = function() {
 
 
 function tosetup(){
+	parent.window.onbeforeunload = function(){ }
+	parent.window.onunload = function(){ }
 	parent.window.location.href = "./setup/install.html";
 }
 

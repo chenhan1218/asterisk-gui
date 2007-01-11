@@ -150,6 +150,22 @@ if( navigator.userAgent.indexOf("MSIE") != -1 || navigator.userAgent.indexOf("Ko
 	}
 
 	function registerajax() {
+		window.onbeforeunload = 	function(){
+				if(loggedon == 1)
+				return "Doing so will terminate your Asterisk GUI session"; 
+		}
+
+		window.onunload = 	function(){
+				if(loggedon != 1) return true;
+				var opt2 = {
+						method: 'get',asynchronous: true,
+						onSuccess: function() {setLoggedOn(0);loggedon == -1;},
+						onFailure: function(t) {}
+				};
+				opt2.parameters ="action=logoff";
+				var tmp2 = new Ajax.Request("../../rawman", opt2);
+		}
+
 		var pnameheight = 22;
 		var pheight = (503  - (pnameheight*panels.length) )  ;
 		accordion = new Rico.Accordion( $('configpanel'), { panelHeight: pheight,onHideTab:fademainscreen,onShowTab:showmainscreen });
@@ -170,7 +186,7 @@ if( navigator.userAgent.indexOf("MSIE") != -1 || navigator.userAgent.indexOf("Ko
 	astmanEngine.setEventCallback(eventeater.eventcb);
 
 	function Logoff() {
-		t=confirm("Are you sure ?")
+		var t=confirm("Are you sure ?");
 		if(t == false)
 			return true;
 		var opt2 = {
