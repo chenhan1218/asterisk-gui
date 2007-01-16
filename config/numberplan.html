@@ -66,8 +66,11 @@ function addthe_default_callingplan(){
 
 
 trunkcallbacks.format = function(t) {
-	if (t.name.substr(0,6) != 'trunk_')
+	//if (t.name.substr(0,6) != 'trunk_')
+	//	return null;
+	if ( t.fieldbyname['context'] != asterisk_guiTDPrefix + t.name ) {
 		return null;
+	}
 	if (t.fieldbyname['trunkname'] && t.fieldbyname['trunkname'].length) {
 		trunks_desc[t.name] = new Object();
 		trunks_desc[t.name].comment = t.fieldbyname['trunkname'] ;

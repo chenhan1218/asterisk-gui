@@ -25,6 +25,7 @@
  var asterisk_guiversion = "$Revision$";
 var sortbynames = false;
 var dragdata = new Object;
+var asterisk_guiTDPrefix = "DID_";
 
 function startDrag(event, movethis ){
 	dragdata.movethis = movethis ;

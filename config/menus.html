@@ -977,10 +977,14 @@ usercallbacks.format = function (t,x){
 			}
 			return null;
 		}
-		if (t.name.substring(0,6) == 'trunk_')
+
+		//if (t.name.substring(0,6) == 'trunk_')
+		//	return null;
+		if ( t.fieldbyname['context'] == asterisk_guiTDPrefix + t.name ) {
 			return null;
-		else
+		}else{
 			return t.name;
+		}
 }
 
 usercallbacks.identifier = "extension";

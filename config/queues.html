@@ -289,8 +289,11 @@ callbacks.format = function (t,x){
 			if ( t.fieldbyname['userbase'] && t.fieldbyname['userbase'].length){ userbase =  t.fieldbyname['userbase'] ; }
 			return null;
 		}
-		if (t.name.substring(0,6) == 'trunk_')
+		//if (t.name.substring(0,6) == 'trunk_')
+		//	return null;
+		if ( t.fieldbyname['context'] == asterisk_guiTDPrefix + t.name ) {
 			return null;
+		}
 		if (t.fieldbyname['fullname'] && t.fieldbyname['fullname'].length) {
 			return t.name + " -- " + t.fieldbyname['fullname'];
 		} else

@@ -32,6 +32,13 @@ var old_incomingrule, old_fromprovider ;
 var  edit_pattern, edit_DIDtrunk, edit_action, edit_priority ;
 
 user_callbacks.format = function(t, x) {
+	var tmp = asterisk_guiTDPrefix + t.name ; 
+	if ( ( t.fieldbyname['context'] == tmp ) && x == undefined ) {
+		didtrunks[tmp] = new Object();
+		didtrunks[tmp].trunkname = t.fieldbyname['trunkname'] ; 
+		return t.name;
+	}
+	/*
 	var tmp = 'DID_' + t.name;
 	if ( t.name.substring(0,6) == 'trunk_' && x == undefined){
 		didtrunks[tmp] = new Object();
@@ -40,6 +47,7 @@ user_callbacks.format = function(t, x) {
 	if ( t.name.substring(0,6) == 'trunk_'  && t.names[x]=='trunkname' ){
 		didtrunks[tmp].trunkname = t.fields[x];
 	}
+	*/
 	return false;
 }
 
@@ -52,14 +60,14 @@ user_callbacks.includecats = true;
 // parse all contexts in extensions.conf that look like [DID_trunk_x]
 // and show each entry in the table
 numplan_callbacks.format = function(t, x) {
-	if (t.name.substring(0,10) == 'DID_trunk_' && x == undefined){
+	if (		( t.name.substring(0,asterisk_guiTDPrefix.length) == asterisk_guiTDPrefix ) && x == undefined){
 		if(typeof didtrunks[t.name] == "undefined"){
 			didtrunks[t.name] = new Object();
 			didtrunks[t.name].trunkname = t.name;
 		}
 		return t.name;
 	}
-	if (t.name.substring(0,10) == 'DID_trunk_' && t.names[x]=='exten' ){
+	if ( ( t.name.substring(0,asterisk_guiTDPrefix.length) == asterisk_guiTDPrefix ) && t.names[x]=='exten' ){
 		//get pattern & action
 		var temp = t.fields[x].split(',');
 		didtrunks[t.name][temp[0]] = new Object();
