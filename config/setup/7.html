@@ -20,7 +20,8 @@ var fieldnames = new Array( 'delete', 'status', 'new', 'save', 'cancel','name','
 callbacks.format = function(t) {
 	if ((t.name == 'general'))
 		return null;
-	if (t.name.substring(0,6) == 'trunk_')
+	//if (t.name.substring(0,6) == 'trunk_')
+	if ( t.fieldbyname['context'] == asterisk_guiTDPrefix + t.name )
 		return null;
 	if (t.fieldbyname['fullname'] && t.fieldbyname['fullname'].length) {
 		return t.name + " -- " + t.fieldbyname['fullname'];
