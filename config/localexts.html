@@ -85,8 +85,24 @@ function localajaxinit(){
 				widgets[fieldnames[x]] = $(fieldnames[x]);
 				widgets[fieldnames[x]].disabled = true;
 			}
+			$('localextenlength').addEventListener("change", update_spae, false);
 			parent.astmanEngine.config2list("users.conf", $('devices'),widgets, usercallbacks);
 }
+
+
+function update_spae(){
+		if(	$('localextenlength').value == $('userbase').value.length ) return;
+		if(	$('localextenlength').value < $('userbase').value.length ){
+				$('userbase').value = $('userbase').value.substr(0,$('localextenlength').value);
+				return;
+		}
+		if(	$('localextenlength').value > $('userbase').value.length ){
+				while ( $('localextenlength').value != $('userbase').value.length  ){
+					$('userbase').value = $('userbase').value + "0" ; 
+				}
+		}
+}
+
 </script>
 <body id="foo" onload="localajaxinit()" bgcolor="EFEFEF">
 <div class="mainscreenTitleBar"><span style="margin-left: 4px;font-weight:bold">Admin Options - Local Extension Settings</span></div>
@@ -104,8 +120,7 @@ function localajaxinit(){
 					<select id="devices" style="display:none"></select> 
 					<p class="field_text">	Local Extensions are <select id="localextenlength"><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option></select> digits long&nbsp;</p>
 					<p class="field_text">	Starting point of Allocation of extensions : <input type=text id="userbase" size=5>	</p>
-					<p class="field_text"> <input type=checkbox id="disallow_aliasextns"> Donot Allow analog phones assigned to multiple extensions</p>
-
+					<p class="field_text"> <input type=checkbox id="disallow_aliasextns"> Do not allow analog phones assigned to multiple extensions</p>
 					<center>
 							<div style="height:15px" id='status'></div><BR>
 							<input type=button id="save" value="Save">

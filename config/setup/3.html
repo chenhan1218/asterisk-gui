@@ -8,7 +8,7 @@
 <!--
 var rawman_url;
 var usercallbacks = new Object;
-var fieldnames = new Array( 'save','userbase','localextenlength');
+var fieldnames = new Array( 'save','userbase','localextenlength','disallow_aliasextns');
 var widgets = new Array;
 var go = "";
 var nextpage = "4.html";
@@ -35,6 +35,7 @@ function localinit(){
 	};
 	rawman_url = parent.rawman_url ;
 	parent.astmanEngine.setURL(rawman_url);
+	$('localextenlength').addEventListener("change", update_spae, false);
 	ping();
 }
 
@@ -109,7 +110,18 @@ function store_extlength(){
 	parent.localextenlength = $('localextenlength').value ;
 }
 
-
+function update_spae(){
+		if(	$('localextenlength').value == $('userbase').value.length ) return;
+		if(	$('localextenlength').value < $('userbase').value.length ){
+				$('userbase').value = $('userbase').value.substr(0,$('localextenlength').value);
+				return;
+		}
+		if(	$('localextenlength').value > $('userbase').value.length ){
+				while ( $('localextenlength').value != $('userbase').value.length  ){
+					$('userbase').value = $('userbase').value + "0" ; 
+				}
+		}
+}
 //-->
 </SCRIPT>
 <BODY bgcolor="#FFFFFF" onload="localinit()" topmargin=0 leftmargin=0 onunload="store_extlength()">
@@ -137,7 +149,8 @@ function store_extlength(){
 					<p class="subheading">	Local Extensions are <select id="localextenlength">
 																	<option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option></select> digits long&nbsp;
 					</p>
-					<p class="subheading">	Starting point of Allocation of extensions : <input type=text id="userbase" size=5>	</p>
+					<p class="subheading">Starting point of Allocation of extensions : <input type=text id="userbase" size=5>	</p>
+					<p class="subheading"><input type=checkbox id="disallow_aliasextns"> Do not allow analog phones assigned to multiple extensions</p>
 			<!--  this page -->
 			</td>
 		</tr>

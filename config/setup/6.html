@@ -26,9 +26,12 @@ callbacks.savechanges = function() {
 function localinit(){
 		//parent.$('next').disabled = true;
 		parent.$('next').onclick = function(){	 
+					if ( $('name').value.length==0 ){
+						alert("Looks like a default Voicemail Extension is not yet configured \n\n Please set an \'Extension for Checking messages\'");
+						return false;
+					}
 					if( parent.localextenlength != $('name').value.length ){
-						$('name').focus();
-						alert("The Extension must be " + parent.localextenlength + " digits long" );
+						alert("The Voicemail Extension has to be " + parent.localextenlength + " digits long" );
 						return false;
 					}
 					if( !$('save').disabled ){
@@ -176,7 +179,19 @@ callbacks.loaded = function() {
 	$('name').onkeydown = newexten;
 	$('name').disabled = false;
 	if (whichexten.length ==0 ){
-		alert("Looks like a default Voicemail Extension is not yet configured \n\n Please set an \'Extension for Checking messages\'  and \n click on 'save' button");
+		alert("Looks like a default Voicemail Extension is not yet configured \n\n Please set an \'Extension for Checking messages\'");
+	}else{
+					if( parent.localextenlength != $('name').value.length ){
+							if(	parent.localextenlength < $('name').value.length ){
+									$('name').value = $('name').value.substr(0,parent.localextenlength);
+									$('save').disabled = false;
+							}else if(	parent.localextenlength > $('name').value.length ){
+									while ( parent.localextenlength != $('name').value.length  ){
+										$('name').value = $('name').value + "0" ; 
+										$('save').disabled = false;
+									}
+							}
+					}
 	}
 }
 

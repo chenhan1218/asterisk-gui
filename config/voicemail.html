@@ -202,6 +202,18 @@
 		$('name').value = vmexten ; 
 	}
 
+	voicemailcallbacks.beforeSaving = function(){
+		// check whether the length of extension is valid
+		if( localextenlength !=  $('name').value.length){
+				alert("Sorry, An Extension must be  "+ localextenlength  + " digits !");
+				$('name').focus();
+				return false;
+		}
+		if (!check_patternonfields( ['name', 'maxgreet'] ) ){
+			return false;
+		}
+		return true;
+	}
 
 	voicemailcallbacks.savechanges = function() {
 		if (vmexten != $('name').value) {

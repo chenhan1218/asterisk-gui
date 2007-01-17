@@ -37,6 +37,7 @@ function isloggedin(originalRequest){
 		if ( originalRequest.responseText.match("Error") ) {
 			// User is not logged in , show him the login screen
 			$('loginform').style.display = "block";
+			$('username').focus();
 			return true;
 		}
 		if ( originalRequest.responseText.match("Pong") ) {
@@ -188,6 +189,14 @@ function login(){
 		var tmp = new Ajax.Request(rawman_url , opt);
 }
 
+
+function submitOnEnter(e){ 
+		if(e.keyCode == 13){ 
+			login();
+			return false;
+		}
+}
+
 //-->
 </SCRIPT>
 <BODY bgcolor="#FFFFFF" onload="localinit()" topmargin=0 leftmargin=0>
@@ -215,7 +224,7 @@ function login(){
 										<div class="heading">Pleae enter your admin Username and Password </div>
 										<table align="center">
 													<tr><td>Username:</td>										<td><input id="username"  size=12></td>							</tr>
-													<tr><td>Secret:</td>												<td><input type="password" id="secret" size=12></td>		</tr>
+													<tr><td>Password:</td>												<td><input type="password" id="secret" size=12 onKeyPress="submitOnEnter(event)"></td>		</tr>
 													<tr><td align='center' colspan='2' height=40 valign=bottom>
 																<input type="button" id="login" value="Login" onClick="login()" >
 															</td>
