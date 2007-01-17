@@ -156,8 +156,8 @@ function save_queue(){
 						return;
 					}
 
-					for(k=0; k<$('queues').length; k++ ){
-						tmp = $('queues').options[k].innerHTML.split(' -- '); 
+					for(var k=0; k<$('queues').length; k++ ){
+						var tmp = $('queues').options[k].innerHTML.split(' -- '); 
 						if( tmp[0] ==  $('name').value   ){
 							alert("Sorry, an entry named " + $('name').value + " already exists!");
 							return;

@@ -138,6 +138,14 @@
 				}
 		}
 
+		for(var k=0; k<$('devices').length; k++ ){
+			var tmp = $('devices').options[k].innerHTML.split(' -- '); 
+			if( tmp[0] ==  $('name').value   ){
+				alert("Sorry, an entry named " + $('name').value + " already exists!");
+				return false;
+			}
+		}
+
 		return true;
 	}
 
