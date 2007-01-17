@@ -305,10 +305,10 @@ function isloggedin(originalRequest){
 								$('port').value = provider.fieldbyname['port'];
 							else
 								$('port').value = '';
-							if (provider.fieldbyname['context'])
-								$('context').value = provider.fieldbyname['context'];
-							else
-								$('context').value = 'default';
+							//if (provider.fieldbyname['context'])
+							//	$('context').value = provider.fieldbyname['context'];
+							//else
+							//	$('context').value = 'default';
 							if (provider.fieldbyname['fromuser'])
 								$('fromuser').value = provider.fieldbyname['fromuser'];
 							else
@@ -390,7 +390,7 @@ function isloggedin(originalRequest){
 						$('callerid').value = '';
 						$('insecure').value = '';
 						$('port').value = '';
-						$('context').value = 'default';
+						//$('context').value = 'default';
 						$('fromuser').value = '';
 						$('fromdomain').value = '';
 						for (var x=0;x<$('zapchan').options.length;x++)
