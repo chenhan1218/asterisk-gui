@@ -58,7 +58,7 @@
 		$('statusbar').innerHTML = "<img src='images/tick.gif'><i>Connected!</i>";
 		parent.document.getElementById('logoutlink').innerHTML = "Logout";
 		parent.document.getElementById('logoutlink').onclick = parent.Logoff ;
-		parent.astmanEngine.pollEvents();
+		//parent.astmanEngine.pollEvents();
 	}
 	
 	function loggedOff() {
@@ -97,10 +97,12 @@
 	demo.logins = function(msgs) {
 		$('statusbar').innerHTML = msgs[0].headers['message'];
 		resp = msgs[0].headers['response'];
-		if (resp == "Success")
+		if (resp == "Success"){
+			parent.astmanEngine.pollEvents();
 			loggedOn();
-		else
+		}else{
 			loggedOff();
+		}
 	};
 	
 	demo.pongs  = function(msgs) {

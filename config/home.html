@@ -51,7 +51,6 @@
 			localloggedon = 1;
 			parent.document.getElementById('logoutlink').innerHTML = "Logout";
 			parent.document.getElementById('logoutlink').onclick = parent.Logoff ;
-			parent.astmanEngine.pollEvents();
 			alert("You are using the default password provided by AsteriskNOW !! \n\n It is strongly recommended that you chnage your default password ");
 			window.location.href="options.html";
 			return;
@@ -72,7 +71,6 @@
 		$('statusbar').innerHTML = "<img src='images/tick.gif'><i>Connected!</i>";
 		parent.document.getElementById('logoutlink').innerHTML = "Logout";
 		parent.document.getElementById('logoutlink').onclick = parent.Logoff ;
-		parent.astmanEngine.pollEvents();
 	}
 	
 	function loggedOff() {
@@ -94,6 +92,7 @@
 		resp = msgs[0].headers['response'];
 		if (resp == "Success" || msgs[0].headers['message'] == "Invalid/unknown command" ){
 			$('statusbar').innerHTML = "<img src='images/tick.gif'><i>Connected!</i>";
+			parent.astmanEngine.pollEvents();
 			loggedOn();
 		}else
 			loggedOff();
