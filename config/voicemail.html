@@ -70,6 +70,15 @@
 		if (!check_patternonfields( ['name', 'maxgreet'] ) ){
 			return false;
 		}
+
+		for(var k=0; k<$('extensions').length; k++ ){
+			var tmp = $('extensions').options[k].innerHTML.split(' -- '); 
+			if( tmp[0] ==  $('name').value   ){
+				alert("Sorry, an entry named " + $('name').value + " already exists!");
+				return false;
+			}
+		}
+
 		return true;
 	}
 

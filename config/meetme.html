@@ -35,6 +35,7 @@
 	var callbacks = new Object;
 	var usercallbacks = new Object;
 	var localextenlength;
+	var temp_selectedexten;
 	var fieldnames = new Array(
 				'name', 'delete', 'status', 'newitem', 
 				'music','menu', 'announce',
@@ -175,6 +176,7 @@
 				alert(" You can not edit the selected entry from here.\n Please click on the \'Users\' panel to edit the selected entry");
 				return true;
 		}
+		temp_selectedexten = $('name').value;
 	}
 	callbacks.newcategory = function() {
 		var tmp = null;
@@ -201,11 +203,13 @@
 			return false;
 		}
 
-		for(var k=0; k<$('extensions').length; k++ ){
-			var tmp = $('extensions').options[k].innerHTML.split(' -- '); 
-			if( tmp[0] ==  $('name').value   ){
-				alert("Sorry, an entry named " + $('name').value + " already exists!");
-				return false;
+		if(temp_selectedexten != $('name').value ){
+			for(var k=0; k<$('extensions').length; k++ ){
+				var tmp = $('extensions').options[k].innerHTML.split(' -- '); 
+				if( tmp[0] ==  $('name').value   ){
+					alert("Sorry, an entry named " + $('name').value + " already exists!");
+					return false;
+				}
 			}
 		}
 

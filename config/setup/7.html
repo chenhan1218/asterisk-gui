@@ -16,10 +16,17 @@ var phonecallbacks = new Object;
 var numcallbacks = new Object;
 var extencallbacks = new Object;
 var fieldnames = new Array( 'delete', 'status', 'new', 'save', 'cancel','name','fullname','secret','email','cid_number','zapchan','context','hasvoicemail','hasdirectory','hassip','hasiax','hasmanager','callwaiting','threewaycalling','mailbox','hasagent','group','host');
+var allow_aliasextns;
 
 callbacks.format = function(t) {
-	if ((t.name == 'general'))
+	if ((t.name == 'general')){
+		if (t.fieldbyname['allow_aliasextns'] && t.fieldbyname['allow_aliasextns'].length){
+			allow_aliasextns =  t.fieldbyname['allow_aliasextns'] ;
+		}else{
+			allow_aliasextns = 'no' ;
+		}
 		return null;
+	}
 	//if (t.name.substring(0,6) == 'trunk_')
 	if ( t.fieldbyname['context'] == asterisk_guiTDPrefix + t.name )
 		return null;
@@ -92,6 +99,18 @@ callbacks.beforeSaving = function(){
 		}
 	}
 
+	if(allow_aliasextns == "no"){	// check whether the selected analog line is assigned to another user extension
+			var tmp_usedanaloglines = [] ;
+			for ( var i=1; i < $('devices').stored_config.categories.length ; i++){
+					if ( $('devices').stored_config.categories[i].fieldbyname['zapchan'] && $('devices').stored_config.categories[i].fieldbyname.zapchan.length )
+						tmp_usedanaloglines.push($('devices').stored_config.categories[i].fieldbyname.zapchan);
+			}
+			if ( InArray(tmp_usedanaloglines,$('zapchan').value)){
+				alert("This Analog Phone has already been assigned to another user extension.\n Please select a different Phone");
+				return false;
+			}
+	}
+
 	return true;
 }
 
@@ -111,10 +130,18 @@ phonecallbacks.format = function(t) {
 }
 
 phonecallbacks.loaded = function() {
+	
+	if( $('zapchan').options.length == 0) {
+		$('zapchan').style.display="none";
+		$('noanaloglines').style.display="";
+	}
+
 	var noneopt = document.createElement("OPTION");
 	$('zapchan').options.add(noneopt,0);
 	noneopt.value = "";
 	noneopt.innerText = "None";
+
+
 	parent.astmanEngine.config2list("extensions.conf", $('context'), new Array(), numcallbacks);
 }
 
@@ -333,7 +360,9 @@ function loadusersintotable(){
 							<TD>Caller id:</TD>
 							<TD><input size='12' id='cid_number'  pattern='^[\d\-]*$' class="input8"></TD>
 							<TD>Analog Phone:</TD>
-							<TD><select size="1" id='zapchan' style='width:120px' class="input8"></select></TD>
+							<TD><select size="1" id='zapchan' style='width:120px' class="input8"></select>
+									<span id="noanaloglines" style="display:none"><I>&nbsp;No Analog lines installed.</I></span>
+							</TD>
 						</TR>
 						<TR>
 							<TD>Calling Rule:</TD>

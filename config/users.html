@@ -35,7 +35,7 @@
 	var numcallbacks = new Object;
 	var fieldnames = new Array( 'delete', 'status', 'new', 'save', 'cancel','name','fullname','secret','email','cid_number','zapchan','context', 'hasvoicemail','hasdirectory','hassip','hasiax','hasmanager','callwaiting','threewaycalling','mailbox','hasagent','group','host');
 	var localextenlength;
-	var disallow_aliasextns;
+	var allow_aliasextns;
 
 	extencallbacks.format = function(t, x) {
 		if ((t.name != specialcontext))
@@ -57,10 +57,10 @@
 						}else{
 							localextenlength = 4;
 						}
-						if (t.fieldbyname['disallow_aliasextns'] && t.fieldbyname['disallow_aliasextns'].length){
-							disallow_aliasextns =  t.fieldbyname['disallow_aliasextns'] ;
+						if (t.fieldbyname['allow_aliasextns'] && t.fieldbyname['allow_aliasextns'].length){
+							allow_aliasextns =  t.fieldbyname['allow_aliasextns'] ;
 						}else{
-							disallow_aliasextns = 'no' ;
+							allow_aliasextns = 'no' ;
 						}
 				return null;
 			}
@@ -126,7 +126,7 @@
 			return false;
 		}
 
-		if(disallow_aliasextns == "yes"){	// check whether the selected analog line is assigned to another user extension
+		if(allow_aliasextns == "no"){	// check whether the selected analog line is assigned to another user extension
 				var tmp_usedanaloglines = [] ;
 				for ( var i=1; i < $('devices').stored_config.categories.length ; i++){
 						if ( $('devices').stored_config.categories[i].fieldbyname['zapchan'] && $('devices').stored_config.categories[i].fieldbyname.zapchan.length )
@@ -138,11 +138,13 @@
 				}
 		}
 
-		for(var k=0; k<$('devices').length; k++ ){
-			var tmp = $('devices').options[k].innerHTML.split(' -- '); 
-			if( tmp[0] ==  $('name').value   ){
-				alert("Sorry, an entry named " + $('name').value + " already exists!");
-				return false;
+		if($('devices').value != $('name').value){
+			for(var k=0; k<$('devices').length; k++ ){
+				var tmp = $('devices').options[k].innerHTML.split(' -- '); 
+				if( tmp[0] ==  $('name').value ){
+					alert("Sorry, an entry named " + $('name').value + " already exists!");
+					return false;
+				}
 			}
 		}
 
@@ -219,6 +221,10 @@
 	}
 
 	phonecallbacks.loaded = function() {
+		if( $('zapchan').options.length == 0) {
+			$('zapchan').style.display="none";
+			$('noanaloglines').style.display="";
+		}
 		var noneopt = document.createElement("OPTION");
 		//try {
 		$('zapchan').options.add(noneopt,0);
@@ -305,7 +311,8 @@
 												<tr onmouseover="show_tooltip('en', 'users', 2);"><td class="field_text">Password:</td><td><input size='5' id='secret' pattern='^[a-zA-Z_0-9]*$'  class="input8"></td></tr>
 												<tr onmouseover="show_tooltip('en', 'users', 3);"><td class="field_text">E-mail:</td><td><input size='20' id='email' pattern='^[0-9a-zA-Z\.\-\_\@]*$' class="input8"></td></tr>
 												<tr onmouseover="show_tooltip('en', 'users', 4);"><td class="field_text">Caller ID:</td><td><input size='12' id='cid_number'  pattern='^[\d\-]*$' class="input8"></td></tr>
-												<tr onmouseover="show_tooltip('en', 'users', 5);"><td class="field_text">Analog Phone:</td><td><select size="1" id='zapchan' style='width:120px' class="input8"></select></td></tr>
+												<tr onmouseover="show_tooltip('en', 'users', 5);"><td class="field_text">Analog Phone:</td><td><select size="1" id='zapchan' style='width:120px' class="input8"></select>
+												<span id="noanaloglines" style="display:none"><I>&nbsp;No Analog lines installed.</I></span></td></tr>
 												<tr onmouseover="show_tooltip('en', 'users', 6);"><td class="field_text">Dial Plan:</td><td><select size='1' id='context' style='width:120px' class="input8"></select></td></tr>
 												<tr><td colspan='2' align='center'><div style="height:15px" id='status'></div></td></tr>
 												<tr><td colspan='2' align='center'><input type='hidden' id='mailbox'><input type='hidden' id='group'></td></tr>

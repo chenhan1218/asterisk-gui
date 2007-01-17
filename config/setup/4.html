@@ -529,8 +529,11 @@ function loadServiceProvidersintotable(){
 		var newRow = $('serviceproviderstable').insertRow(-1);
 		var newCell0 = newRow.insertCell(0);
 		newCell0 .align = "center";
-		newCell0 .innerHTML = "<BR>You donot have any <I>Service Providers</I> defined<BR><BR> Please click on the 'Add Service Provider' button<BR> to add a service provider<BR><BR>" ;
+		$('new').style.display= "none";
+		newCell0 .innerHTML = "<BR>You do not have any <I>Service Providers</I> defined<BR><BR>  <Input type=button onclick=\"$('new').click()\" value=\"Add Service Provider\"><BR><BR>" ;
 		return true;
+	}else{
+		$('new').style.display= "none";
 	}
 
 	$('table_one').style.display="";	
@@ -756,6 +759,9 @@ function flip_register(){
 									<tr>
 										<td height=10></td>
 										<td></td>
+									</tr>
+									<tr>
+										<td colspan=2>Please enter your Service Provider information:</td>
 									</tr>
 									<tr>
 										<td class="field_text">Comment:</td>
