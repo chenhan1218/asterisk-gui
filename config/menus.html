@@ -40,6 +40,8 @@
 	var extensions_array = new Array;
 	var answer_call_string = "s,1,Answer";
 	var localextenlength ;
+	var rfilescallbacks = new Object;
+	var custom_voicemenusfile = "gui_custommenus.conf";
 
 function format_step(this_step){
 	var temp = this_step.split(',');
@@ -960,8 +962,21 @@ extencallbacks.format = function(t, x) {
 	return res;
 }
 
-extencallbacks.loaded = function() {
+
+rfilescallbacks.format = function(t) {
+		return t.name;
+}
+
+rfilescallbacks.loaded= function() {
+	for (var i=0; i < $('recorded_files').length; i++){
+		var tmp_fname = $('recorded_files').options[i].value.slice(0, -4);
+		$('combosel_sounds').innerHTML += '<option value="'+ tmp_fname + '">' + tmp_fname + "</option>" ;
+	}
 	parent.astmanEngine.config2list("users.conf", $('users'), new Array(), usercallbacks);
+}
+
+extencallbacks.loaded = function() {
+	parent.astmanEngine.config2list(custom_voicemenusfile, $('recorded_files'), new Array, rfilescallbacks);
 }
 
 extencallbacks.eachline = true;
@@ -1019,7 +1034,7 @@ usercallbacks.loaded = function (){
 			<select size="20" id="vmenus" style="width:180px; height: 415px" class="input10">
 			<option>Loading...</option>
 			</select>
-			<div style='visibility:hidden;overflow:hidden;width:0px;height:0px'><select id='extensions'></select><select id='users'></select></div>
+			<div style='visibility:hidden;overflow:hidden;width:0px;height:0px'><select id='extensions'></select><select id='users'></select><select id='recorded_files'></select></div>
 		</td>
 		<td valign=top align="right" width=346 height=415>
 						<table align="center" width="346">
@@ -1270,6 +1285,7 @@ usercallbacks.loaded = function (){
 																	<option value="vm-unknown-caller">vm-unknown-caller</option>
 																	<option value="vm-whichbox">vm-whichbox</option>
 																	<option value="vm-youhave">vm-youhave</option>
+															<option value="" style="font-weight: bold">Recorded Voicemenus</option>
 													</select>
 											</div>
 											<input type=text id="newstep_var_digit" size=3 style="display:none;" onChange=" $('newstep_var').value = $('newstep_var_digit').value;"  pattern='^\d*$' class="input8">&nbsp;
