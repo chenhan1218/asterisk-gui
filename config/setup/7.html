@@ -83,6 +83,15 @@ callbacks.beforeSaving = function(){
 			$('fullname').focus();
 			return false;
 	}
+	// check whether the extension entered matches with any of the - voicemail, queue, voicemenu, conference extensions
+	for(var k=0; k< $('extensions').length; k++ ){
+		var tmp = $('extensions').options[k].innerHTML.split(' -- '); 
+		if( tmp[0] ==  $('name').value   ){
+			alert("Sorry, an entry named " + $('name').value + " already exists!");
+			return false;
+		}
+	}
+
 	return true;
 }
 
@@ -118,8 +127,20 @@ numcallbacks.format = function(t) {
 }
 
 numcallbacks.loaded = function() {
+	parent.astmanEngine.config2list("extensions.conf", $('extensions'), new Array(), extencallbacks);
+}
+
+extencallbacks.format = function(t, x) {
+	if ((t.name != specialcontext))
+		return null;
+	return format_extension($('extensions'), t, x);
+}
+extencallbacks.loaded = function() {
 	parent.astmanEngine.config2list("users.conf", $('devices'), widgets, callbacks);
 }
+extencallbacks.eachline = true;
+
+
 
 function localinit(){
 	//parent.$('next').disabled = true;
