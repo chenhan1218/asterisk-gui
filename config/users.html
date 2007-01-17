@@ -35,6 +35,7 @@
 	var numcallbacks = new Object;
 	var fieldnames = new Array( 'delete', 'status', 'new', 'save', 'cancel','name','fullname','secret','email','cid_number','zapchan','context', 'hasvoicemail','hasdirectory','hassip','hasiax','hasmanager','callwaiting','threewaycalling','mailbox','hasagent','group','host');
 	var localextenlength;
+	var disallow_aliasextns;
 
 	extencallbacks.format = function(t, x) {
 		if ((t.name != specialcontext))
@@ -55,6 +56,11 @@
 							localextenlength =  t.fieldbyname['localextenlength'] ;
 						}else{
 							localextenlength = 4;
+						}
+						if (t.fieldbyname['disallow_aliasextns'] && t.fieldbyname['disallow_aliasextns'].length){
+							disallow_aliasextns =  t.fieldbyname['disallow_aliasextns'] ;
+						}else{
+							disallow_aliasextns = 'no' ;
 						}
 				return null;
 			}
@@ -119,6 +125,19 @@
 		if (!check_patternonfields( ['name', 'fullname', 'secret','email', 'cid_number'] ) ){
 			return false;
 		}
+
+		if(disallow_aliasextns == "yes"){	// check whether the selected analog line is assigned to another user extension
+				var tmp_usedanaloglines = [] ;
+				for ( var i=1; i < $('devices').stored_config.categories.length ; i++){
+						if ( $('devices').stored_config.categories[i].fieldbyname['zapchan'] && $('devices').stored_config.categories[i].fieldbyname.zapchan.length )
+							tmp_usedanaloglines.push($('devices').stored_config.categories[i].fieldbyname.zapchan);
+				}
+				if ( InArray(tmp_usedanaloglines,$('zapchan').value)){
+					alert("This Analog Phone has already been assigned to another user extension.\n Please select a different Phone");
+					return false;
+				}
+		}
+
 		return true;
 	}
 
