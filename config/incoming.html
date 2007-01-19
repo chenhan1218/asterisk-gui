@@ -113,6 +113,16 @@ function refreshtable(){
 					addrowtotable( j, i, didtrunks[i][j].action, didtrunks[i][j].priority);
 			}
 	}
+
+	if( $('callingRulesTable').rows.length == 0){
+		$('table_one').style.display="none";
+		var newRow = $('callingRulesTable').insertRow(-1);
+		var newCell0 = newRow.insertCell(0);
+		newCell0 .align = "center";
+		newCell0 .innerHTML = "<BR>An <I>incoming Calling Rule</I> is not defined<BR><BR> Please click on 'Add a Incoming Rule' button<BR> to add a new incoming call rule.<BR><BR>" ;
+		return true;
+	}
+
 }
 
 function addrowtotable(a,b,c,d){	// a is pattern, b is DID_trunk, c is action, d is priority

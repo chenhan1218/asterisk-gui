@@ -189,9 +189,17 @@ numplan_callbacks.loaded = function() {
 				}else{
 							addrowtotable( x , sorted_priorities[z] , default_np_data[x][sorted_priorities[z]].trunk , default_np_data[x][sorted_priorities[z]].digits2strip );
 				}
-
 			}
-	} 
+	}
+	
+	if( $('callingRulesTable').rows.length == 0 ){
+		$('table_one').style.display="none";
+		var newRow = $('callingRulesTable').insertRow(-1);
+		var newCell0 = newRow.insertCell(0);
+		newCell0 .align = "center";
+		newCell0 .innerHTML = "<BR>A <I>Calling Rule</I> is not defined<BR><BR> Please click on the 'Add a Calling Rule' button<BR> to add a Calling Rule<BR><BR>" ;
+		return true;
+	}
 }
 
 numplan_callbacks.eachline = true;

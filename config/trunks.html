@@ -197,6 +197,10 @@
 
 	callbacks.beforeSaving = function(){
 			if(isnewtrunk ==1){
+				provider = $('provider').stored_config.catbyname[$('provider').value];		
+				if( typeof provider.fieldbyname['trunk_username'] != "undefined" ){
+					$('name').value = provider.fieldbyname['trunk_username'];
+				}
 				dids_array.push($('name').value );
 			}else{
 					old_trunkname = $('devices').value ;
@@ -579,6 +583,12 @@ function showSPdetails(){
 		$('cancel').disabled = false;
 		$('userscontent').style.display = "block";
 		$('bg_transparent').style.display ='';
+		if ( isnewtrunk == 0){
+			$('trunkstyleanalog').disabled = true;
+			$('trunkstylevoip').disabled = true;
+			$('trunkstylecustomvoip').disabled = true;
+			$('provider').disabled = true;
+		}
 }
 
 function deleteSP(trunk){
@@ -662,10 +672,11 @@ function flip_register(){
 				<LABEL FOR="trunkstyleanalog"><input name='trunkstyle' type='radio' id='trunkstyleanalog' onclick='activateanalogvoip()' value='analog'>Analog</LABEL><BR>
 				<LABEL FOR="trunkstylevoip"><input name='trunkstyle' type='radio' id='trunkstylevoip' onclick='activateanalogvoip()' value='voip'>VoIP</LABEL><BR>
 				<LABEL FOR="trunkstylecustomvoip"><input name='trunkstyle' type='radio' id='trunkstylecustomvoip' onclick='activateanalogvoip()' value='customvoip'>Custom VoIP</LABEL>
-
+				<div id="div_providername" style="display:none">
 				<BR><BR>
 				<B>Provider Name:</B><BR>
 				<input id="name" size=10 class='input8'>
+				</div>
 <!-- Provider type -->
 </td>
 <td>
@@ -685,7 +696,7 @@ function flip_register(){
 						<table align="center">
 						<tr  onmouseover="show_tooltip('en', 'trunks', 1);"><td style='width:80px' valign='top' class="field_text">Provider:</td><td><select size='6' id='provider' style='width:200px' altonchange='selectprovider()' class="input8"></select></td></tr>
 						<tr><td colspan='2' align='center'><div style="height:15px" id='status'></div></td></tr>
-						<tr><td colspan='2' align='center'><img id='providerlogo' style='visibility:hidden;width:214px;height:46px'></td></tr>
+						<tr><td colspan='2' align='center'><img id='providerlogo' style='visibility:hidden;'></td></tr>
 						<tr><td colspan='2' align='center'><div id='providerdesc' align='left' style='width:230px;height:100px; font-size:10px'></div></td></tr>
 						<tr onmouseover="show_tooltip('en', 'trunks', 3);"><td class="field_text">Username:</td><td><input size='20' id='username' class="input8"></td></tr>
 						<tr onmouseover="show_tooltip('en', 'trunks', 4);"><td class="field_text">Password:</td><td><input size='20' id='secret' class="input8"></td></tr>
