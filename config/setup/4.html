@@ -141,8 +141,8 @@ function isloggedin(originalRequest){
 			}
 			var sp1 = document.createElement("img");
 			sp1.src = "../" + $('providerlogo').value ;
-			sp1.width="214";
-			sp1.height="46";
+			//sp1.width="214";
+			//sp1.height="46";
 			$('providerlogo_image').appendChild(sp1);
 		}
 	}
@@ -224,6 +224,10 @@ function isloggedin(originalRequest){
 
 	callbacks.beforeSaving = function(){
 			if(isnewtrunk ==1){
+				provider = $('provider').stored_config.catbyname[$('provider').value];		
+				if( typeof provider.fieldbyname['trunk_username'] != "undefined" ){
+					$('name').value = provider.fieldbyname['trunk_username'];
+				}
 				dids_array.push($('name').value );
 			}else{
 					old_trunkname = $('devices').value ;
@@ -606,6 +610,12 @@ function showSPdetails(){
 		$('cancel').disabled = false;
 		$('userscontent').style.display = "block";
 		$('bg_transparent').style.display = "block";
+		if ( isnewtrunk == 0){
+			$('trunkstyleanalog').disabled = true;
+			$('trunkstylevoip').disabled = true;
+			$('trunkstylecustomvoip').disabled = true;
+			$('provider').disabled = true;
+		}
 }
 
 function deleteSP(trunk){
@@ -706,10 +716,11 @@ function flip_register(){
 				<LABEL FOR="trunkstyleanalog"><input name='trunkstyle' type='radio' id='trunkstyleanalog' onclick='activateanalogvoip()' value='analog'>Analog</LABEL><BR>
 				<LABEL FOR="trunkstylevoip"><input name='trunkstyle' type='radio' id='trunkstylevoip' onclick='activateanalogvoip()' value='voip'>VoIP</LABEL><BR>
 				<LABEL FOR="trunkstylecustomvoip"><input name='trunkstyle' type='radio' id='trunkstylecustomvoip' onclick='activateanalogvoip()' value='customvoip'>Custom VoIP</LABEL>
-
+				<div id="div_providername" style="display:none">
 				<BR><BR>
 				<B>Provider Name:</B><BR>
 				<input id="name" size=10 class='input8'>
+				</div>
 				</font>
 
 <!-- Provider type -->
