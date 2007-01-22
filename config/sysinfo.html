@@ -54,7 +54,7 @@ function 	load_todayslog(){
 				if(originalRequest.responseText.length==0){
 					$('todaylog').innerHTML = "No log messages found on this Day" ;
 				}else{
-					$('todaylog').innerHTML = originalRequest.responseText;
+					$('todaylog').innerHTML = originalRequest.responseText.escapeHTML() ;
 				}
 			},
 			onFailure: function(t) {
