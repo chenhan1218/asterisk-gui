@@ -264,7 +264,8 @@ function save_new_incomingrule(){
 				didtrunks[temp_provider][newpattern] = new Object();
 				didtrunks[temp_provider][newpattern].priority = temp_priority;
 				didtrunks[temp_provider][newpattern].action = temp_action ;
-				addrowtotable(newpattern,temp_provider,temp_action,temp_priority) ; // a is pattern, b is DID_trunk, c is action, d is priority
+				//addrowtotable(newpattern,temp_provider,temp_action,temp_priority) ; // a is pattern, b is DID_trunk, c is action, d is priority
+				refreshtable();
 				$('userscontent').style.display = "none";
 				$('bg_transparent').style.display ='none';
 			},
