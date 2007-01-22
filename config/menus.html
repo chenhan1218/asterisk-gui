@@ -134,7 +134,7 @@ function select_menu (my_field_options, menustring){
 		var tmp = menustring.split('(');
 		var tmp1 = tmp[1].split('|');
 		for(y=0; y < $(my_field_options).options.length; y++ ){
-			if( $(my_field_options).options[y].value == tmp1[1]){
+			if( $(my_field_options).options[y].value == tmp1[0]){
 				$(my_field_options).options[y].selected = true;
 				return true;
 			}
