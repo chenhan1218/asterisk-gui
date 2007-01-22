@@ -70,6 +70,7 @@ numplan_callbacks.format = function(t, x) {
 	if ( ( t.name.substring(0,asterisk_guiTDPrefix.length) == asterisk_guiTDPrefix ) && t.names[x]=='exten' ){
 		//get pattern & action
 		var temp = t.fields[x].split(',');
+		if( temp[0] == "s" ){return false;}
 		didtrunks[t.name][temp[0]] = new Object();
 		didtrunks[t.name][temp[0]].priority = temp[1];
 		didtrunks[t.name][temp[0]].action = temp[2];
@@ -242,13 +243,22 @@ function save_new_incomingrule(){
 	// create an entry under the selected trunk
 	// $('incomingrule') == "allunmatched" or "frompattern" , $('frompattern'), $('fromprovider'), $('toextension')
 	if ($('incomingrule').value == "allunmatched" ){
-		var newpattern = "_X." ;
+			var newpattern = "_X." ;
+			var temp_provider = $('fromprovider').value;
+			var temp_priority = "1";
+			var temp_action = "Goto(default|" + $('toextension').value + "|1)";
+			var new_exten = newpattern  + "," + temp_priority + "," + temp_action;
+			var new_exten2 = "s,1," + temp_action;
+			var uri = build_action('append', 0, temp_provider ,"exten", new_exten);
+			uri += build_action('append', 1, temp_provider ,"exten", new_exten2);
 	}else{
-		var newpattern = $('frompattern').value ;
+			var newpattern = $('frompattern').value ;
+			var temp_provider = $('fromprovider').value ;
+			var temp_action = "Goto(default|" + $('toextension').value + "|1)";
+			var temp_priority = "1";
+			var new_exten = newpattern  + "," + temp_priority + "," + temp_action;
+			var uri = build_action('append', 0, temp_provider ,"exten", new_exten ); 
 	}
-	var temp_provider = $('fromprovider').value ;
-	var temp_action = "Goto(default|" + $('toextension').value + "|1)";
-	var temp_priority = "1";
 
 	// check whether there is an existing entry with this pattern 
 	if( typeof didtrunks[temp_provider][newpattern] != "undefined" ){
@@ -273,8 +283,7 @@ function save_new_incomingrule(){
 				alert("Config Error: " + t.status + ": " + t.statusText);
 			}
 		};
-		var new_exten = newpattern  + "," + temp_priority + "," + temp_action;
-		var uri = build_action('append', 0, temp_provider ,"exten", new_exten ); 
+
 		opt.parameters="action=updateconfig&reload=yes&srcfilename=" + encodeURIComponent("extensions.conf") + "&dstfilename=" + encodeURIComponent("extensions.conf") + uri;
 		var tmp = new Ajax.Request("../../rawman", opt);
 	// 
@@ -297,20 +306,34 @@ function update_incomingrule(){
 
 	// old values before editing are - edit_pattern, edit_DIDtrunk, edit_action, edit_priority
 	// check for duplicate other than old
-	if ($('incomingrule').value == "allunmatched" ){
-		var newpattern = "_X." ;
-	}else{
-		var newpattern = $('frompattern').value ;
-	}
+	var p = 0 ;
+	var uri = "" ;
 	var temp_provider = $('fromprovider').value ;
 	var temp_action = "Goto(default|" + $('toextension').value + "|1)";
 	var temp_priority = "1";
+	var tmp_old_string = edit_pattern  + "," + edit_priority + "," + edit_action;
+	uri += build_action('delete', p, edit_DIDtrunk ,"exten", "", tmp_old_string); p++;
+	if(edit_pattern == "_X." ){
+		var tmp2_old_string = "s," + edit_priority + "," + edit_action ;
+		uri += build_action('delete', p, edit_DIDtrunk ,"exten", "", tmp2_old_string); p++;
+	}
+
+	if ($('incomingrule').value == "allunmatched" ){
+		var newpattern = "_X." ;
+		var new_exten = newpattern  + "," + temp_priority + "," + temp_action;
+		var new_exten2 = "s," + temp_priority + "," + temp_action;
+		uri += build_action('append', p , temp_provider ,"exten", new_exten ); p++ ;
+		uri += build_action('append', p , temp_provider ,"exten", new_exten2 ); p++ ;
+	}else{
+		var newpattern = $('frompattern').value ;
+		var new_exten = newpattern  + "," + temp_priority + "," + temp_action;
+		uri += build_action('append', p , temp_provider ,"exten", new_exten ); p++ ;
+	}
 
 	if( typeof didtrunks[temp_provider][newpattern] != "undefined" && ( temp_provider != edit_DIDtrunk || newpattern != edit_pattern ) ){
 		alert("An incoming call rule is already defined \n on this trunk for the selcted pattern !! ");
 		return false;
 	}
-	
 
 	// delete old entry and add new entry
 	var opt = {
@@ -329,11 +352,6 @@ function update_incomingrule(){
 			alert("Config Error: " + t.status + ": " + t.statusText);
 		}
 	};
-	var tmp_old_string = edit_pattern  + "," + edit_priority + "," + edit_action;
-	var uri = build_action('delete', 0, edit_DIDtrunk ,"exten", "", tmp_old_string); 
-	var new_exten = newpattern  + "," + temp_priority + "," + temp_action;
-	uri+= build_action('append', 1, temp_provider ,"exten", new_exten ); 
-
 	opt.parameters="action=updateconfig&reload=yes&srcfilename=" + encodeURIComponent("extensions.conf") + "&dstfilename=" + encodeURIComponent("extensions.conf") + uri;
 	var tmp = new Ajax.Request("../../rawman", opt);
 
@@ -389,6 +407,10 @@ function delete_incomingrule(a,b,c,d){ // a is pattern, b is DID_trunk, c is act
 			}
 		};
 		var uri = build_action('delete',0, b, "exten" ,"", tmp_match);
+		if( a == "_X." ){
+			var tmp2_match = "s," + d + "," + c ;
+			uri += build_action('delete',1,b,"exten","", tmp2_match);
+		}
 		opt.parameters="action=updateconfig&reload=yes&srcfilename=" + encodeURIComponent("extensions.conf") + "&dstfilename=" + encodeURIComponent("extensions.conf") + uri;
 		var tmp = new Ajax.Request("../../rawman", opt);
 }
