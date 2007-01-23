@@ -240,6 +240,10 @@ function save_new_incomingrule(){
 		return false;
 	}
 
+	if($('incomingrule').value == "frompattern" && $('frompattern').value.substr(0,1) != "_" ){
+				$('frompattern').value = "_" + $('frompattern').value ;
+	}
+
 	// create an entry under the selected trunk
 	// $('incomingrule') == "allunmatched" or "frompattern" , $('frompattern'), $('fromprovider'), $('toextension')
 	if ($('incomingrule').value == "allunmatched" ){
@@ -304,6 +308,9 @@ function update_incomingrule(){
 		return false;
 	}
 
+	if($('incomingrule').value == "frompattern" && $('frompattern').value.substr(0,1) != "_" ){
+				$('frompattern').value = "_" + $('frompattern').value ;
+	}
 	// old values before editing are - edit_pattern, edit_DIDtrunk, edit_action, edit_priority
 	// check for duplicate other than old
 	var p = 0 ;
