@@ -225,7 +225,7 @@ function isloggedin(originalRequest){
 	callbacks.beforeSaving = function(){
 			if(isnewtrunk ==1){
 				provider = $('provider').stored_config.catbyname[$('provider').value];		
-				if( typeof provider.fieldbyname['trunk_username'] != "undefined" ){
+				if( typeof provider.fieldbyname['trunk_username'] != "undefined"  && $('trunkstylevoip').checked ){
 					$('name').value = provider.fieldbyname['trunk_username'];
 				}
 				dids_array.push($('name').value );
