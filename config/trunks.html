@@ -515,6 +515,7 @@ function loadServiceProvidersintotable(){
 
 	$('table_one').style.display="";	
 	for(i=0; i< $('devices').length; i++){
+		if($('devices').options[i].text != "New Entry")
 		addrow_totable($('devices').options[i].text, $('devices').options[i].value);
 	}
 
