@@ -409,6 +409,7 @@ function add_rule_fromeditform( this_priority, oncomplete ){
 
 
 function saverule(){
+	if ( !checkfields() ) return false;
 	 if(isnewrule){ // add this rule to the default plan and reload the page
 					var newpriority=1;
 					if( typeof default_np_data[$('pattern').value] !="undefined" ){
@@ -449,6 +450,29 @@ function	buildpatternstring(){
 function localajaxinit(){
 	$('message_text').innerHTML ="Saving Changes...";
 	parent.astmanEngine.config2list("users.conf", $('trunks'), new Array(), trunkcallbacks);
+}
+
+function checkfields(){
+	if( $('rulename').value.length == 0 ){
+		alert("Please enter a Rule Name");
+		$('rulename').focus();
+		return false;
+	}
+	if($('trunks').selectedIndex == -1){
+		alert("Please select a service provider to place this call through");
+		return false;
+	}
+	if($('define_advanced').style.display=="none" && $('beginswith').value.length==0 ){
+		alert("Please Enter the beginning pattern of the number");
+		$('beginswith').focus();
+		return false;
+	}
+	if($('define_usual').style.display=="none" && $('pattern').value.length == 0 ){
+		alert("Please Enter a custom pattern");
+		$('pattern').focus();
+		return false;
+	}
+return true;
 }
 </script>
 <body id="foo" onload="localajaxinit()"  bgcolor="EFEFEF">
