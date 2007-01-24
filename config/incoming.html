@@ -30,6 +30,7 @@ var didtrunks = new Object;
 var editstatus ;
 var old_incomingrule, old_fromprovider ;
 var  edit_pattern, edit_DIDtrunk, edit_action, edit_priority ;
+var listOfExtensions = [] ;	// to store all the list of extensions to be displayed in the select menu
 
 user_callbacks.format = function(t, x) {
 	var tmp = asterisk_guiTDPrefix + t.name ; 
@@ -37,6 +38,9 @@ user_callbacks.format = function(t, x) {
 		didtrunks[tmp] = new Object();
 		didtrunks[tmp].trunkname = t.fieldbyname['trunkname'] ; 
 		return t.name;
+	}
+	if (t.fieldbyname['fullname'] && t.fieldbyname['fullname'].length && x == undefined && t.name != "general" ) {
+		listOfExtensions.push( t.name + " -- " + t.fieldbyname['fullname'] );
 	}
 	/*
 	var tmp = 'DID_' + t.name;
@@ -60,6 +64,10 @@ user_callbacks.includecats = true;
 // parse all contexts in extensions.conf that look like [DID_trunk_x]
 // and show each entry in the table
 numplan_callbacks.format = function(t, x) {
+	if ((t.name == specialcontext && x != undefined )){
+		var p = format_extension( $('extensions'), t, x)  ;
+		if ( p != null ){ listOfExtensions.push(p); }
+	}
 	if (		( t.name.substring(0,asterisk_guiTDPrefix.length) == asterisk_guiTDPrefix ) && x == undefined){
 		if(typeof didtrunks[t.name] == "undefined"){
 			didtrunks[t.name] = new Object();
@@ -79,6 +87,12 @@ numplan_callbacks.format = function(t, x) {
 }
 
 numplan_callbacks.loaded = function() {
+	listOfExtensions.sort();
+	for(var a =0; a < listOfExtensions.length ; a++ ){
+		var b = listOfExtensions[a].split(' -- ');
+		$('toextension').innerHTML = $('toextension').innerHTML + "<option value='" + b[0] + "'>" + listOfExtensions[a] + "</option>";
+	}
+
 	// load list of trunks to 'fromprovider'
 	var t ;
 	for ( t in didtrunks){
@@ -167,7 +181,7 @@ function add_incomingrule(){
 	$('fromprovider').selectedIndex = -1;
 	old_incomingrule = "allunmatched";
 	old_fromprovider = "";
-	$('toextension').value = "";
+	$('toextension').selectedIndex = -1;
 	$('frompattern').value = "";
 	$('save_a').disabled = true;
 	$('thatmatch').style.display = "none" ;
@@ -204,7 +218,13 @@ function edit_incomingrule(a,b,c,d){// a is pattern, b is DID_trunk, c is action
 	if( c.match("Goto") && !c.match("voicemenu-")  ){ 
 		var tmp = c.split('(');
 		var exten = tmp[1].split('|'); // extension is exten[1]
-		$('toextension').value = exten[1];
+		$('toextension').selectedIndex = -1 ;
+		for(var t=0; t < $('toextension').length ; t++ ){
+			if( $('toextension').options[t].value == exten[1] ){
+				$('toextension').selectedIndex = t;
+				break;
+			}
+		}
 	}
 
 	$('userscontent').style.display = "";
@@ -234,7 +254,7 @@ function save_new_incomingrule(){
 		$('fromprovider').focus();
 		return false;
 	}
-	if( $('toextension').value == "" ){
+	if( $('toextension').selectedIndex == -1 ){
 		alert("Please select an extension to which an incoming call should be routed to !");
 		$('toextension').focus();
 		return false;
@@ -302,7 +322,7 @@ function update_incomingrule(){
 		$('frompattern').select();
 		return false;
 	}
-	if( $('toextension').value == "" ){
+	if( $('toextension').selectedIndex == -1 ){
 		alert("Please select an extension to which an incoming call should be routed to !");
 		$('toextension').focus();
 		return false;
@@ -473,7 +493,7 @@ function localajaxinit() {
 			</TR>
 			<TR><TD align=center>from provider <select id="fromprovider" onclick="checksave(this)"></select></TD></TR>
 			<TR>
-				<TD align=center>to extension <input type="text" id="toextension" size=5 onchange="enablesave();"  onkeyup="enablesave();"></TD>
+				<TD align=center>to extension <select id="toextension" onchange="enablesave();"  onkeyup="enablesave();"></select></TD>
 			</TR>
 			<TR>
 				<TD align=center height=50 valign=middle>  
