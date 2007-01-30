@@ -90,7 +90,15 @@ numplan_callbacks.loaded = function() {
 	listOfExtensions.sort();
 	for(var a =0; a < listOfExtensions.length ; a++ ){
 		var b = listOfExtensions[a].split(' -- ');
-		$('toextension').innerHTML = $('toextension').innerHTML + "<option value='" + b[0] + "'>" + listOfExtensions[a] + "</option>";
+		//$('toextension').innerHTML = $('toextension').innerHTML + "<option value='" + b[0] + "'>" + listOfExtensions[a] + "</option>";
+		  var New_OPTION = document.createElement('option');
+		  New_OPTION.text = listOfExtensions[a] ;
+		  New_OPTION.value = b[0] ;
+		  try {
+			$('toextension').add(New_OPTION, null); // W3C way
+		  }catch(ex) {
+			$('toextension').add(New_OPTION); // IE way
+		  }
 	}
 
 	// load list of trunks to 'fromprovider'
