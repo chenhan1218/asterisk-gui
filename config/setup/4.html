@@ -223,10 +223,52 @@ function isloggedin(originalRequest){
 	}
 
 	callbacks.beforeSaving = function(){
+			if ($('trunkstylevoip').checked && !$('username').value.length ) {
+				alert("When using VoIP, the username must not be empty!");
+				return false;
+			}
+			if ($('trunkstyleanalog').checked ) {
+				if( $('zapchan').options.length == 0 ){
+				alert("No analog line hardware installed on the system");
+				return false;
+				}
+
+				if (!$('zapchan').value) {
+				alert("When using Analog, at least one port must be selected.");
+				return false;
+				}
+			}
+			if ($('trunkstylecustomvoip').checked ) {
+				if( $('customvoip_name').value.length == 0 ){
+					alert("Please enter a Comment for this Service Provider");
+					$('customvoip_name').focus();
+					return false;
+				}
+
+				if ( !$('customvoip_host').value ) {
+					alert("Please enter a host name");
+					$('customvoip_host').focus();
+					return false;
+				}
+				if ( !$('customvoip_username').value ) {
+					alert("Please enter a Username");
+					$('customvoip_username').focus();
+					return false;
+				}
+			}
+			
+			if(!$('trunkstylevoip').checked && !$('trunkstyleanalog').checked && !$('trunkstylecustomvoip').checked ){
+				alert("A trunk must be Analog or VoIP or Custom VOIP");
+				return false;
+			}
 			if(isnewtrunk ==1){
+				try{
 				provider = $('provider').stored_config.catbyname[$('provider').value];		
 				if( typeof provider.fieldbyname['trunk_username'] != "undefined"  && $('trunkstylevoip').checked ){
 					$('name').value = provider.fieldbyname['trunk_username'];
+				}
+				}catch(e){
+
 				}
 				dids_array.push($('name').value );
 			}else{
@@ -284,10 +326,6 @@ function isloggedin(originalRequest){
 		$('hasexten').value = 'no';
 		$('context').value =  asterisk_guiTDPrefix + $('name').value  ;
 		if ($('trunkstylevoip').checked) {
-							if (!$('username').value.length) {
-								alert("When using VoIP, the username must not be empty!");
-								return true;
-							}
 							provider = $('provider').stored_config.catbyname[$('provider').value];
 							$('trunkname').value = $('provider').options[$('provider').selectedIndex].innerHTML + " - " + $('username').value;
 							$('hassip').value = provider.fieldbyname['hassip'];
@@ -333,15 +371,6 @@ function isloggedin(originalRequest){
 							$('group').value = '';
 		} else if ($('trunkstyleanalog').checked) {
 				// Analog
-						if( $('zapchan').options.length ==0){
-							alert("No analog line hardware installed on the system");
-							return true;
-						}
-
-						if (!$('zapchan').value) {
-							alert("When using Analog, at least one port must be selected.");
-							return true;
-						}
 						$('provider').selectedIndex  = -1;
 						count = 0;
 						$('trunkname').value = "";
@@ -401,11 +430,7 @@ function isloggedin(originalRequest){
 							$('zapchan').options[x].selected = false;
 						$('zapchan').value = '';
 						$('group').value = '';
-		}else{
-			alert("A trunk must be Analog or VoIP or Custom VOIP");
-			return true;
 		}
-
 		return false;
 	}
 	callbacks.newcategory = function() {
