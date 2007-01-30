@@ -849,6 +849,7 @@ menuscallbacks.loaded = function(){
 			}
 			load_extensions('add_newstep_extensions');
 			load_menus('add_newstep_menus');
+			parent.loadscreen(this);
 }
 
 menuscallbacks.identifier = "extension";
@@ -934,7 +935,7 @@ function localajaxinit() {
 			widgets[fieldnames[x]] = $(fieldnames[x]);
 			widgets[fieldnames[x]].disabled = true;
 		}
-		parent.loadscreen(this);
+		//parent.loadscreen(this);
 		parent.astmanEngine.config2list("extensions.conf", $('extensions'), new Array(), extencallbacks);
 }
 

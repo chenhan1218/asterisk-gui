@@ -184,10 +184,10 @@ managerconf_callbacks.format = function(t) {
 managerconf_callbacks.loaded = function() {
 	$('hiddenfield2').selectitem(0);
 	$('message_text').innerHTML = " Saving Changes ... ";
-	parent.loadscreen(this);
 	default_bindaddress = $('bindaddr').value; default_port = $('bindport').value ; default_httptimeout = $('httptimeout').value;
 	$('save').disabled=true;
 	$('cancel').disabled=true;
+	parent.loadscreen(this);
 }
 
 httpconf_callbacks.format = function(t) {
