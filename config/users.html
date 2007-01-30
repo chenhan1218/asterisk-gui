@@ -263,6 +263,17 @@
 		}
 	}
 	function localajaxinit() {
+		/*
+		// Automatically open the related panel - like when this page is called using a back button
+		// This is working .. but is causing the current page to load twice.
+		for( var v=0; v < parent.panels.length ; v++){	
+			if ( parent.panels[v].name == "incoming"){
+				parent.accordion.showTabByIndex(v,true);			
+				break;
+			}
+		}
+		*/
+
 		if(window.location.href.match("sortbynames") ){
 			sortbynames = true;
 			$('link_sortby').innerHTML = " <A href=\"users.html\">Sort By Extensions</A> ";
