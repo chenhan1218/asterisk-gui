@@ -67,6 +67,8 @@
 		parent.setLoggedOn(1);
 		parent.loggedon = 1;
 		localloggedon = 1;
+		$('username').className  = "input9_disabled";
+		$('secret').className  = "input9_disabled";
 		updateButtons();
 		$('statusbar').innerHTML = "<img src='images/tick.gif'><i>Connected!</i>";
 		parent.document.getElementById('logoutlink').innerHTML = "Logout";
@@ -79,6 +81,8 @@
 		parent.setLoggedOn(0);
 		parent.document.getElementById('logoutlink').innerHTML = "&nbsp;";
 		localloggedon = 0;
+		$('username').className  = "input9";
+		$('secret').className  = "input9";
 		updateButtons();
 	}
 	
@@ -103,14 +107,12 @@
 		if (resp == "Pong") {
 			$('statusbar').innerHTML = "<i>Already connected...</i>";
 			loggedOn();
+			parent.loadscreen(this);
 		} else {
 			$('statusbar').innerHTML = "<i>Please login...</i>";
 			loggedOff();
+			parent.loadscreen(this);
 		}
-	}
-
-	function localajaxinit() {
-		parent.loadscreen(this);
 	}
 
 	function doLogin() {
@@ -132,6 +134,8 @@
 	}
 	
 	function doLogoff() {
+		if(confirm("Are you sure ?") == false)
+			return true;
 		$('statusbar').innerHTML = "<i>Logging off...</i>";
 		parent.astmanEngine.sendRequest('action=logoff', demo.logoffs);
 	}
@@ -139,7 +143,6 @@
 		parent.astmanEngine.sendRequest('action=ping', demo.pongs);
 	}
 	function localinit() {
-		localajaxinit();
 		localajaminit();
 	}
 

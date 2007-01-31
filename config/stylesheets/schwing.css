@@ -88,6 +88,13 @@ td {
 	*/
 }
 
+.input9_disabled {
+	background-color : #EFEFEF;
+	font-size: 9pt;
+	border:1px solid; 
+	padding : 0px 0px 0px 3px;
+}
+
 .input10 {
 	font-size: 10pt;
 	border:1px solid; 
