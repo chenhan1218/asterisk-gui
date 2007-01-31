@@ -143,8 +143,23 @@ if( navigator.userAgent.indexOf("MSIE") != -1 || navigator.userAgent.indexOf("Ko
 	function finishfade(page) {	$('mainscreen').style.display = "none"; 	}
 	function setstatus(status) {	$('status').innerHTML = copyright + status;	}
 	function showmainscreen(page) {
-		if (started) 
-			$('mainscreen').src = page.titleBar.id + ".html";
+		if (started) {
+			var opt = {
+				method: 'get',
+				asynchronous: true,
+				onComplete: function (originalRequest){
+						if ( originalRequest.responseText.match("Error") ) {
+							window.location.href=window.location.href;
+							return ;
+						}
+						if ( originalRequest.responseText.match("Pong") ) {
+								$('mainscreen').src = page.titleBar.id + ".html";
+						}
+					}
+			};
+			opt.parameters="action=ping" ;
+			var tmp = new Ajax.Request("../../rawman" , opt);
+		}
 	}
 
 	function fademainscreen(page, newpage) {
