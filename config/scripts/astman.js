@@ -1547,7 +1547,11 @@ function Astman() {
 				parent.window.onunload = function(){ }				
 				parent.window.location.href = parent.window.location.href ;
 		}
-		me.parseResponse(t, me.doEvents);
+		if( navigator.userAgent.indexOf("MSIE") != -1 || navigator.userAgent.indexOf("Konqueror") != -1 || navigator.userAgent.indexOf("Safari") != -1 || navigator.userAgent.indexOf("Opera") != -1){
+			// Donot Poll events for non mozilla Browsers			
+		}else{ 
+			me.parseResponse(t, me.doEvents);
+		}
 	};
 	this.gotConfig = function(t, box) {
 		me.parseResponse(t, me.doConfig, box);
