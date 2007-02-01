@@ -362,8 +362,18 @@ queuecallbacks.loaded = function() { 	parent.astmanEngine.config2list("users.con
 queuecallbacks.newcategory = function(t) {
 		var tmp = null;
 		$('save_q').disabled=false;
-		if ($('queues').stored_config.catbyname['general']){ tmp = objcopy($('queues').stored_config.catbyname['general']);	}
-		tmp.name = first_free_exten($('queues'), userbase);
+		if ($('queues').stored_config.catbyname['general']){ 
+				tmp = objcopy($('queues').stored_config.catbyname['general']);	
+				x = userbase ; 
+				for( var f=0; f < $('queues').options.length ; f++ ){
+						if( x < $('queues').options[f].innerHTML.split(' -- ')[0] )
+							break;
+						x++;
+				}				
+				tmp.name = x;
+		}else{
+			tmp.name = 6000 ;	// a default value if one is not defined in users.conf's general context
+		}
 
 		$('testmulti').innerHTML ="";
 		for (k=0;k< $('agents').length ;k++ ){
