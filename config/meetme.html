@@ -135,10 +135,21 @@
 		var x;
 		var gen;
 		gen = $('hiddenusers').stored_config.catbyname['general'];
-		if (gen)
+		if (gen){
 			x = gen.fieldbyname['userbase'];
-		if (x)
-			tmp['name'] = first_free_exten($('extensions'), x);
+			for( var f=0; f < $('extensions').options.length ; f++ ){
+					if( x < $('extensions').options[f].innerHTML.split(' -- ')[0] )
+						break;
+					x++;
+			}
+		}else{
+				try{ 
+					x = ( parseInt($('extensions').options[$('extensions').options.length - 1 ].innerHTML.split(' -- ')[0] ) ) + 1; 
+				}catch(err){
+					x = 6000; // a default value if one is not defined in users.conf's general context
+				}
+		}
+		tmp['name'] = x ;
 		tmp['pin'] = '';
 		tmp['pinadmin'] = '';
 		tmp['music'] = 'yes';
