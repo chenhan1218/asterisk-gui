@@ -66,14 +66,22 @@ function checkExtconfig(originalRequest){
 			if ( lines[i].substr(0,9) == "Category-"  ){
 				var tmp = lines[i].split(": ");
 				if( tmp[1].match(asterisk_guitools) ){
-					scan_zapteldevices();
+					try{
+						scan_zapteldevices();
+					}finally{
+						all_done();
+					}
 					return false;
 				}
 				cats.push(tmp[1]);
 			}
 	}
 	// Install the [asterisk_guitools] section in extensions.conf
-	installguitools();
+	try{
+		installguitools();
+	}finally{
+		if(	$('menu').style.display == "none" ){ 	all_done(); }
+	}
 }
 
 
@@ -81,7 +89,13 @@ function installguitools(){
 		var opt = {
 			method: 'get',
 			asynchronous: true,
-			onComplete: scan_zapteldevices
+			onComplete: function(){
+				try{
+					scan_zapteldevices();
+				}finally{
+					all_done();
+				}
+			}
 		};
 		opt.parameters="action=updateconfig&reload=yes&srcfilename=extensions.conf&dstfilename=extensions.conf&"  +
 
@@ -147,6 +161,10 @@ zapcallbacks.format = function(t) {
 }
 
 zapcallbacks.loaded = function(){
+
+}
+
+function all_done(){
 	for(var x=0; x< $('zapchan').length ; x++){
 			$('zapscan_info').innerHTML+= $('zapchan').options[x].text + "<BR>";
 	}
