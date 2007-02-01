@@ -1504,6 +1504,13 @@ function Astman() {
 			widgets['status'].innerHTML = "";
 	};
 	this.doConfig = function(t, box) {
+		if(t[0].headers['message']){
+			if( t[0].headers['message'] == "Config file not found"){
+				alert( "Asterisk says it cannot find a required config file (" + box.config_file + ") \n You will be now redirected to the main page !" );
+				parent.window.location.href = parent.window.location.href ;
+				return ;
+			}
+		}
 		var x,y=0;
 		var cfg = new Object;
 		var map;
