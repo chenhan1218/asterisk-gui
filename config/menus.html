@@ -523,16 +523,17 @@ function  enable_savecancel(){
 
 
 function generate_fields(key){
-			document.write('<select  class="input8" style="font-family: Verdana, Arial, Helvetica, Sans-Serif;font-size: 11px;"   id=\'keypress_'+ key + '_action\' onchange="key_action(this.value, \'' + key + '\')">\n');
-			document.write('<option value="disabled">Disabled</option>\n');
-			document.write('<option value="gotomenu">Goto Menu</option>\n');
-			document.write('<option value="gotoextension">Goto Extension</option>\n');
-			document.write('<option value="Custom">Custom</option>\n');
-			document.write('<option value="Hangup">Hangup</option>\n');
-			document.write('<option value="PlayInvalid">Play Invalid</option>\n');
-			document.write('</select>&nbsp;<input type="text" class="input8" size=16 style="display:none;font-family: Verdana, Arial, Helvetica, Sans-Serif;font-size: 11px;" id="keypress_' + key+ '_text" onchange="enable_savecancel()">\n');
-			document.write('<select  style="display:none; font-family: Verdana, Arial, Helvetica, Sans-Serif;font-size: 11px;"  id="keypress_'+ key + '_menus" onchange="enable_savecancel()" class="input8"></select>\n');
-			document.write('<select  style="display:none; font-family: Verdana, Arial, Helvetica, Sans-Serif;font-size: 11px;"  id="keypress_'+ key + '_exts" onchange="enable_savecancel()" class="input8"></select>\n');
+			var t = '<select  class="input8" style="font-family: Verdana, Arial, Helvetica, Sans-Serif;font-size: 11px;"   id=\'keypress_'+ key + '_action\' onchange="key_action(this.value, \'' + key + '\')">\n';
+			t += '<option value="disabled">Disabled</option>\n' ;
+			t += '<option value="gotomenu">Goto Menu</option>\n';
+			t += '<option value="gotoextension">Goto Extension</option>\n';
+			t += '<option value="Custom">Custom</option>\n';
+			t += '<option value="Hangup">Hangup</option>\n';
+			t += '<option value="PlayInvalid">Play Invalid</option>\n';
+			t += '</select>&nbsp;<input type="text" class="input8" size=16 style="display:none;font-family: Verdana, Arial, Helvetica, Sans-Serif;font-size: 11px;" id="keypress_' + key+ '_text" onchange="enable_savecancel()">\n';
+			t += '<select  style="display:none; font-family: Verdana, Arial, Helvetica, Sans-Serif;font-size: 11px;"  id="keypress_'+ key + '_menus" onchange="enable_savecancel()" class="input8"></select>\n';
+			t += '<select  style="display:none; font-family: Verdana, Arial, Helvetica, Sans-Serif;font-size: 11px;"  id="keypress_'+ key + '_exts" onchange="enable_savecancel()" class="input8"></select>\n';
+			return t;
 }
 
 function step_onselect(){
@@ -1314,11 +1315,12 @@ usercallbacks.loaded = function (){
 													<SCRIPT LANGUAGE="JavaScript">
 													<!--
 													for (var k=0; k< keys.length; k++){
-														document.write("<TR bgcolor='#FFFFFF'>\n");
-														document.write("<TD width=35 align=center><font style=\"font-size: 10pt\">"+keys[k]+"</font></TD>\n");
-														document.write("<TD>");
-														generate_fields( keys[k] ) ;
-														document.write("\n </TD></TR>\n\n");											
+														var p =  generate_fields( keys[k] )  ; 
+														document.write("<TR bgcolor='#FFFFFF'>\n"
+														+ "<TD width=35 align=center><font style=\"font-size: 10pt\">"+keys[k]+"</font></TD>\n"
+														+ "<TD>" 
+														+ p
+														+ "\n </TD></TR>\n\n" );
 													}
 													//-->
 													</SCRIPT>

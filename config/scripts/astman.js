@@ -69,14 +69,15 @@ function check_patternonfields(fields){
 }
 
 function showdiv_statusmessage(){
-		document.write ("<div ID=\"status_message\"  STYLE=\"display:none; position: absolute; left: 170; top: 190; width:350; height:115;  background-color:#F4EFE5;   border-width: 1px; border-color: #7E5538; border-style: solid;\">");
-		document.write ("<BR><BR>");
-		document.write ("		<TABLE border=0 cellpadding=0 cellspacing=3 align=\"center\">");
-		document.write ("					<TR>	<TD><img src=\"images/loading.gif\"></TD>");
-		document.write ("								<TD valign=\"middle\" align=\"center\">&nbsp;&nbsp;<div id=\"message_text\"></div></TD>");
-		document.write ("					</TR>");
-		document.write ("		</TABLE>");
-		document.write ("	</div>");
+		var t = "<div ID=\"status_message\"  STYLE=\"display:none; position: absolute; left: 170; top: 190; width:350; height:115;  background-color:#F4EFE5;   border-width: 1px; border-color: #7E5538; border-style: solid;\">\n";
+		t += "<BR><BR>\n";
+		t += "		<TABLE border=0 cellpadding=0 cellspacing=3 align=\"center\">\n";
+		t += "					<TR>	<TD><img src=\"images/loading.gif\"></TD>\n";
+		t += "								<TD valign=\"middle\" align=\"center\">&nbsp;&nbsp;<div id=\"message_text\"></div></TD>\n";
+		t += "					</TR>\n";
+		t += "		</TABLE>\n";
+		t += "	</div>\n";
+		document.write(t);
 }
 
 
