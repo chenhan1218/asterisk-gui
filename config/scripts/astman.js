@@ -216,17 +216,26 @@ function insert_option(box, res, value, core_name)
 {
 	var z;
 	if (res) {
-		var newoption = document.createElement("option");
-		newoption.text = res;
-		newoption.value = value;
-		newoption.core_name = core_name;
-		//alert( core_name );
-		for (z=0;z<box.options.length + 1;z++) {
-			if (!box.options[z] || do_compare(box, newoption, box.options[z])) {
-				box.options.add(newoption, z);
-				break;
+		var opt_new = document.createElement('option');
+		opt_new.text = res  ;
+		opt_new.value = value ;
+		opt_new.core_name = core_name;
+
+		// Now decide where to add in box, and add it to box
+		var add = 0;
+		for ( var g=0; g < box.options.length  ; g++) {
+				if(	opt_new.text < box.options[g].text  ){ // add before this element in box
+					add = 1;
+					try{
+						box.add(opt_new, box.options[g] );
+						break;
+					}catch(err){
+						box.add(opt_new, g);
+						break;
+					}
+				}
 			}
-		}
+			if ( add ==0 ){ try{ box.add(opt_new, null); } catch(err){ box.add(opt_new); }}
 	}
 }
 
@@ -799,6 +808,7 @@ function save_item(box) {
 	};
 	var uri;
 	var tmp;
+	var temp;
 	var newval;
 	var cattmp = new Object;
 	cattmp.catname = box.value;
@@ -838,7 +848,7 @@ function save_item(box) {
 				box.remove(box.selectedIndex);
 			opt.parameters="action=updateconfig&reload=yes&srcfilename=" + encodeURIComponent(box.config_file) + "&dstfilename=" +
 						encodeURIComponent(box.config_file) + uri;
-			tmp = new Ajax.Request(box.engine.url, opt);
+			temp = new Ajax.Request(box.engine.url, opt);
 		}
 	} else {
 		if (box.widgets['name']) {
@@ -862,20 +872,29 @@ function save_item(box) {
 				box.options[box.selectedIndex].value = cattmp.catname;
 				box.options[box.selectedIndex].core_name = cattmp.catname;
 				if (tmp) {
-					box.options[box.selectedIndex].innerHTML = tmp;
-					for (var y = 0; y < box.options.length + 1; y++) {
-						if (!box.options[y] || 
-							do_compare(box, box.options[box.selectedIndex], box.options[y])) {
-							box.options.add(box.options[box.selectedIndex], y);
-							break;
-						}
-					}
-				} else
+								box.options[box.selectedIndex].innerHTML = tmp;
+								for (var y = 0; y < box.options.length + 1; y++) {
+														if (!box.options[y] ||  do_compare(box, box.options[box.selectedIndex], box.options[y])) {
+																			try{
+																				box.options.add(box.options[box.selectedIndex], y);
+																			}catch(err){
+																				var new_option = document.createElement('option') ;
+																				new_option.text = box.options[box.selectedIndex].text  ;
+																				new_option.value = box.options[box.selectedIndex].value ;
+																				new_option.core_name = box.options[box.selectedIndex].core_name ;
+																				box.remove(box.selectedIndex);
+																				box.add( new_option , y);
+																			}
+																			break;
+														}
+								}
+				} else{
 					box.remove(box.selectedIndex);
+				}
 			}
 			opt.parameters="action=updateconfig&reload=yes&srcfilename=" + encodeURIComponent(box.config_file) + "&dstfilename=" +
 						encodeURIComponent(box.config_file) + uri;
-			tmp = new Ajax.Request(box.engine.url, opt);
+			temp = new Ajax.Request(box.engine.url, opt);
 		}
 	}
 	if (!uri.length) {
@@ -1786,46 +1805,37 @@ function Astman() {
 	}	
 
 
-function merge_users(e, u) { 			// read e and add into u according to sort order
+function merge_users(e, u) { 			// read u and add into e according to sort order
 	merge_extensions(e, u);
 }
 
 
 function merge_extensions(u, e) {			// read e and add into u according to sort order
-	if(document.all){
-				for (var x=0; x< e.options.length; x++){
-						var oOption = document.createElement("OPTION");
-						oOption.text=e.options[x].innerHTML;
-						oOption.value="reserved";
-						oOption.style.color = "#ABABAB";
-						var z = u.options.length;
-						for(var y=0; y < u.options.length; y++){
-									if(e.options[x].innerHTML  < u.options[y].innerHTML ){
-										u.add(oOption, y);
-										break;
-									}else {
-									}
+	var t = e.options.length ;
+	for( var f =0 ; f < t ; f++ ){
+			// take each element in e
+			var opt_new = document.createElement('option');
+			opt_new.text = e.options[f].text ;
+			opt_new.value = 'reserved';
+			if( navigator.userAgent.indexOf("Firefox") != -1 ){ opt_new.disabled = true; }
+			opt_new.style.color = "#ABABAB";
+
+			// Now decide where to add in u, and add it to u
+			var add = 0;
+			for ( var g=0; g < u.options.length  ; g++) {
+					if(	opt_new.text < u.options[g].text  ){ // add before this element in u 
+						add = 1;
+						try{
+							u.add(opt_new, u.options[g]);
+							break;
+						}catch(err){
+							u.add(opt_new, g);
+							break;
 						}
-						if( z == u.options.length){	 u.add(oOption); }
-				}
-	}else{
-			var opt, x;
-			while(e.options.length) {
-				opt = e.options[0];
-				opt.value = 'reserved';
-				//opt.disabled = true;
-				opt.style.color = "#ABABAB";
-				for (x=0;x<u.options.length + 1;x++) {
-					if (!u.options[x] || (opt.innerHTML < u.options[x].innerHTML)) {
-						u.options.add(opt, x);
-						break;
 					}
 				}
-				u.selectedIndex = -1;
-				u.value = null;
-			}
+				if ( add ==0 ){ try{ u.add(opt_new, null); } catch(err){ u.add(opt_new); }}
 	}
 }
-
 
 astmanEngine = new Astman();

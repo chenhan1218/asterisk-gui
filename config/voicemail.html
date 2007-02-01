@@ -84,7 +84,7 @@
 
 	callbacks.loaded = function() {
 		var whichexten = "";
-		merge_users($('extensions'), $('hiddenusers'));
+		merge_extensions($('extensions'), $('hiddenusers'));
 		for (x=0;x<$('extensions').options.length;x++) {
 			var tmp;
 			tmp = $('extensions').options[x].value.split(']');
