@@ -130,19 +130,21 @@ function load_menus(my_field_options){
 		}
 }
 
-function select_menu (my_field_options, menustring){
+function select_menu (my_field_options, menustring, a){
 		var tmp = menustring.split('(');
 		var tmp1 = tmp[1].split('|');
+		if(a == "ismenu"){var check_against = tmp1[0]; }
+		if(a == "isext"){ var check_against = tmp1[1] ;}
 		for(y=0; y < $(my_field_options).options.length; y++ ){
-			if( $(my_field_options).options[y].value == tmp1[0]){
+			if( $(my_field_options).options[y].value == check_against ){
 				$(my_field_options).options[y].selected = true;
 				return true;
 			}
 		}
 		// if not in the current list of voicemenus/extensions then add it to the menu
 		var newoption = document.createElement("option"); 
-		newoption.text = tmp1[1] ; 
-		newoption.value = tmp1[1] ;
+		newoption.text = check_against ; 
+		newoption.value = check_against ;
 		$(my_field_options).options.add(newoption);
 		$(my_field_options).options[y].style.fontWeight = 'bold';
 		$(my_field_options).options[y].selected = true;
@@ -759,13 +761,13 @@ function select_vmenu(){
 							$(current_key_menus).style.display = "";
 							$(current_key_text).style.display = "none";
 							$(current_key_exts).style.display = "none";
-							select_menu (current_key_menus, tmp[2]);
+							select_menu (current_key_menus, tmp[2],"ismenu");
 					}else  if( tmp[2].match("Goto") && !tmp[2].match("voicemenu-") ){ // //  if "goto an extension " (no 'voicemenu-')
 							$(current_key_action).options[2].selected = true;
 							$(current_key_exts).style.display = "";
 							$(current_key_text).style.display = "none";
 							$(current_key_menus).style.display = "none";
-							select_menu(current_key_exts, tmp[2]); // select_menu common for exts and menus
+							select_menu(current_key_exts, tmp[2],"isext"); // select_menu common for exts and menus
 					}else if(tmp[2].match("Hangup") ){ // if HangUp
 							$(current_key_action).options[4].selected = true;
 							$(current_key_text).style.display = "none";
