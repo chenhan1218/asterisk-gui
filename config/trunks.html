@@ -515,7 +515,6 @@
 			provwidgets[provfieldnames[x]].disabled = true;
 		}
 		for (var x =0; x < focus_fields.length; x++ ) {
-			console.log(focus_fields[x]);
 			$(focus_fields[x]).onfocus = function(){this.className = 'input8_hilight';}
 			$(focus_fields[x]).onblur = function(){this.className = 'input8';}
 		}
