@@ -39,8 +39,10 @@
 				'trunkstyleanalog','trunkstylevoip','trunkstylecustomvoip', 'name', 'username', 'trunkname', 'callerid',
 				'hasexten', 'hassip', 'hasiax','registeriax','registersip','host','dialformat','context','group',
 				'insecure', 'host', 'fromuser', 'fromdomain');
-				
 	var provfieldnames = new Array('providerdesc', 'providerlogo');
+	var focus_fields = new Array('provider','username','secret','customvoip_name','customvoip_protocol',
+	'customvoip_host','customvoip_username','customvoip_secret');
+
 	var isnewtrunk;
 	var dids_array = [];
 	var old_trunkname;
@@ -512,6 +514,11 @@
 			provwidgets[provfieldnames[x]] = $(provfieldnames[x]);
 			provwidgets[provfieldnames[x]].disabled = true;
 		}
+		for (var x =0; x < focus_fields.length; x++ ) {
+			console.log(focus_fields[x]);
+			$(focus_fields[x]).onfocus = function(){this.className = 'input8_hilight';}
+			$(focus_fields[x]).onblur = function(){this.className = 'input8';}
+		}
 		parent.astmanEngine.config2list("zapscan.conf", $('zapchan'), new Array(), phonecallbacks);
 	}
 
@@ -697,10 +704,12 @@ function flip_register(){
 <td onmouseover="show_tooltip('en', 'trunks', 0);"  class="field_text" width=130 valign="top" align="left">
 <!-- Provider type -->
 				<div id='cabinet' style='width:0;overflow:hidden'><select id='hiddenglobals'></select></div>
-				<B>Provider Type:</B><BR>
+	<fieldset>
+		<legend><B>&nbsp;Provider Type:&nbsp;</B></legend>
 				<LABEL FOR="trunkstyleanalog"><input name='trunkstyle' type='radio' id='trunkstyleanalog' onclick='activateanalogvoip()' value='analog'>Analog</LABEL><BR>
 				<LABEL FOR="trunkstylevoip"><input name='trunkstyle' type='radio' id='trunkstylevoip' onclick='activateanalogvoip()' value='voip'>VoIP</LABEL><BR>
 				<LABEL FOR="trunkstylecustomvoip"><input name='trunkstyle' type='radio' id='trunkstylecustomvoip' onclick='activateanalogvoip()' value='customvoip'>Custom VoIP</LABEL>
+	</fieldset>
 				<div id="div_providername" style="display:none">
 				<BR><BR>
 				<B>Provider Name:</B><BR>

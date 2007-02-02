@@ -31,6 +31,7 @@ var editstatus ;
 var old_incomingrule, old_fromprovider ;
 var  edit_pattern, edit_DIDtrunk, edit_action, edit_priority ;
 var listOfExtensions = [] ;	// to store all the list of extensions to be displayed in the select menu
+var focus_fields = new Array('incomingrule','frompattern','fromprovider','toextension');
 
 user_callbacks.format = function(t, x) {
 	var tmp = asterisk_guiTDPrefix + t.name ; 
@@ -453,6 +454,10 @@ function delete_incomingrule(a,b,c,d){ // a is pattern, b is DID_trunk, c is act
 
 
 function localajaxinit() {
+	for (var x =0; x < focus_fields.length; x++ ) {
+		$(focus_fields[x]).onfocus = function(){this.className = 'input9_hilight';}
+		$(focus_fields[x]).onblur = function(){this.className = 'input9';}
+	}
 	parent.astmanEngine.config2list("users.conf", $('users'), new Array(), user_callbacks);
 }
 </script>
@@ -491,17 +496,17 @@ function localajaxinit() {
 			</table>
 			<TABLE align=center cellpadding=2 cellspacing=2 border=0 width="100%">
 			<TR><TD height=10></TD></TR>
-			<TR><TD align=center>	<NOBR>Route <select id="incomingrule"  onclick="checksave(this)">
+			<TR><TD align=center>	<NOBR>Route <select id="incomingrule"  onclick="checksave(this)" class="input9">
 											<option value="allunmatched">All Unmatched incoming calls</option>
 											<option value="frompattern">incoming calls that match </option>
 										</select>
-										<span id="thatmatch">pattern <input type="text" id="frompattern" size=12  onchange="enablesave();"  onkeyup="enablesave();"></span>
+										<span id="thatmatch">pattern <input type="text" id="frompattern" size=12  onchange="enablesave();"  onkeyup="enablesave();"  class="input9"></span>
 										</NOBR>
 					</TD>
 			</TR>
-			<TR><TD align=center>from provider <select id="fromprovider" onclick="checksave(this)"></select></TD></TR>
+			<TR><TD align=center>from provider <select id="fromprovider" onclick="checksave(this)"  class="input9"></select></TD></TR>
 			<TR>
-				<TD align=center>to extension <select id="toextension" onchange="enablesave();"  onkeyup="enablesave();"></select></TD>
+				<TD align=center>to extension <select id="toextension" onchange="enablesave();"  onkeyup="enablesave();"  class="input9"></select></TD>
 			</TR>
 			<TR>
 				<TD align=center height=50 valign=middle>  

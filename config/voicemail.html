@@ -38,7 +38,7 @@
 	var voicemailcallbacks = new Object;
 	var localextenlength;
 	var vmfields = new Array('status', 'save', 'cancel','attach','maxmsg','minmessage','maxmessage','saycid','sayduration', 'emailonly','review','attachfmt','maxgreet','operator','envelope');
-
+	var focus_fields = new Array('name','maxmsg','maxmessage','minmessage','attachfmt','maxgreet');
 
 	var fields = new Array('name');
 	
@@ -272,6 +272,10 @@
 		for (var x =0; x < fields.length; x++) {
 			widgets[fields[x]] = $(fields[x]);
 			widgets[fields[x]].disabled = true;
+		}
+		for (var x =0; x < focus_fields.length; x++ ) {
+			$(focus_fields[x]).onfocus = function(){this.className = 'input8_hilight';}
+			$(focus_fields[x]).onblur = function(){this.className = 'input8';}
 		}
 		parent.astmanEngine.config2list("voicemail.conf", $('hiddenvoicemail'), vmwidgets, voicemailcallbacks);
 	}

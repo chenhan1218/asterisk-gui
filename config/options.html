@@ -33,7 +33,7 @@ var current_username = parent.document.getElementById('login_name').value;
 var httpconf_callbacks = new Object;
 var managerconf_callbacks = new Object;
 var default_bindaddress, default_port, default_httptimeout;
-
+var focus_fields = new Array('newpass','newpass_rep','bindaddr','bindport','httptimeout');
 
 function cancel_guisettings(){
 	$('bindaddr').value = default_bindaddress ; $('bindport').value =default_port ; $('httptimeout').value = default_httptimeout ;
@@ -218,7 +218,10 @@ function localajaxinit(){
 		widgets[fieldnames[x]] = $(fieldnames[x]);
 		widgets[fieldnames[x]].disabled = true;
 	}
-
+	for (var x =0; x < focus_fields.length; x++ ) {
+		$(focus_fields[x]).onfocus = function(){this.className = 'input9_hilight';}
+		$(focus_fields[x]).onblur = function(){this.className = 'input9';}
+	}
 	// if not appliance - hide the gui_accesssettings DIV
 	if ( !parent.window.location.href.match("cfgappliance.html") ){
 		$('gui_accesssettings').style.display="none";
@@ -246,11 +249,11 @@ function localajaxinit(){
 			</td>
 	</tr>
 	<tr>	<td align="center" valign="top">
-					<div id="channellist" class="chanlist_small" style="width: 320px; height:100">
+					<div id="channellist" class="chanlist_small" style="width: 320px; height:110">
 					<table cellpadding=2 cellspacing=2 border=0>
 									<tr>	<td colspan=2 height=5></td></tr>
-									<tr  onmouseover="show_tooltip('en', 'options', 1);"><td class="field_text">Enter New Password:</td><td><input type="password" id="newpass" size=16 onkeyup="compare_passwords()"  class="input8"></td></tr>
-									<tr  onmouseover="show_tooltip('en', 'options', 2);"><td class="field_text">Retype New Password:</td><td><input type="password" id="newpass_rep" size=16 onkeyup="compare_passwords()"  class="input8"></td></tr>
+									<tr  onmouseover="show_tooltip('en', 'options', 1);"><td class="field_text">Enter New Password:</td><td><input type="password" id="newpass" size=16 onkeyup="compare_passwords()"  class="input9"></td></tr>
+									<tr  onmouseover="show_tooltip('en', 'options', 2);"><td class="field_text">Retype New Password:</td><td><input type="password" id="newpass_rep" size=16 onkeyup="compare_passwords()"  class="input9"></td></tr>
 									<tr>	<td colspan=2 align="center" height=20><div id="dopwdsmatch" style="font-size : 10px;"></div></td></tr>
 									<tr>	<td align=center colspan=2><input type="button" id="pwdbutton" value="Update" onclick="changepassword()" class="buttonbold"></td></tr>
 					</table>
@@ -259,15 +262,15 @@ function localajaxinit(){
 	</tr>
 	<tr valign="top" height="18">	<td></td></tr>
 	<tr>	<td align="center" valign="top">
-					<div id="gui_accesssettings" class="chanlist_small"  style="width: 320px; height:120">
+					<div id="gui_accesssettings" class="chanlist_small"  style="width: 320px; height:135">
 					<table>	
 					<TR><TD colspan=2 align=center><B>GUI - access settings: </B></TD></TR>
 					<tr>	<td colspan=2 height=5></td></tr>
 									<tr  onmouseover="show_tooltip('en', 'options', 3);">
-											<td class="field_text">Bind Address:</td>		<td><input size=14 id='bindaddr' dfalt="127.0.0.1" onkeydown="$('save').disabled=false; $('cancel').disabled=false;"  class="input8"></td>
+											<td class="field_text">Bind Address:</td>		<td><input size=14 id='bindaddr' dfalt="127.0.0.1" onkeydown="$('save').disabled=false; $('cancel').disabled=false;"  class="input9"></td>
 									</tr>
-									<tr  onmouseover="show_tooltip('en', 'options', 4);"><td class="field_text">Port:</td>						<td><input size=14 id='bindport' dfalt=80  onkeydown="$('save').disabled=false; $('cancel').disabled=false;"  class="input8"></td></tr>
-									<tr  onmouseover="show_tooltip('en', 'options', 5);"><td class="field_text">HTTP Timeout:</td>	<td><input size=14 id='httptimeout'  onkeydown="$('save').disabled=false; $('cancel').disabled=false;"  class="input8"></td></tr>
+									<tr  onmouseover="show_tooltip('en', 'options', 4);"><td class="field_text">Port:</td>						<td><input size=14 id='bindport' dfalt=80  onkeydown="$('save').disabled=false; $('cancel').disabled=false;"  class="input9"></td></tr>
+									<tr  onmouseover="show_tooltip('en', 'options', 5);"><td class="field_text">HTTP Timeout:</td>	<td><input size=14 id='httptimeout'  onkeydown="$('save').disabled=false; $('cancel').disabled=false;"  class="input9"></td></tr>
 									<tr><td colspan=2 height=6> </td></tr>
 									<tr><td colspan=2 align=center><input type=button id=save value="Save"  onclick="update_guisettings_manager()" class="buttonbold">&nbsp;<input type=button id=cancel value="Cancel" onclick="cancel_guisettings()" class="buttonbold"></td></tr>
 					</table>

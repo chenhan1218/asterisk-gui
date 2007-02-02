@@ -40,7 +40,7 @@
 				'music','menu', 'announce',
 				'room','record','waitmarked','setmarked','quiet',
 				'pin', 'pinadmin', 'save', 'cancel');
-
+	var focus_fields = new Array('name','pin','pinadmin','room');
 	function changed_extension() {
 		var app;
 		tmp = $('extensions').value.split(']');
@@ -273,6 +273,10 @@
 		for (var x =0; x < fieldnames.length; x++) {
 			widgets[fieldnames[x]] = $(fieldnames[x]);
 			widgets[fieldnames[x]].disabled = true;
+		}
+		for (var x =0; x < focus_fields.length; x++ ) {
+			widgets[focus_fields[x]].onfocus = function(){this.className = 'input8_hilight';}
+			widgets[focus_fields[x]].onblur = function(){this.className = 'input8';}
 		}
 		parent.astmanEngine.config2list("users.conf", $('hiddenusers'), new Array(), usercallbacks);
 	}

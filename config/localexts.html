@@ -28,6 +28,7 @@
 var usercallbacks = new Object;
 var fieldnames = new Array('status', 'save','userbase','localextenlength','allow_aliasextns');
 var widgets = new Array;
+var focus_fields = new Array('localextenlength','userbase');
 
 function tosetup(){
 	parent.window.location.href = "./setup/install.html";
@@ -83,6 +84,10 @@ function localajaxinit(){
 				widgets[fieldnames[x]] = $(fieldnames[x]);
 				widgets[fieldnames[x]].disabled = true;
 			}
+			for (var x =0; x < focus_fields.length; x++ ) {
+				widgets[focus_fields[x]].onfocus = function(){this.className = 'input9_hilight';}
+				widgets[focus_fields[x]].onblur = function(){this.className = 'input9';}
+			}
 			$('localextenlength').addEventListener("change", update_spae, false);
 			parent.astmanEngine.config2list("users.conf", $('devices'),widgets, usercallbacks);
 }
@@ -116,8 +121,8 @@ function update_spae(){
 <table class="mainscreenTable" align="center">
 	<tr>	<td align="center" valign="top">
 					<select id="devices" style="display:none"></select> 
-					<p class="field_text">	Local Extensions are <select id="localextenlength"><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option></select> digits long&nbsp;</p>
-					<p class="field_text">	Starting point of Allocation of extensions : <input type=text id="userbase" size=5>	</p>
+					<p class="field_text">	Local Extensions are <select id="localextenlength" class="input9"><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option></select> digits long&nbsp;</p>
+					<p class="field_text">	Starting point of Allocation of extensions : <input type=text id="userbase" size=5  class="input9">	</p>
 					<p class="field_text"> <input type=checkbox id="allow_aliasextns">Allow analog phones to be assigned to multiple extensions</p>
 					<center>
 							<div style="height:15px" id='status'></div><BR>

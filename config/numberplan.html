@@ -37,6 +37,7 @@ var iscustom ;
 var pattern_beingedited ;
 var pattern_beingedited_priority ;
 var oldselect;
+var focus_fields = new Array('rulename','trunks','beginswith','followedby','strip','pattern');
 
 function addthe_default_callingplan(){
 	t=confirm("A default Dial Plan is not found. \n" + " Do you want to create a default Dial Plan ");
@@ -448,6 +449,10 @@ function	buildpatternstring(){
 }
 
 function localajaxinit(){
+	for (var x =0; x < focus_fields.length; x++ ) {
+		$(focus_fields[x]).onfocus = function(){this.className = 'input9_hilight';}
+		$(focus_fields[x]).onblur = function(){this.className = 'input9';}
+	}
 	$('message_text').innerHTML ="Saving Changes...";
 	parent.astmanEngine.config2list("users.conf", $('trunks'), new Array(), trunkcallbacks);
 }
@@ -515,16 +520,16 @@ return true;
 		<TABLE	align=center cellpadding=2 cellspacing=2 border=0 width="480">
 		<TR>
 			<TD align="right" width=175>Rule Name:</TD>
-			<TD><input type="text" id="rulename" size="" onChange="enablesave();" onkeyup="enablesave();"></TD>
+			<TD><input type="text" id="rulename" size="" onChange="enablesave();" onkeyup="enablesave();" class="input9"></TD>
 		</TR>
 		<TR>
 			<TD  align="right" height=40> Place this call through :</TD>
-			<TD><select id="trunks"></select></TD>
+			<TD><select id="trunks"  class="input9"></select></TD>
 		</TR>
 		<TR id="define_usual" height=100>
 			<TD valign="top" align=right>Dialing Rules :</TD>
-			<TD valign="top"> If the number begins with <input id="beginswith" type='text' size=6 onChange="enablesave();" onkeyup="enablesave();"> and 
-					followed by <input id="followedby" type='text' size=1 onChange="enablesave();" onkeyup="enablesave();"> digits <input type="checkbox" id="ormore" onChange="enablesave();"> or more <BR>
+			<TD valign="top"> If the number begins with <input id="beginswith"  class="input9" type='text' size=6 onChange="enablesave();" onkeyup="enablesave();"> and 
+					followed by <input id="followedby" type='text'  class="input9" size=1 onChange="enablesave();" onkeyup="enablesave();"> digits <input type="checkbox" id="ormore" onChange="enablesave();"> or more <BR>
 					<A href="#" onclick="ownpattern();">(define a custom pattern)</A>
 			</TD>
 		</TR>
@@ -534,7 +539,7 @@ return true;
 				Custom Pattern:
 			</TD>
 			<TD valign=top>
-					<input type="text" id="pattern" size="" onChange="enablesave();" onkeyup="enablesave();"><BR>
+					<input type="text" id="pattern" size="" onChange="enablesave();" onkeyup="enablesave();"  class="input9"><BR>
 					<table align='left' cellpadding=0 cellspacing=0>
 						<tr><td class="field_text"><b>N&nbsp;&nbsp;</b></td><td class="field_text">Any digit from 2 to 9</td></tr>
 						<tr><td class="field_text"><b>X&nbsp;&nbsp;</b></td><td class="field_text">Any digit from 0 to 9</td></tr>
@@ -544,7 +549,7 @@ return true;
 		</TR>
 
 		<TR>
-			<TD colspan=2 align=center>Strip <input type="text" id="strip" size="1"  onChange="enablesave();" onkeyup="enablesave();"> digits from the front before dialing:</TD>
+			<TD colspan=2 align=center>Strip <input type="text" id="strip"  class="input9" size="1"  onChange="enablesave();" onkeyup="enablesave();"> digits from the front before dialing:</TD>
 		</TR>
 		<TR>
 			<TD colspan=2 align=center height=50 valign=middle>  

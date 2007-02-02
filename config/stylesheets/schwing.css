@@ -76,6 +76,13 @@ td {
 	padding : 0px 0px 0px 3px;
 }
 
+.input8_hilight {
+	background-color:#FFC58A;
+	font-size: 8pt;
+	border:1px solid; 
+	padding : 0px 0px 0px 3px;
+}
+
 .input9 {
 	font-size: 9pt;
 	border:1px solid; 
@@ -86,6 +93,13 @@ td {
 	border-right-color:#666;
 	border-bottom-color:#666;
 	*/
+}
+
+.input9_hilight {
+	background-color:#FFC58A;
+	font-size: 9pt;
+	border:1px solid; 
+	padding : 0px 0px 0px 3px;
 }
 
 .input9_disabled {
