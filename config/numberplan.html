@@ -217,7 +217,6 @@ function show_npdata_table(a){
 	clear_table();
 	$('table_one').style.display="";
 	var rules_nosp = new Array ;
-	console.log(a);
 	var m = numberplansdata[a]['npdata'];
 	for( var x in  m ){	// x is the pattern
 				if ( x == "extend"){ break;}
@@ -501,6 +500,7 @@ numplan_callbacks.cancelnewcategory = function(){
 numplan_callbacks.savechanges = function(){
 	$('npcontent').style.display="none";
 	$('bg_transparent').style.display ='none';
+	show_npdata_table($('extensions').value);
 }
 
 	numplan_callbacks.delchanges = function(box, value) {
