@@ -31,6 +31,7 @@ function localinit(){
 						return false;
 					}
 					if( parent.localextenlength != $('name').value.length ){
+						if(typeof parent.localextenlength == "undefined"){ parent.localextenlength = 4; }
 						alert("The Voicemail Extension has to be " + parent.localextenlength + " digits long" );
 						return false;
 					}
