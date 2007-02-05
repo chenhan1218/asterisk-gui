@@ -86,6 +86,7 @@ usercallbacks.beforeSaving= function(){
 
 
 usercallbacks.loaded = function(){
+		$('localextenlength').addEventListener("change", store_extlength, false);
 		parent.astmanEngine.pollEvents();
 		$('devices').selectitem(0);
 		parent.$('next').disabled = false;	
@@ -96,6 +97,7 @@ usercallbacks.loaded = function(){
 						asynchronous: true,
 						onSuccess: function(t) { 
 									$('localextenlength').selectedIndex = 2 ;
+									parent.localextenlength = 4 ;
 						},
 						onFailure: function(t) {
 							alert("Config Error: " + t.status + ": " + t.statusText);
