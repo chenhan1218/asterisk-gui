@@ -32,7 +32,7 @@ var trunks_desc = { };
 var numplan_callbacks = { };
 var numberplansdata = { };
 var fieldnames = new Array( 'new', 'delete', 'save', 'cancel', 'status','name','plancomment','include');
-var focus_fields = new Array('rulename','trunks','beginswith','followedby','strip','pattern','plancomment');
+var focus_fields = new Array('rulename','trunks','beginswith','followedby','strip','pattern','plancomment','prepend');
 //var default_numberplan = 0;
 var isnewrule ;
 var iscustom ;
@@ -63,6 +63,7 @@ function add_callingrule(){
 	$('rulename').value = "";
 	$('trunks').selectedIndex = -1 ;
 	$('pattern').value = "";
+	$('prepend').value = "";
 	$('strip').value = "0" ;
 	$('save_a').disabled = 1;
 	$('define_advanced').style.display="none";
@@ -123,7 +124,7 @@ function add_rule_fromeditform( this_priority, oncomplete ){
 						buildpatternstring();
 					}
 
-					var rule_string = $('pattern').value + ',' + this_priority + ',Macro(trunkdial,${' + $('trunks').value + '}/${EXTEN:' + $('strip').value + '})' ;
+					var rule_string = $('pattern').value + ',' + this_priority + ',Macro(trunkdial,${' + $('trunks').value + '}/'+ $('prepend').value +'${EXTEN:' + $('strip').value + '})' ;
 					var uri = build_action('append', 0 , $('extensions').value  ,"exten", rule_string );
 					commentstring = $('pattern').value + ',' + this_priority + ',' + $('rulename').value + "," + commentstring ;
 					uri += build_action('append', 1 , $('extensions').value  ,"comment", commentstring );
@@ -137,7 +138,7 @@ function add_rule_fromeditform( this_priority, oncomplete ){
 									if ( typeof m[$('pattern').value] == 'undefined' ) {
 										m[$('pattern').value] = { };
 									}
-									m[$('pattern').value][this_priority] = new ruleinanpdata($('trunks').value,$('strip').value);
+									m[$('pattern').value][this_priority] = new ruleinanpdata($('trunks').value, $('strip').value, $('prepend').value);
 									m[$('pattern').value][this_priority].rulename =  $('rulename').value ; 
 									m[$('pattern').value][this_priority].ruledesc = parsepattern($('pattern').value,0) ;
 									oncomplete(); 
@@ -191,6 +192,8 @@ function parse_nprulesAndnpcomments(){
 			for ( k =0 ; k < z['nprules'].length ; k++ ){
 					var temp = z['nprules'][k].split(","); // temp[0] is the pattern, temp[1] is the priority,temp[2] is 'Macro(trunkdial', temp[3] is ${trunkname}/${EXTEN:1})
 					var temp1 = temp[3].split("{");
+					var temp1b = temp1[1].split("/");
+					var temp1c = temp1b[1].split("$") ;
 					var temp2 = temp1[1].split("}");
 					var temp3 = temp1[2].split("}");
 					var temp4 = temp3[0].split(":");
@@ -199,7 +202,7 @@ function parse_nprulesAndnpcomments(){
 					if ( typeof y[temp[0]] == 'undefined' ) {
 						y[temp[0]] = { };
 					}
-					y[temp[0]][temp[1]] = new ruleinanpdata(temp[4], temp[5]);
+					y[temp[0]][temp[1]] = new ruleinanpdata(temp[4], temp[5],temp1c[0]);
 			}
 			for ( k =0 ; k < z['npcomments'].length ; k++ ){
 					var temp = z['npcomments'][k].split(","); 
@@ -364,7 +367,7 @@ function delete_callingrule(a,b,oncomplete){ // a is pattern, b is priority
 		}else{
 			var commentstring = "standard";
 		}
-		var rule_string = a + ',' + b + ',Macro(trunkdial,${' + m[a][b].trunk + '}/${EXTEN:' + m[a][b].digits2strip + '})' ;
+		var rule_string = a + ',' + b + ',Macro(trunkdial,${' + m[a][b].trunk + '}/'+ m[a][b].prepend + '${EXTEN:' + m[a][b].digits2strip + '})' ;
 		var uri = build_action('delete', 0, $('extensions').value ,"exten", "", rule_string ); 
 		commentstring = a + ',' + b + ',' + m[a][b].rulename + ',' + commentstring ;
 		uri += build_action('delete', 1 , $('extensions').value ,"comment","", commentstring );
@@ -404,6 +407,7 @@ function editcallingrule(a,b){	// a is pattern, b is priority
 		}
 		$('pattern').value = a;
 		$('strip').value = m[a][b].digits2strip;
+		$('prepend').value = m[a][b].prepend;
 		$('save_a').disabled = 1;
 		if( m[a][b].ruledesc == 'custom' ){
 			// if this is a custom pattern then donot try to parse the pattern
@@ -422,9 +426,10 @@ function editcallingrule(a,b){	// a is pattern, b is priority
 		$('addrule').disabled =1;
 }
 
-function ruleinanpdata(a,b){
+function ruleinanpdata(a,b,c){
 	this.trunk = a ;
 	this.digits2strip = b;
+	this.prepend = c;
 }
 
 function numberplan_context(){
@@ -694,9 +699,8 @@ function addthe_default_callingplan(){
 					</table>
 			</TD>
 		</TR>
-
 		<TR>
-			<TD colspan=2 align=center>Strip <input type="text" id="strip"  class="input9" size="1"  onChange="enablesave();" onkeyup="enablesave();"> digits from the front before dialing:</TD>
+			<TD colspan=2 align=center>Strip <input type="text" id="strip"  class="input9" size="1"  onChange="enablesave();" onkeyup="enablesave();"> digits from the front and prepend <input type="text" id="prepend"  class="input9" size="3"  onChange="enablesave();" onkeyup="enablesave();"> before dialing</TD>
 		</TR>
 		<TR>
 			<TD colspan=2 align=center height=50 valign=middle>  
