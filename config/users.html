@@ -139,7 +139,7 @@
 		if(allow_aliasextns == "no"){	// check whether the selected analog line is assigned to another user extension
 				var tmp_usedanaloglines = [] ;
 				for ( var i=1; i < $('devices').stored_config.categories.length ; i++){
-						if ( $('devices').stored_config.categories[i].fieldbyname['zapchan'] && $('devices').stored_config.categories[i].fieldbyname.zapchan.length )
+						if ( $('devices').stored_config.categories[i].fieldbyname['zapchan'] && $('devices').stored_config.categories[i].fieldbyname.zapchan.length && $('devices').stored_config.categories[i].name != $('devices').value )
 							tmp_usedanaloglines.push($('devices').stored_config.categories[i].fieldbyname.zapchan);
 				}
 				if ( InArray(tmp_usedanaloglines,$('zapchan').value)){
