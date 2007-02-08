@@ -15,16 +15,18 @@ HOSTNAME="`hostname -f`"
 /bin/echo "<div id=si_hostname>$HOSTNAME</div>" >> /var/lib/asterisk/static-http/config/bkps/sysinfo_output.html
      
 IFCONFIG=`ifconfig`
-/bin/echo "<div id=si_ifconfig>$IFCONFIG</div>" >> /var/lib/asterisk/static-http/config/bkps/sysinfo_output.html
+/bin/echo "<div id=si_ifconfig><pre>$IFCONFIG</pre></div>" >> /var/lib/asterisk/static-http/config/bkps/sysinfo_output.html
                          
 DISKUSAGE=`df -h`
-/bin/echo "<div id=si_du>$DISKUSAGE</div>" >> /var/lib/asterisk/static-http/config/bkps/sysinfo_output.html
+/bin/echo "<div id=si_du><pre>$DISKUSAGE</pre></div>" >> /var/lib/asterisk/static-http/config/bkps/sysinfo_output.html
                         
 MEMORYUSAGE=`free`
-/bin/echo "<div id=si_free>$MEMORYUSAGE</div>" >> /var/lib/asterisk/static-http/config/bkps/sysinfo_output.html
+/bin/echo "<div id=si_free><pre>$MEMORYUSAGE</pre></div>" >> /var/lib/asterisk/static-http/config/bkps/sysinfo_output.html
 
 
 THISMONTH=`/bin/date +%b`
 THISDAY=`/bin/date +%d`
 THIS_DAY=`/bin/date +%_d`
 /bin/grep /var/log/asterisk/messages -e "$THISMONTH\( $THISDAY\| $THIS_DAY\)" > /var/lib/asterisk/static-http/config/bkps/today_log.html
+
+
