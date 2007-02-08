@@ -464,7 +464,11 @@ numplan_callbacks.format = function(t, x) {
 }
 
 numplan_callbacks.loaded = function() {
-	document.addEventListener("change", select_differentplan, false);
+	if (document.addEventListener){
+		document.addEventListener("change", select_differentplan, false);
+	} else if (document.attachEvent){
+		document.attachEvent('onchange', select_differentplan);
+	}
 	if($('extensions').options.length ==0 ){
 			parent.loadscreen(this);
 			addthe_default_callingplan();
@@ -539,7 +543,11 @@ trunkcallbacks.format = function(t) {
 }
 
 trunkcallbacks.loaded = function(){
-	$('trunks').addEventListener('click',hackenablesave,false);
+	if ($('trunks').addEventListener){
+		$('trunks').addEventListener('click',hackenablesave,false);
+	} else if ($('trunks').attachEvent){
+		$('trunks').attachEvent('onclick', hackenablesave );
+	}
 	parent.astmanEngine.config2list("extensions.conf", $('extensions'), widgets , numplan_callbacks);
 }
 
@@ -579,7 +587,7 @@ function addthe_default_callingplan(){
 	t=confirm("A default Dial Plan is not found. \n" + " Do you want to create a default Dial Plan ");
 	if(t == false){ 
 		$('message_text').innerHTML = "A default DialPlan is not found !! "
-		+ "<BR> <A href=\"#\" class=\"splbutton\" onclick=\"addthe_default_callingplan()\">click here</A> to create a default DialPlan";
+		+ "<BR><BR> <A href=\"#\" class=\"splbutton\" onclick=\"addthe_default_callingplan()\">click here</A> to create a default DialPlan";
 		$('bg_transparent').style.display = '' ;
 		$('status_message').style.left = 120 ;
 		$('status_message').style.display = "block" ;
@@ -611,7 +619,7 @@ function addthe_default_callingplan(){
 	<center>
 	<fieldset style="width: 500px" id="fieldset1">
 		<legend>&nbsp;List of DialPlans:&nbsp;</legend>
-		<CENTER><select id="extensions" class="input9"></select>&nbsp;&nbsp;<a href="#" class="splbutton" onclick="newnumberplan()">new</a>&nbsp;&nbsp;<a href="#" class="splbutton" onclick="delete_numberplan()">delete</a>
+		<CENTER><select id="extensions" class="input9" style="z-index:2"></select>&nbsp;&nbsp;<a href="#" class="splbutton" onclick="newnumberplan()">new</a>&nbsp;&nbsp;<a href="#" class="splbutton" onclick="delete_numberplan()">delete</a>
 			<input id='new' value='New' type="button"  style="display:none">
 			<input id='delete' value='Delete' type="button"  style="display:none">
 			<div id="npcontent" STYLE="display:none; position: absolute; left: 110; top: 40; width:320; height:110;  background-color:#F4EFE5;   border-width: 1px; border-color: #7E5538; border-style: solid; z-index:6">
@@ -711,7 +719,7 @@ function addthe_default_callingplan(){
 		</TABLE>
 		</div>
 </div>
-<div id="bg_transparent" STYLE="display:none; position: absolute; left: 0; top: 24; width:100%; height:100%;  background-color:#FFFFFF; filter:alpha(opacity=50); -moz-opacity:.50;opacity:.50; border-width: 1px; border-color: #7E5538; border-style: solid; z-index:4">
+<div id="bg_transparent" STYLE="display:none; position: absolute; left: 0; top: 24; width:100%; height:100%;  background-color:#EFEFEF; -moz-opacity:.50;opacity:.50; border-width: 1px; border-color: #EFEFEF; border-style: solid; z-index:4">
 </div>
 <SCRIPT LANGUAGE="JavaScript">
 <!--

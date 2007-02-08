@@ -98,7 +98,11 @@ numplan_callbacks.checkparams = function(box) {
 
 
 numplan_callbacks.loaded = function(){
-	$('new').addEventListener("click", showNPdetails, false); 
+	if ($('new').addEventListener){
+		$('new').addEventListener("click", showNPdetails, false); 
+	} else if ($('new').attachEvent){
+		$('new').attachEvent('onclick', showNPdetails );
+	}
 	loadNumberPlansintotable();
 	parent.loadscreen(this);
 }

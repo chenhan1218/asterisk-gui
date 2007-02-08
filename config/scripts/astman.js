@@ -29,29 +29,55 @@ var asterisk_guiTDPrefix = "DID_";
 
 function startDrag(event, movethis ){
 	dragdata.movethis = movethis ;
-	dragdata.initialcursorX = event.clientX + window.scrollX;
-	dragdata.initialcursorY = event.clientY + window.scrollY;
+	if(typeof window.scrollX != "undefined"){
+		dragdata.initialcursorX = event.clientX + window.scrollX;
+		dragdata.initialcursorY = event.clientY + window.scrollY;
+	}else{
+		dragdata.initialcursorX =  window.event.clientX + document.documentElement.scrollLeft + document.body.scrollLeft;
+		dragdata.initialcursorY = window.event.clientY + document.documentElement.scrollTop + document.body.scrollTop;
+	}
 	dragdata.initialwindowleft = parseInt( $(dragdata.movethis).style.left) ;
 	dragdata.initialwindowtop = parseInt($(dragdata.movethis).style.top) ;
-	dragdata.maxleft = window.innerWidth - parseInt($(dragdata.movethis).style.width) ;
-	dragdata.maxtop = window.innerHeight - parseInt($(dragdata.movethis).style.height) ;
-	document.addEventListener("mousemove", movewindow, false);
-	document.addEventListener("mouseup", stopDrag, false);
+	if(typeof window.innerWidth != "undefined"){
+		dragdata.maxleft = window.innerWidth - parseInt($(dragdata.movethis).style.width) ;
+		dragdata.maxtop = window.innerHeight - parseInt($(dragdata.movethis).style.height) ;
+	}else{
+		dragdata.maxleft = document.body.offsetWidth - parseInt($(dragdata.movethis).style.width) ;
+		dragdata.maxtop = document.body.offsetWidth- parseInt($(dragdata.movethis).style.height) ;
+	}
+
+	if (document.addEventListener){
+		document.addEventListener("mousemove", movewindow, false);
+		document.addEventListener("mouseup", stopDrag, false);
+	} else if (document.attachEvent){
+		document.attachEvent('onmousemove', movewindow);
+		document.attachEvent('onmouseup', stopDrag);
+	}
 }
 
 
 function stopDrag(){
-	document.removeEventListener("mousemove", movewindow, false);
-	document.removeEventListener("mouseup", stopDrag, false);
+	if(document.removeEventListener){
+		document.removeEventListener("mousemove", movewindow, false);
+		document.removeEventListener("mouseup", stopDrag, false);
+	}else if(document.detachEvent){
+		document.detachEvent("onmousemove", movewindow);
+		document.detachEvent("onmouseup", stopDrag);
+	}
 }
 
 function movewindow(event){
-  x = event.clientX + window.scrollX;
-  y = event.clientY + window.scrollY;
-  var tmp_top = dragdata.initialwindowtop  + y - dragdata.initialcursorY ; 
-  var tmp_left = dragdata.initialwindowleft + x - dragdata.initialcursorX;
-  if( tmp_left > 0 && tmp_left < dragdata.maxleft ){ $(dragdata.movethis).style.left = tmp_left  + "px"; }
-  if( tmp_top > 0 && tmp_top < dragdata.maxtop ){ $(dragdata.movethis).style.top  = tmp_top + "px"; }
+	if(typeof window.scrollX != "undefined"){
+	  x = event.clientX + window.scrollX;
+	  y = event.clientY + window.scrollY;
+	}else{
+		x =  window.event.clientX + document.documentElement.scrollLeft + document.body.scrollLeft;
+		y = window.event.clientY + document.documentElement.scrollTop + document.body.scrollTop;
+	}
+	  var tmp_top = dragdata.initialwindowtop  + y - dragdata.initialcursorY ; 
+	  var tmp_left = dragdata.initialwindowleft + x - dragdata.initialcursorX;
+	  if( tmp_left > 0 && tmp_left < dragdata.maxleft ){ $(dragdata.movethis).style.left = tmp_left  + "px"; }
+	  if( tmp_top > 0 && tmp_top < dragdata.maxtop ){ $(dragdata.movethis).style.top  = tmp_top + "px"; }
 }
 
 
@@ -92,65 +118,79 @@ function combo_box(a, b, c ){
 		var KEYUP = 38;
 		var KEYDN = 40;
 		var BKSPACE = 8;
+
+		function xyz(event){
+					if( event.keyCode == ENTER || event.keyCode == ESC || event.keyCode == TAB){
+							combo_selectdiv.style.display = "none";
+							return false;
+					}else if( event.keyCode == KEYDN ||  event.keyCode == KEYUP ){
+							combo_selectbox.focus();
+							return false;
+					}else if( event.keyCode == BKSPACE && combo_text.value.length ==0 ){
+							combo_selectdiv.style.display = "none";
+							return false;
+					}else{
+							combo_selectdiv.style.display = "";
+							return true;
+					}
+		}
+		
+		function	abcd(event){
+				if( event.keyCode == ENTER || event.keyCode == ESC || event.keyCode == TAB){
+				return false;
+				}
+				for (var i=0; i < combo_selectbox.options.length; i++){
+						if(	combo_selectbox.options[i].value.toLowerCase().match(combo_text.value.toLowerCase()) ){
+							combo_selectbox.selectedIndex = i;
+							return true;
+						}
+				}
+				combo_selectdiv.style.display = "none";				
+		}
+
+
+		function	efgh(event) {
+				if( event.keyCode == ENTER ){
+						combo_text.value = combo_selectbox.value;
+						combo_text.focus();
+						combo_selectdiv.style.display = "none";
+						return false;
+				}else if( event.keyCode == ESC ){
+						combo_text.focus();
+						combo_selectdiv.style.display = "none";
+				}else{
+						return true;
+				}
+		}
+		function	ijkl(event) {
+			combo_text.value = combo_selectbox.value;
+			combo_text.focus();
+			combo_selectdiv.style.display = "none";
+		}
+
 		combo_selectdiv.style.position ="absolute";
 		combo_selectdiv.style.top = "0px";
 		combo_selectdiv.style.left = "0px";
 //		combo_selectdiv.style.z-index = 10000;
 		combo_selectdiv.style.display = "none";
 
-		combo_text.addEventListener('keychange',combobox_activate,false);
-		combo_text.addEventListener('focus',combobox_activate,false);
-		combo_text.addEventListener('focusout', function(){ combo_selectdiv.style.display ='none'; } ,false);
-		combo_text.addEventListener('keypress',  function(event){
-							if( event.keyCode == ENTER || event.keyCode == ESC || event.keyCode == TAB){
-									combo_selectdiv.style.display = "none";
-									return false;
-							}else if( event.keyCode == KEYDN ||  event.keyCode == KEYUP ){
-									combo_selectbox.focus();
-									return false;
-							}else if( event.keyCode == BKSPACE && combo_text.value.length ==0 ){
-									combo_selectdiv.style.display = "none";
-									return false;
-							}else{
-									combo_selectdiv.style.display = "";
-									return true;
-							}
-				}, false);
-		combo_text.addEventListener('keyup', function(event){
-						if( event.keyCode == ENTER || event.keyCode == ESC || event.keyCode == TAB){
-						return false;
-						}
-						for (var i=0; i < combo_selectbox.options.length; i++){
-								if(	combo_selectbox.options[i].value.toLowerCase().match(combo_text.value.toLowerCase()) ){
-									combo_selectbox.selectedIndex = i;
-									return true;
-								}
-						}
-						combo_selectdiv.style.display = "none";				
-				},false);
-
-
-
-		combo_selectbox.addEventListener('keypress', function(event) {
-					if( event.keyCode == ENTER ){
-							combo_text.value = combo_selectbox.value;
-							combo_text.focus();
-							combo_selectdiv.style.display = "none";
-							return false;
-					}else if( event.keyCode == ESC ){
-							combo_text.focus();
-							combo_selectdiv.style.display = "none";
-					}else{
-							return true;
-					}
-			},false);
-
-
-		combo_selectbox.addEventListener('click', function(event) {
-						combo_text.value = combo_selectbox.value;
-						combo_text.focus();
-						combo_selectdiv.style.display = "none";
-			},false);
+		if (combo_text.addEventListener){
+				combo_text.addEventListener('keychange',combobox_activate,false);
+				combo_text.addEventListener('focus',combobox_activate,false);
+				combo_text.addEventListener('focusout', function(){ combo_selectdiv.style.display ='none'; } ,false);
+				combo_text.addEventListener('keypress',  xyz , false);
+				combo_text.addEventListener('keyup', abcd ,false);
+				combo_selectbox.addEventListener('keypress', efgh ,false);
+				combo_selectbox.addEventListener('click', ijkl ,false);
+		} else if (combo_text.attachEvent){
+				combo_text.attachEvent('onkeychange',combobox_activate);
+				combo_text.attachEvent('onfocus',combobox_activate);
+				combo_text.attachEvent('onfocusout', function(){ combo_selectdiv.style.display ='none'; } );
+				combo_text.attachEvent('onkeypress',  xyz );
+				combo_text.attachEvent('onkeyup', abcd );
+				combo_selectbox.attachEvent('onkeypress', efgh );
+				combo_selectbox.attachEvent('onclick', ijkl );
+		}
 
 		function combobox_activate(){
 				var tmp_left = combo_text.offsetLeft;

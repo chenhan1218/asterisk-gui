@@ -88,7 +88,13 @@ function localajaxinit(){
 				widgets[focus_fields[x]].onfocus = function(){this.className = 'input9_hilight';}
 				widgets[focus_fields[x]].onblur = function(){this.className = 'input9';}
 			}
-			$('localextenlength').addEventListener("change", update_spae, false);
+
+			if ($('localextenlength').addEventListener){
+				  $('localextenlength').addEventListener('change', update_spae, false); 
+			} else if (el.attachEvent){
+				  $('localextenlength').attachEvent('onchange', update_spae);
+			}
+
 			parent.astmanEngine.config2list("users.conf", $('devices'),widgets, usercallbacks);
 }
 

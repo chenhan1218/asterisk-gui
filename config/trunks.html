@@ -148,7 +148,11 @@
 	callbacks.loaded = function() {
 		$('devices').contentEditable = 'true';
 		$('devices').disabled = 0;
-		$('new').addEventListener("click", showSPdetails, false); 
+		if ($('new').addEventListener){
+				$('new').addEventListener("click", showSPdetails, false); 
+		} else if ($('new').attachEvent){
+		  $('new').attachEvent('onclick', showSPdetails);
+		}
 		loadServiceProvidersintotable();
 		parent.loadscreen(this);
 	}
@@ -797,6 +801,6 @@ function flip_register(){
 <tr><td></td><td align="center"><input type='button' id='save' value='Save' class="buttonbold">&nbsp;<input type='button' id='cancel' value='Cancel' class="buttonbold"></td></tr>
 </table>
 </div>
-<div id="bg_transparent" STYLE="display:none; position: absolute; left: 0; top: 24; width:100%; height:100%;  background-color:#FFFFFF; filter:alpha(opacity=50); -moz-opacity:.50;opacity:.50; border-width: 1px; border-color: #7E5538; border-style: solid; z-index:4">
+<div id="bg_transparent" STYLE="display:none; position: absolute; left: 0; top: 24; width:100%; height:100%;  background-color:#EFEFEF; -moz-opacity:.50;opacity:.50; border-width: 1px; border-color: #EFEFEF; border-style: solid; z-index:4">
 </div>
 </body>
