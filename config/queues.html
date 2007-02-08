@@ -423,10 +423,16 @@ extencallbacks.format = function(t, x) {
 ////////
 
 function localajaxinit() {
-	$('advancedw').style.overflow = "hidden";
-	$('advancedw').style.height = 1;
-	$('advancedw').style.width = $('split').style.width;
 //	$('advancedi').style.width = $('split').width - 60;
+	if( navigator.userAgent.indexOf("MSIE") != -1){
+		togglefeatures = function(){ } ;
+		$('advancedw').style.display = "";
+		$('advancedw').style.height=190;
+	}else{
+		$('advancedw').style.overflow = "hidden";
+		$('advancedw').style.height = 1;
+		$('advancedw').style.width = $('split').style.width;
+	}
 	for (var x=0; x < fieldnames.length ; x++) {
 		widgets[fieldnames[x]] = $(fieldnames[x]);
 		widgets[fieldnames[x]].disabled = true;
@@ -452,10 +458,10 @@ function localajaxinit() {
 <table class="mainscreenTable" align="center">
 	<tr valign="top"><td colspan='2'>Extensions:</td></tr>
 	<tr valign="top">
-		<td>	<select size="28" id="queues"  style="width:220px; height: 415px" class="input10"><option>Loading...</option></select>
-					<div style='visibility:hidden;overflow:hidden;width:0px;height:0px'><select id='extensions'></select><select id='devices'></select><select id='finalextensions'></select></div>
+		<td>	<select size="25" id="queues"  style="width:220px;" class="input10"><option>Loading...</option></select>
 		</td>
 		<td style="width:311px; height: 415px"><div id='adjustments' style='width:310'>
+						<select id='extensions' style='display:none;width:0px;height:0px'></select><select id='devices' style='display:none;width:0px;height:0px'></select><select id='finalextensions'  style='display:none;width:0px;height:0px'></select>
 							<table cellspacing='0' cellpadding='0'>
 								<tr valign="top"><td>
 															<table>

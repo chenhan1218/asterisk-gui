@@ -125,6 +125,10 @@
 		}
 		$('extensions').contentEditable = 'true';
 		$('extensions').disabled = 0;
+		if( navigator.userAgent.indexOf("MSIE") != -1){
+			$('advancedw').style.height=130;
+			togglefeatures = function(){ } ;
+		}
 		parent.loadscreen(this);
 	}
 	callbacks.sortfunc = function(a,b) {
@@ -293,7 +297,7 @@
 <table class="mainscreenTable" align="center">
 	<tr valign="top"><td colspan='2'>Extensions:</td>	</tr>
 	<tr valign="top">
-		<td><select disabled size="28" id="extensions" style="width:220px;height: 415px" class="input10">	
+		<td><select disabled size="25" id="extensions" style="width:220px;" class="input10">	
 							<option>Loading...</option>	
 				</select>
 				<div style='visibility:hidden;overflow:hidden;width:0px;height:0px'>	<select id='hiddenusers'>	</select></div>

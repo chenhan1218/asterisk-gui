@@ -291,8 +291,14 @@
 			$('link_sortby').innerHTML = " <A href=\"users.html?sortbynames\">Sort By Name</A> ";
 		}
 
-		$('features').style.overflow = "hidden";
-		$('features').style.height = 1;
+		if( navigator.userAgent.indexOf("MSIE") != -1){
+			togglefeatures = function(){ } ;
+			$('features').style.display = "";
+			$('features').style.height=160;
+		}else{
+			$('features').style.overflow = "hidden";
+			$('features').style.height = 1;
+		}
 		$('features').style.width = 302;
 		adstatus = "hidden";
 		$('devices').contentEditable = 'false';
@@ -323,10 +329,7 @@
 						<option>Loading...</option>
 					</select>
 		</td>
-		<td style="width:311px; height: 415px">
-							<div style='visibility:hidden;overflow:hidden;width:0px;height:0px'>
-									<select id='extensions'></select>
-							</div>
+		<td style="width:311px; height: 415px"><select id='extensions' style='display:none;width:0px;height:0px'></select>
 							<div id='adjustments' style='width:310'>
 								<table cellspacing='0' cellpadding='0' >
 									<tr valign="top"><td>

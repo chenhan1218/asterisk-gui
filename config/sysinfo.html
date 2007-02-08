@@ -54,7 +54,7 @@ function 	load_todayslog(){
 				if(originalRequest.responseText.length==0){
 					$('todaylog').innerHTML = "No log messages found on this Day" ;
 				}else{
-					$('todaylog').innerHTML = originalRequest.responseText.escapeHTML() ;
+					$('todaylog').innerHTML = "<PRE>"+originalRequest.responseText.escapeHTML() +"</PRE>";
 				}
 			},
 			onFailure: function(t) {
@@ -213,7 +213,7 @@ function localajaxinit(){
 										<option value="Oct">Oct</option><option value="Nov">Nov</option><option value="Dec">Dec</option></select>
 								<select id="log_day"><SCRIPT LANGUAGE="JavaScript">
 											for(var i=1; i < 32; i++){ document.write( '<option value="' + i + '">' + i + '</option>' ); }</SCRIPT></select><input type="button" value="Go" onclick="thisday_log();">
-								<PRE><div id="todaylog" style="font-family:courier; font-size:8.5pt; width:522px; height:405px; overflow :auto;"></div></PRE>
+								<div id="todaylog" style="font-family:courier; font-size:8.5pt; width:522px; height:405px; overflow :auto;"></div>
 						</div>
 				</div>
 			</td>

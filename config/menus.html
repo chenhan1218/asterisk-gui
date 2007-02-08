@@ -1035,12 +1035,12 @@ usercallbacks.loaded = function (){
 	</tr>
 	<tr valign="top">
 		<td>
-			<select size="20" id="vmenus" style="width:180px; height: 415px" class="input10">
+			<select size="25" id="vmenus" style="width:180px;" class="input10">
 			<option>Loading...</option>
 			</select>
-			<div style='visibility:hidden;overflow:hidden;width:0px;height:0px'><select id='extensions'></select><select id='users'></select><select id='recorded_files'></select></div>
 		</td>
 		<td valign=top align="right" width=346 height=415>
+					<select id='extensions' style='display:none;width:0px;height:0px'></select><select id='users' style='display:none;width:0px;height:0px'></select><select id='recorded_files' style='display:none;width:0px;height:0px'></select>
 						<table align="center" width="346">
 						<tr>
 								<td width="50" align=left class="field_text" onmouseover="show_tooltip('en', 'menus', 0);">Name:</td>
