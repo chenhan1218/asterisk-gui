@@ -91,7 +91,7 @@ function localajaxinit(){
 
 			if ($('localextenlength').addEventListener){
 				  $('localextenlength').addEventListener('change', update_spae, false); 
-			} else if (el.attachEvent){
+			} else if ($('localextenlength').attachEvent){
 				  $('localextenlength').attachEvent('onchange', update_spae);
 			}
 
