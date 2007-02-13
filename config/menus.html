@@ -54,12 +54,12 @@ function format_step(this_step){
 		temp[2] = temp[2].replace(/\)/, "");
 		return "Play '" + temp[2] + "' & Listen for KeyPress";
 	}
-	if( temp[2].match("SetMusicOnHold") ){
-		// Background('') - whatever in the brackets
-		temp[2] = temp[2].replace(/SetMusicOnHold\(/, "");
-		temp[2] = temp[2].replace(/\)/, "");
-		return "Music on Hold  -  '" + temp[2] + "'";
-	}
+//	if( temp[2].match("SetMusicOnHold") ){
+//		// Background('') - whatever in the brackets
+//		temp[2] = temp[2].replace(/SetMusicOnHold\(/, "");
+//		temp[2] = temp[2].replace(/\)/, "");
+//		return "Music on Hold  -  '" + temp[2] + "'";
+//	}
 	if( temp[2].match("DigitTimeout") ){
 		temp[2] = temp[2].replace(/DigitTimeout\(/, "");
 		temp[2] = temp[2].replace(/\)/, "");
@@ -329,8 +329,8 @@ function add_newstep(){
 		action_string = "s,"+ newpriority+ ",Answer";
 	}else if ( $('newstep_action').value == 'Background'  ){
 		action_string = "s,"+ newpriority+ ",Background(" + $('newstep_var').value + ")";
-	}else if ( $('newstep_action').value == 'SetMusicOnHold'  ){
-		action_string = "s,"+ newpriority+ ",SetMusicOnHold(" + $('newstep_var').value + ")";
+//	}else if ( $('newstep_action').value == 'SetMusicOnHold'  ){
+//		action_string = "s,"+ newpriority+ ",SetMusicOnHold(" + $('newstep_var').value + ")";
 	}else if ( $('newstep_action').value == 'DigitTimeout'  ){
 		action_string = "s,"+ newpriority+ ",DigitTimeout(" + $('newstep_var').value + ")";
 	}else if ( $('newstep_action').value == 'ResponseTimeout'  ){
@@ -664,7 +664,8 @@ function update_newstep_var(){
 
 	if( $('newstep_action').value== "" || $('newstep_action').value== "Answer"  || $('newstep_action').value== "Hangup"  ){
 
-	}else if( $('newstep_action').value== "Background"  || $('newstep_action').value== "SetMusicOnHold" || $('newstep_action').value== "Playback" ){
+	}else if( $('newstep_action').value== "Background"  || $('newstep_action').value== "Playback" ){
+//	}else if( $('newstep_action').value== "Background"  || $('newstep_action').value== "SetMusicOnHold" || $('newstep_action').value== "Playback" ){
 		$('newstep_var').style.display = "";
 		$('newstep_var').size= 12;
 	}else if( $('newstep_action').value== "DigitTimeout"  || $('newstep_action').value== "ResponseTimeout" ||  $('newstep_action').value== "Wait"  ||  $('newstep_action').value== "WaitExten" ){
@@ -1066,7 +1067,7 @@ usercallbacks.loaded = function (){
 									<option value=""> -- Select --</option>
 									<option value="Answer">Answer</option>
 									<option value="Background">Background</option>
-									<option value="SetMusicOnHold">SetMusicOnHold</option>
+									<!-- <option value="SetMusicOnHold">SetMusicOnHold</option> -->
 									<option value="DigitTimeout">DigitTimeout</option>
 									<option value="ResponseTimeout">ResponseTimeout</option>
 									<option value="Playback">Playback</option>
