@@ -33,14 +33,11 @@
 	var meetmes;
 	var callbacks = new Object;
 	var usercallbacks = new Object;
+	var meetmecallbacks = { };
 	var localextenlength;
 	var temp_selectedexten;
-	var fieldnames = new Array(
-				'name', 'delete', 'status', 'newitem', 
-				'music','menu', 'announce',
-				'room','record','waitmarked','setmarked','quiet',
-				'pin', 'pinadmin', 'save', 'cancel');
-	var focus_fields = new Array('name','pin','pinadmin','room');
+	var fieldnames = new Array( 'name', 'delete', 'status', 'newitem', 'music','menu', 'announce','room','record','waitmarked','setmarked','quiet','save', 'cancel') ;
+	var focus_fields = new Array('name','room', 'pin','pinadmin');
 	function changed_extension() {
 		var app;
 		tmp = $('extensions').value.split(']');
@@ -49,8 +46,18 @@
 		$('features').value = app.name.toLowerCase();
 	};
 
+		function enable_disable_fields(k){
+				if(k ==0){
+						$('pin').disabled = true ;
+						$('pinadmin').disabled = true ;
+				}else if ( k == 1 ){
+						$('pin').disabled = false ;
+						$('pinadmin').disabled = false ;
+				}
+		}
+
 	callbacks.fields2val = function(box, subfields) {
-		var flags = "d";
+		var flags = "";
 		var xargs="";
 		var room = '${EXTEN}';
 		if (subfields['music'] != 'no')
@@ -69,7 +76,8 @@
 			flags += 'q';
 		if (subfields['room'].length > 0)
 			room = subfields['room'];
-		return $('name').value + ",1,MeetMe(" + room + "," + flags + "," + subfields['pin'] + "," + subfields['pinadmin'] + ")";
+//		return $('name').value + ",1,MeetMe(" + room + "," + flags + "," + subfields['pin'] + "," + subfields['pinadmin'] + ")";
+		return $('name').value + ",1,MeetMe(" + room + "|" + flags + ")";
 	}
 
 	callbacks.format = function(t, x) {
@@ -81,20 +89,20 @@
 			return null;
 		ret = format_extension($('extensions'), t, x);
 		if (ret) {
-			tmp = t.subfields[x].args.split(',');
+			tmp = t.subfields[x].args.split('|');
 			if (tmp[1]) {
 				tmp2 = tmp[1].split('');
 				for (y=0;y<tmp2.length;y++)
 					options[tmp2[y]] = 'yes';
 			}
-			if (tmp[2])
-				t.subfields[x].pin = tmp[2];
-			else
-				t.subfields[x].pin = '';
-			if (tmp[3])
-				t.subfields[x].pinadmin = tmp[3];
-			else
-				t.subfields[x].pinadmin = '';
+//			if (tmp[2])
+//				t.subfields[x].pin = tmp[2];
+//			else
+//				t.subfields[x].pin = '';
+//			if (tmp[3])
+//				t.subfields[x].pinadmin = tmp[3];
+//			else
+//				t.subfields[x].pinadmin = '';
 			if (tmp[0] == '${EXTEN}')
 				t.subfields[x].room = '';
 			else
@@ -156,8 +164,9 @@
 				}
 		}
 		tmp['name'] = x ;
-		tmp['pin'] = '';
-		tmp['pinadmin'] = '';
+		$('pin').value = '';
+		$('pinadmin').value = '';
+		enable_disable_fields(1);
 		tmp['music'] = 'yes';
 		tmp['menu'] = 'no';
 		tmp['announce'] = 'yes';
@@ -167,32 +176,51 @@
 	}
 	callbacks.postselect = function(box, val) {
 		parent.$('tooltip').innerHTML = parent.tooltip_default ; 
-		if( box.selectedIndex == -1)
+		$('pin').value = ""  ;		
+		$('pinadmin').value = "" ;
+		if( box.selectedIndex == -1){
+				 enable_disable_fields(0);
 				return true;
+		}
 		if(val == "reserved" ){
 				if( box.options[box.selectedIndex].text.toLowerCase().match("-- call queue")     ){
 					//parent.$('tooltip').innerHTML = " <font size=\"-2\" color=\"#FF0000\">Click on \'Call Queues\' panel to edit call queues </font>";
 					box.selectedIndex = -1;
+					 enable_disable_fields(0);
 					alert(" You can not edit the selected entry from here.\n Please click on the \'Call Queues\' panel to edit the selected entry");
 					return true;
 				}
 				if( box.options[box.selectedIndex].text.toLowerCase().match("-- check voicemail")     ){
 					//parent.$('tooltip').innerHTML = " <font size=\"-2\" color=\"#FF0000\">Click on \'Voicemail\' panel to edit Voicemail Preferences</font>";
 					box.selectedIndex = -1;
+				   enable_disable_fields(0);
 					alert(" You can not edit the selected entry from here.\n Please click on the \'Voicemail\' panel to edit the selected entry");
 					return true;
 				}
 				if( box.options[box.selectedIndex].text.toLowerCase().match("-- voice menu")     ){
 					box.selectedIndex = -1;
 					//parent.$('tooltip').innerHTML = " <font size=\"-2\" color=\"#FF0000\">Click on \'Voicemail\' panel to edit Voicemail Preferences</font>";
+					 enable_disable_fields(0);
 					alert(" You can not edit the selected entry from here.\n Please click on the \'Voice Menus\' panel to edit the selected entry");
 					return true;
 				}
 				box.selectedIndex = -1;
+				 enable_disable_fields(0);
 				alert(" You can not edit the selected entry from here.\n Please click on the \'Users\' panel to edit the selected entry");
 				return true;
 		}
 		temp_selectedexten = $('name').value;
+		 enable_disable_fields(1);
+		var f = $('meetme_conf') ;
+		for ( var r=0; r < f.stored_config.catbyname.rooms.fields.length; r++ ) {
+				var k = f.stored_config.catbyname.rooms.fields[r].split(",");
+				if(k[0] == $('name').value ){
+					$('pin').value = k[1] ;		
+					$('pinadmin').value = k[2] ;
+					break;
+				}
+		}
+
 	}
 	callbacks.newcategory = function() {
 		var tmp = null;
@@ -233,7 +261,67 @@
 	}
 	callbacks.identifier = "extension";
 	callbacks.eachline = true;
-	
+
+	callbacks.savechanges = function(){
+		var f = $('meetme_conf') ;
+		var temp_rooms_r =  -1 ;
+		var oldvalue = "" ;
+		for ( var r=0; r < f.stored_config.catbyname.rooms.fields.length; r++ ) {
+				var k = f.stored_config.catbyname.rooms.fields[r].split(",");
+				if(k[0] == temp_selectedexten ){
+					oldvalue = f.stored_config.catbyname.rooms.fields[ r];
+					temp_rooms_r = r ;
+					break;
+				}
+		}
+		var newvalue = $('name').value + ","+ $('pin').value + "," + $('pinadmin').value;
+
+		if ( oldvalue ==  newvalue ){
+				$('save').disabled = true;
+				$('cancel').disabled = true;
+				return;
+		}else{
+				var uri = "";
+				var p = 0 ;
+				if( temp_rooms_r !=  -1 ){  // if is an existing conference
+						uri +=  build_action('delete', p, "rooms" ,"conf", "", oldvalue );  p++;
+				}
+					uri += build_action('append', p, "rooms","conf", newvalue );  p++;
+				var opt = { method: 'get', asynchronous: true, onComplete: function(){ 
+														if( temp_rooms_r ==  -1 ){ // add
+															 f.stored_config.catbyname.rooms.fields.push( newvalue );
+														 }else{  // update
+															 f.stored_config.catbyname.rooms.fields[temp_rooms_r] =  newvalue ;
+														 }
+														$('save').disabled = true; $('cancel').disabled = true;
+												} 
+									};
+				opt.parameters="action=updateconfig&reload=yes&srcfilename=" + encodeURIComponent("meetme.conf") + "&dstfilename=" + encodeURIComponent("meetme.conf") + uri;
+				var tmp = new Ajax.Request("../../rawman", opt);
+				return true;
+		}
+	}
+
+
+
+	callbacks.oncategorydelete = function(){
+			var f = $('meetme_conf') ;
+			for ( var r=0; r < f.stored_config.catbyname.rooms.fields.length; r++ ) {
+					var k = f.stored_config.catbyname.rooms.fields[r].split(",");
+					if(k[0] == temp_selectedexten ){
+						var uri =  build_action('delete', 0, "rooms" ,"conf", "", f.stored_config.catbyname.rooms.fields[r] );  
+						var opt = { method: 'get', asynchronous: true, onComplete: function(){ 
+										 f.stored_config.catbyname.rooms.fields.splice(r ,1);
+										}
+						};
+						opt.parameters="action=updateconfig&reload=yes&srcfilename=" + encodeURIComponent("meetme.conf") + "&dstfilename=" + encodeURIComponent("meetme.conf") + uri;
+						var tmp = new Ajax.Request("../../rawman", opt);
+						break;
+					}
+			}
+	}
+
+
 	usercallbacks.format = function(t) {
 		if ((t.name == 'general')){
 			if (t.fieldbyname['localextenlength'] && t.fieldbyname['localextenlength'].length){
@@ -281,9 +369,30 @@
 			widgets[fieldnames[x]].disabled = true;
 		}
 		for (var x =0; x < focus_fields.length; x++ ) {
-			widgets[focus_fields[x]].onfocus = function(){this.className = 'input8_hilight';}
-			widgets[focus_fields[x]].onblur = function(){this.className = 'input8';}
+			$( focus_fields[x] ).onfocus = function(){this.className = 'input8_hilight';}
+			$( focus_fields[x] ).onblur = function(){this.className = 'input8';}
 		}
+		 enable_disable_fields(0);
+		if ( $('pin').addEventListener	){
+					$('pin').addEventListener('keyup', function(){ $('save').disabled = false; $('cancel').disabled = false; } , false);
+					$('pinadmin').addEventListener('keyup', function(){ $('save').disabled = false; $('cancel').disabled = false; } , false);
+					$('pin').addEventListener('change', function(){ $('save').disabled = false; $('cancel').disabled = false; } , false);
+					$('pinadmin').addEventListener('change', function(){ $('save').disabled = false; $('cancel').disabled = false; } , false);
+		}else if( $('pin').attachEvent ){
+					$('pin').attachEvent('onkeyup', function(){ $('save').disabled = false; $('cancel').disabled = false; }  );
+					$('pinadmin').attachEvent('onkeyup', function(){ $('save').disabled = false; $('cancel').disabled = false; }  );
+					$('pin').attachEvent('onchange', function(){ $('save').disabled = false; $('cancel').disabled = false; }  );
+					$('pinadmin').attachEvent('onchange', function(){ $('save').disabled = false; $('cancel').disabled = false; }  );
+		}
+
+
+
+		parent.astmanEngine.config2list("meetme.conf", $('meetme_conf'), new Array(), meetmecallbacks);
+	}
+	meetmecallbacks.format = function(t) {
+		if(t.name == 'rooms' ){return t.name;}else{return null;}
+	}
+	meetmecallbacks.loaded = function() {
 		parent.astmanEngine.config2list("users.conf", $('hiddenusers'), new Array(), usercallbacks);
 	}
 </script>
@@ -302,7 +411,7 @@
 		<td><select disabled size="25" id="extensions" style="width:220px;" class="input10">	
 							<option>Loading...</option>	
 				</select>
-				<div style='visibility:hidden;overflow:hidden;width:0px;height:0px'>	<select id='hiddenusers'>	</select></div>
+				<div style='visibility:hidden;overflow:hidden;width:0px;height:0px'>	<select id='hiddenusers'>	</select><select id='meetme_conf'></select></div>
 		</td>
 		<td style="width:311px;height: 415px">
 					<div id='adjustments'>

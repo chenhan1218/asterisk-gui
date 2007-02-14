@@ -847,7 +847,7 @@ function save_item(box) {
 			alert("Config Error: " + t.status + ": " + t.statusText);
 		}
 	};
-	var uri;
+	var uri = "" ;
 	var tmp;
 	var temp;
 	var newval;
