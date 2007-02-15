@@ -76,7 +76,6 @@
 			flags += 'q';
 		if (subfields['room'].length > 0)
 			room = subfields['room'];
-//		return $('name').value + ",1,MeetMe(" + room + "," + flags + "," + subfields['pin'] + "," + subfields['pinadmin'] + ")";
 		return $('name').value + ",1,MeetMe(" + room + "|" + flags + ")";
 	}
 
@@ -95,14 +94,6 @@
 				for (y=0;y<tmp2.length;y++)
 					options[tmp2[y]] = 'yes';
 			}
-//			if (tmp[2])
-//				t.subfields[x].pin = tmp[2];
-//			else
-//				t.subfields[x].pin = '';
-//			if (tmp[3])
-//				t.subfields[x].pinadmin = tmp[3];
-//			else
-//				t.subfields[x].pinadmin = '';
 			if (tmp[0] == '${EXTEN}')
 				t.subfields[x].room = '';
 			else
@@ -237,6 +228,10 @@
 		return tmp;
 	}
 	callbacks.beforeSaving = function(){
+		if ( $('extensions').options[$('extensions').selectedIndex].text == "New Entry" ) {
+			temp_selectedexten = $('name').value ;
+		}
+
 		// check whether the length of extension is valid
 		if( localextenlength !=  $('name').value.length){
 				alert("Sorry, An Extension must be  "+ localextenlength  + " digits !");
