@@ -250,6 +250,21 @@ function localajaxinit() {
 		$(focus_fields[x]).onfocus = function(){this.className = 'input8_hilight';}
 		$(focus_fields[x]).onblur = function(){this.className = 'input8';}
 	}
+
+	var opt = { method: 'get', asynchronous: true, onComplete: check_filexists };
+	opt.parameters="action=getconfig&filename="+ custom_voicemenusfile ;
+	var tmp = new Ajax.Request("../../rawman", opt);
+}
+
+function check_filexists(originalRequest){
+	if( originalRequest.responseText.indexOf("Config file not found") != -1 ){
+		parent.astmanEngine.run_tool("/bin/touch /etc/asterisk/"+custom_voicemenusfile ,	function(){	 load_page();  } );
+		return;
+	}
+	load_page();
+}
+
+function load_page(){
 	parent.astmanEngine.config2list(custom_voicemenusfile, $('recorded_files'), new Array, rfilescallbacks);
 	parent.astmanEngine.config2list("users.conf", $('newvmenu_ext'), new Array, callbacks);
 	$('message_text').innerHTML = "Please wait while the system <BR> Calls the specified Extension ... ";
