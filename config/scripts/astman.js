@@ -1867,7 +1867,7 @@ function merge_extensions(u, e) {			// read e and add into u according to sort o
 			var opt_new = document.createElement('option');
 			opt_new.text = e.options[f].text ;
 			opt_new.value = 'reserved';
-			if( navigator.userAgent.indexOf("Firefox") != -1 ){ opt_new.disabled = true; }
+			//if( navigator.userAgent.indexOf("Firefox") != -1 ){ opt_new.disabled = true; }
 			opt_new.style.color = "#ABABAB";
 
 			// Now decide where to add in u, and add it to u

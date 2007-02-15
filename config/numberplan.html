@@ -186,7 +186,7 @@ function parse_nprulesAndnpcomments(){
 	//			parse "numberplansdata[t.name]['npcomments']" and add to "numberplansdata[t.name]['npdata']"
 	//	}
 	for(x in  numberplansdata){
-			if ( x == "extend"){ break;}
+			if (numberplansdata.hasOwnProperty(x)) {
 			var z = numberplansdata[x];
 			var y = z['npdata'];
 			for ( k =0 ; k < z['nprules'].length ; k++ ){
@@ -213,6 +213,7 @@ function parse_nprulesAndnpcomments(){
 						y[temp[0]][temp[1]].ruledesc = "custom" ;
 			}
 	}
+	}
 }
 
 function show_npdata_table(a){
@@ -222,11 +223,12 @@ function show_npdata_table(a){
 	var rules_nosp = new Array ;
 	var m = numberplansdata[a]['npdata'];
 	for( var x in  m ){	// x is the pattern
-				if ( x == "extend"){ break;}
+				 if (m.hasOwnProperty(x)) {
 				var sorted_priorities = [ ];
 				for ( var y in m[x] ){
-					if ( y == "extend"){break;}
+					 if (m[x].hasOwnProperty(y)) {
 					sorted_priorities.push(y);
+					}
 				}
 				sorted_priorities.sort();
 				for( var z=0; z < sorted_priorities.length ; z++ ){
@@ -247,6 +249,7 @@ function show_npdata_table(a){
 						}else{
 								addrowtotable( x , sorted_priorities[z] , m[x][sorted_priorities[z]].trunk , m[x][sorted_priorities[z]].digits2strip );
 						}
+				}
 				}
 	}
 
