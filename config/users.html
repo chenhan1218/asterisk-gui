@@ -33,7 +33,7 @@
 	var phonecallbacks = new Object;
 	var extencallbacks = new Object;
 	var numcallbacks = new Object;
-	var fieldnames = new Array( 'delete', 'status', 'new', 'save', 'cancel','name','fullname','secret','email','cid_number','zapchan','context', 'hasvoicemail','hasdirectory','hassip','hasiax','hasmanager','callwaiting','threewaycalling','mailbox','hasagent','group','host');
+	var fieldnames = new Array( 'delete', 'status', 'new', 'save', 'cancel','name','fullname','secret','email','cid_number','zapchan','context', 'hasvoicemail','hasdirectory','hassip','hasiax','hasmanager','callwaiting','threewaycalling','mailbox','hasagent','group','host','vmsecret');
 	var focus_fields = new Array( 'name','fullname','secret','email','cid_number','zapchan','context');
 	var localextenlength;
 	var allow_aliasextns;
@@ -338,6 +338,7 @@
 												<tr onmouseover="show_tooltip('en', 'users', 0);" ><td class="field_text">Extension:</td><td><input size='5' id='name' pattern='^\d*$' class="input8"></td></tr>
 												<tr onmouseover="show_tooltip('en', 'users', 1);"><td class="field_text">Name:</td><td><input size='20' id='fullname' pattern='^[a-zA-Z_0-9 ]*$' class="input8"></td></tr>
 												<tr onmouseover="show_tooltip('en', 'users', 2);"><td class="field_text">Password:</td><td><input size='5' id='secret' pattern='^[a-zA-Z_0-9]*$'  class="input8"></td></tr>
+												<tr onmouseover="show_tooltip('en', 'users', 16);"><td class="field_text">VM Password:</td><td><input size='5' id='vmsecret' pattern='^[0-9*]*$'  class="input8"></td></tr>
 												<tr onmouseover="show_tooltip('en', 'users', 3);"><td class="field_text">E-mail:</td><td><input size='20' id='email' pattern='^[0-9a-zA-Z\.\-\_\@]*$' class="input8"></td></tr>
 												<tr onmouseover="show_tooltip('en', 'users', 4);"><td class="field_text">Caller ID:</td><td><input size='12' id='cid_number'  pattern='^[\d\-]*$' class="input8"></td></tr>
 												<tr onmouseover="show_tooltip('en', 'users', 5);"><td class="field_text">Analog Phone:</td><td><select size="1" id='zapchan' style='width:120px' class="input8"></select>

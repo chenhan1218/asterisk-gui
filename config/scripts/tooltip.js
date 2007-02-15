@@ -14,7 +14,7 @@ function show_tooltip(lang, file,tip){
 
 	tooltips['users'] .en[0] = "<B>Extension:</B> The numbered extension, i.e. 1234, that will be associated with this particular User / Phone." ;  //Extension
 	tooltips['users'] .en[1] = "<B>Name:</B> A character-based name for this user, i.e. \"Bob Jones\" " ;  //Name
-	tooltips['users'] .en[2] = "<B>Password:</B> The password for this user or Phone, i.e. \"1234\" " ; //Password
+	tooltips['users'] .en[2] = "<B>Password:</B> The password for the user's sip/iax account , Ex: \"12u3b6\" " ; //Password
 	tooltips['users'] .en[3] = "<B>E-Mail:</B> The e-mail address for this user, i.e. \"bobjones@bobjones.null\"";  //E-mail
 	tooltips['users'] .en[4] = "<B>Caller ID:</B> The Caller ID (CID) string used when this user calls another user or number, i.e. \"800-555-1234\" "; //Caller ID
 	tooltips['users'] .en[5] = "<B>Analog Phone:</B> If this user is attached to an analog port on the system, please choose the port number here.";  //Analog Phone
@@ -28,6 +28,7 @@ function show_tooltip(lang, file,tip){
 	tooltips['users'] .en[13] = "<B>Call Waiting:</B> Check this option if the User or Phone should have Call-Waiting capability."; //Call Waiting
 	tooltips['users'] .en[14] = "<B>3-Way Calling:</B>Check this option if the User or Phone should have 3-Way Calling capability."; //3-Way Calling:
 	tooltips['users'] .en[15] = "<B>Is Agent:</B> Check this option if this User or Phone is an Call Queue Member (Agent)"; //Is Agent:
+	tooltips['users'] .en[16] = "<B>VM Password:</B> Voicemail Password for this user, Ex: \"1234\"."; //Voicemail Password
 
 // Tooltips for Conferencing (meetme)
 	tooltips['meetme']= new Object;
