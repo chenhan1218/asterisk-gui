@@ -12,7 +12,7 @@ var fieldnames = new Array( 'save','userbase','localextenlength','allow_aliasext
 var widgets = new Array;
 var go = "";
 var nextpage = "4.html";
-var prevpage = "2.html";
+var prevpage = "1.html";
 
 function localinit(){
 	parent.$('next').disabled = true;
@@ -133,7 +133,7 @@ function update_spae(){
 					<table cellpadding=3 cellspacing=2 border=0 id="sidelist">
 						<tr><td width=3></td><td>Start</td></tr>
 						<tr><td></td><td>Verify Analog Ports</td></tr>
-						<tr><td></td><td>Date & Time</td></tr>
+						<!-- <tr><td></td><td>Date & Time</td></tr> -->
 						<tr><td></td><td class="slselected">Local Extension Settings</td></tr>
 						<tr><td></td><td>Service Providers</td></tr>
 						<tr><td></td><td>Calling Rules</td></tr>
@@ -147,7 +147,7 @@ function update_spae(){
 			<td valign=top align=center>
 			<!--  this page -->
 					<select id="devices" style="display:none"></select> <input type=button id="save" value="Submit" style="display:none">
-					<div class="heading">Step 3 of <script>document.write(parent.numberofsteps);</script>&nbsp;&nbsp;- Local Extension Settings</div>
+					<div class="heading">Step 2 of <script>document.write(parent.numberofsteps);</script>&nbsp;&nbsp;- Local Extension Settings</div>
 					<p class="subheading">	Local Extensions are <select id="localextenlength">
 																	<option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option></select> digits long&nbsp;
 					</p>
