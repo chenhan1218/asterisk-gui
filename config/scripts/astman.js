@@ -1494,7 +1494,7 @@ function Astman() {
 							return true;
 						}
 						widgets[x].onkeyup = function(event) {
-							if (event.keyCode ==9 || event.keyCode ==8 ){return true;}
+							if (event.keyCode ==9){return true;}
 							pattern = this.getAttribute('pattern');
 							if (pattern && check_pattern(pattern, this.oldvalue) && !check_pattern(pattern, this.value)) {
 									this.value = this.oldvalue;
