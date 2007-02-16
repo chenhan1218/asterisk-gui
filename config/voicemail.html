@@ -49,11 +49,6 @@
 		$('name').value = $('extensions').stored_config.catbyname[tmp[0]].subfields[tmp[1]]['name'];
 	};
 	
-	function newexten() {
-		var newname = $('name').value;
-		$('save').disabled = false;
-	}
-
 	callbacks.format = function(t, x) {
 		if ((t.name != specialcontext))
 			return null;
@@ -103,7 +98,12 @@
 		$('extensions').contentEditable = 'true';
 		$('extensions').disabled = 0;
 		$('extensions').current_category = specialcontext;
-		$('name').onkeydown = newexten;
+		$('name').onkeydown = function(event){ this.oldvalue = this.value ; };
+		$('name').onkeyup = function(event){  
+							if(this.oldvalue == this.value){return true;} 
+							$('save').disabled = false; 
+							$('cancel').disabled = false; 
+		};	
 		$('name').disabled = false;
 		if (whichexten.length ==0 ){
 			alert("Looks like a default Voicemail Extension is not yet configured \n\n Please set an \'Extension for Checking messages\'  and \n click on 'save' button");
