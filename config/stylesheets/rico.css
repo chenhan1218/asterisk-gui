@@ -243,28 +243,4 @@ a.backToSearch:link, a.backToSearch:hover, a.backToSearch:visited {
    margin: 6px 0px 6px 0px;
    }
 
-/* for DHTML tabs */
-  a.tab { 
-		border-bottom: 0px solid #778;
-		font: bold 11px arial,Verdana, sans-serif;
-		margin: 0;
-		display: inline;
-		padding: 2px 0.5em;
-		margin-left: 3px;
-		border: 0px solid #778;
-		background: #DDE;
-		text-decoration: none;
-		color: #448; 
-		height: 11px;
- }
 
-a.tab:visited { 
-		color: #448; 
-}
-
-a.tab:hover { 
-		color: #000;
-		background: #AAE;
-		border-color: #227;
-		text-decoration: none;
-}

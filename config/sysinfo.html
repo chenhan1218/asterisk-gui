@@ -69,15 +69,9 @@ function 	load_todayslog(){
 
 function show_window(x){
 		for(i=0; i < tabs.length ; i++){
-			document.getElementById(tabs[i]).style.background = '#DDDDEE';
-			document.getElementById(tabs[i]).style.borderBottom = '0px solid #777788';
-			document.getElementById(tabs[0]).style.fontWeight = 'bold';
-			document.getElementById(tabs[0]).style.fontSize = '11px';
+			document.getElementById(tabs[i]).className = "tab";
 		}
-		document.getElementById(tabs[x-1]).style.background = '#FFFFFF';
-		document.getElementById(tabs[x-1]).style.borderBottom = '4px solid #000000';
-		document.getElementById(tabs[x-1]).style.fontWeight = 'bold';
-		document.getElementById(tabs[x-1]).style.fontSize= '13px';
+		document.getElementById(tabs[x-1]).className = "tabselected";
 		document.getElementById(tabs[x-1]).blur();
 		
 
@@ -135,10 +129,8 @@ function getsysinfohtml(){
 					$(divs_toshow[i]).style.display = "block";
 				}
 
-				document.getElementById(tabs[0]).style.background = 'white';
-				document.getElementById(tabs[0]).style.borderBottom = '4px solid #000000';
-				document.getElementById(tabs[0]).style.fontWeight = 'bold';
-				document.getElementById(tabs[0]).style.fontSize = '13px';
+				document.getElementById(tabs[0]).className = "tabselected";
+
 				load_todayslog();
 
 			},
