@@ -38,10 +38,10 @@
 				'delete', 'status', 'new', 'save', 'cancel','secret', 'provider', 'zapchan',
 				'trunkstyleanalog','trunkstylevoip','trunkstylecustomvoip', 'name', 'username', 'trunkname', 'callerid',
 				'hasexten', 'hassip', 'hasiax','registeriax','registersip','host','dialformat','context','group',
-				'insecure', 'host', 'fromuser', 'fromdomain');
+				'insecure', 'host', 'fromuser', 'fromdomain','contact');
 	var provfieldnames = new Array('providerdesc', 'providerlogo');
 	var focus_fields = new Array('provider','username','secret','customvoip_name','customvoip_protocol',
-	'customvoip_host','customvoip_username','customvoip_secret');
+	'customvoip_host','customvoip_username','customvoip_secret','fromuser','contact');
 
 	var isnewtrunk;
 	var dids_array = [];
@@ -758,7 +758,6 @@ function flip_register(){
 									<input id="group" type="hidden">
 									<input id="insecure" type="hidden">
 									<input id="port" type="hidden">
-									<input id="fromuser" type="hidden">
 									<input id="fromdomain" type="hidden">
 									<tr>
 										<td height=10></td>
@@ -783,7 +782,6 @@ function flip_register(){
 										<td class="field_text">Host:</td>
 										<td><input type="text" id="customvoip_host" size=14 onkeyup=" $('cancel').disabled= false;$('save').disabled= false;"  class="input8"></td>
 									</tr>
-
 									<tr>
 										<td class="field_text">Username:</td>
 										<td><input type="text" id="customvoip_username" size=14 onkeyup=" $('cancel').disabled= false;$('save').disabled= false;"  class="input8"></td>
@@ -791,6 +789,14 @@ function flip_register(){
 									<tr>
 										<td class="field_text">Password:</td>
 										<td><input type="password" id="customvoip_secret" size=14 onkeyup=" $('cancel').disabled= false;$('save').disabled= false;"  class="input8"></td>
+									</tr>
+									<tr>
+										<td class="field_text">From User:</td>
+										<td><input type="text" id="fromuser" size=14 onkeyup=" $('cancel').disabled= false;$('save').disabled= false;"  class="input8"></td>
+									</tr>
+									<tr>
+										<td class="field_text">Contact:</td>
+										<td><input type="text" id="contact" size=14 onkeyup=" $('cancel').disabled= false;$('save').disabled= false;"  class="input8"></td>
 									</tr>
 						</table>
 				</div>
