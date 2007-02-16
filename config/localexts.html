@@ -26,7 +26,7 @@
 <link href="stylesheets/schwing.css" media="all" rel="Stylesheet" type="text/css" />
 <script>
 var usercallbacks = new Object;
-var fieldnames = new Array('status', 'save','userbase','localextenlength','allow_aliasextns');
+var fieldnames = new Array('status', 'save','userbase','localextenlength','allow_aliasextns','vmsecret','hasvoicemail','hasdirectory','hassip','hasiax','hasmanager','callwaiting','threewaycalling','hasagent');
 var widgets = new Array;
 var focus_fields = new Array('localextenlength','userbase');
 
@@ -123,13 +123,38 @@ function update_spae(){
 	<TD valign="bottom" align="left"><a href="#" class="tab" onclick="tosetup();"  style="border-bottom: 0px solid #777788; font-weight:bold; background: #DDDDEE; font-size: 11px">Run Setup Wizard</a></TD> 
 </TR>
 </TABLE>
-<BR><BR>
+<BR>
 <table class="mainscreenTable" align="center">
 	<tr>	<td align="center" valign="top">
 					<select id="devices" style="display:none"></select> 
-					<p class="field_text">	Local Extensions are <select id="localextenlength" class="input9"><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option></select> digits long&nbsp;</p>
-					<p class="field_text">	Starting point of Allocation of extensions : <input type=text id="userbase" size=5  class="input9">	</p>
-					<p class="field_text"> <input type=checkbox id="allow_aliasextns">Allow analog phones to be assigned to multiple extensions</p>
+	<fieldset  style="width: 400px">
+		<legend>&nbsp;Local Extension Settings:&nbsp;</legend>
+		<table align='center'  width='390'  cellpadding=2 cellspacing=1>
+				<tr ><td class="field_text">
+							Local Extensions are 
+							<select id="localextenlength" class="input9">
+								<option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option>
+							</select> digits long&nbsp;</td>
+				</tr>
+				<tr ><td class="field_text">Starting point of Allocation of extensions : <input type=text id="userbase" size=5  class="input9"></td></tr>
+				<tr ><td class="field_text" align="center"><input type=checkbox id="allow_aliasextns">Allow analog phones to be assigned to multiple extensions</td></tr>
+			</table>
+	</fieldset><BR>
+	<fieldset style="width: 400px">
+		<legend>&nbsp;Default Settings for a New User:&nbsp;</legend>
+				<table align='center'  width='390'  cellpadding=2 cellspacing=1>
+				<tr onmouseover="show_tooltip('en', 'users', 16);"><td class="field_text" align="right">VM Password:</td><td><input size='5' id='vmsecret' pattern='^[0-9*]*$'  class="input8"></td></tr>
+				<tr onmouseover="show_tooltip('en', 'users', 8);"><td class="field_text" align="right">Voicemail:</td><td><input type='checkbox' id='hasvoicemail'></td></tr>
+				<tr onmouseover="show_tooltip('en', 'users', 9);"><td class="field_text"  align="right">In Directory:</td><td><input type='checkbox' id='hasdirectory'></td></tr>
+				<tr onmouseover="show_tooltip('en', 'users', 10);"><td class="field_text" align="right">SIP:</td><td><input type='checkbox' id='hassip'></td></tr>
+				<tr onmouseover="show_tooltip('en', 'users', 11);"><td class="field_text" align="right">IAX:</td><td><input type='checkbox' id='hasiax'></td></tr>
+				<tr onmouseover="show_tooltip('en', 'users', 12);"><td class="field_text" align="right">CTI:</td><td><input type='checkbox' id='hasmanager'></td></tr>
+				<tr onmouseover="show_tooltip('en', 'users', 13);"><td class="field_text" align="right">Call&nbsp;Waiting:</td><td><input type='checkbox' id='callwaiting'></td></tr>
+				<tr onmouseover="show_tooltip('en', 'users', 14);"><td class="field_text" align="right">3-Way&nbsp;Calling:</td><td><input type='checkbox' id='threewaycalling'></td></tr>
+				<tr onmouseover="show_tooltip('en', 'users', 15);"><td class="field_text" align="right">Is&nbsp;Agent:</td><td><input type='checkbox' id='hasagent' dfalt='1'><input type='hidden' dfalt='dynamic' id='host'></td>
+				</tr>
+				</table>
+	</fieldset>
 					<center>
 							<div style="height:15px" id='status'></div><BR>
 							<input type=button id="save" value="Save">
