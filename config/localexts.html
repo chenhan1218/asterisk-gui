@@ -143,15 +143,37 @@ function update_spae(){
 	<fieldset style="width: 400px">
 		<legend>&nbsp;Default Settings for a New User:&nbsp;</legend>
 				<table align='center'  width='390'  cellpadding=2 cellspacing=1>
-				<tr onmouseover="show_tooltip('en', 'users', 16);"><td class="field_text" align="right">VM Password:</td><td><input size='5' id='vmsecret' pattern='^[0-9*]*$'  class="input9"></td></tr>
-				<tr onmouseover="show_tooltip('en', 'users', 8);"><td class="field_text" align="right">Voicemail:</td><td><input type='checkbox' id='hasvoicemail'></td></tr>
-				<tr onmouseover="show_tooltip('en', 'users', 9);"><td class="field_text"  align="right">In Directory:</td><td><input type='checkbox' id='hasdirectory'></td></tr>
-				<tr onmouseover="show_tooltip('en', 'users', 10);"><td class="field_text" align="right">SIP:</td><td><input type='checkbox' id='hassip'></td></tr>
-				<tr onmouseover="show_tooltip('en', 'users', 11);"><td class="field_text" align="right">IAX:</td><td><input type='checkbox' id='hasiax'></td></tr>
-				<tr onmouseover="show_tooltip('en', 'users', 12);"><td class="field_text" align="right">CTI:</td><td><input type='checkbox' id='hasmanager'></td></tr>
-				<tr onmouseover="show_tooltip('en', 'users', 13);"><td class="field_text" align="right">Call&nbsp;Waiting:</td><td><input type='checkbox' id='callwaiting'></td></tr>
-				<tr onmouseover="show_tooltip('en', 'users', 14);"><td class="field_text" align="right">3-Way&nbsp;Calling:</td><td><input type='checkbox' id='threewaycalling'></td></tr>
-				<tr onmouseover="show_tooltip('en', 'users', 15);"><td class="field_text" align="right">Is&nbsp;Agent:</td><td><input type='checkbox' id='hasagent' dfalt='1'><input type='hidden' dfalt='dynamic' id='host'></td>
+
+				<tr>			<td onmouseover="show_tooltip('en', 'users', 15);" class="field_text" align="right"><input type='checkbox' id='hasagent'></td>
+								<td onmouseover="show_tooltip('en', 'users', 15);">Is Agent</td>
+								<td onmouseover="show_tooltip('en', 'users', 8);" align=right><input type='checkbox' id='hasvoicemail'></td>
+								<td onmouseover="show_tooltip('en', 'users', 8);" class="field_text" align="left">Voicemail</td>
+				</tr>
+				
+				
+				<tr>			<td onmouseover="show_tooltip('en', 'users', 9);" class="field_text" align="right"><input type='checkbox' id='hasdirectory'></td>
+								<td onmouseover="show_tooltip('en', 'users', 9);">In Directory</td>
+								<td onmouseover="show_tooltip('en', 'users', 12);" align=right><input type='checkbox' id='hasmanager'></td>
+								<td onmouseover="show_tooltip('en', 'users', 12);" class="field_text" align="left">CTI</td>
+				</tr>
+
+				<tr>			<td onmouseover="show_tooltip('en', 'users', 10);" class="field_text" align="right"><input type='checkbox' id='hassip'></td>
+								<td onmouseover="show_tooltip('en', 'users', 10);">SIP</td>
+								<td onmouseover="show_tooltip('en', 'users', 11);" align=right><input type='checkbox' id='hasiax'></td>
+								<td onmouseover="show_tooltip('en', 'users', 11);" class="field_text" align="left">IAX</td>
+				</tr>
+
+				<tr>			<td onmouseover="show_tooltip('en', 'users', 13);" class="field_text" align="right"><input type='checkbox' id='callwaiting'></td>
+								<td onmouseover="show_tooltip('en', 'users', 13);">Call Waiting</td>
+								<td onmouseover="show_tooltip('en', 'users', 14);" align=right><input type='checkbox' id='threewaycalling'></td>
+								<td onmouseover="show_tooltip('en', 'users', 14);" class="field_text" align="left">3-Way&nbsp;Calling</td>
+				</tr>
+
+				<tr>			
+								<td onmouseover="show_tooltip('en', 'users', 16);" align=right><input size='3' id='vmsecret' pattern='^[0-9*]*$'  class="input9">&nbsp;</td>
+								<td onmouseover="show_tooltip('en', 'users', 16);" class="field_text" align="left">VoiceMail Password</td>
+								<td align=right></td>
+								<td  class="field_text" align="left"></td>
 				</tr>
 				</table>
 	</fieldset>
