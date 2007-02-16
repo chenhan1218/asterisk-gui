@@ -1022,10 +1022,13 @@ function build_action(action, count, cat, name, value, match)
 
 function check_pattern(pattern, text)
 {
-	if (text.search(pattern) == -1)
-			return false;
-	else
-			return true;
+	if(typeof text != "undefined"){
+		if (text.search(pattern) == -1)
+				return false;
+		else
+				return true;
+	}
+	return true;
 }
 
 
@@ -1490,7 +1493,8 @@ function Astman() {
 							this.oldvalue = this.value;
 							return true;
 						}
-						widgets[x].onkeyup = function() {
+						widgets[x].onkeyup = function(event) {
+							if (event.keyCode ==9 || event.keyCode ==8 ){return true;}
 							pattern = this.getAttribute('pattern');
 							if (pattern && check_pattern(pattern, this.oldvalue) && !check_pattern(pattern, this.value)) {
 									this.value = this.oldvalue;
