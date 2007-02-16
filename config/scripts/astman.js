@@ -945,6 +945,8 @@ function save_item(box) {
 		}
 		if (box.widgets['save'])
 			box.widgets['save'].disabled = true;
+		if (box.widgets['cancel'])
+			box.widgets['cancel'].disabled = true;
 	}
 }
 
