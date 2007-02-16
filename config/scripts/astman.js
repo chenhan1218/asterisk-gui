@@ -1551,7 +1551,9 @@ function Astman() {
 	this.doConfig = function(t, box) {
 		if(t[0].headers['message']){
 			if( box.config_file == "zapscan.conf" ){
-				alert( "Note: Unable to find /etc/asterisk/zapscan.conf\nPlease run Zapscan manually ! \n\n Click 'OK' to try loading the rest of the page." );
+				//alert( "Note: Unable to find /etc/asterisk/zapscan.conf\nPlease run Zapscan manually ! \n\n Click 'OK' to try loading the rest of the page." );
+				parent.astmanEngine.run_tool("/bin/touch /etc/asterisk/zapscan.conf",	function(){	  window.location.href = window.location.href ; } );
+				return ;
 			} else if( t[0].headers['message'] == "Config file not found" && box.config_file != "zapscan.conf"){
 				alert( "Asterisk says it cannot find a required config file (" + box.config_file + ") \n You will be now redirected to the main page !" );
 				parent.window.location.href = parent.window.location.href ;
