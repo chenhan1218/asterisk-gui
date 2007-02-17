@@ -26,7 +26,7 @@
 <link href="stylesheets/schwing.css" media="all" rel="Stylesheet" type="text/css" />
 <script>
 var usercallbacks = new Object;
-var fieldnames = new Array('status', 'save','userbase','localextenlength','allow_aliasextns','vmsecret','hasvoicemail','hasdirectory','hassip','hasiax','hasmanager','callwaiting','threewaycalling','hasagent','cancel');
+var fieldnames = new Array('status', 'save','userbase','localextenlength','allow_aliasextns','vmsecret','hasvoicemail','hasdirectory','hassip','hasiax','hasmanager','callwaiting','threewaycalling','hasagent','cancel','allow_an_extns');
 var widgets = new Array;
 var focus_fields = new Array('localextenlength','userbase','vmsecret');
 
@@ -130,14 +130,15 @@ function update_spae(){
 	<fieldset  style="width: 400px">
 		<legend>&nbsp;Local Extension Settings:&nbsp;</legend>
 		<table align='center'  width='390'  cellpadding=2 cellspacing=1>
-				<tr ><td class="field_text">
+				<tr ><td class="field_text" align=left>
 							Local Extensions are 
 							<select id="localextenlength" class="input9">
 								<option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option>
 							</select> digits long&nbsp;</td>
 				</tr>
-				<tr ><td class="field_text">Starting point of Allocation of extensions : <input type=text id="userbase" size=5  class="input9"></td></tr>
-				<tr ><td class="field_text" align="center"><input type=checkbox id="allow_aliasextns">Allow analog phones to be assigned to multiple extensions</td></tr>
+				<tr ><td class="field_text" align=left>Starting point of Allocation of extensions : <input type=text id="userbase" size=5  class="input9"></td></tr>
+				<tr ><td class="field_text" align="left"><input type=checkbox id="allow_aliasextns">Allow analog phones to be assigned to multiple extensions</td></tr>
+				<tr ><td class="field_text" align="left"><input type=checkbox id="allow_an_extns">Allow extensions to be AlphaNumeric (SIP/IAX users)</td></tr>
 			</table>
 	</fieldset><BR>
 	<fieldset style="width: 400px">
