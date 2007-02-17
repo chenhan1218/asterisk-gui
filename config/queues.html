@@ -202,7 +202,7 @@ function save_queue(){
 				q =0;
 				for (k=0;k< $('agents').length ;k++ ){
 						if( $('agents').options[k].selected ){
-							queueagents [r][q] = $('agents').options[k].innerHTML.substr(0,localextenlength);
+							queueagents [r][q] = $('agents').options[k].innerHTML.split(' -- ')[0] ;
 							q = q+1;
 						}
 				}
@@ -229,7 +229,7 @@ function save_queue(){
 				for (k=0;k< $('agents').length ;k++ ){
 						selectedagent = "selectedagent" + k;
 						if( $(selectedagent).checked  ){
-							queueagents [j][q] = $('agents').options[k].innerHTML.substr(0,localextenlength);
+							queueagents [j][q] = $('agents').options[k].innerHTML.split(' -- ')[0] ;
 							$('agents').options[k].selected = true;
 							q = q+1;
 						}else{
@@ -350,13 +350,13 @@ queuecallbacks.postselect = function(box, val ) {
 		$('testmulti').innerHTML ="";		
 		for (k=0;k< $('agents').length ;k++ ){
 			selectedagent = "selectedagent" + k;
-			if( InArray( queueagents [j], $('agents').options[k].innerHTML.substr(0,localextenlength) ) ){
+			var str_checked = "";
+			$('agents').options[k].selected = false;
+			if( InArray( queueagents [j], $('agents').options[k].innerHTML.split(' -- ')[0] ) ){
 				$('agents').options[k].selected = true;	
-				$('testmulti').innerHTML += '<LABEL FOR=' + selectedagent + '><INPUT id="' + selectedagent + '" TYPE="CHECKBOX" VALUE="'+ $('agents').options[k].innerHTML.substr(0,localextenlength) + '" checked onclick="$(\'save_q\').disabled=false; $(\'cancel\').disabled=false;">&nbsp;' + $('agents').options[k].innerHTML.substr(localextenlength+4) +' (' + $('agents').options[k].innerHTML.substr(0,localextenlength) + ')' + '</LABEL><BR>';
-			}else{
-				$('agents').options[k].selected = false;
-				$('testmulti').innerHTML += '<LABEL FOR=' + selectedagent + '><INPUT id="' + selectedagent + '" TYPE="CHECKBOX" VALUE="'+ $('agents').options[k].innerHTML.substr(0,localextenlength) + '" onclick="$(\'save_q\').disabled=false; $(\'cancel\').disabled=false;">&nbsp;' + $('agents').options[k].innerHTML.substr(localextenlength+4) +' (' + $('agents').options[k].innerHTML.substr(0,localextenlength) + ')' +  '</LABEL><BR>';
+				str_checked = " checked ";
 			}
+			$('testmulti').innerHTML += '<LABEL FOR=' + selectedagent + '><INPUT id="' + selectedagent + '" TYPE="CHECKBOX" VALUE="'+ $('agents').options[k].innerHTML.split(' -- ')[0] + '"'+ str_checked + ' onclick="$(\'save_q\').disabled=false; $(\'cancel\').disabled=false;">&nbsp;' + $('agents').options[k].innerHTML.split(' -- ')[1] +' (' + $('agents').options[k].innerHTML.split(' -- ')[0]+ ')' + '</LABEL><BR>';
 		}
 		$('save_q').disabled = false;
 }
@@ -382,7 +382,7 @@ queuecallbacks.newcategory = function(t) {
 		for (k=0;k< $('agents').length ;k++ ){
 				selectedagent = "selectedagent" + k;
 				$('agents').options[k].selected = false;
-				$('testmulti').innerHTML += '<LABEL FOR=' + selectedagent + '><INPUT id="' + selectedagent + '" TYPE="CHECKBOX" VALUE="'+ $('agents').options[k].innerHTML.substr(0,localextenlength) + '" onclick="$(\'save_q\').disabled=false; $(\'cancel\').disabled=false;">&nbsp;' + $('agents').options[k].innerHTML.substr(localextenlength+4) +' (' + $('agents').options[k].innerHTML.substr(0,localextenlength) + ')' +  '</LABEL><BR>';
+				$('testmulti').innerHTML += '<LABEL FOR=' + selectedagent + '><INPUT id="' + selectedagent + '" TYPE="CHECKBOX" VALUE="'+ $('agents').options[k].innerHTML.split(' -- ')[0] + '" onclick="$(\'save_q\').disabled=false; $(\'cancel\').disabled=false;">&nbsp;' + $('agents').options[k].innerHTML.split(' -- ')[1] +' (' + $('agents').options[k].innerHTML.split(' -- ')[0] + ')' +  '</LABEL><BR>';
 		}
 	return tmp;
 }
@@ -488,7 +488,7 @@ mohcallbacks.loaded = function() {
 																	</tr>
 																	<tr onmouseover="show_tooltip('en', 'queues', 3);" >
 																			<td valign='top' class="field_text">Agents:</td>
-																			<td><select size="4" multiple='true' id='agents' style='width:200px; display:none;'></select>
+																			<td><select multiple='true' id='agents' style='display:none;'></select>
 																				<div id="testmulti" style='border:1px solid; font-size: 8pt; height:75px; width: 200px;overflow :auto;'></div>
 																			</td>
 																	</tr>
