@@ -180,7 +180,22 @@ callbacks.loaded = function() {
 	$('name').onkeydown = newexten;
 	$('name').disabled = false;
 	if (whichexten.length ==0 ){
-		alert("Looks like a default Voicemail Extension is not yet configured \n\n Please set an \'Extension for Checking messages\'");
+		//alert("Looks like a default Voicemail Extension is not yet configured \n\n Please set an \'Extension for Checking messages\'");
+			switch (parent.localextenlength){
+			case "2":
+				$('name').value = parent.userbase.charAt(0) + "5";
+				break;
+			case "3":
+				$('name').value = parent.userbase.charAt(0) + "50";
+				break;
+			case "4":
+				$('name').value = parent.userbase.charAt(0) + "500";
+				break;
+			case "5":
+				$('name').value = parent.userbase.charAt(0) + "5000";
+				break;
+			default : $('name').value = "8500";
+			}
 	}else{
 					if( parent.localextenlength != $('name').value.length ){
 							if(	parent.localextenlength < $('name').value.length ){
@@ -241,7 +256,7 @@ callbacks.postselect = function(box, val) {
 												<option value='10'>10</option>
 												<option value='25'>25</option>
 												<option value='100'>100</option>
-												<option value='250'>250</option>
+												<option value='250' selected>250</option>
 												<option value='500'>500</option>
 												<option value='1000'>1000</option>
 												</select>
@@ -252,13 +267,13 @@ callbacks.postselect = function(box, val) {
 												<option value='60'>1 minute</option>
 												<option value='120'>2 minutes</option>
 												<option value='300'>5 minutes</option>
-												<option value='900'>15 minutes</option>
+												<option value='900' selected>15 minutes</option>
 												<option value='1800'>30 minutes</option>
 												<option value='0'>Unlimited</option>
 												</select>
 							</td>
 					</tr>
-					<tr><td>Max&nbsp;greeting&nbsp;(seconds)</td><td>&nbsp;<input size=4 id='maxgreet' pattern='^\d*$' class="input8"></td></tr>
+					<tr><td>Max&nbsp;greeting&nbsp;(seconds)</td><td>&nbsp;<input size=4 id='maxgreet' pattern='^\d*$' class="input8" dfalt=60></td></tr>
 					<tr><td colspan='2' align='center'><div style="height:15px" id='status'></div></td></tr>
 			</table>					
 			<div style="display:none"><input type='button' id='save' value='Save'>&nbsp;<input type='button' id='cancel' value='Cancel'></div>
