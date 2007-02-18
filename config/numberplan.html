@@ -140,7 +140,7 @@ function add_rule_fromeditform( this_priority, oncomplete ){
 									}
 									m[$('pattern').value][this_priority] = new ruleinanpdata($('trunks').value, $('strip').value, $('prepend').value);
 									m[$('pattern').value][this_priority].rulename =  $('rulename').value ; 
-									m[$('pattern').value][this_priority].ruledesc = parsepattern($('pattern').value,0) ;
+									m[$('pattern').value][this_priority].ruledesc = (iscustom) ? "custom" : parsepattern($('pattern').value,0) ;
 									oncomplete(); 
 						},
 						onFailure: function(t) {
@@ -244,7 +244,7 @@ function show_npdata_table(a){
 								addrowtotable( x , sorted_priorities[z] , "undefined" , m[x][sorted_priorities[z]].digits2strip );
 						}else if(trunk_exists == 0){
 								rules_nosp.push(m[x][sorted_priorities[z]].rulename) ;
-								$('trunks').selectedIndex = -1;							
+								//$('trunks').selectedIndex = -1;							
 								addrowtotable( x , sorted_priorities[z] , "invalid" , m[x][sorted_priorities[z]].digits2strip );							
 						}else{
 								addrowtotable( x , sorted_priorities[z] , m[x][sorted_priorities[z]].trunk , m[x][sorted_priorities[z]].digits2strip );
@@ -330,11 +330,12 @@ function addrowtotable(a,b,c,d){	// a is pattern, b is priority, c is trunk, d i
 		newCell0.align="center";
 
 		var newCell1 = newRow.insertCell(1);
-		newCell1.innerHTML =  m[a][b].rulename ; 
+		newCell1.innerHTML =  (m[a][b].rulename) ? m[a][b].rulename : "Not Defined" ; 
 		newCell1.width=90;
 
 		var newCell2 = newRow.insertCell(2);
-		newCell2.innerHTML =  m[a][b].ruledesc ; 
+		newCell2.innerHTML =  (m[a][b].ruledesc) ? m[a][b].ruledesc : a ; 
+		if(newCell2.innerHTML == "custom"){ newCell2.innerHTML = "custom ("+ a + ")"; }
 
 		if(c == "invalid" || c== "undefined"  ){
 			var newCell3 = newRow.insertCell(3);
@@ -412,9 +413,11 @@ function editcallingrule(a,b){	// a is pattern, b is priority
 		$('strip').value = m[a][b].digits2strip;
 		$('prepend').value = m[a][b].prepend;
 		$('save_a').disabled = 1;
-		if( m[a][b].ruledesc == 'custom' ){
+		if( m[a][b].ruledesc == 'custom' || !m[a][b].ruledesc ){
 			// if this is a custom pattern then donot try to parse the pattern
 			iscustom = true;
+			(m[a][b].rulename) ? $('rulename').value = m[a][b].rulename : $('rulename').value = "";
+			m[a][b].ruledesc = 'custom' ;
 			$('define_advanced').style.display="";
 			$('define_usual').style.display="none";
 		}else{
