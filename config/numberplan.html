@@ -60,6 +60,7 @@ function enablesave(){
 
 function add_callingrule(){
 	isnewrule = true;
+	iscustom = false;
 	$('rulename').value = "";
 	$('trunks').selectedIndex = -1 ;
 	$('pattern').value = "";
@@ -120,8 +121,6 @@ function add_rule_fromeditform( this_priority, oncomplete ){
 						var commentstring = "custom";
 					}else{
 						var commentstring = "standard";
-						//build a pattern into $('pattern').value
-						buildpatternstring();
 					}
 
 					var rule_string = $('pattern').value + ',' + this_priority + ',Macro(trunkdial,${' + $('trunks').value + '}/'+ $('prepend').value +'${EXTEN:' + $('strip').value + '})' ;
@@ -156,15 +155,24 @@ function add_rule_fromeditform( this_priority, oncomplete ){
 
 function saverule(){
 	if ( !checkfields() ) return false;
+	if( !iscustom){
+		buildpatternstring();
+	}
 	 if(isnewrule){ 
 					var newpriority=1;
 					var m = numberplansdata[$('extensions').value]['npdata'];
-					if( typeof m[$('pattern').value] !="undefined" ){
-						for ( var y in m[$('pattern').value] ){
-							if ( y == "extend"){break;}
-							newpriority++;
-						}
+
+					if(  m.hasOwnProperty($('pattern').value)  && m[$('pattern').value].hasOwnProperty(''+newpriority)  ) { 
+						alert("A rule for this pattern is already defined !") ; 
+						return ;
 					}
+
+//					if( typeof m[$('pattern').value] !="undefined" ){
+//						for ( var y in m[$('pattern').value] ){
+//							if ( m[$('pattern').value].hasOwnProperty( y ) ){break;}
+//							newpriority++;
+//						}
+//					}
 					add_rule_fromeditform( newpriority, oncomplete = function(){ show_npdata_table( $('extensions').value ); } );
 	 }else{	// update exiting rule
 			// delete existing rule
