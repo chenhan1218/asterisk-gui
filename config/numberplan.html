@@ -214,6 +214,8 @@ function parse_nprulesAndnpcomments(){
 			}
 			for ( k =0 ; k < z['npcomments'].length ; k++ ){
 					var temp = z['npcomments'][k].split(","); 
+					if( typeof y[temp[0]] == "undefined"){ continue ; }
+					if ( typeof y[temp[0]][temp[1]]  == "undefined" ){  continue ; }
 					y[temp[0]][temp[1]].rulename = temp[2] ;
 					if(temp[3] !="custom")
 						y[temp[0]][temp[1]].ruledesc = parsepattern(temp[0],0) ;
