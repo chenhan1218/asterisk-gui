@@ -20,12 +20,17 @@
  */
 
  var sc_displaytime = 1000;
+ var asterisk_guiappname =  "Asterisk GUI (Beta)";
  var asterisk_guitools = "asterisk_guitools";
  var asterisk_guitoolsversion = "0.7";
  var asterisk_guiversion = "$Revision$";
 var sortbynames = false;
 var dragdata = new Object;
 var asterisk_guiTDPrefix = "DID_";
+
+function setWindowTitle(a){
+	top.document.title = asterisk_guiappname + " -- " + a ;
+}
 
 function startDrag(event, movethis ){
 	dragdata.movethis = movethis ;

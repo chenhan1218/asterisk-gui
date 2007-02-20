@@ -52,6 +52,7 @@ phonecallbacks.loaded = function() {
 
 
 function localajaxinit() {
+		setWindowTitle("Jabber");
 		// Load the jabber.conf->users into the Users, associate the field to other fields
 		parent.loadscreen(this);
 		for (var x =0; x < fieldnames.length; x++) {

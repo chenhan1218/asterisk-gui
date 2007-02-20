@@ -246,6 +246,7 @@ function hide_record(){
 }
 
 function localajaxinit() {
+	setWindowTitle("Record a Menu");
 	for (var x =0; x < focus_fields.length; x++ ) {
 		$(focus_fields[x]).onfocus = function(){this.className = 'input8_hilight';}
 		$(focus_fields[x]).onblur = function(){this.className = 'input8';}

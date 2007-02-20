@@ -454,6 +454,7 @@ function delete_incomingrule(a,b,c,d){ // a is pattern, b is DID_trunk, c is act
 
 
 function localajaxinit() {
+	setWindowTitle("Incoming Calls");
 	for (var x =0; x < focus_fields.length; x++ ) {
 		$(focus_fields[x]).onfocus = function(){this.className = 'input9_hilight';}
 		$(focus_fields[x]).onblur = function(){this.className = 'input9';}
