@@ -28,6 +28,67 @@ var sortbynames = false;
 var dragdata = new Object;
 var asterisk_guiTDPrefix = "DID_";
 
+function toJSON(z, p){
+	// This function converts z,  the asterisk config file as read using 'action=getconfig' to a JSON string 
+	// where z is originalRequest.responseText of the getconfig on a asterisk format config file, 
+	// and p is 0 or 1, 
+	//	 0 for non unique subfields ( extensions.conf context where there are multiple subfields with same name - -  Ex: 'exten ='   )
+	//	 1 for unique subfields ( config files where there are no two subfields of a context have same name )
+	//  if not sure ,  use p = 0 
+	var a = [ ] ;
+	var  json_data = "";
+	var t = z.split("\n");
+	for(var r=0; r < t.length ; r++){
+			var f = t[r].split("-") ;
+			var h = f[0].toLowerCase();
+			var catno = parseInt( f[1] ,10 );
+			if( h == "category" ){
+						var g = t[r].indexOf(":") ; 
+						var catname = t[r].substr(g+1) ; // catogory 
+						catname = catname.replace(/^\s*|\s*$/g,'') ; // trim 
+						a[ catno ] = { };
+						a[ catno ].categoryname = catname  ;
+						a[ catno ].subfields = [ ] ;
+			}else if ( h == "line" ){
+						var j = t[r].indexOf(":") ;
+						var subfield = t[r].substr(j+1) ; // subfield
+						subfield = subfield.replace(/^\s*|\s*$/g,'') ; // trim 
+						if( !p){
+							a[ catno ].subfields.push( subfield ) ;
+						}else{
+								var v = subfield.indexOf("=");
+								var subfield_a = subfield.substring(0,v); // subfield variable
+								var subfield_b =  subfield.substr(v+1) ; // subfield variable value
+								a[ catno ].subfields[subfield_a] = subfield_b;
+						}
+			}
+	}
+	// start building the json string
+	json_data = "{" ;
+	if(!p){
+		for( var s=0; s < a.length; s++ ){
+				var b = a[s].subfields ;
+				json_data += '"' + a[s].categoryname + '" : [ ' ;
+				for ( var y = 0 ;  y < b.length ;  y++ ){
+						json_data += '"' + b[y] + '"' ;
+						if( y < b.length - 1 ){	json_data += ',' ;	}
+				}
+				if( s < a.length - 1 ){ json_data += ' ],' ; }else{ json_data += ' ]}' ; }
+		}
+	}else{
+		for( var s=0; s < a.length; s++ ){
+				var b = a[s].subfields ;
+				json_data += '"' + a[s].categoryname + '" :  {' ;
+				for ( var y in b ){ if ( b.hasOwnProperty(y) ){ json_data += '"' + y + '":"' + b[y] + '",' ; } }
+				if( json_data.substr(-1) =="," ){  json_data = json_data.substring( 0 , (json_data.length - 1) ); } // if last character is a comma remove it
+				if( s < a.length - 1 ){ json_data += ' },' ; }else{ json_data += ' }}' ; }
+		}
+	}
+	// done building the json string
+	return json_data ;
+}
+
+
 function setWindowTitle(a){
 	top.document.title = asterisk_guiappname + " -- " + a ;
 }
