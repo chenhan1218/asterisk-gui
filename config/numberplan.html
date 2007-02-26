@@ -480,10 +480,10 @@ numplan_callbacks.format = function(t, x) {
 }
 
 numplan_callbacks.loaded = function() {
-	if (document.addEventListener){
-		document.addEventListener("change", select_differentplan, false);
-	} else if (document.attachEvent){
-		document.attachEvent('onchange', select_differentplan);
+	if ($('extensions').addEventListener){
+		$('extensions').addEventListener("change", select_differentplan, false);
+	} else if ($('extensions').attachEvent){
+		$('extensions').attachEvent('onchange', select_differentplan);
 	}
 	if($('extensions').options.length ==0 ){
 			parent.loadscreen(this);
