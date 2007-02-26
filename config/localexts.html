@@ -90,11 +90,7 @@ function localajaxinit(){
 				widgets[focus_fields[x]].onblur = function(){this.className = 'input9';}
 			}
 
-			if ($('localextenlength').addEventListener){
-				  $('localextenlength').addEventListener('change', update_spae, false); 
-			} else if ($('localextenlength').attachEvent){
-				  $('localextenlength').attachEvent('onchange', update_spae);
-			}
+			add_event( $('localextenlength') , 'change' , update_spae ) ;
 
 			parent.astmanEngine.config2list("users.conf", $('devices'),widgets, usercallbacks);
 }

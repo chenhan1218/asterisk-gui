@@ -149,6 +149,7 @@ function localajaxinit(){
 	setWindowTitle("System Info");
 	// call the tool (sysinfo)
 	var date = new Date() ; 
+	showdiv_statusmessage();
 	$('log_month').selectedIndex = date.getMonth() ;
 	$('log_day').selectedIndex = date.getDate()  - 1 ;
 	$('status_message').style.display="block";
@@ -215,9 +216,4 @@ function localajaxinit(){
 	<tr><td></td></tr>
 </table>
 </div>
-<SCRIPT LANGUAGE="JavaScript">
-<!--
-showdiv_statusmessage();
-//-->
-</SCRIPT>
 </body>

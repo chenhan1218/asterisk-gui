@@ -148,11 +148,7 @@
 	callbacks.loaded = function() {
 		$('devices').contentEditable = 'true';
 		$('devices').disabled = 0;
-		if ($('new').addEventListener){
-				$('new').addEventListener("click", showSPdetails, false); 
-		} else if ($('new').attachEvent){
-		  $('new').attachEvent('onclick', showSPdetails);
-		}
+		add_event( $('new') , "click", showSPdetails ) ;
 		loadServiceProvidersintotable();
 		parent.loadscreen(this);
 	}

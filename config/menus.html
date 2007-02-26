@@ -934,6 +934,7 @@ menuscallbacks.newcategory = function(t) {
 
 
 function localajaxinit() {
+		showdiv_statusmessage();
 		setWindowTitle("Voice Menus");
 		$('message_text').innerHTML ="Saving Changes...";
 		for (x =0 ; x<fieldnames.length; x++){
@@ -1350,9 +1351,4 @@ usercallbacks.loaded = function (){
 	</tr>
 </table>
 </div>
-<SCRIPT LANGUAGE="JavaScript">
-<!--
-showdiv_statusmessage();
-//-->
-</SCRIPT>
 </body>

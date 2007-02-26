@@ -214,6 +214,7 @@ function tosetup(){
 }
 
 function localajaxinit(){
+	showdiv_statusmessage();
 	setWindowTitle("Options");
 	for (var x =0; x < fieldnames.length; x++) {
 		widgets[fieldnames[x]] = $(fieldnames[x]);
@@ -284,9 +285,4 @@ function localajaxinit(){
 	<tr><td></td></tr>
 </table>
 </div>
-<SCRIPT LANGUAGE="JavaScript">
-<!--
-showdiv_statusmessage();
-//-->
-</SCRIPT>
 </body>

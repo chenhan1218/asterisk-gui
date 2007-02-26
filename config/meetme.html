@@ -369,19 +369,11 @@
 			$( focus_fields[x] ).onblur = function(){this.className = 'input8';}
 		}
 		 enable_disable_fields(0);
-		if ( $('pin').addEventListener	){
-					$('pin').addEventListener('keyup', function(){ $('save').disabled = false; $('cancel').disabled = false; } , false);
-					$('pinadmin').addEventListener('keyup', function(){ $('save').disabled = false; $('cancel').disabled = false; } , false);
-					$('pin').addEventListener('change', function(){ $('save').disabled = false; $('cancel').disabled = false; } , false);
-					$('pinadmin').addEventListener('change', function(){ $('save').disabled = false; $('cancel').disabled = false; } , false);
-		}else if( $('pin').attachEvent ){
-					$('pin').attachEvent('onkeyup', function(){ $('save').disabled = false; $('cancel').disabled = false; }  );
-					$('pinadmin').attachEvent('onkeyup', function(){ $('save').disabled = false; $('cancel').disabled = false; }  );
-					$('pin').attachEvent('onchange', function(){ $('save').disabled = false; $('cancel').disabled = false; }  );
-					$('pinadmin').attachEvent('onchange', function(){ $('save').disabled = false; $('cancel').disabled = false; }  );
-		}
 
-
+		add_event( $('pin') , 'keyup', function(){ $('save').disabled = false; $('cancel').disabled = false; }  );
+		add_event( $('pinadmin') , 'keyup', function(){ $('save').disabled = false; $('cancel').disabled = false; }  );
+		add_event( $('pin') , 'change', function(){ $('save').disabled = false; $('cancel').disabled = false; }  );
+		add_event( $('pinadmin') , 'change', function(){ $('save').disabled = false; $('cancel').disabled = false; }  );
 
 		parent.astmanEngine.config2list("meetme.conf", $('meetme_conf'), new Array(), meetmecallbacks);
 	}

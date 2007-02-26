@@ -424,6 +424,7 @@ extencallbacks.format = function(t, x) {
 ////////
 
 function localajaxinit() {
+	showdiv_statusmessage();
 	setWindowTitle("Call Queues");
 //	$('advancedi').style.width = $('split').width - 60;
 	if( navigator.userAgent.indexOf("MSIE") != -1){
@@ -533,9 +534,4 @@ mohcallbacks.loaded = function() {
 	</tr>
 </table>
 </div>
-<SCRIPT LANGUAGE="JavaScript">
-<!--
-showdiv_statusmessage();
-//-->
-</SCRIPT>
 </body>

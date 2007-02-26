@@ -28,6 +28,7 @@ var bkp_path = "/var/lib/asterisk/static-http/config/bkps/";
 var bkpfile ;
 
 function localajaxinit() {
+	showdiv_statusmessage();
 	setWindowTitle("Backup");
 	parent.loadscreen(this);
 	$('status_message').style.top  = 	100;
@@ -100,9 +101,4 @@ function download_bkp(){
 	</tr>
 </table>
 </div>
-<SCRIPT LANGUAGE="JavaScript">
-<!--
-showdiv_statusmessage();
-//-->
-</SCRIPT>
 </body>

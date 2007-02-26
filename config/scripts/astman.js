@@ -28,6 +28,26 @@ var sortbynames = false;
 var dragdata = new Object;
 var asterisk_guiTDPrefix = "DID_";
 
+function add_event( a , b, c ){  
+	// cross browser function for adding events
+	// a is element , b is event (string) , c is the function 
+	if ( a.addEventListener){
+		a.addEventListener(b, c, false);
+	} else if (a.attachEvent){
+		a.attachEvent('on'+b, c);
+	}
+}
+
+function remove_event(a,b,c){ 
+	// cross browser function for removing events
+	// a is element , b is event (string) , c is the function 
+	if(a.removeEventListener){
+		a.removeEventListener( b, c , false);
+	}else if(a.detachEvent){
+		a.detachEvent("on"+b, c);
+	}
+}
+
 function toJSON(z, p){
 	// This function converts z,  the asterisk config file as read using 'action=getconfig' to a JSON string 
 	// where z is originalRequest.responseText of the getconfig on a asterisk format config file, 
@@ -111,25 +131,14 @@ function startDrag(event, movethis ){
 		dragdata.maxleft = document.body.offsetWidth - parseInt($(dragdata.movethis).style.width) ;
 		dragdata.maxtop = document.body.offsetWidth- parseInt($(dragdata.movethis).style.height) ;
 	}
-
-	if (document.addEventListener){
-		document.addEventListener("mousemove", movewindow, false);
-		document.addEventListener("mouseup", stopDrag, false);
-	} else if (document.attachEvent){
-		document.attachEvent('onmousemove', movewindow);
-		document.attachEvent('onmouseup', stopDrag);
-	}
+	add_event( document , "mousemove" , movewindow ) ;
+	add_event( document , "mouseup" , stopDrag ) ;
 }
 
 
 function stopDrag(){
-	if(document.removeEventListener){
-		document.removeEventListener("mousemove", movewindow, false);
-		document.removeEventListener("mouseup", stopDrag, false);
-	}else if(document.detachEvent){
-		document.detachEvent("onmousemove", movewindow);
-		document.detachEvent("onmouseup", stopDrag);
-	}
+	remove_event( document , "mousemove" , movewindow ) ;
+	remove_event( document , "mouseup" , stopDrag ) ;
 }
 
 function movewindow(event){
@@ -162,7 +171,7 @@ function check_patternonfields(fields){
 
 function showdiv_statusmessage(){
         var h= document.createElement("div");
-		h.setAttribute("ID","status_message");
+		h.setAttribute("id","status_message");
 		h.style.display="none";
 		h.style.position="absolute";
 		h.style.left= 170;
@@ -245,23 +254,14 @@ function combo_box(a, b, c ){
 //		combo_selectdiv.style.z-index = 10000;
 		combo_selectdiv.style.display = "none";
 
-		if (combo_text.addEventListener){
-				combo_text.addEventListener('keychange',combobox_activate,false);
-				combo_text.addEventListener('focus',combobox_activate,false);
-				combo_text.addEventListener('focusout', function(){ combo_selectdiv.style.display ='none'; } ,false);
-				combo_text.addEventListener('keypress',  xyz , false);
-				combo_text.addEventListener('keyup', abcd ,false);
-				combo_selectbox.addEventListener('keypress', efgh ,false);
-				combo_selectbox.addEventListener('click', ijkl ,false);
-		} else if (combo_text.attachEvent){
-				combo_text.attachEvent('onkeychange',combobox_activate);
-				combo_text.attachEvent('onfocus',combobox_activate);
-				combo_text.attachEvent('onfocusout', function(){ combo_selectdiv.style.display ='none'; } );
-				combo_text.attachEvent('onkeypress',  xyz );
-				combo_text.attachEvent('onkeyup', abcd );
-				combo_selectbox.attachEvent('onkeypress', efgh );
-				combo_selectbox.attachEvent('onclick', ijkl );
-		}
+	add_event( combo_text , 'keychange' , combobox_activate ) ;
+	add_event( combo_text , 'focus' , combobox_activate ) ;
+	add_event( combo_text , 'focusout' , function(){ combo_selectdiv.style.display ='none'; } ) ;
+	add_event( combo_text , 'keypress' , xyz) ;
+	add_event( combo_text , 'keyup' , abcd ) ;
+	add_event( combo_selectbox, 'keypress' , efgh ) ;
+	add_event( combo_selectbox, 'click' , ijkl ) ;
+
 
 		function combobox_activate(){
 				var tmp_left = combo_text.offsetLeft;
