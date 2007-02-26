@@ -161,15 +161,20 @@ function check_patternonfields(fields){
 }
 
 function showdiv_statusmessage(){
-		var t = "<div ID=\"status_message\"  STYLE=\"display:none; position: absolute; left: 170; top: 190; width:350; height:115;  background-color:#F4EFE5;   border-width: 1px; border-color: #7E5538; border-style: solid;\">\n";
-		t += "<BR><BR>\n";
-		t += "		<TABLE border=0 cellpadding=0 cellspacing=3 align=\"center\">\n";
-		t += "					<TR>	<TD><img src=\"images/loading.gif\"></TD>\n";
-		t += "								<TD valign=\"middle\" align=\"center\">&nbsp;&nbsp;<div id=\"message_text\"></div></TD>\n";
-		t += "					</TR>\n";
-		t += "		</TABLE>\n";
-		t += "	</div>\n";
-		document.write(t);
+        var h= document.createElement("div");
+		h.setAttribute("ID","status_message");
+		h.style.display="none";
+		h.style.position="absolute";
+		h.style.left= 170;
+		h.style.top= 190;
+		h.style.width= 350;
+		h.style.height= 115;
+		h.style.backgroundColor= "#F4EFE5";
+		h.style.borderWidth= "1px";
+		h.style.borderColor= "#7E5538";
+		h.style.borderStyle= "solid";
+		h.innerHTML = "<BR><BR><TABLE border=0 cellpadding=0 cellspacing=3 align=\"center\"> <TR>	<TD><img src=\"images/loading.gif\"></TD> <TD valign=\"middle\" align=\"center\">&nbsp;&nbsp;<div id=\"message_text\"></div></TD> </TR> </TABLE> ";
+		document.body.appendChild(h);
 }
 
 
