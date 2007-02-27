@@ -48,6 +48,14 @@ function remove_event(a,b,c){
 	}
 }
 
+function config2json(a, b, c){		// a is filename (string) , b is 0 or 1 , c is callback function
+	var opt = { method: 'get', asynchronous: true,
+		onSuccess: function(originalRequest) {  var f = toJSON(originalRequest.responseText, b) ;  c(f) ; },
+		onFailure: function(t) { alert("Config Error: " + t.status + ": " + t.statusText); },
+		parameters: "action=getconfig&filename="+a };
+	var tmp = new Ajax.Request("../../rawman", opt);
+}
+
 function toJSON(z, p){
 	// This function converts z,  the asterisk config file as read using 'action=getconfig' to a JSON string 
 	// where z is originalRequest.responseText of the getconfig on a asterisk format config file, 
@@ -1689,9 +1697,7 @@ function Astman() {
 		me.eventcallback(msgs);
 	};
 	this.eventResponse = function(t) {
-		if( t.responseText.match("Message: Authentication Required") ){
-				parent.window.onbeforeunload = function(){ }
-				parent.window.onunload = function(){ }				
+		if( t.responseText.match("Message: Authentication Required") ){		
 				parent.window.location.href = parent.window.location.href ;
 		}
 		if( navigator.userAgent.indexOf("MSIE") != -1 || navigator.userAgent.indexOf("Konqueror") != -1 || navigator.userAgent.indexOf("Safari") != -1 || navigator.userAgent.indexOf("Opera") != -1){

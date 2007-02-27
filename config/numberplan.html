@@ -38,14 +38,7 @@ var isnewrule ;
 var iscustom ;
 var pattern_beingedited ;
 var pattern_beingedited_priority ;
-var oldselect;
 var np_oldselect;
-
-function hackenablesave(){
-	if( oldselect != $('trunks').value ){
-		enablesave();
-	}
-}
 
 function ownpattern(){
 		iscustom = true;
@@ -408,7 +401,7 @@ function delete_callingrule(a,b,oncomplete){ // a is pattern, b is priority
 function editcallingrule(a,b){	// a is pattern, b is priority
 		pattern_beingedited = a ;
 		pattern_beingedited_priority = b ;
-		oldselect = $('trunks').value;
+//		oldselect = $('trunks').value;
 		isnewrule = false ;
 		var m = numberplansdata[$('extensions').value]['npdata'];
 		$('rulename').value = m[a][b].rulename;
@@ -539,28 +532,6 @@ numplan_callbacks.savechanges = function(){
 numplan_callbacks.eachline = true;
 numplan_callbacks.includecats = true;
 
-trunkcallbacks.format = function(t) {
-	//if (t.name.substr(0,6) != 'trunk_')
-	//	return null;
-	if ( t.fieldbyname['context'] != asterisk_guiTDPrefix + t.name ) {
-		return null;
-	}
-	if (t.fieldbyname['trunkname'] && t.fieldbyname['trunkname'].length) {
-		trunks_desc[t.name] = new Object();
-		trunks_desc[t.name].comment = t.fieldbyname['trunkname'] ;
-		return t.fieldbyname['trunkname'];
-	} else{
-		trunks_desc[t.name] = new Object();
-		trunks_desc[t.name].comment = t.name ;
-		return t.name;
-	}
-}
-
-trunkcallbacks.loaded = function(){
-	add_event( $('trunks') , 'click', hackenablesave ) ;
-	parent.astmanEngine.config2list("extensions.conf", $('extensions'), widgets , numplan_callbacks);
-}
-
 function localajaxinit(){
 	showdiv_statusmessage();
 	setWindowTitle("Calling Rules");
@@ -573,7 +544,21 @@ function localajaxinit(){
 		$(focus_fields[x]).onblur = function(){this.className = 'input9';}
 	}
 	$('message_text').innerHTML ="Saving Changes...";
-	parent.astmanEngine.config2list("users.conf", $('trunks'), new Array(), trunkcallbacks);
+
+	config2json('users.conf', 1, trunks_loaded ) ;
+	//parent.astmanEngine.config2list("users.conf", $('trunks'), new Array(), trunkcallbacks);
+}
+
+function trunks_loaded(b){
+	var c = eval('(' + b + ')');
+	for( var d in c ){
+		if ( c.hasOwnProperty(d) && c[d]['context'] && (c[d]['context'] == asterisk_guiTDPrefix + d ) ) {
+				trunks_desc[d] = new Object();
+				trunks_desc[d].comment = (c[d]['trunkname']) ? c[d]['trunkname'] : d ;
+				$('trunks').innerHTML += "<option value='" + d + "'>" + trunks_desc[d].comment +"</option>";
+		}
+	}
+	parent.astmanEngine.config2list("extensions.conf", $('extensions'), widgets , numplan_callbacks);
 }
 
 function select_differentplan(){
@@ -696,7 +681,7 @@ function addthe_default_callingplan(){
 		</TR>
 		<TR>
 			<TD  align="right" height=40> Place this call through :</TD>
-			<TD><select id="trunks"  class="input9"></select></TD>
+			<TD><select id="trunks"  class="input9" onChange="enablesave();"></select></TD>
 		</TR>
 		<TR id="define_usual" height=100>
 			<TD valign="top" align=right>Dialing Rules :</TD>
