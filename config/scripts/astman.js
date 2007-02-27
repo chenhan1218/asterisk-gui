@@ -107,8 +107,18 @@ function toJSON(z, p){
 		for( var s=0; s < a.length; s++ ){
 				var b = a[s].subfields ;
 				json_data += '"' + a[s].categoryname + '" :  {' ;
-				for ( var y in b ){ if ( b.hasOwnProperty(y) ){ json_data += '"' + y + '":"' + b[y] + '",' ; } }
-				if( json_data.substr(-1) =="," ){  json_data = json_data.substring( 0 , (json_data.length - 1) ); } // if last character is a comma remove it
+				var hascomma = 0;
+				for ( var y in b ){ 
+					if ( b.hasOwnProperty(y) ){ 
+						if(hascomma){
+							json_data += ', "' + y + '":"' + b[y] + '"' ; 
+						}else{
+							json_data += '"' + y + '":"' + b[y] + '"' ; 
+							hascomma = 1;
+						}
+					} 
+				}
+				 //if( json_data.substr(-1) =="," ){  json_data = json_data.substring( 0 , (json_data.length - 1) ); } // if last character is a comma remove it - But this does not work in IE - substr( ) is broken in IE
 				if( s < a.length - 1 ){ json_data += ' },' ; }else{ json_data += ' }}' ; }
 		}
 	}
