@@ -105,7 +105,7 @@ numplan_callbacks.loaded = function() {
 	// load list of trunks to 'fromprovider'
 	var t ;
 	for ( t in didtrunks){
-		if( t == "extend")continue ;
+	if(  didtrunks.hasOwnProperty(t) ){
 		  var a = document.createElement('option');
 		  a.text = didtrunks[t].trunkname ;
 		  a.value = t ;
@@ -116,6 +116,7 @@ numplan_callbacks.loaded = function() {
 		  catch(ex) {
 			b.add(a); 
 		  }
+	  }
 	}
 	// load the object didtrunks into the table callingRulesTable
 	refreshtable();
