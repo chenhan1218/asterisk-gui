@@ -367,7 +367,7 @@ function next_freevmenu(){	 // return the next smallest available voicemenu name
 
 function save_vmenu(){
 
-	if( $('alias_exten').value.length > 0 && localextenlength !=  $('alias_exten').value.length){
+	if( $('alias_exten').value.length > 0 && localextenlength !=0 && localextenlength !=  $('alias_exten').value.length){
 			alert("Sorry, An Extension must be  "+ localextenlength  + " digits !");
 			$('alias_exten').focus();
 			return false;

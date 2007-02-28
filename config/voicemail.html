@@ -56,12 +56,7 @@
 	}
 
 	callbacks.beforeSaving = function(){
-		// check whether the length of extension is valid
-		if( localextenlength !=  $('name').value.length){
-				alert("Sorry, An Extension must be  "+ localextenlength  + " digits !");
-				$('name').focus();
-				return false;
-		}
+		if( !checklength() ){ return false; }
 		if (!check_patternonfields( ['name', 'maxgreet'] ) ){
 			return false;
 		}
@@ -213,11 +208,7 @@
 
 	voicemailcallbacks.beforeSaving = function(){
 		// check whether the length of extension is valid
-		if( localextenlength !=  $('name').value.length){
-				alert("Sorry, An Extension must be  "+ localextenlength  + " digits !");
-				$('name').focus();
-				return false;
-		}
+		if( !checklength( ) ){ return false; }
 		if (!check_patternonfields( ['name', 'maxgreet'] ) ){
 			return false;
 		}
@@ -258,6 +249,19 @@
 		return "General";
 	}
 	
+	function checklength(){
+		// check whether the length of extension is valid
+		if(  !$('name').value.length ) { alert("Please enter an extension !"); $('name').focus(); return false; }
+
+		if( localextenlength !=0 && ( localextenlength !=  $('name').value.length ) ) {
+				alert("Sorry, An Extension must be "+ localextenlength  + " digits !");
+				$('name').focus();
+				return false;
+		}
+		return true;
+	}
+
+
 	function localajaxinit() {
 		setWindowTitle("Voicemail");
 		//$('advancedi').style.width = $('split').width - 60;

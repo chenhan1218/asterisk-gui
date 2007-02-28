@@ -178,8 +178,8 @@ function save_queue(){
 				$('fullname').focus();
 				return;
 		}
-		if( localextenlength !=  $('name').value.length){
-				alert("Sorry, An Extension must be  "+ localextenlength  + " digits !");
+		if( localextenlength !=0 && (localextenlength != $('name').value.length) ) {
+				alert("Sorry, An Extension must be "+ localextenlength  + " digits !");
 				$('name').focus();
 				return ;
 		}

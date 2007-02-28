@@ -232,7 +232,9 @@
 		}
 
 		// check whether the length of extension is valid
-		if( localextenlength !=  $('name').value.length){
+		if(  !$('name').value.length ) { alert("Please enter an extension !"); $('name').focus(); return false; }
+
+		if(  localextenlength !=0 && (localextenlength !=  $('name').value.length) ){
 				alert("Sorry, An Extension must be  "+ localextenlength  + " digits !");
 				$('name').focus();
 				return false;

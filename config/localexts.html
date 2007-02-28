@@ -46,7 +46,7 @@ usercallbacks.savechanges = function(){
 }
 
 usercallbacks.beforeSaving= function(){
-		if(	$('localextenlength').value != $('userbase').value.length ){
+		if(	$('localextenlength').value !=0 && $('localextenlength').value != $('userbase').value.length ){
 			alert("'length of Local Extensions' does not match \n the 'length of the Starting point of Allocation'");
 			return false;
 		}
@@ -97,6 +97,7 @@ function localajaxinit(){
 
 
 function update_spae(){
+		if( $('localextenlength').value == 0 ) return;
 		if(	$('localextenlength').value == $('userbase').value.length ) return;
 		if(	$('localextenlength').value < $('userbase').value.length ){
 				$('userbase').value = $('userbase').value.substr(0,$('localextenlength').value);
@@ -138,8 +139,9 @@ function free_mem( ){
 				<tr ><td class="field_text" align=left>
 							Local Extensions are 
 							<select id="localextenlength" class="input9">
-								<option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option>
-							</select> digits long&nbsp;</td>
+								<option value="2">2 digits</option><option value="3">3 digits</option><option value="4">4 digits</option><option value="5">5 digits</option>
+								<option value="0">Varying</option>
+							</select>&nbsp;</td>
 				</tr>
 				<tr ><td class="field_text" align=left>Starting point of Allocation of extensions : <input type=text id="userbase" size=5  class="input9"></td></tr>
 				<tr ><td class="field_text" align="left"><input type=checkbox id="allow_aliasextns">Allow analog phones to be assigned to multiple extensions</td></tr>
