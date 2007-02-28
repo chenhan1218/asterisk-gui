@@ -143,6 +143,11 @@
 		parent.astmanEngine.sendRequest('action=ping', demo.pongs);
 	}
 	function localinit() {
+			$('username').onfocus = function(){this.className = 'input9_hilight';}
+			$('username').onblur = function(){this.className = 'input9';}
+			$('secret').onfocus = function(){this.className = 'input9_hilight';}
+			$('secret').onblur = function(){this.className = 'input9';}
+
 		top.document.title = "Asterisk GUI (Beta) -- Home";
 		localajaminit();
 	}

@@ -25,7 +25,6 @@
 <script src="scripts/tooltip.js"></script>
 <link href="stylesheets/rico.css" media="all" rel="Stylesheet" type="text/css" />
 <link href="stylesheets/schwing.css" media="all" rel="Stylesheet" type="text/css" />
-
 <script>
 	var origwidth;
 	var widgets = new Array;
@@ -407,7 +406,7 @@ function free_mem( ){
 		<td><select disabled size="25" id="extensions" style="width:220px;" class="input10">	
 							<option>Loading...</option>	
 				</select>
-				<div style='visibility:hidden;overflow:hidden;width:0px;height:0px'>	<select id='hiddenusers'>	</select><select id='meetme_conf'></select></div>
+				<select id='hiddenusers' style='display:none;'></select><select id='meetme_conf' style='display:none;'></select>
 		</td>
 		<td style="width:311px;height: 415px">
 					<div id='adjustments'>
