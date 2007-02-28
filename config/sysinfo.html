@@ -158,8 +158,15 @@ function localajaxinit(){
 	update_sysinfo();
 }
 
+function free_mem(){
+	if( navigator.userAgent.indexOf("MSIE") == -1 ){ return true; }
+	try{
+		purge( document.body );
+	} catch(e){ }
+}
+
 </script>
-<body id="foo" onload="localajaxinit()" bgcolor="EFEFEF">
+<body id="foo" onload="localajaxinit()" bgcolor="EFEFEF"  onunload="free_mem()">
 <div class="mainscreenTitleBar">
 	<span style="margin-left: 4px;font-weight:bold;">System Information</span>
 	<span style="cursor: pointer; cursor: hand;" onclick="window.location.href=window.location.href;" >&nbsp;<img src="images/refresh.png" title=" Refresh " border=0 >&nbsp;</span>

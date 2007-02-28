@@ -463,8 +463,16 @@ function localajaxinit() {
 	}
 	parent.astmanEngine.config2list("users.conf", $('users'), new Array(), user_callbacks);
 }
+
+
+function free_mem( ){
+	if( navigator.userAgent.indexOf("MSIE") == -1 ){ return true; }
+		try{
+			purge( document.body );
+		}catch(e){ }
+}
 </script>
-<body id="foo" onload="localajaxinit()"  bgcolor="EFEFEF">
+<body id="foo" onload="localajaxinit()"  bgcolor="EFEFEF"  onunload="free_mem()">
 <div class="mainscreenTitleBar">
 	<span style="margin-left: 4px;font-weight:bold;">Incoming Calls</span>
 	<span style="cursor: pointer; cursor: hand;" onclick="window.location.href=window.location.href;" >&nbsp;<img src="images/refresh.png" title=" Refresh " border=0 >&nbsp;</span>

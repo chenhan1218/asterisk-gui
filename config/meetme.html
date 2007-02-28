@@ -383,11 +383,19 @@
 	meetmecallbacks.loaded = function() {
 		parent.astmanEngine.config2list("users.conf", $('hiddenusers'), new Array(), usercallbacks);
 	}
+
+function free_mem( ){
+	if( navigator.userAgent.indexOf("MSIE") == -1 ){ return true; }
+		try{
+		widgets['save'].hostselectbox = null ;
+		widgets['cancel'].hostselectbox = null ;
+		widgets['newitem'].hostselectbox = null ;
+		widgets['delete'].hostselectbox = null ;
+		purge( document.body );
+		} catch(e) { }
+}
 </script>
-
-
-<body id="foo" onload="localajaxinit()"  bgcolor="EFEFEF">
-
+<body id="foo" onload="localajaxinit()"  bgcolor="EFEFEF"  onunload="free_mem()">
 <div class="mainscreenTitleBar">
 	<span style="margin-left: 4px;font-weight:bold;">Conference Bridge Extensions Configuration</span>
 	<span style="cursor: pointer; cursor: hand;" onclick="window.location.href=window.location.href;" >&nbsp;<img src="images/refresh.png" title=" Refresh " border=0 >&nbsp;</span>

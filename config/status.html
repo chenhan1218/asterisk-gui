@@ -121,6 +121,9 @@ function localajaxinit(){
 
 function localajaxend(){
 		parent.astmanEngine.setEventCallback(parent.eventeater.eventcb );
+		if( navigator.userAgent.indexOf("MSIE") != -1 ){ 
+			try{ purge( document.body ); } catch(e){ }	
+		}
 }
 
 </script>

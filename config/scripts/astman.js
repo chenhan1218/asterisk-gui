@@ -28,6 +28,30 @@ var sortbynames = false;
 var dragdata = new Object;
 var asterisk_guiTDPrefix = "DID_";
 
+// Douglas Crockford's purge function for IE Memory leaks
+// http://javascript.crockford.com/memory/leak.html
+// No details about copyrights or License mentioned - assumed to be in public domain
+function purge(d) {
+    var a = d.attributes, i, l, n;
+    if (a) {
+        l = a.length;
+        for (i = 0; i < l; i += 1) {
+            n = a[i].name;
+            if (typeof d[n] === 'function') {
+                d[n] = null;
+            }
+        }
+    }
+    a = d.childNodes;
+    if (a) {
+        l = a.length;
+        for (i = 0; i < l; i += 1) {
+            purge(d.childNodes[i]);
+        }
+    }
+}
+
+
 function add_event( a , b, c ){  
 	// cross browser function for adding events
 	// a is element , b is event (string) , c is the function 
