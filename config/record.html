@@ -40,7 +40,7 @@ function play_existing(filename){
 							$('status').innerHTML = " <I> Play Request Successfull ! </I>";
 			},
 			onFailure: function(t) {
-				alert("Config Error: " + t.status + ": " + t.statusText);
+				gui_alert("Config Error: " + t.status + ": " + t.statusText);
 			}
 		};
 		opt.parameters ="action=originate&channel=Local/"+extension + "&context="+asterisk_guitools+"&exten=play_file&priority=1&Variable=var1%3d"+ encodeURIComponent( filename );
@@ -79,7 +79,7 @@ function delete_sounds(filename){
 							},
 							onFailure: function(t) {
 								$('status_message').style.display='none';
-								alert("Config Error: " + t.status + ": " + t.statusText);
+								gui_alert("Config Error: " + t.status + ": " + t.statusText);
 							}
 						};	
 						var uri = build_action('delcat', 0, filename,"", ""); 
@@ -87,7 +87,7 @@ function delete_sounds(filename){
 						var tmp2 = new Ajax.Request('../../rawman', opt2);
 				},
 				onFailure: function(t) {
-					alert("Config Error: " + t.status + ": " + t.statusText);
+					gui_alert("Config Error: " + t.status + ": " + t.statusText);
 				}
 			};
 			opt.parameters="action=originate&channel=" + encodeURIComponent("Local/removefile@"+asterisk_guitools) + "&Variable=var1%3d"+ encodeURIComponent("/var/lib/asterisk/sounds/" + filename )+"&application=noop&timeout=60000";
@@ -119,7 +119,7 @@ function save_recordedvmenuname( filename_torecord ){
 					}
 			},
 			onFailure: function(t) {
-				alert("Config Error: " + t.status + ": " + t.statusText);
+				gui_alert("Config Error: " + t.status + ": " + t.statusText);
 			}
 		};
 					
@@ -151,7 +151,7 @@ function originate_recordrequest(should_save, newvmenu_ext, filename_torecord){
 			},
 			onFailure: function(t) {
 				$('status_message').style.display='none';
-				alert("Config Error: " + t.status + ": " + t.statusText);
+				gui_alert("Config Error: " + t.status + ": " + t.statusText);
 			}
 		};
 		opt.parameters ="action=originate&channel=Local/"+newvmenu_ext + "&context="+asterisk_guitools+"&exten=record_vmenu&priority=1&Variable=var1%3d"+ encodeURIComponent( filename_torecord );
@@ -161,11 +161,11 @@ function originate_recordrequest(should_save, newvmenu_ext, filename_torecord){
 
 function record_new(){
 	if($('newvmenu_name').value == "" ){ 
-			alert("Please Enter a name for the new Voice Menu");
+			gui_alert("Please Enter a name for the new Voice Menu");
 			$('newvmenu_name').focus();
 			return true;
 	}else if ( $('newvmenu_ext').value == ""){
-			alert("Please Select an extension to record the VoiceMenu");
+			gui_alert("Please Select an extension to record the VoiceMenu");
 			$('newvmenu_ext').focus();
 			return true;
 	}

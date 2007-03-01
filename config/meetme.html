@@ -177,26 +177,26 @@
 					//parent.$('tooltip').innerHTML = " <font size=\"-2\" color=\"#FF0000\">Click on \'Call Queues\' panel to edit call queues </font>";
 					box.selectedIndex = -1;
 					 enable_disable_fields(0);
-					alert(" You can not edit the selected entry from here.\n Please click on the \'Call Queues\' panel to edit the selected entry");
+					gui_alert(" You can not edit the selected entry from here.\n Please click on the \'Call Queues\' panel to edit the selected entry");
 					return true;
 				}
 				if( box.options[box.selectedIndex].text.toLowerCase().match("-- check voicemail")     ){
 					//parent.$('tooltip').innerHTML = " <font size=\"-2\" color=\"#FF0000\">Click on \'Voicemail\' panel to edit Voicemail Preferences</font>";
 					box.selectedIndex = -1;
 				   enable_disable_fields(0);
-					alert(" You can not edit the selected entry from here.\n Please click on the \'Voicemail\' panel to edit the selected entry");
+					gui_alert(" You can not edit the selected entry from here.\n Please click on the \'Voicemail\' panel to edit the selected entry");
 					return true;
 				}
 				if( box.options[box.selectedIndex].text.toLowerCase().match("-- voice menu")     ){
 					box.selectedIndex = -1;
 					//parent.$('tooltip').innerHTML = " <font size=\"-2\" color=\"#FF0000\">Click on \'Voicemail\' panel to edit Voicemail Preferences</font>";
 					 enable_disable_fields(0);
-					alert(" You can not edit the selected entry from here.\n Please click on the \'Voice Menus\' panel to edit the selected entry");
+					gui_alert(" You can not edit the selected entry from here.\n Please click on the \'Voice Menus\' panel to edit the selected entry");
 					return true;
 				}
 				box.selectedIndex = -1;
 				 enable_disable_fields(0);
-				alert(" You can not edit the selected entry from here.\n Please click on the \'Users\' panel to edit the selected entry");
+				gui_alert(" You can not edit the selected entry from here.\n Please click on the \'Users\' panel to edit the selected entry");
 				return true;
 		}
 		temp_selectedexten = $('name').value;
@@ -232,10 +232,10 @@
 		}
 
 		// check whether the length of extension is valid
-		if(  !$('name').value.length ) { alert("Please enter an extension !"); $('name').focus(); return false; }
+		if(  !$('name').value.length ) { gui_alert("Please enter an extension !"); $('name').focus(); return false; }
 
 		if(  localextenlength !=0 && (localextenlength !=  $('name').value.length) ){
-				alert("Sorry, An Extension must be  "+ localextenlength  + " digits !");
+				gui_alert("Sorry, An Extension must be  "+ localextenlength  + " digits !");
 				$('name').focus();
 				return false;
 		}
@@ -247,7 +247,7 @@
 			for(var k=0; k<$('extensions').length; k++ ){
 				var tmp = $('extensions').options[k].innerHTML.split(' -- '); 
 				if( tmp[0] ==  $('name').value   ){
-					alert("Sorry, an entry named " + $('name').value + " already exists!");
+					gui_alert("Sorry, an entry named " + $('name').value + " already exists!");
 					return false;
 				}
 			}

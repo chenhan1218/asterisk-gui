@@ -47,7 +47,7 @@ usercallbacks.savechanges = function(){
 
 usercallbacks.beforeSaving= function(){
 		if(	$('localextenlength').value !=0 && $('localextenlength').value != $('userbase').value.length ){
-			alert("'length of Local Extensions' does not match \n the 'length of the Starting point of Allocation'");
+			gui_alert("'length of Local Extensions' does not match \n the 'length of the Starting point of Allocation'");
 			return false;
 		}
 
@@ -67,7 +67,7 @@ usercallbacks.loaded = function(){
 										parent.loadscreen(this);
 						},
 						onFailure: function(t) {
-							alert("Config Error: " + t.status + ": " + t.statusText);
+							gui_alert("Config Error: " + t.status + ": " + t.statusText);
 						}
 					};
 					opt.parameters="action=updateconfig&reload=yes&srcfilename=" + encodeURIComponent("users.conf") + "&dstfilename=" + encodeURIComponent("users.conf") + "&Action-000000=update&Cat-000000=general&Var-000000=localextenlength&Value-000000=4"; ;

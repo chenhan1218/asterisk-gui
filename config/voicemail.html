@@ -64,7 +64,7 @@
 		for(var k=0; k<$('extensions').length; k++ ){
 			var tmp = $('extensions').options[k].innerHTML.split(' -- '); 
 			if( tmp[0] ==  $('name').value   ){
-				alert("Sorry, an entry named " + $('name').value + " already exists!");
+				gui_alert("Sorry, an entry named " + $('name').value + " already exists!");
 				return false;
 			}
 		}
@@ -101,7 +101,7 @@
 		};	
 		$('name').disabled = false;
 		if (whichexten.length ==0 ){
-			alert("Looks like a default Voicemail Extension is not yet configured \n\n Please set an \'Extension for Checking messages\'  and \n click on 'save' button");
+			gui_alert("Looks like a default Voicemail Extension is not yet configured \n\n Please set an \'Extension for Checking messages\'  and \n click on 'save' button");
 		}else{
 			
 		}
@@ -138,23 +138,23 @@
 				if( box.options[box.selectedIndex].text.toLowerCase().match("-- call queue")     ){
 					//parent.$('tooltip').innerHTML = " <font size=\"-2\" color=\"#FF0000\">Click on \'Call Queues\' panel to edit call queues </font>";
 					box.selectedIndex = -1;
-					alert(" You can not edit the selected entry from here.\n Please click on the \'Call Queues\' panel to edit the selected entry");
+					gui_alert(" You can not edit the selected entry from here.\n Please click on the \'Call Queues\' panel to edit the selected entry");
 					return true;
 				}
 				if( box.options[box.selectedIndex].text.toLowerCase().match("-- conference bridge")     ){
 					//parent.$('tooltip').innerHTML = " <font size=\"-2\" color=\"#FF0000\">Click on \'Conferencing\' panel to edit a Conference Bridge</font>";
 					box.selectedIndex = -1;
-					alert(" You can not edit the selected entry from here.\n Please click on the \'Conferencing\' panel to edit the selected entry");
+					gui_alert(" You can not edit the selected entry from here.\n Please click on the \'Conferencing\' panel to edit the selected entry");
 					return true;
 				}
 				if( box.options[box.selectedIndex].text.toLowerCase().match("-- voice menu")     ){
 					box.selectedIndex = -1;
 					//parent.$('tooltip').innerHTML = " <font size=\"-2\" color=\"#FF0000\">Click on \'Voicemail\' panel to edit Voicemail Preferences</font>";
-					alert(" You can not edit the selected entry from here.\n Please click on the \'Voice Menus\' panel to edit the selected entry");
+					gui_alert(" You can not edit the selected entry from here.\n Please click on the \'Voice Menus\' panel to edit the selected entry");
 					return true;
 				}
 				box.selectedIndex = -1;
-				alert(" You can not edit the selected entry from here.\n Please click on the \'Users\' panel to edit the selected entry");
+				gui_alert(" You can not edit the selected entry from here.\n Please click on the \'Users\' panel to edit the selected entry");
 				return true;
 		}
 
@@ -220,7 +220,7 @@
 			if (vmexten.length) {
 				if (!$('name').value.length) {
 					delete_item($('extensions'),null,1);
-					alert("Default Voicemail Extension has been removed");
+					gui_alert("Default Voicemail Extension has been removed");
 				} else {
 					save_item($('extensions'));
 				}
@@ -251,10 +251,10 @@
 	
 	function checklength(){
 		// check whether the length of extension is valid
-		if(  !$('name').value.length ) { alert("Please enter an extension !"); $('name').focus(); return false; }
+		if(  !$('name').value.length ) { gui_alert("Please enter an extension !"); $('name').focus(); return false; }
 
 		if( localextenlength !=0 && ( localextenlength !=  $('name').value.length ) ) {
-				alert("Sorry, An Extension must be "+ localextenlength  + " digits !");
+				gui_alert("Sorry, An Extension must be "+ localextenlength  + " digits !");
 				$('name').focus();
 				return false;
 		}

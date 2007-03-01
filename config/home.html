@@ -51,7 +51,7 @@
 			localloggedon = 1;
 			parent.document.getElementById('logoutlink').innerHTML = "Logout";
 			parent.document.getElementById('logoutlink').onclick = parent.Logoff ;
-			alert("You are using the default password provided by AsteriskNOW !! \n\n It is strongly recommended that you chnage your default password ");
+			parent.gui_alert("You are using the default password provided by AsteriskNOW !! \n\n It is strongly recommended that you change your default password ");
 			window.location.href="options.html";
 			return;
 		}
@@ -117,13 +117,13 @@
 
 	function doLogin() {
 		if( $('username').value == "" ){
-				alert("Please enter a Username");
+				parent.gui_alert("Please enter a Username");
 				$('username').focus();
 				return true;			
 		}
 
 		if( $('secret').value == "" ){
-				alert("Please enter a password");
+				parent.gui_alert("Please enter a password");
 				$('secret').focus();
 				return true;			
 		}

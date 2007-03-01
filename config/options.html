@@ -43,17 +43,17 @@ function cancel_guisettings(){
 
 function	update_guisettings_manager(){
 		if($('bindaddr').value==""){
-			alert("Please enter a Bind Address");
+			gui_alert("Please enter a Bind Address");
 			$('bindaddr').focus();
 			return true;
 		}
 		if($('bindport').value==""){
-			alert("Please enter a Port number");
+			gui_alert("Please enter a Port number");
 			$('bindport').focus();
 			return true;
 		}
 		if($('httptimeout').value==""){
-			alert("Please enter Http TimeOut in seconds");
+			gui_alert("Please enter Http TimeOut in seconds");
 			$('httptimeout').focus();
 			return true
 		}
@@ -68,7 +68,7 @@ function	update_guisettings_manager(){
 			},
 			onFailure: function(t) {
 				$('status_message').style.display='none';
-				alert("Config Error: " + t.status + ": " + t.statusText);
+				gui_alert("Config Error: " + t.status + ": " + t.statusText);
 			}
 		};
 		opt.parameters ="action=updateconfig&reload=yes&srcfilename=manager.conf&dstfilename=manager.conf&Action-000000=update&Cat-000000=general&Var-000000=httptimeout&Value-000000="+ encodeURIComponent($('httptimeout').value);
@@ -87,14 +87,14 @@ function update_guisettings_http(){
 							$('save').disabled=true;
 							$('cancel').disabled=true;
 							if( default_bindaddress != $('bindaddr').value || default_port != $('bindport').value ){
-								alert("Port/IP settings of the GUI have been updated !! \n\n You will now be redirected to the new IP/Port ");
+								gui_alert("Port/IP settings of the GUI have been updated !! \n\n You will now be redirected to the new IP/Port ");
 								var previousurl =  parent.window.location.href.split("/");
 								parent.window.location.href = location.protocol + "//" + $('bindaddr').value + ":" + $('bindport').value + "/asterisk/static/config/" + previousurl[previousurl.length-1] ;
 							}
 							default_port = $('bindport').value ;
 				},
 				onFailure: function(t) {
-					alert("Config Error: " + t.status + ": " + t.statusText);
+					gui_alert("Config Error: " + t.status + ": " + t.statusText);
 				}
 		};
 		opt.parameters ="action=updateconfig&reload=yes&srcfilename=http.conf&dstfilename=http.conf&Action-000000=update&Cat-000000=general&Var-000000=bindport&Value-000000="+ encodeURIComponent($('bindport').value) + "&Action-000001=update&Cat-000001=general&Var-000001=bindaddr&Value-000001=" + encodeURIComponent($('bindaddr').value );
@@ -105,7 +105,7 @@ function update_guisettings_http(){
 function showResponse(originalRequest)	{
 		var v = originalRequest.responseText.split("Success");
 		if( v.length > 1 ){
-			alert("Password Updated!!  \n\n You will be now redirected to the login page \n You must relogin using your new password") ;
+			gui_alert("Password Updated!!  \n\n You will be now redirected to the login page \n You must relogin using your new password") ;
 			window.location.href=window.location.href;
 		}else{
 			$('status').innerHTML= originalRequest.responseText ;
@@ -114,7 +114,7 @@ function showResponse(originalRequest)	{
 }
 
 function askforRelogin(){
-			alert("Password Updated Successfully!!  \n\n You will now be redirected to the login page \n You must relogin using your new password") ;
+			gui_alert("Password Updated Successfully!!  \n\n You will now be redirected to the login page \n You must relogin using your new password") ;
 			var opt2 = {
 				method: 'get',
 				asynchronous: true,
@@ -123,7 +123,7 @@ function askforRelogin(){
 						parent.window.location.href=parent.window.location.href;
 				},
 				onFailure: function(t) {
-					alert("Config Error: " + t.status + ": " + t.statusText);
+					gui_alert("Config Error: " + t.status + ": " + t.statusText);
 				}
 			};
 			opt2.parameters ="action=logoff";
@@ -132,13 +132,13 @@ function askforRelogin(){
 
 function changepassword(){
 	if( $('newpass').value!=$('newpass_rep').value ){
-		alert( "Passwords do not match  !") ;
+		gui_alert( "Passwords do not match  !") ;
 		$('newpass').focus();
 		return true;
 	}
 
 	if( $('newpass').value.length < 4 ){
-		alert( "Password should be at least 4 characters !") ;
+		gui_alert( "Password should be at least 4 characters !") ;
 		$('newpass').focus();
 		return true;
 	}
@@ -151,7 +151,7 @@ function changepassword(){
 						askforRelogin();
 			},
 			onFailure: function(t) {
-				alert("Config Error: " + t.status + ": " + t.statusText);
+				gui_alert("Config Error: " + t.status + ": " + t.statusText);
 			}
 		};
 		opt.parameters ="action=updateconfig&reload=yes&srcfilename=manager.conf&dstfilename=manager.conf&Action-000000=update&Cat-000000=" + current_username + "&Var-000000=secret&Value-000000="+ encodeURIComponent($('newpass').value );

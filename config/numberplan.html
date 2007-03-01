@@ -72,21 +72,21 @@ function add_callingrule(){
 
 function checkfields(){
 	if( $('rulename').value.length == 0 ){
-		alert("Please enter a Rule Name");
+		gui_alert("Please enter a Rule Name");
 		$('rulename').focus();
 		return false;
 	}
 	if($('trunks').selectedIndex == -1){
-		alert("Please select a service provider to place this call through");
+		gui_alert("Please select a service provider to place this call through");
 		return false;
 	}
 	if($('define_advanced').style.display=="none" && $('beginswith').value.length==0 ){
-		alert("Please Enter the beginning pattern of the number");
+		gui_alert("Please Enter the beginning pattern of the number");
 		$('beginswith').focus();
 		return false;
 	}
 	if($('define_usual').style.display=="none" && $('pattern').value.length == 0 ){
-		alert("Please Enter a custom pattern");
+		gui_alert("Please Enter a custom pattern");
 		$('pattern').focus();
 		return false;
 	}
@@ -136,7 +136,7 @@ function add_rule_fromeditform( this_priority, oncomplete ){
 									oncomplete(); 
 						},
 						onFailure: function(t) {
-							alert("Config Error: " + t.status + ": " + t.statusText);
+							gui_alert("Config Error: " + t.status + ": " + t.statusText);
 						}
 					};
 					opt.parameters= "action=updateconfig&reload=yes&srcfilename=" + encodeURIComponent("extensions.conf") + "&dstfilename=" + encodeURIComponent("extensions.conf") + uri;
@@ -156,7 +156,7 @@ function saverule(){
 					var m = numberplansdata[$('extensions').value]['npdata'];
 
 					if(  m.hasOwnProperty($('pattern').value)  && m[$('pattern').value].hasOwnProperty(''+newpriority)  ) { 
-						alert("A rule for this pattern is already defined !") ; 
+						gui_alert("A rule for this pattern is already defined !") ; 
 						return ;
 					}
 
@@ -388,7 +388,7 @@ function delete_callingrule(a,b,oncomplete){ // a is pattern, b is priority
 							oncomplete(); 
 			},
 			onFailure: function(t) {
-				alert("Config Error: " + t.status + ": " + t.statusText);
+				gui_alert("Config Error: " + t.status + ": " + t.statusText);
 			}
 		};
 		opt.parameters= "action=updateconfig&reload=yes&srcfilename=" + encodeURIComponent("extensions.conf") + "&dstfilename=" + encodeURIComponent("extensions.conf") + uri;
@@ -607,7 +607,7 @@ function addthe_default_callingplan(){
 		asynchronous: true,
 		onSuccess: function(t) { location.reload(); },
 		onFailure: function(t) {
-			alert("Config Error: " + t.status + ": " + t.statusText);
+			gui_alert("Config Error: " + t.status + ": " + t.statusText);
 		}
 	};
 	opt.parameters= "action=updateconfig&reload=yes&srcfilename=" + encodeURIComponent("extensions.conf") + "&dstfilename=" + encodeURIComponent("extensions.conf") + uri;

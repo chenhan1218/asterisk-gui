@@ -59,7 +59,7 @@ function 	load_todayslog(){
 			},
 			onFailure: function(t) {
 				$('status_message').style.display='none';
-				alert("Config Error: " + t.status + ": " + t.statusText);
+				gui_alert("Config Error: " + t.status + ": " + t.statusText);
 			}
 		};
 		opt.parameters="";
@@ -136,7 +136,7 @@ function getsysinfohtml(){
 			},
 			onFailure: function(t) {
 				$('status_message').style.display='none';
-				alert("Config Error: " + t.status + ": " + t.statusText);
+				gui_alert("Config Error: " + t.status + ": " + t.statusText);
 			}
 		};
 		opt.parameters="";

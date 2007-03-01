@@ -254,18 +254,18 @@ function save_incomingrule(){
 function save_new_incomingrule(){
 	// field validation 
 	if($('incomingrule').value == "frompattern" && $('frompattern').value == "" ){
-		alert("Please define an incoming call pattern !");
+		gui_alert("Please define an incoming call pattern !");
 		$('frompattern').focus();
 		$('frompattern').select();
 		return false;
 	}
 	if( $('fromprovider').selectedIndex == -1 ){
-		alert("Please select a service provider !");
+		gui_alert("Please select a service provider !");
 		$('fromprovider').focus();
 		return false;
 	}
 	if( $('toextension').selectedIndex == -1 ){
-		alert("Please select an extension to which an incoming call should be routed to !");
+		gui_alert("Please select an extension to which an incoming call should be routed to !");
 		$('toextension').focus();
 		return false;
 	}
@@ -296,7 +296,7 @@ function save_new_incomingrule(){
 
 	// check whether there is an existing entry with this pattern 
 	if( typeof didtrunks[temp_provider][newpattern] != "undefined" ){
-		alert("An incoming call rule is already defined \n on this trunk for the selcted pattern !! ");
+		gui_alert("An incoming call rule is already defined \n on this trunk for the selcted pattern !! ");
 		return false;
 	}
 	
@@ -314,7 +314,7 @@ function save_new_incomingrule(){
 				$('bg_transparent').style.display ='none';
 			},
 			onFailure: function(t) {
-				alert("Config Error: " + t.status + ": " + t.statusText);
+				gui_alert("Config Error: " + t.status + ": " + t.statusText);
 			}
 		};
 
@@ -327,13 +327,13 @@ function save_new_incomingrule(){
 function update_incomingrule(){
 	// field validation 
 	if($('incomingrule').value == "frompattern" && $('frompattern').value == "" ){
-		alert("Please define an incoming call pattern !");
+		gui_alert("Please define an incoming call pattern !");
 		$('frompattern').focus();
 		$('frompattern').select();
 		return false;
 	}
 	if( $('toextension').selectedIndex == -1 ){
-		alert("Please select an extension to which an incoming call should be routed to !");
+		gui_alert("Please select an extension to which an incoming call should be routed to !");
 		$('toextension').focus();
 		return false;
 	}
@@ -368,7 +368,7 @@ function update_incomingrule(){
 	}
 
 	if( typeof didtrunks[temp_provider][newpattern] != "undefined" && ( temp_provider != edit_DIDtrunk || newpattern != edit_pattern ) ){
-		alert("An incoming call rule is already defined \n on this trunk for the selcted pattern !! ");
+		gui_alert("An incoming call rule is already defined \n on this trunk for the selcted pattern !! ");
 		return false;
 	}
 
@@ -386,7 +386,7 @@ function update_incomingrule(){
 			refreshtable();
 		},
 		onFailure: function(t) {
-			alert("Config Error: " + t.status + ": " + t.statusText);
+			gui_alert("Config Error: " + t.status + ": " + t.statusText);
 		}
 	};
 	opt.parameters="action=updateconfig&reload=yes&srcfilename=" + encodeURIComponent("extensions.conf") + "&dstfilename=" + encodeURIComponent("extensions.conf") + uri;
@@ -440,7 +440,7 @@ function delete_incomingrule(a,b,c,d){ // a is pattern, b is DID_trunk, c is act
 				refreshtable();
 			},
 			onFailure: function(t) {
-				alert("Config Error: " + t.status + ": " + t.statusText);
+				gui_alert("Config Error: " + t.status + ": " + t.statusText);
 			}
 		};
 		var uri = build_action('delete',0, b, "exten" ,"", tmp_match);

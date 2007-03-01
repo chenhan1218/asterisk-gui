@@ -68,7 +68,7 @@ function rename_extension(a,b){
 					return true;	
 				},
 				onFailure: function(t) {
-					alert("Config Error: " + t.status + ": " + t.statusText);
+					gui_alert("Config Error: " + t.status + ": " + t.statusText);
 					return false;
 				}
 	};
@@ -87,7 +87,7 @@ function add_extension(a){
 					return true;	
 				},
 				onFailure: function(t) {
-					alert("Config Error: " + t.status + ": " + t.statusText);
+					gui_alert("Config Error: " + t.status + ": " + t.statusText);
 					return false;
 				}
 	};
@@ -105,7 +105,7 @@ function delete_extension(a){
 					return true;	
 				},
 				onFailure: function(t) {
-					alert("Config Error: " + t.status + ": " + t.statusText);
+					gui_alert("Config Error: " + t.status + ": " + t.statusText);
 					return false;
 				}
 	};
@@ -148,38 +148,38 @@ function save_queue(){
 			},
 			onFailure: function(t) {
 				$('status_message').style.display='none';
-				alert("Config Error: " + t.status + ": " + t.statusText);
+				gui_alert("Config Error: " + t.status + ": " + t.statusText);
 			}
 		};
 
 		// before going any further check whether there is another entry with this name
 		if( $('name').value != $('queues').value ){
 					if ($('queues').stored_config.catbyname[$('name').value]) {
-						alert("Sorry, an entry named " + $('name').value + " already exists!");
+						gui_alert("Sorry, an entry named " + $('name').value + " already exists!");
 						return;
 					}
 
 					for(var k=0; k<$('queues').length; k++ ){
 						var tmp = $('queues').options[k].innerHTML.split(' -- '); 
 						if( tmp[0] ==  $('name').value   ){
-							alert("Sorry, an entry named " + $('name').value + " already exists!");
+							gui_alert("Sorry, an entry named " + $('name').value + " already exists!");
 							return;
 						}
 					}
 
 		}
 		if(!$('name').value.length){
-				alert("Sorry, an Extension must be specified for this Queue!");
+				gui_alert("Sorry, an Extension must be specified for this Queue!");
 				$('name').focus();
 				return;
 		}
 		if(!$('fullname').value.length){
-				alert("Sorry, a Full Name must be specified !");
+				gui_alert("Sorry, a Full Name must be specified !");
 				$('fullname').focus();
 				return;
 		}
 		if( localextenlength !=0 && (localextenlength != $('name').value.length) ) {
-				alert("Sorry, An Extension must be "+ localextenlength  + " digits !");
+				gui_alert("Sorry, An Extension must be "+ localextenlength  + " digits !");
 				$('name').focus();
 				return ;
 		}
@@ -321,23 +321,23 @@ queuecallbacks.postselect = function(box, val ) {
 				if( box.options[box.selectedIndex].text.toLowerCase().match("-- conference bridge")     ){
 					//parent.$('tooltip').innerHTML = " <font size=\"-2\" color=\"#FF0000\">Click on \'Conferencing\' panel to edit a Conference Bridge</font>";
 					box.selectedIndex = -1;
-					alert(" You can not edit the selected entry from here.\n Please click on the \'Conferencing\' panel to edit the selected entry");
+					gui_alert(" You can not edit the selected entry from here.\n Please click on the \'Conferencing\' panel to edit the selected entry");
 					return true;
 				}
 				if( box.options[box.selectedIndex].text.toLowerCase().match("-- check voicemail")     ){
 					//parent.$('tooltip').innerHTML = " <font size=\"-2\" color=\"#FF0000\">Click on \'Voicemail\' panel to edit Voicemail Preferences</font>";
 					box.selectedIndex = -1;
-					alert(" You can not edit the selected entry from here.\n Please click on the \'Voicemail\' panel to edit the selected entry");
+					gui_alert(" You can not edit the selected entry from here.\n Please click on the \'Voicemail\' panel to edit the selected entry");
 					return true;
 				}
 				if( box.options[box.selectedIndex].text.toLowerCase().match("-- voice menu")     ){
 					box.selectedIndex = -1;
 					//parent.$('tooltip').innerHTML = " <font size=\"-2\" color=\"#FF0000\">Click on \'Voicemail\' panel to edit Voicemail Preferences</font>";
-					alert(" You can not edit the selected entry from here.\n Please click on the \'Voice Menus\' panel to edit the selected entry");
+					gui_alert(" You can not edit the selected entry from here.\n Please click on the \'Voice Menus\' panel to edit the selected entry");
 					return true;
 				}
 				box.selectedIndex = -1;
-				alert(" You can not edit the selected entry from here.\n Please click on the \'Users\' panel to edit the selected entry");
+				gui_alert(" You can not edit the selected entry from here.\n Please click on the \'Users\' panel to edit the selected entry");
 				return true;
 		}
 

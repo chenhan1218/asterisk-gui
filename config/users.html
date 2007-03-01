@@ -125,13 +125,13 @@
 
 	callbacks.beforeSaving = function(){
 		if(!$('fullname').value.length){
-				alert("Sorry, a User Name must be specified !");
+				gui_alert("Sorry, a User Name must be specified !");
 				$('fullname').focus();
 				return false;
 		}
 		// check whether the length of extension is valid
 		if( localextenlength !=0 && (allow_an_extns == "no" && localextenlength !=  $('name').value.length) ){
-				gui_alert( 1, "Sorry, User Extension must be "+ localextenlength  + " digits !" );
+				gui_alert( "Sorry, User Extension must be "+ localextenlength  + " digits !" );
 				return false;
 		}
 		if (!check_patternonfields( ['name', 'fullname', 'secret','email', 'cid_number'] ) ){
@@ -147,7 +147,7 @@
 						}
 				}
 				if ( InArray(tmp_usedanaloglines,$('zapchan').value)){
-					alert("This Analog Phone has already been assigned to another user extension.\n Please select a different Phone");
+					gui_alert("This Analog Phone has already been assigned to another user extension.\n Please select a different Phone");
 					return false;
 				}
 		}
@@ -156,7 +156,7 @@
 			for(var k=0; k<$('devices').length; k++ ){
 				var tmp = $('devices').options[k].innerHTML.split(' -- '); 
 				if( tmp[0] ==  $('name').value ){
-					alert("Sorry, an entry named " + $('name').value + " already exists!");
+					gui_alert("Sorry, an entry named " + $('name').value + " already exists!");
 					return false;
 				}
 			}
@@ -177,25 +177,25 @@
 				if( box.options[box.selectedIndex].text.toLowerCase().match("-- call queue") || box.options[box.selectedIndex].text.toLowerCase().match('call queue ')  ){
 					//parent.$('tooltip').innerHTML = " <font size=\"-2\" color=\"#FF0000\">Click on \'Call Queues\' panel to edit call queues </font>";
 					box.selectedIndex = -1;
-					alert(" You can not edit the selected entry from here.\n Please click on the \'Call Queues\' panel to edit the selected entry");
+					gui_alert(" You can not edit the selected entry from here.\n Please click on the \'Call Queues\' panel to edit the selected entry");
 					return true;
 				}
 				if( box.options[box.selectedIndex].text.toLowerCase().match("-- conference bridge") || box.options[box.selectedIndex].text.toLowerCase().match('conference bridge ')  ){
 					//parent.$('tooltip').innerHTML = " <font size=\"-2\" color=\"#FF0000\">Click on \'Conferencing\' panel to edit a Conference Bridge</font>";
 					box.selectedIndex = -1;
-					alert(" You can not edit the selected entry from here.\n Please click on the \'Conferencing\' panel to edit the selected entry");
+					gui_alert(" You can not edit the selected entry from here.\n Please click on the \'Conferencing\' panel to edit the selected entry");
 					return true;
 				}
 				if( box.options[box.selectedIndex].text.toLowerCase().match("-- check voicemail") || box.options[box.selectedIndex].text.toLowerCase().match('check voicemail ') ){
 					box.selectedIndex = -1;
 					//parent.$('tooltip').innerHTML = " <font size=\"-2\" color=\"#FF0000\">Click on \'Voicemail\' panel to edit Voicemail Preferences</font>";
-					alert(" You can not edit the selected entry from here.\n Please click on the \'Voicemail\' panel to edit the selected entry");
+					gui_alert(" You can not edit the selected entry from here.\n Please click on the \'Voicemail\' panel to edit the selected entry");
 					return true;
 				}
 				if( box.options[box.selectedIndex].text.toLowerCase().match("-- voice menu") || box.options[box.selectedIndex].text.toLowerCase().match('voice menu ')     ){
 					box.selectedIndex = -1;
 					//parent.$('tooltip').innerHTML = " <font size=\"-2\" color=\"#FF0000\">Click on \'Voicemail\' panel to edit Voicemail Preferences</font>";
-					alert(" You can not edit the selected entry from here.\n Please click on the \'Voice Menus\' panel to edit the selected entry");
+					gui_alert(" You can not edit the selected entry from here.\n Please click on the \'Voice Menus\' panel to edit the selected entry");
 					return true;
 				}
 		}
@@ -209,7 +209,7 @@
 
 				},
 				onFailure: function(t) {
-					alert("Config Error: " + t.status + ": " + t.statusText);
+					gui_alert("Config Error: " + t.status + ": " + t.statusText);
 				}
 			};
 			var p =0;

@@ -21,7 +21,7 @@
 <script>
 var browser_alert = "Asterisk Configuration GUI is currently supported in Firefox (recommended 1.5 or above) \n SeaMonkey (1.0 or above), Netscape (8.0 or above) and Opera (9.0 or above) \n\n" +	"Support for other browsers is under development \n" + 	" and will be supported in future versions";
 if( navigator.userAgent.indexOf("MSIE") != -1 || navigator.userAgent.indexOf("Konqueror") != -1 || navigator.userAgent.indexOf("Safari") != -1 ){
-	alert(browser_alert);
+	gui_alert(browser_alert);
 }
 </script>
 <script src="scripts/prototype.js"></script>
@@ -196,7 +196,7 @@ if( navigator.userAgent.indexOf("MSIE") != -1 || navigator.userAgent.indexOf("Ko
 					window.location.href=window.location.href;
 			},
 			onFailure: function(t) {
-				alert("Config Error: " + t.status + ": " + t.statusText);
+				gui_alert("Config Error: " + t.status + ": " + t.statusText);
 			}
 		};
 		opt2.parameters ="action=logoff";

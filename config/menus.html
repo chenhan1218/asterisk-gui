@@ -193,7 +193,7 @@ function delete_vmenu_fromlistofmenus(){
 						delete voicemenusdata[deleted_voicmenu];
 					},
 					onFailure: function(t) {
-						alert("Config Error: " + t.status + ": " + t.statusText);
+						gui_alert("Config Error: " + t.status + ": " + t.statusText);
 					}
 				};
 			var existing_alias_string = voicemenusdata[deleted_voicmenu].alias_exten + ",1,Goto(" + deleted_voicmenu + "|s|1)"  ;
@@ -258,13 +258,13 @@ function sortNumber(a,b){
 
 function add_newstep(){
 	if( !$('newstep_action').value ){
-		alert("Please select an action for this step");
+		gui_alert("Please select an action for this step");
 		$('newstep_action').focus();
 		return;
 	}
 
 	if( $('newstep_action').value != "Answer" &&   $('newstep_action').value != "Hangup" && !$('newstep_var').value ){
-		alert("Please enter a value for '" + $('newstep_action').value +"'");
+		gui_alert("Please enter a value for '" + $('newstep_action').value +"'");
 		$('newstep_var').focus();
 		return;
 	}
@@ -306,7 +306,7 @@ function add_newstep(){
 			},
 			onFailure: function(t) {
 				$('status_message').style.display='none';
-				alert("Config Error: " + t.status + ": " + t.statusText);
+				gui_alert("Config Error: " + t.status + ": " + t.statusText);
 			}
 	};
 	var uri = "";
@@ -368,7 +368,7 @@ function next_freevmenu(){	 // return the next smallest available voicemenu name
 function save_vmenu(){
 
 	if( $('alias_exten').value.length > 0 && localextenlength !=0 && localextenlength !=  $('alias_exten').value.length){
-			alert("Sorry, An Extension must be  "+ localextenlength  + " digits !");
+			gui_alert("Sorry, An Extension must be  "+ localextenlength  + " digits !");
 			$('alias_exten').focus();
 			return false;
 	}
@@ -424,7 +424,7 @@ function save_vmenu(){
 			},
 			onFailure: function(t) {
 				$('status_message').style.display='none';
-				alert("Config Error: " + t.status + ": " + t.statusText);
+				gui_alert("Config Error: " + t.status + ": " + t.statusText);
 			}
 	};
 	var uri = "" ;
@@ -608,7 +608,7 @@ function swap_step(a,b){
 
 			},
 			onFailure: function(t) {
-				alert("Config Error: " + t.status + ": " + t.statusText);
+				gui_alert("Config Error: " + t.status + ": " + t.statusText);
 			}
 	};	
 	var uri = "";
@@ -644,7 +644,7 @@ function delete_step(){
 			},
 			onFailure: function(t) {
 				$('status_message').style.display='none';
-				alert("Config Error: " + t.status + ": " + t.statusText);
+				gui_alert("Config Error: " + t.status + ": " + t.statusText);
 			}
 	};	
 	var uri = "";

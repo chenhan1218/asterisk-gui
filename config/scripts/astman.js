@@ -28,8 +28,11 @@ var sortbynames = false;
 var dragdata = new Object;
 var asterisk_guiTDPrefix = "DID_";
 
+function  gui_alert(msg){
+	gui_alertmsg( 1, msg );
+}
 
-function gui_alert( msgtype, msg ){
+function gui_alertmsg( msgtype, msg ){
 		// Alternative to javascript's alert box - the native alert boxes are stopping the background XHRs
 		//  usage - msgtype could be 1 or 2 or 3 , msg is the alert message
 		top.alertframename = "alertiframe";
@@ -100,7 +103,7 @@ function remove_event(a,b,c){
 function config2json(a, b, c){		// a is filename (string) , b is 0 or 1 , c is callback function
 	var opt = { method: 'get', asynchronous: true,
 		onSuccess: function(originalRequest) {  var f = toJSON(originalRequest.responseText, b) ;  c(f) ; },
-		onFailure: function(t) { alert("Config Error: " + t.status + ": " + t.statusText); },
+		onFailure: function(t) { gui_alert("Config Error: " + t.status + ": " + t.statusText); },
 		parameters: "action=getconfig&filename="+a };
 	var tmp = new Ajax.Request("../../rawman", opt);
 }
@@ -228,7 +231,7 @@ function check_patternonfields(fields){
 	for (var i=0; i < fields.length; i++){
 			var x = document.getElementById(fields[i]);
 			if( x.getAttribute('pattern') && !check_pattern(x.getAttribute('pattern') , x.value)   ){
-						alert("Invalid Characters in "+ fields[i]);
+						gui_alert("Invalid Characters in "+ fields[i]);
 						x.focus();
 						return false;
 			}
@@ -670,7 +673,7 @@ function delete_item(box, value, noconfirm) {
 
 		},
 		onFailure: function(t) {
-			alert("Config Error: " + t.status + ": " + t.statusText);
+			gui_alert("Config Error: " + t.status + ": " + t.statusText);
 		}
 	};
 	var tmp, tmp2, uri;
@@ -932,7 +935,7 @@ function apply_uri(box, uri)
 				box.callbacks.savechanges();
 		},
 		onFailure: function(t) {
-			alert("Config Error: " + t.status + ": " + t.statusText);
+			gui_alert("Config Error: " + t.status + ": " + t.statusText);
 		}
 	};
 	var tmp;
@@ -982,7 +985,7 @@ function save_item(box) {
 				box.callbacks.savechanges();
 		},
 		onFailure: function(t) {
-			alert("Config Error: " + t.status + ": " + t.statusText);
+			gui_alert("Config Error: " + t.status + ": " + t.statusText);
 		}
 	};
 	var uri = "" ;
@@ -1035,12 +1038,12 @@ function save_item(box) {
 			if (box.widgets['name'].value.length) {
 				if (box.widgets['name'].value != cattmp.catname) {
 					if (box.stored_config.catbyname[box.widgets['name'].value]) {
-						alert("Sorry, an entry named " + box.widgets['name'].value + " already exists!");
+						gui_alert("Sorry, an entry named " + box.widgets['name'].value + " already exists!");
 						return;
 					}
 				}
 			} else {
-				alert("Sorry, a " + box.callbacks.identifier + " must be specified!");
+				gui_alert("Sorry, a " + box.callbacks.identifier + " must be specified!");
 				return;
 			}
 		}
@@ -1200,7 +1203,7 @@ function Astman() {
 					callback();
 			},
 			onFailure: function(t) {
-				alert("Tool Error: " + t.status + ": " + t.statusText);
+				gui_alert("Tool Error: " + t.status + ": " + t.statusText);
 			}
 		};
 		var tmp;
@@ -1694,7 +1697,7 @@ function Astman() {
 						parent.astmanEngine.run_tool("/bin/touch /etc/asterisk/"+box.config_file,	function(){	  window.location.href = window.location.href ; } );
 						return ;
 					} else {
-						alert( "Asterisk says it cannot find a required config file (" + box.config_file + ") \n You will be now redirected to the main page !" );
+						gui_alert( "Asterisk says it cannot find a required config file (" + box.config_file + ") \n You will be now redirected to the main page !" );
 						parent.window.location.href = parent.window.location.href ;
 						return ;
 					}
@@ -1775,7 +1778,7 @@ function Astman() {
 			asynchronous: true,
 			onSuccess: this.managerResponse,
 			onFailure: function(t) {
-				alert("Error: " + t.status + ": " + t.statusText);
+				gui_alert("Error: " + t.status + ": " + t.statusText);
 			}
 		};
 		me.callback = callback;
@@ -1789,7 +1792,7 @@ function Astman() {
 			asynchronous: true,
 			onSuccess: this.eventResponse,
 			onFailure: function(t) {
-				alert("Event Error: " + t.status + ": " + t.statusText);
+				gui_alert("Event Error: " + t.status + ": " + t.statusText);
 			}
 		};
 		opt.parameters="action=waitevent";
@@ -1805,7 +1808,7 @@ function Astman() {
 				me.gotConfig(t, box);
 			},
 			onFailure: function(t) {
-				alert("Config Error: " + t.status + ": " + t.statusText);
+				gui_alert("Config Error: " + t.status + ": " + t.statusText);
 			}
 		};
 		if (!callbacks.identifier)
