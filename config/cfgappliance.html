@@ -20,9 +20,6 @@
 -->
 <script>
 var browser_alert = "Asterisk Configuration GUI is currently supported in Firefox (recommended 1.5 or above) \n SeaMonkey (1.0 or above), Netscape (8.0 or above) and Opera (9.0 or above) \n\n" +	"Support for other browsers is under development \n" + 	" and will be supported in future versions";
-if( navigator.userAgent.indexOf("MSIE") != -1 || navigator.userAgent.indexOf("Konqueror") != -1 || navigator.userAgent.indexOf("Safari") != -1 ){
-	gui_alert(browser_alert);
-}
 </script>
 <script src="scripts/prototype.js"></script>
 <script src="scripts/rico.js"></script>
@@ -165,6 +162,9 @@ if( navigator.userAgent.indexOf("MSIE") != -1 || navigator.userAgent.indexOf("Ko
 	}
 
 	function registerajax() {
+		if( navigator.userAgent.indexOf("MSIE") != -1 || navigator.userAgent.indexOf("Konqueror") != -1 || navigator.userAgent.indexOf("Safari") != -1 ){
+			gui_alert(browser_alert);
+		}
 		var pnameheight = 22;
 		var pheight = (503  - (pnameheight*panels.length) )  ;
 		accordion = new Rico.Accordion( $('configpanel'), { panelHeight: pheight,onHideTab:fademainscreen,onShowTab:showmainscreen });
@@ -208,7 +208,7 @@ if( navigator.userAgent.indexOf("MSIE") != -1 || navigator.userAgent.indexOf("Ko
 	<title>Asterisk Configuration GUI (Beta)</title>
 	<link rel="shortcut icon" href="images/favicon.ico" />
 </head>
-<body onload="javascript:registerajax()" topmargin=1>
+<body onload="registerajax()" topmargin=1>
 <table border="0" align="center" cellspacing="0" cellpadding="0" bgcolor="#dddddd" width=950 height=570>
 <tr height=47><td valign="bottom" align='right' bgcolor='white' height=47><img align='left' src="images/digiumlogo.gif" align="left"></td>
 							<td valign='bottom' align='right' bgcolor='white' colspan=2><a target='_extern' href="http://www.digium.com/en/company/profile/">About Digium</a>&nbsp;|&nbsp;
