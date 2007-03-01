@@ -28,6 +28,31 @@ var sortbynames = false;
 var dragdata = new Object;
 var asterisk_guiTDPrefix = "DID_";
 
+
+function gui_alert( msgtype, msg ){
+		// Alternative to javascript's alert box - the native alert boxes are stopping the background XHRs
+		//  usage - msgtype could be 1 or 2 or 3 , msg is the alert message
+		top.alertframename = "alertiframe";
+		top.alertmsg = msg ;
+		top.alertmsgtype = msgtype ;
+        var h= top.document.createElement("IFRAME");
+		h.setAttribute("id", top.alertframename );
+		h.setAttribute("ALLOWTRANSPARENCY", "true");
+		h.style.position="absolute";
+		h.style.left= 0;
+		h.style.top= 0;
+		h.style.width= '100%';
+		h.style.height= '100%';
+		h.style.zIndex = 9999 ;
+		h.src = "guialert.html" ;
+		h.frameBorder="0";
+		h.scrolling="no";
+		h.style.filter='progid:DXImageTransform.Microsoft.Alpha(style=0,opacity=90)';
+		//h.style.MozOpacity = .90;
+		top.document.body.appendChild(h);
+}
+
+
 // Douglas Crockford's purge function for IE Memory leaks
 // http://javascript.crockford.com/memory/leak.html
 // No details about copyrights or License mentioned - assumed to be in public domain
