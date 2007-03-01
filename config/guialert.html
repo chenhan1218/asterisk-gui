@@ -10,7 +10,8 @@ function update( ){
 }
 
 function close_guialert( ){
-	top.document.body.removeChild( top.document.getElementById( top.alertframename ) );
+	//top.document.body.removeChild( top.document.getElementById( top.alertframename ) );
+	top.document.getElementById( top.alertframename ).style.display = "none";
 }
 </script>
 <head>

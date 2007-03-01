@@ -38,7 +38,8 @@ function gui_alertmsg( msgtype, msg ){
 		top.alertframename = "alertiframe";
 		top.alertmsg = msg ;
 		top.alertmsgtype = msgtype ;
-        var h= top.document.createElement("IFRAME");
+		if( !top.document.getElementById(top.alertframename)){
+		var h= top.document.createElement("IFRAME");
 		h.setAttribute("id", top.alertframename );
 		h.setAttribute("ALLOWTRANSPARENCY", "true");
 		h.style.position="absolute";
@@ -53,6 +54,10 @@ function gui_alertmsg( msgtype, msg ){
 		h.style.filter='progid:DXImageTransform.Microsoft.Alpha(style=0,opacity=90)';
 		//h.style.MozOpacity = .90;
 		top.document.body.appendChild(h);
+		}else{
+		top.document.getElementById( top.alertframename ).contentWindow.update( );
+		top.document.getElementById( top.alertframename ).style.display = "";
+		}
 }
 
 
