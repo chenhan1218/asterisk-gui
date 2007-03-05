@@ -9,3 +9,4 @@ registeriax = yes
 registersip = no 
 host = iaxtel.com
 ;trunk_username = iaxtel ; if set - the trunk created by the GUI will be by this name instead of trunk_x
+regurl = http://www.iaxtel.com ; URL to providers home/signup page
