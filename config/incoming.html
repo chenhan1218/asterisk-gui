@@ -21,6 +21,7 @@
 <script src="scripts/prototype.js"></script>
 <script src="scripts/rico.js"></script>
 <script src="scripts/astman.js"></script>
+<script src="scripts/tooltip.js"></script>
 <link href="stylesheets/rico.css" media="all" rel="Stylesheet" type="text/css" />
 <link href="stylesheets/schwing.css" media="all" rel="Stylesheet" type="text/css" />
 <script>
@@ -495,7 +496,7 @@ function free_mem( ){
 
 		<center><div style="height:25px;color: #FF0000;" id='status'  class="field_text9"></div></center>
 		<BR>
-		<center><input type="button" id="adddid" value="Add a Incoming Rule" onclick="add_incomingrule();"></center>
+		<center><input type="button" id="adddid" value="Add a Incoming Rule" onclick="add_incomingrule();"   onmouseover="show_tooltip('en', 'incoming',0);"></center>
 
 		<div id="userscontent" STYLE="display:none; position: absolute; left: 20; top: 40; width:475; height:190;  background-color:#F4EFE5;   border-width: 1px; border-color: #7E5538; border-style: solid;z-index:5">
 			<table width="100%" cellpadding=0 cellspacing=0 onmousedown="startDrag(event , 'userscontent');">
@@ -511,7 +512,7 @@ function free_mem( ){
 											<option value="allunmatched">All Unmatched incoming calls</option>
 											<option value="frompattern">incoming calls that match </option>
 										</select>
-										<span id="thatmatch">pattern <input type="text" id="frompattern" size=12  onchange="enablesave();"  onkeyup="enablesave();"  class="input9"></span>
+										<span id="thatmatch" onmouseover="show_tooltip('en', 'incoming', 1);">pattern <input type="text" id="frompattern" size=12  onchange="enablesave();"  onkeyup="enablesave();"  class="input9"></span>
 										</NOBR>
 					</TD>
 			</TR>

@@ -351,7 +351,7 @@ function addrowtotable(a,b,c,d){	// a is pattern, b is priority, c is trunk, d i
 		}
 
 		var newCell4 = newRow.insertCell(4);
-		newCell4.innerHTML = "<A href=\"#\" onclick=\"editcallingrule('"+ a +"', '"+ b +"')\">Edit</A>&nbsp;&nbsp;<A href=\"#\" onclick=\"deletecallingrule('"+ a +"', '"+ b +"')\">Delete</A>";
+		newCell4.innerHTML = "<A href=\"#\" onclick=\"editcallingrule('"+ a +"', '"+ b +"')\"  onmouseover=\"show_tooltip('en', 'callingrules', 2);\">Edit</A>&nbsp;&nbsp;<A href=\"#\" onclick=\"deletecallingrule('"+ a +"', '"+ b +"')\"   onmouseover=\"show_tooltip('en', 'callingrules', 3);\">Delete</A>";
 		newCell4.width=75;
 		newCell4.align="center";
 		return true;
@@ -635,7 +635,7 @@ function free_mem( ){
 	<center>
 	<fieldset style="width: 500px" id="fieldset1">
 		<legend>&nbsp;List of DialPlans:&nbsp;</legend>
-		<CENTER><select id="extensions" class="input9" style="z-index:2"></select>&nbsp;&nbsp;<a href="#" class="splbutton" onclick="newnumberplan()">new</a>&nbsp;&nbsp;<a href="#" class="splbutton" onclick="delete_numberplan()">delete</a>
+		<CENTER><select id="extensions" class="input9" style="z-index:2"></select>&nbsp;&nbsp;<a href="#" class="splbutton" onclick="newnumberplan()"  onmouseover="show_tooltip('en', 'callingrules', 0);">new</a>&nbsp;&nbsp;<a href="#" class="splbutton" onclick="delete_numberplan()" onmouseover="show_tooltip('en', 'callingrules', 1);">delete</a>
 			<input id='new' value='New' type="button"  style="display:none">
 			<input id='delete' value='Delete' type="button"  style="display:none">
 			<div id="npcontent" STYLE="display:none; position: absolute; left: 110; top: 40; width:320; height:110;  background-color:#F4EFE5;   border-width: 1px; border-color: #7E5538; border-style: solid; z-index:6">
@@ -681,7 +681,7 @@ function free_mem( ){
 				</div>
 			<center><div style="height:25px;color: #FF0000;" id='status'  class="field_text9"></div></center>
 			<BR>
-			<div STYLE="position: absolute; left:186; top: 460;"><input type="button" id="addrule" value="Add a Calling Rule" onclick="add_callingrule();"></div>
+			<div STYLE="position: absolute; left:186; top: 460;"><input type="button" id="addrule" value="Add a Calling Rule" onclick="add_callingrule();"  onmouseover="show_tooltip('en', 'callingrules', 4);"></div>
 	</fieldset>
 	</center>
 
@@ -694,15 +694,15 @@ function free_mem( ){
 		</TR>
 		</table>
 		<TABLE	align=center cellpadding=2 cellspacing=2 border=0 width="480">
-		<TR>
+		<TR  onmouseover="show_tooltip('en', 'callingrules', 5);">
 			<TD align="right" width=175>Rule Name:</TD>
 			<TD><input type="text" id="rulename" size="" onChange="enablesave();" onkeyup="enablesave();" class="input9"></TD>
 		</TR>
-		<TR>
+		<TR  onmouseover="show_tooltip('en', 'callingrules', 6);">
 			<TD  align="right" height=40> Place this call through :</TD>
 			<TD><select id="trunks"  class="input9" onChange="enablesave();"></select></TD>
 		</TR>
-		<TR id="define_usual" height=100>
+		<TR id="define_usual" height=100   onmouseover="show_tooltip('en', 'callingrules', 7);">
 			<TD valign="top" align=right>Dialing Rules :</TD>
 			<TD valign="top"> If the number begins with <input id="beginswith"  class="input9" type='text' size=6 onChange="enablesave();" onkeyup="enablesave();"> and 
 					followed by <input id="followedby" type='text'  class="input9" size=1 onChange="enablesave();" onkeyup="enablesave();"> digits <input type="checkbox" id="ormore" onChange="enablesave();"> or more <BR>
@@ -710,7 +710,7 @@ function free_mem( ){
 			</TD>
 		</TR>
 		
-		<TR id="define_advanced"  height=100>
+		<TR id="define_advanced"  height=100   onmouseover="show_tooltip('en', 'callingrules', 8);">
 			<TD valign="top" align=right>
 				Custom Pattern:
 			</TD>
@@ -723,7 +723,7 @@ function free_mem( ){
 					</table>
 			</TD>
 		</TR>
-		<TR>
+		<TR   onmouseover="show_tooltip('en', 'callingrules', 9);">
 			<TD colspan=2 align=center>Strip <input type="text" id="strip"  class="input9" size="1"  onChange="enablesave();" onkeyup="enablesave();"> digits from the front and prepend <input type="text" id="prepend"  class="input9" size="3"  onChange="enablesave();" onkeyup="enablesave();"> before dialing</TD>
 		</TR>
 		<TR>

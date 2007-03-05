@@ -22,6 +22,7 @@
 <script src="scripts/prototype.js"></script>
 <script src="scripts/rico.js"></script>
 <script src="scripts/astman.js"></script>
+<script src="scripts/tooltip.js"></script>
 <link href="stylesheets/rico.css" media="all" rel="Stylesheet" type="text/css" />
 <link href="stylesheets/schwing.css" media="all" rel="Stylesheet" type="text/css" />
 
@@ -311,7 +312,7 @@ function free_mem(){
 			<BR><BR>
 			<div id="status"></div>
 			<BR><BR>
-			<input type="button" id="vvv" value="Record a new Voice Menu" onclick="show_record();">
+			<input type="button" id="vvv" value="Record a new Voice Menu" onclick="show_record();"  onmouseover="show_tooltip('en', 'record', 0);">
 
 		<div id="recordnew_content" STYLE="display:none; position: absolute; left: 20; top: 125; width:475; height:150;  background-color:#F4EFE5;   border-width: 1px; border-color: #7E5538; border-style: solid;z-index:5">
 			<table width="100%" cellpadding=0 cellspacing=0 onmousedown="startDrag(event , 'recordnew_content');">
@@ -327,7 +328,7 @@ function free_mem(){
 			</table>
 			<table cellpadding=2 cellspacing=2 border=0>
 				<tr>	<td colspan=2 height=15 valign=middle align=center class="field_text"></td></tr>
-				<tr><td class="field_text">File Name:</td>
+				<tr   onmouseover="show_tooltip('en', 'record', 1);"><td class="field_text">File Name:</td>
 						<td><input id='newvmenu_name' size=24 class="input9">
 								<input type="hidden" id="format" value="gsm">
 						</td>
@@ -346,7 +347,7 @@ function free_mem(){
 								</select>
 						</td>
 				</tr> -->
-				<tr>	<td class="field_text">Extension used for recording:</td>
+				<tr   onmouseover="show_tooltip('en', 'record', 2);">	<td class="field_text">Extension used for recording:</td>
 						<td><select id='newvmenu_ext' class="input9"></select></td>
 				</tr>
 				<tr>	<td colspan=2 align=center height=10></td></tr>

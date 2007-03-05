@@ -45,7 +45,7 @@ function show_tooltip(lang, file,tip){
 	tooltips['meetme'] .en[8] = "<B>Quiet Mode:</B> This option enables Quiet mode.  If this option is checked, all users entering this conference will be marked as quiet, and will be in Listen-Only mode.";
 	tooltips['meetme'] .en[9] = "<B>Wait for Market User:</B> If this option is set, then users joining the conference will not be able to speak to one-another until the marked user has joined the conference.";
 	tooltips['meetme'] .en[10] = "<B>Set Marked User:</B> This option sets the person that enters the bridge using this extension as Marked.  This option works in conjunction with the obove \"Wait for marked user\" option.";
-	tooltips['meetme'] .en[11] = "<B>Set Marked User:</B> Record this conference in a WAV format. Default filename is meetme-conf-rec-${Conference Number}-${UNIQUEID}.";
+	tooltips['meetme'] .en[11] = "<B>Record Conference:</B> Record this conference in a WAV format. Default filename is meetme-conf-rec-${Conference Number}-${UNIQUEID}.";
 
 // Tooltips for Voicemail
 	tooltips['voicemail']= new Object;
@@ -83,6 +83,7 @@ function show_tooltip(lang, file,tip){
 	tooltips['queues'].en[10] = "<B> JoinEmpty:</B> Defining this option allows callers to enter the Queue when no Agents are available. If this option is not defined, callers will not be able to enter Queues with no available agents.";
 	tooltips['queues'].en[11] = "<B>LeaveWhenEmpty:</B> Defining this option forces all callers to exit the Queue if New Callers are also not able to Enter the Queue. This option should generally be set in concert with the JoinEmpty option.";
 	tooltips['queues'].en[12] = "<B> Report Hold Time:</B> Enabling this option causes Asterisk to report, to the Agent, the hold time of the caller before the caller is connected to the Agent.";
+	tooltips['queues'].en[13] = "<B> Music On Hold:</B> Select the 'Music on Hold' Class for this Queue";
 
 // Tooltips for SIP_General (sip_general)
 	tooltips['sip_general']= new Object;
@@ -208,3 +209,41 @@ function show_tooltip(lang, file,tip){
 	tooltips['menus'].en[4] = "<B>Keypress Events:</B>Define the actions that occur when a user presses the corresponding digit.";
 	tooltips['menus'].en[5] = "<B>Extension(optional):</B> If you want this Voicemenu to be accessible by dialing an extension, then enter that extension number";
 	
+	// Tooltips for Calling Rules  (numberplan)
+	tooltips['callingrules']= new Object;
+	tooltips['callingrules'].en = new Array;
+	tooltips['callingrules'].en[0] = "<B>new:</B> Add a new DialPlan. A DialPlan is a set of calling rules that can be assigned to one or more User Extensions.";
+	tooltips['callingrules'].en[1] = "<B>delete:</B> Delete the selected DialPlan.";
+	tooltips['callingrules'].en[2] = "<B>Edit:</B> Edit the selected Calling Rule.";
+	tooltips['callingrules'].en[3] = "<B>Delete:</B> Delete the selected Calling Rule.";
+	tooltips['callingrules'].en[4] = "<B>Add a Calling Rule:</B> Add new 'Calling Rule' to the selected DialPlan. A DialPlan is a set of calling rules, that can be assigned to one or more User Extensions.";
+	tooltips['callingrules'].en[5] = "<B>Rule Name:</B> A name for this Calling Rule. Ex: 'Local' or 'Long Distance' etc.";
+	tooltips['callingrules'].en[6] = "Select a Service Provider through which this call should be placed.";
+	tooltips['callingrules'].en[7] = "<B>Dialing Rules:</B> Ex: If the number begins with <I>'256'</I> and followed by <I>7</I> digits <i>or more</I>";
+	tooltips['callingrules'].en[8] = "<B>Custom Pattern:</B> Ex:  _91NXXNXXXXXX ";
+	tooltips['callingrules'].en[9] = "Ex: Strip <i>1</i> digits from the front and prepend <i>256</i> before dialing";
+
+	// Tooltips for Incoming Calls (incoming)
+	tooltips['incoming']= new Object;
+	tooltips['incoming'].en = new Array;
+	tooltips['incoming'].en[0] = "<B>Add a Incoming Rule:</B> Define a new Rule for handling Incoming calls based on service provider and/or the number called.";
+	tooltips['incoming'].en[1] = "<B>Pattern:</B> Pattern of the DID number, <i>not</I> the pattern for the CID (caller id number)";
+
+
+	// Tooltips for Record a Menu (record)
+	tooltips['record']= new Object;
+	tooltips['record'].en = new Array;
+	tooltips['record'].en[0] = "<B>Record a new Voice Menu:</B> Lets you record a new voice menu using any user extension device";
+	tooltips['record'].en[1] = "<B>Filename:</B> File name under which the recorded file should be saved to. Ex: MainGreeting ";
+	tooltips['record'].en[2] = "<B>Extension used for recording:</B> Select a device through which this voice menu will be recorded.";
+
+
+	// Tooltips for System Information  (sysinfo)
+	tooltips['sysinfo']= new Object;
+	tooltips['sysinfo'].en = new Array;
+	tooltips['sysinfo'].en[0] = "<B>General:</B> Information about OS, Uptime, Asterisk, Date, Timezone and Hostname";
+	tooltips['sysinfo'].en[1] = "<B>ifconfig:</B> Network devices information (ifconfig)";
+	tooltips['sysinfo'].en[2] = "<B>Resources:</B> Disk and Memory usage information";
+	tooltips['sysinfo'].en[3] = "<B>Logs:</B> Asterisk Log files";
+
+
