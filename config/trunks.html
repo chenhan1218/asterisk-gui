@@ -98,6 +98,21 @@
 		var tmp = new Ajax.Request("../../rawman", opt);
 	}
 
+	providercallbacks.postselect = function() {
+			try{
+				if( $('provider').stored_config.catbyname[ $('provider').value ].fieldbyname['regurl'] ){
+					$('providerlink').href= $('provider').stored_config.catbyname[ $('provider').value ].fieldbyname['regurl'];
+					$('providerlink').target = "_blank";
+				}else{
+					$('providerlink').href= "#";
+					$('providerlink').target = "";
+				}
+			}catch(e){
+					$('providerlink').href= "#";
+					$('providerlink').target = "";
+			}
+	}
+
 	providercallbacks.format = function(t) {
 		return t.fieldbyname['providername'];
 	}
@@ -744,7 +759,7 @@ function free_mem( ){
 						<table align="center">
 						<tr  onmouseover="show_tooltip('en', 'trunks', 1);"><td style='width:80px' valign='top' class="field_text">Provider:</td><td><select size='6' id='provider' style='width:200px' altonchange='selectprovider()' class="input8"></select></td></tr>
 						<tr><td colspan='2' align='center'><div style="height:15px" id='status'></div></td></tr>
-						<tr><td colspan='2' align='center'><img id='providerlogo' style='visibility:hidden;'></td></tr>
+						<tr><td colspan='2' align='center'><A href="#" id="providerlink"><img id='providerlogo' style='visibility:hidden;' border=0></A></td></tr>
 						<tr><td colspan='2' align='center'><div id='providerdesc' align='left' style='width:230px;height:100px; font-size:10px'></div></td></tr>
 						<tr onmouseover="show_tooltip('en', 'trunks', 3);"><td class="field_text">Username:</td><td><input size='20' id='username' class="input8"></td></tr>
 						<tr onmouseover="show_tooltip('en', 'trunks', 4);"><td class="field_text">Password:</td><td><input type="password" size='20' id='secret' class="input8"></td></tr>

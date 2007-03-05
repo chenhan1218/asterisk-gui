@@ -208,6 +208,8 @@ function show_tooltip(lang, file,tip){
 	tooltips['menus'].en[3] = "<B>Dial other Extensions:</B>Is the caller allowed to dial extensions other than the ones defined below?";
 	tooltips['menus'].en[4] = "<B>Keypress Events:</B>Define the actions that occur when a user presses the corresponding digit.";
 	tooltips['menus'].en[5] = "<B>Extension(optional):</B> If you want this Voicemenu to be accessible by dialing an extension, then enter that extension number";
+	tooltips['menus'].en[6] = "<B>t</B> On Time out";
+	tooltips['menus'].en[7] = "<B>i</B> On Invalid Input";
 	
 	// Tooltips for Calling Rules  (numberplan)
 	tooltips['callingrules']= new Object;

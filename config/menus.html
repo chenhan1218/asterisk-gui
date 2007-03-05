@@ -25,7 +25,6 @@
 <script src="scripts/tooltip.js"></script>
 <link href="stylesheets/rico.css" media="all" rel="Stylesheet" type="text/css" />
 <link href="stylesheets/schwing.css" media="all" rel="Stylesheet" type="text/css" />
-
 <script>
 	var widgets = new Array;
 	var adstatus;
@@ -1331,7 +1330,12 @@ function free_mem(){
 													<!--
 													for (var k=0; k< keys.length; k++){
 														var p =  generate_fields( keys[k] )  ; 
-														document.write("<TR bgcolor='#FFFFFF'>\n"
+														switch(keys[k]){
+															case 't': var omo =  "onmouseover=\"show_tooltip('en', 'menus', 6 );\" " ; break;
+															case 'i': var omo =  "onmouseover=\"show_tooltip('en', 'menus', 7 );\" " ; break;
+															default: var omo =  "" ;
+														}
+														document.write("<TR bgcolor='#FFFFFF' " + omo + ">\n"
 														+ "<TD width=35 align=center><font style=\"font-size: 10pt\">"+keys[k]+"</font></TD>\n"
 														+ "<TD>" 
 														+ p
