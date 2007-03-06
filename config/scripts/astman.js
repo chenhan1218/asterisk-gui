@@ -738,7 +738,7 @@ function delete_item(box, value, noconfirm) {
 		for (;y<box.stored_config.catcnt;y++) {
 			box.stored_config.categories[y] = null;
 		}
-		box.stored_config.catbyname[value] = null;
+		delete box.stored_config.catbyname[value];
 		--box.stored_config.catcnt;
 		if (updatebox && box.options[box.selectedIndex].value == "") {
 			if (box.widgets['status']) 
@@ -809,7 +809,7 @@ function new_item(box) {
 	}
 	if (!category) {
 		category = new Object;
-		category.fieldbyname = new Array;
+		category.fieldbyname = { };
 		category.fields = new Array;
 	}
 
@@ -1024,10 +1024,19 @@ function save_item(box) {
 			tmp = box.callbacks.format(box.stored_config.catbyname[tmp[0]], tmp[1]);
 			if (tmp) {
 				box.options[box.selectedIndex].innerHTML = tmp;
+    			var tmp_newopt = document.createElement('option');
+				tmp_newopt.text = box.options[box.selectedIndex].innerHTML ;
+				tmp_newopt.value = box.options[box.selectedIndex].value;
+
 				for (var y = 0; y < box.options.length + 1; y++) {
 					if (!box.options[y] || 
 						do_compare(box, box.options[box.selectedIndex], box.options[y])) {
+						try{
 						box.options.add(box.options[box.selectedIndex], y);
+						}catch(e){
+							box.remove(box.selectedIndex);
+							box.add(tmp_newopt, y); 
+						}
 						break;
 					}
 				}
@@ -1717,7 +1726,7 @@ function Astman() {
 
 		box.innerHTML = '';
 		cfg.categories = new Array;
-		cfg.catbyname = new Array;
+		cfg.catbyname = { };
 		cfg.names = new Array;
 		for (x=0;t[0].names[x];x++) {
 			map = t[0].names[x].split('-');
@@ -1727,7 +1736,7 @@ function Astman() {
 
 				cfg.categories[catcnt] = new Object;
 				cfg.categories[catcnt].fields = new Array;
-				cfg.categories[catcnt].fieldbyname = new Array;
+				cfg.categories[catcnt].fieldbyname = { };
 				cfg.categories[catcnt].names = new Array;
 				cfg.categories[catcnt].subfields = new Array;
 				cfg.categories[catcnt].name = t[0].headers[t[0].names[x]];
