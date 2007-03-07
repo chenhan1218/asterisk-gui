@@ -498,7 +498,7 @@ numplan_callbacks.newcategory = function() {
 				break;
 			c++ ;
 	}
-	gen = $('extensions').stored_config.catbyname['numberplan-custom-1'];
+	gen = $('extensions').stored_config.catbyname[$('extensions').value];
 	temp = objcopy(gen);
 	temp.name = "numberplan-custom-" + c ;
 	temp.fieldbyname['plancomment'] = "DialPlan" + c;

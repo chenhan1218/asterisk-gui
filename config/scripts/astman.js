@@ -1571,7 +1571,7 @@ function Astman() {
 						}
 					}
 				} else {
-					widgets[x].selectedIndex = 0;
+					widgets[x].selectedIndex = -1;
 					widgets[x].value = thevalue;
 				}
 				
