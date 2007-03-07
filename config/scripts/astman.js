@@ -1707,11 +1707,11 @@ function Astman() {
 	};
 	this.doConfig = function(t, box) {
 		if( t[0].headers['message'] && t[0].headers['message'] == "Config file not found" ){
-					if( box.config_file == "zapscan.conf" || box.config_file == "contactinfo.conf" ){
+					if( box.config_file == "zapscan.conf" || box.config_file == "contactinfo.conf" || box.config_file == "jingle.conf" || box.config_file == "providers.conf" ){
 						parent.astmanEngine.run_tool("/bin/touch /etc/asterisk/"+box.config_file,	function(){	  window.location.href = window.location.href ; } );
 						return ;
 					} else {
-						gui_alert( "Asterisk says it cannot find a required config file (" + box.config_file + ") \n You will be now redirected to the main page !" );
+						alert( "Asterisk says it cannot find a required config file (" + box.config_file + ") \n You will be now redirected to the main page !" );
 						parent.window.location.href = parent.window.location.href ;
 						return ;
 					}
