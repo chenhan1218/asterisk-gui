@@ -1,30 +1,12 @@
-<!--
- * Asterisk -- An open source telephony toolkit.
- *
- * Configuration for "Users" generally
- *
- * Copyright (C) 1999 - 2006, Digium, Inc.
- *
- * Mark Spencer <markster@digium.com>
- *
- * See http://www.asterisk.org for more information about
- * the Asterisk project. Please do not directly contact
- * any of the maintainers of this project for assistance;
- * the project provides a web site, mailing lists and IRC
- * channels for your use.
- *
- * This program is free software, distributed under the terms of
- * the GNU General Public License Version 2. See the LICENSE file
- * at the top of the source tree.
- *
--->
-<script src="scripts/prototype.js"></script>
-<script src="scripts/rico.js"></script>
-<script src="scripts/astman.js"></script>
-<script src="scripts/tooltip.js"></script>
-<link href="stylesheets/rico.css" media="all" rel="Stylesheet" type="text/css" />
-<link href="stylesheets/schwing.css" media="all" rel="Stylesheet" type="text/css" />
-<script>
+<HTML>
+<HEAD>
+	<TITLE> Asterisk GUI Setup Wizard</TITLE>
+	<link href="setup.css" media="all" rel="Stylesheet" type="text/css" />
+</HEAD>
+<script src="../scripts/prototype.js"></script>
+<script src="../scripts/astman.js"></script>
+<SCRIPT LANGUAGE="JavaScript">
+var rawman_url;
 var numplan_callbacks = new Object;
 var user_callbacks = new Object;
 var didtrunks = new Object;
@@ -121,7 +103,6 @@ numplan_callbacks.loaded = function() {
 	}
 	// load the object didtrunks into the table callingRulesTable
 	refreshtable();
-	parent.loadscreen(this);
 }
 
 numplan_callbacks.eachline = true;
@@ -256,18 +237,18 @@ function save_incomingrule(){
 function save_new_incomingrule(){
 	// field validation 
 	if($('incomingrule').value == "frompattern" && $('frompattern').value == "" ){
-		gui_alert("Please define an incoming call pattern !");
+		alert("Please define an incoming call pattern !");
 		$('frompattern').focus();
 		$('frompattern').select();
 		return false;
 	}
 	if( $('fromprovider').selectedIndex == -1 ){
-		gui_alert("Please select a service provider !");
+		alert("Please select a service provider !");
 		$('fromprovider').focus();
 		return false;
 	}
 	if( $('toextension').selectedIndex == -1 ){
-		gui_alert("Please select an extension to which an incoming call should be routed to !");
+		alert("Please select an extension to which an incoming call should be routed to !");
 		$('toextension').focus();
 		return false;
 	}
@@ -298,7 +279,7 @@ function save_new_incomingrule(){
 
 	// check whether there is an existing entry with this pattern 
 	if( typeof didtrunks[temp_provider][newpattern] != "undefined" ){
-		gui_alert("An incoming call rule is already defined \n on this trunk for the selcted pattern !! ");
+		alert("An incoming call rule is already defined \n on this trunk for the selcted pattern !! ");
 		return false;
 	}
 	
@@ -316,12 +297,12 @@ function save_new_incomingrule(){
 				$('bg_transparent').style.display ='none';
 			},
 			onFailure: function(t) {
-				gui_alert("Config Error: " + t.status + ": " + t.statusText);
+				alert("Config Error: " + t.status + ": " + t.statusText);
 			}
 		};
 
 		opt.parameters="action=updateconfig&reload=yes&srcfilename=" + encodeURIComponent("extensions.conf") + "&dstfilename=" + encodeURIComponent("extensions.conf") + uri;
-		var tmp = new Ajax.Request("../../rawman", opt);
+		var tmp = new Ajax.Request(rawman_url, opt);
 	// 
 }
 
@@ -329,13 +310,13 @@ function save_new_incomingrule(){
 function update_incomingrule(){
 	// field validation 
 	if($('incomingrule').value == "frompattern" && $('frompattern').value == "" ){
-		gui_alert("Please define an incoming call pattern !");
+		alert("Please define an incoming call pattern !");
 		$('frompattern').focus();
 		$('frompattern').select();
 		return false;
 	}
 	if( $('toextension').selectedIndex == -1 ){
-		gui_alert("Please select an extension to which an incoming call should be routed to !");
+		alert("Please select an extension to which an incoming call should be routed to !");
 		$('toextension').focus();
 		return false;
 	}
@@ -370,7 +351,7 @@ function update_incomingrule(){
 	}
 
 	if( typeof didtrunks[temp_provider][newpattern] != "undefined" && ( temp_provider != edit_DIDtrunk || newpattern != edit_pattern ) ){
-		gui_alert("An incoming call rule is already defined \n on this trunk for the selcted pattern !! ");
+		alert("An incoming call rule is already defined \n on this trunk for the selcted pattern !! ");
 		return false;
 	}
 
@@ -388,11 +369,11 @@ function update_incomingrule(){
 			refreshtable();
 		},
 		onFailure: function(t) {
-			gui_alert("Config Error: " + t.status + ": " + t.statusText);
+			alert("Config Error: " + t.status + ": " + t.statusText);
 		}
 	};
 	opt.parameters="action=updateconfig&reload=yes&srcfilename=" + encodeURIComponent("extensions.conf") + "&dstfilename=" + encodeURIComponent("extensions.conf") + uri;
-	var tmp = new Ajax.Request("../../rawman", opt);
+	var tmp = new Ajax.Request(rawman_url, opt);
 
 }
 
@@ -442,7 +423,7 @@ function delete_incomingrule(a,b,c,d){ // a is pattern, b is DID_trunk, c is act
 				refreshtable();
 			},
 			onFailure: function(t) {
-				gui_alert("Config Error: " + t.status + ": " + t.statusText);
+				alert("Config Error: " + t.status + ": " + t.statusText);
 			}
 		};
 		var uri = build_action('delete',0, b, "exten" ,"", tmp_match);
@@ -451,57 +432,85 @@ function delete_incomingrule(a,b,c,d){ // a is pattern, b is DID_trunk, c is act
 			uri += build_action('delete',1,b,"exten","", tmp2_match);
 		}
 		opt.parameters="action=updateconfig&reload=yes&srcfilename=" + encodeURIComponent("extensions.conf") + "&dstfilename=" + encodeURIComponent("extensions.conf") + uri;
-		var tmp = new Ajax.Request("../../rawman", opt);
+		var tmp = new Ajax.Request(rawman_url, opt);
 }
 
 
 
-function localajaxinit() {
-	showdiv_statusmessage();
-	setWindowTitle("Incoming Calls");
-	for (var x =0; x < focus_fields.length; x++ ) {
-		$(focus_fields[x]).onfocus = function(){this.className = 'input9_hilight';}
-		$(focus_fields[x]).onblur = function(){this.className = 'input9';}
-	}
-	parent.astmanEngine.config2list("users.conf", $('users'), new Array(), user_callbacks);
+function localinit(){
+	parent.$('next').onclick = function(){	 window.location.href="10.html"; };
+	parent.$('back').onclick  = function(){	 window.location.href="7.html"; };
+	rawman_url = parent.rawman_url ;
+	parent.astmanEngine.setURL(rawman_url);
+	ping();
 }
 
-
-function free_mem( ){
-	if( navigator.userAgent.indexOf("MSIE") == -1 ){ return true; }
-		try{
-			purge( document.body );
-		}catch(e){ }
+function ping(){
+		var opt = { method: 'get', asynchronous: true, onComplete: isloggedin };
+		opt.parameters="action=ping" ;
+		var tmp = new Ajax.Request(rawman_url , opt);
 }
-</script>
-<body id="foo" onload="localajaxinit()"  bgcolor="EFEFEF"  onunload="free_mem()">
-<div class="mainscreenTitleBar">
-	<span style="margin-left: 4px;font-weight:bold;">Incoming Calls</span>
-	<span style="cursor: pointer; cursor: hand;" onclick="window.location.href=window.location.href;" >&nbsp;<img src="images/refresh.png" title=" Refresh " border=0 >&nbsp;</span>
-</div>
-<div class="mainscreenContentBox" id="mailboxcontent">
+
+function isloggedin(originalRequest){
+		if ( originalRequest.responseText.match("Error") ) {
+			// User is not logged in , show him the login screen
+			parent.window.location.href = parent.window.location.href ; 
+		}
+
+		if ( originalRequest.responseText.match("Pong") ) {
+			showdiv_statusmessage();
+			setWindowTitle("Incoming Calls");
+			for (var x =0; x < focus_fields.length; x++ ) {
+				$(focus_fields[x]).onfocus = function(){this.className = 'input9_hilight';}
+				$(focus_fields[x]).onblur = function(){this.className = 'input9';}
+			}
+			parent.astmanEngine.config2list("users.conf", $('users'), new Array(), user_callbacks);
+		}
+}
+
+</SCRIPT>
+<BODY bgcolor="#FFFFFF" onload="localinit()" topmargin=0 leftmargin=0>
+<table width="100%" height="100%" border=0 cellpadding=0 cellspacing=0>
+	<tr><td width="170" valign=top align=left>
+					<div id="menu">
+					<table cellpadding=3 cellspacing=2 border=0 id="sidelist">
+						<tr><td width=3></td><td>Start</td></tr>
+						<tr><td></td><td>Verify Analog Ports</td></tr>
+						<!-- <tr><td></td><td>Date & Time</td></tr> -->
+						<tr><td></td><td>Local Extension Settings</td></tr>
+						<tr><td></td><td>Service Providers</td></tr>
+						<tr><td></td><td>Calling Rules</td></tr>
+						<tr><td></td><td>VoiceMail Settings</td></tr>
+						<tr><td></td><td>User Extensions</td></tr>
+						<tr><td></td><td class="slselected">Incoming Calls</td></tr>
+						<!-- <tr><td></td><td>VoiceMenus</td></tr> -->
+						<tr><td></td><td>Finish</td></tr>
+					</table>
+					</div>
+			</td>
+			<td valign=top align=center>
+			<!--  this page -->
 		<select id="extensions" style="display:none"></select>
 		<select id="users" style="display:none"></select>
-		<BR>
-		<CENTER><font size="+1">Incoming Call Rules</font></CENTER>
+		<div class="heading">Step 7 of <script>document.write(parent.numberofsteps);</script>&nbsp;&nbsp;-  Incoming Calls</div>
+		<div class="subheading">List of incoming call rules</div>
 			<table class="table_blacksm" cellpadding=2 cellspacing=2 border=0 align=center width=500 id="table_one">
 				<tr>	<td width=35>S.No</td>
 						<td> Incoming Rule </td>
 						<td width=75 align=center>Options</td>
 				</tr>
 			</table>
-			<div id="callingRulesTable_div" style="height:250px;width=100%; overflow :auto; padding : 0px 0px 0px 0px;">
+			<div id="callingRulesTable_div" style="height:200px;width=100%; overflow :auto; padding : 0px 0px 0px 0px;">
 			<table id="callingRulesTable" cellpadding=2 cellspacing=1 border=0 align=center width=500></table>
 			</div>
 		</font>
 
 		<center><div style="height:25px;color: #FF0000;" id='status'  class="field_text9"></div></center>
 		<BR>
-		<center><input type="button" id="adddid" value="Add a Incoming Rule" onclick="add_incomingrule();"   onmouseover="show_tooltip('en', 'incoming',0);"></center>
-
-		<div id="userscontent" STYLE="display:none; position: absolute; left: 20; top: 40; width:475; height:190;  background-color:#F4EFE5;   border-width: 1px; border-color: #7E5538; border-style: solid;z-index:5">
+		<center><input type="button" id="adddid" value="Add a Incoming Rule" onclick="add_incomingrule();"></center>
+		<div id="userscontent" STYLE="display:none; position: absolute; left: 227; top: 70; width:475; height:190;  background-color:#F4EFE5;   border-width: 1px; border-color: #7E5538; border-style: solid;z-index:5">
 			<table width="100%" cellpadding=0 cellspacing=0 onmousedown="startDrag(event , 'userscontent');">
-			<TR bgcolor="#7E5538"  style="background-image:url('images/title_gradient.gif');"><TD Height="20" align="right" style="cursor: move">
+			<TR bgcolor="#7E5538"  style="background-image:url('../images/title_gradient.gif');"><TD Height="20" align="right" style="cursor: move">
 						<A href="#" onclick="$('cancel_a').click();"><font style="color:#FFFFFF; font-size: 12px; font-weight:bold;">X</font></A>
 					</TD>
 					<TD width=4></TD>
@@ -509,11 +518,11 @@ function free_mem( ){
 			</table>
 			<TABLE align=center cellpadding=2 cellspacing=2 border=0 width="100%">
 			<TR><TD height=10></TD></TR>
-			<TR><TD align=center>	<NOBR>Route <select id="incomingrule"  onclick="checksave(this)" class="input9">
+			<TR><TD align=center><NOBR>Route <select id="incomingrule"  onclick="checksave(this)" class="input9">
 											<option value="allunmatched">All Unmatched incoming calls</option>
 											<option value="frompattern">incoming calls that match </option>
 										</select>
-										<span id="thatmatch" onmouseover="show_tooltip('en', 'incoming', 1);">pattern <input type="text" id="frompattern" size=12  onchange="enablesave();"  onkeyup="enablesave();"  class="input9"></span>
+										<span id="thatmatch">pattern <input type="text" id="frompattern" size=12  onchange="enablesave();"  onkeyup="enablesave();"  class="input9"></span>
 										</NOBR>
 					</TD>
 			</TR>
@@ -529,7 +538,12 @@ function free_mem( ){
 			</TR>
 			</TABLE>
 		</div>
+<div id="bg_transparent" STYLE="display:none; position: absolute; left: 0; top: 0; width:100%; height:100%;  background-color:#EFEFEF; -moz-opacity:.50;opacity:.50; border-width: 1px; border-color: #EFEFEF; border-style: solid; z-index:4">
 </div>
-<div id="bg_transparent" STYLE="display:none; position: absolute; left: 0; top: 24; width:100%; height:100%;  background-color:#EFEFEF; -moz-opacity:.50;opacity:.50; border-width: 1px; border-color: #EFEFEF; border-style: solid; z-index:4">
+			<!--  this page -->
+			</td>
+		</tr>
+</table>
 </div>
-</body>
+</BODY>
+</HTML>
