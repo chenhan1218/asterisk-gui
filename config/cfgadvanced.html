@@ -169,11 +169,17 @@ if( navigator.userAgent.indexOf("MSIE") != -1 || navigator.userAgent.indexOf("Ko
 	}
 
 	function show_Acctooltip(name, tip){
-		if(loggedon == 1)
-		$('tooltip').innerHTML = tip;
+		if( loggedon != 1){ return; }
+			new Rico.Effect.FadeTo( 'tooltip_round', .01, 100, 10, {
+			complete:function() { 
+				$('tooltip').innerHTML = 	tip ; 
+				new Rico.Effect.FadeTo( 'tooltip_round', 1, 10, 1, {complete:function() { } } );		
+			} 
+		} );
 	}
 
 	function registerajax() {
+		Rico.Corner.round('tooltip_round', {compact:true});
 		var pnameheight = 22;
 		var pheight = (503  - (pnameheight*panels.length) ) ;
 		accordion = new Rico.Accordion( $('configpanel'), { panelHeight: pheight,onHideTab:fademainscreen,onShowTab:showmainscreen });
@@ -257,9 +263,7 @@ if( navigator.userAgent.indexOf("MSIE") != -1 || navigator.userAgent.indexOf("Ko
 		</td>
 		<td valign=top width=250 height="505">
 			<div id="logoutlink" class="mainscreenTooltipBar" align=right style="font-weight:bold;cursor: pointer; cursor: hand;">&nbsp;</div>
-			<div style="margin-left: 4px;">
-			<BR>
-			<font style="margin-left:4px; font-family : Trebuchet MS, Arial, Helvetica, sans-serif;font-size: 11px; font-weight: bold">Tooltips:</font>
+			<div id="tooltip_round" class="tooltip_round">
 			<div id='tooltip' style="margin-left:4px; font-family : Trebuchet MS, Arial, Helvetica, sans-serif;font-size: 11px; "><script>document.write(tooltip_default);</script></div>
 			</div>
 		</td>
