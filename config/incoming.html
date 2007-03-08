@@ -133,12 +133,14 @@ function refreshtable(){
 	}
 	
 	for ( var i in didtrunks ){ // for each trunk
-			if( didtrunks.hasOwnProperty(i) ){ 
-			for(var j in didtrunks[i]){ // for each parttern of the trunk
-				if( j == "trunkname"){ continue;}
+		if( didtrunks.hasOwnProperty(i) ){ 
+			for(var j in didtrunks[i]){ // for each pattern of the trunk
+				if( didtrunks[i].hasOwnProperty(j) ){ 
+					if( j == "trunkname"){ continue;}
 					addrowtotable( j, i, didtrunks[i][j].action, didtrunks[i][j].priority);
+				}
 			}
-			}
+		}
 	}
 
 	if( $('callingRulesTable').rows.length == 0){
