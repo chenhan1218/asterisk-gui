@@ -38,7 +38,7 @@
 				'delete', 'status', 'new', 'save', 'cancel','secret', 'provider', 'zapchan',
 				'trunkstyleanalog','trunkstylevoip','trunkstylecustomvoip', 'name', 'username', 'trunkname', 'callerid',
 				'hasexten', 'hassip', 'hasiax','registeriax','registersip','host','dialformat','context','group',
-				'insecure', 'host', 'fromuser', 'fromdomain','contact');
+				'insecure', 'host', 'fromuser', 'fromdomain','contact','disallow','allow');
 	var provfieldnames = new Array('providerdesc', 'providerlogo');
 	var focus_fields = new Array('provider','username','secret','customvoip_name','customvoip_protocol',
 	'customvoip_host','customvoip_username','customvoip_secret','fromuser','contact');
@@ -164,6 +164,7 @@
 		$('devices').disabled = 0;
 		add_event( $('new') , "click", showSPdetails ) ;
 		loadServiceProvidersintotable();
+		preparemenus();
 		parent.loadscreen(this);
 	}
 
@@ -574,6 +575,9 @@ function addrow_totable(sp_text, sp_value){
 		var sno = $('serviceproviderstable').rows.length + 1;
 		var newRow = $('serviceproviderstable').insertRow(-1);
 		newRow.id = "row" + sp_value; 
+		newRow["sp_value"] = sp_value ;
+		newRow.onmouseover= function(){ this.style.backgroundColor='#F9F0D1'; };
+		newRow.onmouseout=function(){ this.style.backgroundColor='#FFFFFF'; };
 
 		var newCell0 = newRow.insertCell(0);
 		newCell0 .innerHTML = sno ;
@@ -603,6 +607,117 @@ function addrow_totable(sp_text, sp_value){
 		newCell3 .style.width = 120;
 		newCell3 .align = "center";
 
+		/* create menu and its actions */
+		newRow.oncontextmenu = show_mymenu ;
+		newRow.onclick = hide_mymenu ; 
+		/*  End of creating menu */
+}
+
+function hide_mymenu( ) {
+	document.getElementById('mymenu').style.display="none"; 
+}
+
+function show_mymenu(event) {
+	var menu = document.getElementById('mymenu');
+	menu.sp_value = "";
+
+	if(typeof window.scrollX != "undefined"){ //FF
+		var menu_top = event.clientY ;
+		var menu_left = event.clientX;
+		var f = event.target ; 
+	}else{ // IE
+			var menu_top = window.event.clientY ;
+			var menu_left = window.event.clientX;
+			try{ 
+				var f = window.event.srcElement; 
+			}catch(e){
+				menu.style.display = "none";
+				return false;			
+			}
+	}
+
+	if(f.parentNode.sp_value){
+		menu.sp_value = f.parentNode.sp_value ; 
+	}else if( f.parentNode.parentNode.sp_value ){
+		menu.sp_value = f.parentNode.parentNode.sp_value ; 
+	}
+	menu.style.top = menu_top;
+	menu.style.left = menu_left;
+	menu.style.display = "";
+	return false;
+}
+
+
+function preparemenus(){
+	var menu_div = document.getElementById('mymenu') ;
+	menu_div.style.width="90";
+	add_event( document.body , "click", function(){ document.getElementById('mymenu').style.display="none"; } );
+
+	var menuitem1 = document.createElement('div');
+	menuitem1.innerHTML = "Edit" ;
+	menuitem1.onclick =  function(){ hide_mymenu( ); editSP( this.parentNode.sp_value) };
+	menuitem1.onmouseover= function(){  
+			document.getElementById('row'+this.parentNode.sp_value ).style.backgroundColor='#D89B7E';   
+			this.style.backgroundColor='#EFEFEF';  
+	};
+	menuitem1.onmouseout=function(){  
+			document.getElementById('row'+this.parentNode.sp_value ).style.backgroundColor='#FFFFFF';  
+			this.style.backgroundColor='#FFFFFF';  
+	};
+	menu_div.appendChild(menuitem1);
+
+	var menuitem2 = document.createElement('div');
+	menuitem2.innerHTML = "Codecs" ;
+	menuitem2.onclick =  function(){  
+		for(var i=0; i< $('devices').length; i++){
+			if( this.parentNode.sp_value == $('devices').options[i].value ){
+					$('devices').selectitem(i);
+					showCodec_details();
+					break;
+			}
+		}
+	};
+	menuitem2.onmouseover= function(){ 
+		document.getElementById('row'+this.parentNode.sp_value ).style.backgroundColor='#D89B7E';   
+		this.style.backgroundColor='#EFEFEF'; 
+	};
+	menuitem2.onmouseout=function(){ 
+		document.getElementById('row'+this.parentNode.sp_value ).style.backgroundColor='#FFFFFF';  
+		this.style.backgroundColor='#FFFFFF'; 
+	};
+	menu_div.appendChild(menuitem2);
+
+	var menuitem3 = document.createElement('div');
+	menuitem3.innerHTML = "Delete" ;
+	menuitem3.onclick =  function(){  hide_mymenu( );  deleteSP( this.parentNode.sp_value );  };
+	menuitem3.onmouseover= function(){ 
+		document.getElementById('row'+this.parentNode.sp_value ).style.backgroundColor='#D89B7E';   
+		this.style.backgroundColor='#EFEFEF'; 
+	};
+	menuitem3.onmouseout=function(){ 
+		document.getElementById('row'+this.parentNode.sp_value ).style.backgroundColor='#FFFFFF';  
+		this.style.backgroundColor='#FFFFFF'; 
+	};
+	menu_div.appendChild(menuitem3);
+
+}
+
+function codecs_save(){
+	$('save').click( );
+	$('codecs_content').style.display = "none";
+	$('bg_transparent').style.display ='none';
+}
+
+function showCodec_details(){
+		update_div_setordercodecs();
+		$('codecs_content').style.display = "";
+		$('bg_transparent').style.display ='';
+}
+
+function hide_codecs(){
+		$('cancel').click( );
+		$('codecs_content').style.display = "none";
+		$('bg_transparent').style.display ='none';
 }
 
 function editSP(sp_value){
@@ -616,6 +731,108 @@ function editSP(sp_value){
 			}
 	}
 }
+
+
+// Allowed/Disallowed codescs related functions
+function enable_selectedcodec(){
+	// add to allowed
+	selectbox_add("allowed" ,  $('disallowed').value );
+	// remove selected from disallowed
+	selectbox_remove("disallowed", $('disallowed').value );
+	update_ordercodecs();
+}
+function disable_selectedcodec(){
+	// add to disallowed
+	selectbox_add("disallowed" ,  $('allowed').value );
+	// remove selected from allowed
+	selectbox_remove("allowed", $('allowed').value );
+	update_ordercodecs();
+}
+
+function selectbox_add(selectbox_id, codec){
+		switch(codec) {
+		  case 'ulaw': addtosel("u-law","ulaw",selectbox_id) ; break;
+		  case 'alaw': addtosel("a-law","alaw",selectbox_id) ; break;
+		  case 'gsm': addtosel("GSM","gsm",selectbox_id) ; break ;
+		  case 'ilbc': addtosel("ILBC","ilbc",selectbox_id) ; break ;
+		  case 'speex': addtosel("SPEEX","speex",selectbox_id) ; break ;
+		  case 'g726':  addtosel("G.726","g726",selectbox_id) ; break ;
+		  case 'adpcm': addtosel("ADPCM","adpcm",selectbox_id) ; break ;
+		  case 'lpc10': addtosel("LPC10","lpc10",selectbox_id) ; break ;
+		  case 'g729': addtosel("G.729","g729",selectbox_id) ; break ;
+		  default: break
+	   }
+
+	function addtosel(a,b,c){ // a is text, b is value, c is the select box id
+	  var newoption = document.createElement('option');
+	  newoption.text = a ;
+	  newoption.value = b ;
+	  var selectbox = document.getElementById( c );
+	  try {
+		selectbox.add(newoption, null); // standards compliant; doesn't work in IE
+	  }catch(ex) {
+		selectbox.add(newoption); // IE only
+	  }
+	}
+}
+
+function  selectbox_remove(selectbox_id,codec){
+	for (var x=0; x < $(selectbox_id).length; x++){
+		if( $(selectbox_id).options[x].value==codec ){	$(selectbox_id).remove(x);		return true;		}
+	}
+}
+function update_ordercodecs(){ 
+			$('disallow').value = "";
+			$('allow').value = "";
+			if($('disallow_all').checked){
+					$('disallow').value = "all";
+			}else{
+					for (var x=0; x < $('disallowed').length ; x++){
+						if(x==0){
+							$('disallow').value = $('disallowed').options[x].value ;
+						}else{
+							$('disallow').value = $('disallow').value + "," + $('disallowed').options[x].value ;
+						}
+					}
+			}
+
+			for (var x=0; x < $('allowed').length ; x++){
+				if(x==0){ 	
+						$('allow').value = $('allowed').options[x].value ; 
+				}else{
+						$('allow').value = $('allow').value + "," +  $('allowed').options[x].value ; 
+				}
+			}
+			$('save').disabled = false;
+			$('cancel').disabled = false;
+}
+
+function update_div_setordercodecs(){
+		$('disallowed').innerHTML=""; 	$('allowed').innerHTML="";
+		if( $('disallow').value == "all" || $('disallow').value == ""){
+			$('disallow_all').checked = true;
+			selectbox_add("disallowed", "ulaw");
+			selectbox_add("disallowed", "alaw");
+			selectbox_add("disallowed", "gsm");
+			selectbox_add("disallowed", "ilbc");
+			selectbox_add("disallowed", "speex");
+			selectbox_add("disallowed", "g726");
+			selectbox_add("disallowed", "adpcm");
+			selectbox_add("disallowed", "lpc10");
+			selectbox_add("disallowed", "g729");
+		}else{
+			var tmp = $('disallow').value.split(",");
+			for(var x=0; x < tmp.length; x++){
+				selectbox_add("disallowed", tmp[x]);
+			}
+		}
+		var tmp = $('allow').value.split(",");
+		for(var x=0; x < tmp.length; x++){
+			selectbox_add("allowed", tmp[x]);
+			selectbox_remove("disallowed",tmp[x]);
+		}
+}
+
 
 function saveSPdetails(){
 		hideSPdetails();
@@ -715,7 +932,7 @@ function free_mem( ){
 <div style="height:25px;color: #FF0000;" id='status'  class="field_text9"></div>
 <input type='button' id='new' value='Add Service Provider'>
 </center>
-
+<!-- UsersContent DIV -->
 <div id="userscontent" STYLE="display:none; position: absolute; left: 20; top: 40; width:500; height:400;  background-color:#F4EFE5;   border-width: 1px; border-color: #7E5538; border-style: solid; z-index:5">
 	<table width="100%" cellpadding=0 cellspacing=0>
 		<TR bgcolor="#7E5538" style="background-image:url('images/title_gradient.gif');">
@@ -829,6 +1046,42 @@ function free_mem( ){
 <tr><td></td><td align="center"><input type='button' id='save' value='Save' class="buttonbold">&nbsp;<input type='button' id='cancel' value='Cancel' class="buttonbold"></td></tr>
 </table>
 </div>
+<!-- Users content DIV -->
+<!-- Codecs content DIV -->
+<div id="codecs_content" STYLE="display:none; position: absolute; left: 20; top: 125; width:350;  background-color:#F4EFE5;   border-width: 1px; border-color: #7E5538; border-style: solid;z-index:5">
+	<table width="100%" cellpadding=0 cellspacing=0 onmousedown="startDrag(event , 'codecs_content');">
+	<TR bgcolor="#7E5538"  style="background-image:url('images/title_gradient.gif');">
+			<TD Height="20" align="center" style="cursor: move"><font style="color:#FFFFFF; font-size: 12px; font-weight:bold;">Codec Preferences</font></TD>
+		   <TD Height="20" align="right" style="cursor: move"><A href="#" onclick="hide_codecs();"><font style="color:#FFFFFF; font-size: 12px; font-weight:bold;">X</font></A></TD>
+			<TD width=4></TD>
+	</TR>
+	</table>
+	<table align=center>
+		<tr><td><BR></td></tr>
+		<tr><td class="field_text">Allowed</td>
+				<td></td>
+				<td class="field_text">Disallowed</td>
+		</tr>
+		<tr><td><select id="allowed" size=9 class="input8"></select></td>
+				<td><input type="button" id="select_codec" value="<" onclick="enable_selectedcodec()"><BR><input type="button" id="deselect_codec" value=">" onclick="disable_selectedcodec()"></td>
+				<td><select id="disallowed" size=9 class="input8">
+						</select>
+				</td>
+		</tr>
+		<tr><td></td>
+				<td></td>
+				<td class="field_text"><input id='allow' style="display:none"><input id='disallow'  style="display:none"><input type=checkbox id="disallow_all">Disallow All</td>
+		</tr>
+		<tr><td colspan=3 align=Center>
+				<input type="button" class="buttonbold" id="setordercodecs" value="update" onclick="codecs_save( )">&nbsp;&nbsp;
+				<input type="button" class="buttonbold" id="cancel_setorder" value="Cancel" onclick="hide_codecs( )">
+				</td>
+		</tr>
+		<tr><td><BR></td></tr>
+	</table>
+</div>
+<!-- Codecs content DIV -->
+<div id="mymenu" class="mymenu" style="display:none"></div>
 <div id="bg_transparent" STYLE="display:none; position: absolute; left: 0; top: 24; width:100%; height:100%;  background-color:#EFEFEF; -moz-opacity:.50;opacity:.50; border-width: 1px; border-color: #EFEFEF; border-style: solid; z-index:4">
 </div>
 </body>
