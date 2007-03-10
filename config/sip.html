@@ -51,18 +51,31 @@ function disable_selectedcodec(){
 }
 function selectbox_add(selectbox_id, codec){
 		switch(codec) {
-		  case 'ulaw':   $(selectbox_id).innerHTML = $(selectbox_id).innerHTML + '<option value="ulaw">u-law</option>'; break
-		  case 'alaw':   $(selectbox_id).innerHTML = $(selectbox_id).innerHTML + '<option value="alaw">a-law</option>'; break
-		  case 'gsm':   $(selectbox_id).innerHTML = $(selectbox_id).innerHTML + '<option value="gsm">GSM</option>'; break
-		  case 'ilbc':   $(selectbox_id).innerHTML = $(selectbox_id).innerHTML + '<option value="ilbc">ILBC</option>'; break
-		  case 'speex':   $(selectbox_id).innerHTML = $(selectbox_id).innerHTML + '<option value="speex">SPEEX</option>'; break
-		  case 'g726':   $(selectbox_id).innerHTML = $(selectbox_id).innerHTML + '<option value="g726">G.726</option>'; break
-		  case 'adpcm':   $(selectbox_id).innerHTML = $(selectbox_id).innerHTML + '<option value="adpcm">ADPCM</option>'; break
-		  case 'lpc10':   $(selectbox_id).innerHTML = $(selectbox_id).innerHTML + '<option value="lpc10">LPC10</option>'; break
-		  case 'g729':   $(selectbox_id).innerHTML = $(selectbox_id).innerHTML + '<option value="g729">G.729a</option>'; break
+		  case 'ulaw': addtosel("u-law","ulaw",selectbox_id) ; break;
+		  case 'alaw': addtosel("a-law","alaw",selectbox_id) ; break;
+		  case 'gsm': addtosel("GSM","gsm",selectbox_id) ; break ;
+		  case 'ilbc': addtosel("ILBC","ilbc",selectbox_id) ; break ;
+		  case 'speex': addtosel("SPEEX","speex",selectbox_id) ; break ;
+		  case 'g726':  addtosel("G.726","g726",selectbox_id) ; break ;
+		  case 'adpcm': addtosel("ADPCM","adpcm",selectbox_id) ; break ;
+		  case 'lpc10': addtosel("LPC10","lpc10",selectbox_id) ; break ;
+		  case 'g729': addtosel("G.729","g729",selectbox_id) ; break ;
 		  default: break
 	   }
+
+	function addtosel(a,b,c){ // a is text, b is value, c is the select box id
+	  var newoption = document.createElement('option');
+	  newoption.text = a ;
+	  newoption.value = b ;
+	  var selectbox = document.getElementById( c );
+	  try {
+		selectbox.add(newoption, null); // standards compliant; doesn't work in IE
+	  }catch(ex) {
+		selectbox.add(newoption); // IE only
+	  }
+	}
 }
+
 function 	selectbox_remove(selectbox_id,codec){
 	for (var x=0; x < $(selectbox_id).length; x++){
 		if( $(selectbox_id).options[x].value==codec ){	$(selectbox_id).remove(x);		return true;		}
@@ -90,16 +103,14 @@ function update_ordercodecs(){
 						$('allow').value = $('allow').value + "," +  $('allowed').options[x].value ; 
 				}
 			}
+			$('bg_transparent').style.display='none';
 			$('div_setordercodecs').style.display = "none";
-			for (var x =0; x < fieldnames.length; x++) {
-				widgets[fieldnames[x]].disabled = false;
-			}
+		$('save').disabled = false;
+		$('cancel').disabled = false;
 }
 function cancel_ordercodecs(){
-			for (var x =0; x < fieldnames.length; x++) {
-				widgets[fieldnames[x]].disabled = false;
-			}
-			$('div_setordercodecs').style.display = "none";
+	$('bg_transparent').style.display='none';
+	$('div_setordercodecs').style.display = "none";
 }
 function update_div_setordercodecs(){
 		$('disallowed').innerHTML=""; 	$('allowed').innerHTML="";
@@ -126,11 +137,18 @@ function update_div_setordercodecs(){
 			selectbox_remove("disallowed",tmp[x]);
 		}
 
-		for (var x =0; x < fieldnames.length; x++) {
-			widgets[fieldnames[x]].disabled = true;
-		}
+	$('bg_transparent').style.display='';
+	$('div_setordercodecs').style.display='';
+}
 
-	$('div_setordercodecs').style.display='block';
+function disallow_all_refresh(){
+	if( $('disallow_all').checked ){
+		$('disallow').value = "all";
+		$('allow').value = "";
+		update_div_setordercodecs();
+		$('save').disabled = false;
+		$('cancel').disabled = false;
+	}
 }
 // End of Allowed/Disallowed codescs related functions
 </script>
@@ -500,32 +518,7 @@ function update_div_setordercodecs(){
 		<td>&nbsp;<input type='text' id='disallow' class="input8" size=9></td>
 </tr>
 <tr bgcolor="#FFFFFF" ><td align=right>Allowed Codecs:</td>
-		<td>&nbsp;<input type='text' id='allow' class="input8" size=9><input type=button id="sd" value="Edit" onclick="update_div_setordercodecs()">
-					<div style="position:absolute; display:none; left: 160; top: 210; width:350; background-color:#F4EFE5; border-width: 1px; border-color: #7E5538; border-style: solid;" id="div_setordercodecs">
-					<table align=center>
-						<tr><td><BR></td></tr>
-						<tr><td class="field_text">Allowed</td>
-								<td></td>
-								<td class="field_text">Disallowed</td>
-						</tr>
-						<tr><td><select id="allowed" size=9 class="input8"></select></td>
-								<td><input type="button" id="select_codec" value="<" onclick="enable_selectedcodec()"><BR><input type="button" id="deselect_codec" value=">" onclick="disable_selectedcodec()"></td>
-								<td><select id="disallowed" size=9 class="input8">
-										</select>
-								</td>
-						</tr>
-						<tr><td></td>
-								<td></td>
-								<td class="field_text"><input type=checkbox id="disallow_all">Disallow All</td>
-						</tr>
-						<tr><td colspan=3 align=Center>
-								<input type="button" class="buttonbold" id="setordercodecs" value="update" onclick="update_ordercodecs()">&nbsp;&nbsp;
-								<input type="button" class="buttonbold" id="cancel_setorder" value="Cancel" onclick="cancel_ordercodecs()">
-								</td>
-						</tr>
-						<tr><td><BR></td></tr>
-					</table>
-				</div>		
+		<td>&nbsp;<input type='text' id='allow' class="input8" size=9><input type=button id="sd" value="Edit" onclick="update_div_setordercodecs()">		
 		</td>
 </tr>
 
@@ -537,6 +530,39 @@ function update_div_setordercodecs(){
 		<tr><td colspan=2 align=center><input type='button' id='save' value='Save' class="buttonbold">&nbsp;<input type='button' id='cancel' value='Cancel' class="buttonbold"></td></tr>
 		</table>
 </div>
+<div style="position:absolute; display:none; left: 120; top: 70; width:350; background-color:#F4EFE5; border-width: 1px; border-color: #7E5538; border-style: solid;z-index:5" id="div_setordercodecs">
+	<table width="100%" cellpadding=0 cellspacing=0 onmousedown="startDrag(event , 'div_setordercodecs');">
+	<TR bgcolor="#7E5538"  style="background-image:url('images/title_gradient.gif');">
+			<TD Height="20" align="center" style="cursor: move"><font style="color:#FFFFFF; font-size: 12px; font-weight:bold;">Codec Preferences</font></TD>
+		   <TD Height="20" align="right" style="cursor: move"><A href="#" onclick="cancel_ordercodecs();"><font style="color:#FFFFFF; font-size: 12px; font-weight:bold;">X</font></A></TD>
+			<TD width=4></TD>
+	</TR>
+	</table>
+	<table align=center>
+		<tr><td><BR></td></tr>
+		<tr><td class="field_text">Allowed</td>
+				<td></td>
+				<td class="field_text">Disallowed</td>
+		</tr>
+		<tr><td><select id="allowed" size=9 class="input8"></select></td>
+				<td><input type="button" id="select_codec" value="<" onclick="enable_selectedcodec()"><BR><input type="button" id="deselect_codec" value=">" onclick="disable_selectedcodec()"></td>
+				<td><select id="disallowed" size=9 class="input8">
+						</select>
+				</td>
+		</tr>
+		<tr><td></td>
+				<td></td>
+				<td class="field_text"><input type=checkbox id="disallow_all" onclick="disallow_all_refresh();">Disallow All</td>
+		</tr>
+		<tr><td colspan=3 align=Center>
+				<input type="button" class="buttonbold" id="setordercodecs" value="update" onclick="update_ordercodecs()">&nbsp;&nbsp;
+				<input type="button" class="buttonbold" id="cancel_setorder" value="Cancel" onclick="cancel_ordercodecs()">
+				</td>
+		</tr>
+		<tr><td><BR></td></tr>
+	</table>
+</div>
 <div style='visibility:hidden;overflow:hidden;width:0px;height:0px'><select  size="5" id="hiddenfield" style="width:220px"></select></div>
-<div id='tooltip' style="margin-left:5px;height: 60px; width:575px; overflow :auto; font-family : Trebuchet MS, Arial, Helvetica, sans-serif;font-size: 11px; "></div>
+<div id="bg_transparent" STYLE="display:none; position: absolute; left: 0; top: 24; width:100%; height:100%;  background-color:#EFEFEF; -moz-opacity:.50;opacity:.50; border-width: 1px; border-color: #EFEFEF; border-style: solid; z-index:3">
+</div>
 </body>
