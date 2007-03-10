@@ -657,7 +657,7 @@ function preparemenus(){
 	menuitem1.innerHTML = "Edit" ;
 	menuitem1.onclick =  function(){ hide_mymenu( ); editSP( this.parentNode.sp_value) };
 	menuitem1.onmouseover= function(){  
-			document.getElementById('row'+this.parentNode.sp_value ).style.backgroundColor='#D89B7E';   
+			document.getElementById('row'+this.parentNode.sp_value ).style.backgroundColor='#F6E7B6';   
 			this.style.backgroundColor='#EFEFEF';  
 	};
 	menuitem1.onmouseout=function(){  
@@ -678,7 +678,7 @@ function preparemenus(){
 		}
 	};
 	menuitem2.onmouseover= function(){ 
-		document.getElementById('row'+this.parentNode.sp_value ).style.backgroundColor='#D89B7E';   
+		document.getElementById('row'+this.parentNode.sp_value ).style.backgroundColor='#F6E7B6';   
 		this.style.backgroundColor='#EFEFEF'; 
 	};
 	menuitem2.onmouseout=function(){ 
@@ -691,7 +691,7 @@ function preparemenus(){
 	menuitem3.innerHTML = "Delete" ;
 	menuitem3.onclick =  function(){  hide_mymenu( );  deleteSP( this.parentNode.sp_value );  };
 	menuitem3.onmouseover= function(){ 
-		document.getElementById('row'+this.parentNode.sp_value ).style.backgroundColor='#D89B7E';   
+		document.getElementById('row'+this.parentNode.sp_value ).style.backgroundColor='#F6E7B6';   
 		this.style.backgroundColor='#EFEFEF'; 
 	};
 	menuitem3.onmouseout=function(){ 
@@ -831,6 +831,17 @@ function update_div_setordercodecs(){
 			selectbox_add("allowed", tmp[x]);
 			selectbox_remove("disallowed",tmp[x]);
 		}
+}
+
+function disallow_all_refresh(){
+	if( $('disallow_all').checked ){
+		$('disallowed').innerHTML=""; 	$('allowed').innerHTML="";
+		$('disallow').value = "all";
+		$('allow').value = "";
+		update_div_setordercodecs();
+		$('save').disabled = false;
+		$('cancel').disabled = false;
+	}
 }
 
 
@@ -1070,7 +1081,7 @@ function free_mem( ){
 		</tr>
 		<tr><td></td>
 				<td></td>
-				<td class="field_text"><input id='allow' style="display:none"><input id='disallow'  style="display:none"><input type=checkbox id="disallow_all">Disallow All</td>
+				<td class="field_text"><input id='allow' style="display:none"><input id='disallow'  style="display:none"><input type=checkbox id="disallow_all" onclick="disallow_all_refresh();">Disallow All</td>
 		</tr>
 		<tr><td colspan=3 align=Center>
 				<input type="button" class="buttonbold" id="setordercodecs" value="update" onclick="codecs_save( )">&nbsp;&nbsp;
