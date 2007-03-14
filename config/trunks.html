@@ -41,7 +41,7 @@
 				'insecure', 'host', 'fromuser', 'fromdomain','contact','disallow','allow');
 	var provfieldnames = new Array('providerdesc', 'providerlogo');
 	var focus_fields = new Array('provider','username','secret','customvoip_name','customvoip_protocol',
-	'customvoip_host','customvoip_username','customvoip_secret','fromuser','contact', "insecure", "port", "callerid", "fromdomain", "fromuser", "contact");
+	'customvoip_host','customvoip_username','customvoip_secret','fromuser','contact', "insecure", "port", "callerid", "fromdomain", "fromuser", "contact","custom_trunkname");
 
 	var isnewtrunk;
 	var dids_array = [];
@@ -71,7 +71,7 @@
 		var opt = {
 			method: 'get',
 			asynchronous: true,
-			onSuccess: function(t) { },
+			onSuccess: function(t) { callbacks_savechanges_step2(); },
 			onFailure: function(t) {
 				gui_alert("Config Error: " + t.status + ": " + t.statusText);
 				gui_alert("Failed to Rename the DID context for " + old_didcontext );
@@ -283,9 +283,16 @@
 				if ($('fromuser').value == '<DID>') { $('fromuser').value = $('username').value; }
 				$('fromdomain').value = (provider.fieldbyname['fromdomain']) ? provider.fieldbyname['fromdomain'] : '' ;
 			}
+			callbacks_savechanges_step2();
 		}else{
 			if(old_trunkname != $('name').value ){ update_didcontext(old_trunkname, $('name').value); } // rename DID if needed
 		}
+
+		return false;
+	}
+
+
+function callbacks_savechanges_step2(){
 		saveSPdetails();
 		var uri;
 		var newvalue;
@@ -308,15 +315,17 @@
 				$('hiddenglobals').stored_config.catbyname['globals'].fieldbyname[$('devices').value] = newvalue;
 				return true;
 			}else{
-				uri = build_action('delete', 0, 'globals', old_trunkname, "","" );
-				uri += build_action('update', 1, 'globals', $('name').value, newvalue);
+				uri = "";
+				var u =0; 
+				if(old_trunkname){ uri = build_action('delete', u, 'globals', old_trunkname, "","" ); u++; }
+				uri += build_action('update', u , 'globals', $('name').value, newvalue); u++;
 				apply_uri($('hiddenglobals'), uri);
 				$('hiddenglobals').stored_config.catbyname['globals'].fieldbyname[$('name').value] = newvalue;
 				return true;
 			}
 		}
-		return false;
-	}
+}
+
 
 	callbacks.checkparams = function(box) {
 		var needcomma = 0;
@@ -496,7 +505,8 @@
 		$('trunkstylevoip').onclick = null;
 		$('trunkstylecustomvoip').altonclick = $('trunkstylecustomvoip').onclick;
 		$('trunkstylecustomvoip').onclick = null;
-		
+		add_event( $('custom_trunkname') , 'change' , function(){ $('name').value = $('custom_trunkname').value; $('save').disabled = false; }) ;
+
 		for (var x =0; x< fieldnames.length; x++) {
 			widgets[fieldnames[x]] = $(fieldnames[x]);
 			widgets[fieldnames[x]].disabled = true;
@@ -670,6 +680,7 @@ function preparemenus(){
 			if( this.parentNode.sp_value == $('devices').options[i].value ){
 					$('devices').selectitem(i);
 					$('bg_transparent').style.display = "";
+					$('custom_trunkname').value = $('name').value ;
 					$('advanced_content').style.display = "";  
 					break;
 			}
@@ -918,7 +929,6 @@ function free_mem( ){
 }
 
 function advanced_save(){
-	alert( $('save').disabled );
 	$('save').click();
 	$('bg_transparent').style.display = "none";
 	$('advanced_content').style.display = "none";
@@ -1093,7 +1103,7 @@ function advanced_cancel(){
 </div>
 <!-- Codecs content DIV -->
 <!-- Advanced content DIV -->
-<div id="advanced_content" STYLE="display:none; position: absolute; left: 20; top: 125; width:350; height:167;  background-color:#F4EFE5;   border-width: 1px; border-color: #7E5538; border-style: solid;z-index:7">
+<div id="advanced_content" STYLE="display:none; position: absolute; left: 20; top: 125; width:350; height:197;  background-color:#F4EFE5;   border-width: 1px; border-color: #7E5538; border-style: solid;z-index:7">
 	<table width="100%" cellpadding=0 cellspacing=0 onmousedown="startDrag(event , 'advanced_content');">
 	<TR bgcolor="#7E5538"  style="background-image:url('images/title_gradient.gif');">
 			<TD Height="20" align="center" style="cursor: move"><font style="color:#FFFFFF; font-size: 12px; font-weight:bold;">Advanced Settings</font></TD>
@@ -1102,6 +1112,9 @@ function advanced_cancel(){
 	</TR>
 	</table>
 	<table align=center>
+		<tr>	<td class="field_text">trunkname:</td>
+				<td><input id="custom_trunkname" size=14  class="input8"></td>
+		</tr>
 		<tr>	<td class="field_text">insecure:</td>
 				<td><input id="insecure" size=14  class="input8"></td>
 		</tr>
