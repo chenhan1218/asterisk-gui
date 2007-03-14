@@ -60,7 +60,7 @@
 				gui_alert("Config Error: " + t.status + ": " + t.statusText + "<BR><BR>"+ "Failed to create a DID context for " + trunk );
 			}
 		};
-		opt.parameters= "action=updateconfig&reload=yes&srcfilename=" + encodeURIComponent("extensions.conf") + "&dstfilename=" + encodeURIComponent("extensions.conf") + uri;
+		opt.parameters= "action=updateconfig&srcfilename=" + encodeURIComponent("extensions.conf") + "&dstfilename=" + encodeURIComponent("extensions.conf") + uri;
 		var tmp = new Ajax.Request("../../rawman", opt);
 	}
 
@@ -77,7 +77,7 @@
 				gui_alert("Failed to Rename the DID context for " + old_didcontext );
 			}
 		};
-		opt.parameters= "action=updateconfig&reload=yes&srcfilename=" + encodeURIComponent("extensions.conf") + "&dstfilename=" + encodeURIComponent("extensions.conf") + uri;
+		opt.parameters= "action=updateconfig&srcfilename=" + encodeURIComponent("extensions.conf") + "&dstfilename=" + encodeURIComponent("extensions.conf") + uri;
 		var tmp = new Ajax.Request("../../rawman", opt);
 	}
 
@@ -94,7 +94,7 @@
 				gui_alert("Failed to delete DID context for " + trunk);
 			}
 		};
-		opt.parameters= "action=updateconfig&reload=yes&srcfilename=" + encodeURIComponent("extensions.conf") + "&dstfilename=" + encodeURIComponent("extensions.conf") + uri;
+		opt.parameters= "action=updateconfig&srcfilename=" + encodeURIComponent("extensions.conf") + "&dstfilename=" + encodeURIComponent("extensions.conf") + uri;
 		var tmp = new Ajax.Request("../../rawman", opt);
 	}
 

@@ -252,5 +252,3 @@ function show_tooltip(lang, file,tip){
 	tooltips['sysinfo'].en[1] = "<B>ifconfig:</B> Network devices information (ifconfig)";
 	tooltips['sysinfo'].en[2] = "<B>Resources:</B> Disk and Memory usage information";
 	tooltips['sysinfo'].en[3] = "<B>Logs:</B> Asterisk Log files";
-
-

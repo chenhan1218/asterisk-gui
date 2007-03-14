@@ -184,7 +184,7 @@ function login(){
 			asynchronous: true,
 			onComplete: showResponse
 		};
-		opt.parameters="action=login&reload=yes&username="+ $('username').value + "&secret=" + $('secret').value ;
+		opt.parameters="action=login&username="+ $('username').value + "&secret=" + $('secret').value ;
 		var tmp = new Ajax.Request(rawman_url , opt);
 }
 

@@ -33,11 +33,13 @@
 			$('username').disabled = 1;
 			$('secret').disabled = 1;
 			$('logoff').disabled = 0;
+			$('reloadconfig').disabled = 0;
 			$('login').disabled = 1;
 		} else {
 			$('username').disabled = 0;
 			$('secret').disabled = 0;
 			$('logoff').disabled = 1;
+			$('reloadconfig').disabled = 1;
 			$('login').disabled = 0;
 			try{ $('username').focus();	}catch(err){ }
 		}
@@ -195,6 +197,17 @@ function checkExtconfig(originalRequest){
 
 }
 
+function reloadConfig(){
+	var opt = { 
+		method: 'get', 
+		asynchronous: true, 
+		onSuccess: function(t) { parent.gui_alert("Reloaded"); } ,
+		onFailure: function(t) { parent.gui_alert("Config Error: " + t.status + ": " + t.statusText); }
+	};
+	var uri = parent.build_action('renamecat', 0, "","", "", ""); 
+	opt.parameters="action=updateconfig&reload=yes&srcfilename=" + encodeURIComponent("extensions.conf") + "&dstfilename=" + encodeURIComponent("extensions.conf") + uri;
+	var tmp = new Ajax.Request("../../rawman", opt);
+}
 </script>
 <body id="foo" onload="localinit()" topmargin=0  bgcolor="EFEFEF">
 <div class="mainscreenTitleBar">
@@ -215,6 +228,8 @@ function checkExtconfig(originalRequest){
 				</td></tr>
 
 				<tr><td align='center' colspan='2'>
+							<input type="submit" id="reloadconfig" value="Reload Config" disabled=1 onClick="reloadConfig()">
+							&nbsp;&nbsp;&nbsp;&nbsp;
 							<input type="submit" id="login" value="Login" disabled=1 onClick="doLogin()" class="input">
 							&nbsp;&nbsp;&nbsp;&nbsp;
 							<input type="submit" id="logoff" value="Logoff" disabled=1 onClick="doLogoff()" class="input">

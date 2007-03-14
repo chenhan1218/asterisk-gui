@@ -224,7 +224,7 @@
 			}else{
 				uri += build_action('update', p, $('devices').value ,"registeriax", "no" ); p++;
 			}
-			opt.parameters="action=updateconfig&reload=yes&srcfilename=" + encodeURIComponent("users.conf") + "&dstfilename=" + encodeURIComponent("users.conf") + uri;
+			opt.parameters="action=updateconfig&srcfilename=" + encodeURIComponent("users.conf") + "&dstfilename=" + encodeURIComponent("users.conf") + uri;
 			var tmp = new Ajax.Request("../../rawman", opt);
 	}
 

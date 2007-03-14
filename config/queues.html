@@ -73,7 +73,7 @@ function rename_extension(a,b){
 				}
 	};
 	uri0 = build_action('update', 0, specialcontext ,'exten', b+',1,Queue(${EXTEN})', a+',1,Queue(${EXTEN})' ); 
-	opt0.parameters="action=updateconfig&reload=yes&srcfilename=" + encodeURIComponent("extensions.conf") + "&dstfilename=" + encodeURIComponent("extensions.conf") + uri0;
+	opt0.parameters="action=updateconfig&srcfilename=" + encodeURIComponent("extensions.conf") + "&dstfilename=" + encodeURIComponent("extensions.conf") + uri0;
 	tmp0 = new Ajax.Request('../../rawman', opt0);
 }
 
@@ -92,7 +92,7 @@ function add_extension(a){
 				}
 	};
 	uri0 = build_action('append', 0, specialcontext ,'exten', a+',1,Queue(${EXTEN})'); 
-	opt0.parameters="action=updateconfig&reload=yes&srcfilename=" + encodeURIComponent("extensions.conf") + "&dstfilename=" + encodeURIComponent("extensions.conf") + uri0;
+	opt0.parameters="action=updateconfig&srcfilename=" + encodeURIComponent("extensions.conf") + "&dstfilename=" + encodeURIComponent("extensions.conf") + uri0;
 	tmp0 = new Ajax.Request('../../rawman', opt0);
 }
 
@@ -110,7 +110,7 @@ function delete_extension(a){
 				}
 	};
 	uri0 = build_action('delete', 0, specialcontext ,'exten', '',a+',1,Queue(${EXTEN})'); 
-	opt0.parameters="action=updateconfig&reload=yes&srcfilename=" + encodeURIComponent("extensions.conf") + "&dstfilename=" + encodeURIComponent("extensions.conf") + uri0;
+	opt0.parameters="action=updateconfig&srcfilename=" + encodeURIComponent("extensions.conf") + "&dstfilename=" + encodeURIComponent("extensions.conf") + uri0;
 	tmp0 = new Ajax.Request('../../rawman', opt0);
 }
 
@@ -260,7 +260,7 @@ function save_queue(){
 			}
 		}
 
-		opt.parameters="action=updateconfig&reload=yes&srcfilename=" + encodeURIComponent("queues.conf") + "&dstfilename=" + encodeURIComponent("queues.conf") + uri;
+		opt.parameters="action=updateconfig&srcfilename=" + encodeURIComponent("queues.conf") + "&dstfilename=" + encodeURIComponent("queues.conf") + uri;
 		tmp = new Ajax.Request('../../rawman', opt);
 }
 

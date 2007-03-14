@@ -197,7 +197,7 @@ function delete_vmenu_fromlistofmenus(){
 				};
 			var existing_alias_string = voicemenusdata[deleted_voicmenu].alias_exten + ",1,Goto(" + deleted_voicmenu + "|s|1)"  ;
 			var uri = build_action('delete', 0, specialcontext ,"exten", "", existing_alias_string ); 
-			opt.parameters="action=updateconfig&reload=yes&srcfilename=" + encodeURIComponent("extensions.conf") + "&dstfilename=" + encodeURIComponent("extensions.conf") + uri;
+			opt.parameters="action=updateconfig&srcfilename=" + encodeURIComponent("extensions.conf") + "&dstfilename=" + encodeURIComponent("extensions.conf") + uri;
 			var tmp = new Ajax.Request("../../rawman", opt);
 	}
 	delete voicemenusdata[deleted_voicmenu];
@@ -349,7 +349,7 @@ function add_newstep(){
 	}
 
 	uri += build_action('append', 0, $('vmenus').value,"exten", action_string ); 
-	opt.parameters="action=updateconfig&reload=yes&srcfilename=" + encodeURIComponent("extensions.conf") + "&dstfilename=" + encodeURIComponent("extensions.conf") + uri;
+	opt.parameters="action=updateconfig&srcfilename=" + encodeURIComponent("extensions.conf") + "&dstfilename=" + encodeURIComponent("extensions.conf") + uri;
 	tmp = new Ajax.Request('../../rawman', opt);
 
 }
@@ -510,7 +510,7 @@ function save_vmenu(){
 			uri += build_action('append', p, current_vmenu,"exten", buildstring[keys[k]]); p = p+1;
 	}
 
-	opt.parameters="action=updateconfig&reload=yes&srcfilename=" + encodeURIComponent("extensions.conf") + "&dstfilename=" + encodeURIComponent("extensions.conf") + uri;
+	opt.parameters="action=updateconfig&srcfilename=" + encodeURIComponent("extensions.conf") + "&dstfilename=" + encodeURIComponent("extensions.conf") + uri;
 	// send the request
 	tmp = new Ajax.Request('../../rawman', opt);
 }
@@ -615,7 +615,7 @@ function swap_step(a,b){
 	// ok find $('steps').options[a].value in extensions.conf and replace it with tmp1.join() and also replace $('steps').options[b].value with tmp2.join()	
 	uri += build_action('update', 0, $('vmenus').value ,"exten",tmp1.join(), $('steps').options[a].value);
 	uri += build_action('update', 1, $('vmenus').value ,"exten",tmp2.join(), $('steps').options[b].value);
-	opt.parameters="action=updateconfig&reload=yes&srcfilename=" + encodeURIComponent("extensions.conf") + "&dstfilename=" + encodeURIComponent("extensions.conf") + uri;
+	opt.parameters="action=updateconfig&srcfilename=" + encodeURIComponent("extensions.conf") + "&dstfilename=" + encodeURIComponent("extensions.conf") + uri;
 	tmp = new Ajax.Request('../../rawman', opt);
 }
 
@@ -648,7 +648,7 @@ function delete_step(){
 	};	
 	var uri = "";
 	uri += build_action('delete', 0, $('vmenus').value,"exten", "", $('steps').value); 
-	opt.parameters="action=updateconfig&reload=yes&srcfilename=" + encodeURIComponent("extensions.conf") + "&dstfilename=" + encodeURIComponent("extensions.conf") + uri;
+	opt.parameters="action=updateconfig&srcfilename=" + encodeURIComponent("extensions.conf") + "&dstfilename=" + encodeURIComponent("extensions.conf") + uri;
 	tmp = new Ajax.Request('../../rawman', opt);
 }
 

@@ -292,7 +292,7 @@
 														$('save').disabled = true; $('cancel').disabled = true;
 												} 
 									};
-				opt.parameters="action=updateconfig&reload=yes&srcfilename=" + encodeURIComponent("meetme.conf") + "&dstfilename=" + encodeURIComponent("meetme.conf") + uri;
+				opt.parameters="action=updateconfig&srcfilename=" + encodeURIComponent("meetme.conf") + "&dstfilename=" + encodeURIComponent("meetme.conf") + uri;
 				var tmp = new Ajax.Request("../../rawman", opt);
 				return true;
 		}
@@ -310,7 +310,7 @@
 										 f.stored_config.catbyname.rooms.fields.splice(r ,1);
 										}
 						};
-						opt.parameters="action=updateconfig&reload=yes&srcfilename=" + encodeURIComponent("meetme.conf") + "&dstfilename=" + encodeURIComponent("meetme.conf") + uri;
+						opt.parameters="action=updateconfig&srcfilename=" + encodeURIComponent("meetme.conf") + "&dstfilename=" + encodeURIComponent("meetme.conf") + uri;
 						var tmp = new Ajax.Request("../../rawman", opt);
 						break;
 					}

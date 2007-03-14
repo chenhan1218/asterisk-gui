@@ -103,7 +103,7 @@ usercallbacks.loaded = function(){
 							alert("Config Error: " + t.status + ": " + t.statusText);
 						}
 					};
-					opt.parameters="action=updateconfig&reload=yes&srcfilename=" + encodeURIComponent("users.conf") + "&dstfilename=" + encodeURIComponent("users.conf") + "&Action-000000=update&Cat-000000=general&Var-000000=localextenlength&Value-000000=4"; ;
+					opt.parameters="action=updateconfig&srcfilename=" + encodeURIComponent("users.conf") + "&dstfilename=" + encodeURIComponent("users.conf") + "&Action-000000=update&Cat-000000=general&Var-000000=localextenlength&Value-000000=4"; ;
 					var tmp = new Ajax.Request(rawman_url, opt);
 		}
 }

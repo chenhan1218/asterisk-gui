@@ -76,7 +76,7 @@ function addthe_default_callingplan(){
 			alert("Config Error: " + t.status + ": " + t.statusText);
 		}
 	};
-	opt.parameters= "action=updateconfig&reload=yes&srcfilename=" + encodeURIComponent("extensions.conf") + "&dstfilename=" + encodeURIComponent("extensions.conf") + uri;
+	opt.parameters= "action=updateconfig&srcfilename=" + encodeURIComponent("extensions.conf") + "&dstfilename=" + encodeURIComponent("extensions.conf") + uri;
 	var tmp = new Ajax.Request(rawman_url, opt);
 }
 
@@ -267,7 +267,7 @@ function delete_callingrule(a,b,oncomplete){
 				alert("Config Error: " + t.status + ": " + t.statusText);
 			}
 		};
-		opt.parameters= "action=updateconfig&reload=yes&srcfilename=" + encodeURIComponent("extensions.conf") + "&dstfilename=" + encodeURIComponent("extensions.conf") + uri;
+		opt.parameters= "action=updateconfig&srcfilename=" + encodeURIComponent("extensions.conf") + "&dstfilename=" + encodeURIComponent("extensions.conf") + uri;
 		$('userscontent').style.display="none";
 		$('bg_transparent').style.display='none';
 		$('status_message').style.display="block";
@@ -407,7 +407,7 @@ function add_rule_fromeditform( this_priority, oncomplete ){
 							alert("Config Error: " + t.status + ": " + t.statusText);
 						}
 					};
-					opt.parameters= "action=updateconfig&reload=yes&srcfilename=" + encodeURIComponent("extensions.conf") + "&dstfilename=" + encodeURIComponent("extensions.conf") + uri;
+					opt.parameters= "action=updateconfig&srcfilename=" + encodeURIComponent("extensions.conf") + "&dstfilename=" + encodeURIComponent("extensions.conf") + uri;
 					$('userscontent').style.display="none";
 					$('bg_transparent').style.display='none';
 					$('status_message').style.display="block";

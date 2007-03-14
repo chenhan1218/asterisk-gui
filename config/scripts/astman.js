@@ -183,7 +183,6 @@ function toJSON(z, p){
 	return json_data ;
 }
 
-
 function setWindowTitle(a){
 	top.document.title = asterisk_guiappname + " -- " + a ;
 }
@@ -230,7 +229,6 @@ function movewindow(event){
 	  if( tmp_top > 0 && tmp_top < dragdata.maxtop ){ $(dragdata.movethis).style.top  = tmp_top + "px"; }
 }
 
-
 function check_patternonfields(fields){
 	// for checking validity of field contents before form submitting 
 	for (var i=0; i < fields.length; i++){
@@ -260,8 +258,6 @@ function showdiv_statusmessage(){
 		h.innerHTML = "<BR><BR><TABLE border=0 cellpadding=0 cellspacing=3 align=\"center\"> <TR>	<TD><img src=\"images/loading.gif\"></TD> <TD valign=\"middle\" align=\"center\">&nbsp;&nbsp;<div id=\"message_text\"></div></TD> </TR> </TABLE> ";
 		document.body.appendChild(h);
 }
-
-
 
 function combo_box(a, b, c ){	
 		var combo_text = document.getElementById(a);
@@ -303,7 +299,6 @@ function combo_box(a, b, c ){
 				combo_selectdiv.style.display = "none";				
 		}
 
-
 		function	efgh(event) {
 				if( event.keyCode == ENTER ){
 						combo_text.value = combo_selectbox.value;
@@ -337,7 +332,6 @@ function combo_box(a, b, c ){
 	add_event( combo_selectbox, 'keypress' , efgh ) ;
 	add_event( combo_selectbox, 'click' , ijkl ) ;
 
-
 		function combobox_activate(){
 				var tmp_left = combo_text.offsetLeft;
 				var tmp_top = combo_text.offsetTop + combo_text.offsetHeight;
@@ -354,8 +348,6 @@ function combo_box(a, b, c ){
 		}
 }
 
-
-
 function  InArray(search_array, searchstring ){
 	var i = search_array.length
 	if( i>0){
@@ -367,7 +359,6 @@ function  InArray(search_array, searchstring ){
 
 	return false;	
 }
-
 
 function objcopy(orig) {
 	var copy = new Object;
@@ -381,11 +372,7 @@ function objcopy(orig) {
 	return copy;
 };
 
-
-
-
-function do_compare(box, a, b)
-{
+function do_compare(box, a, b){
 	var ret;
 	if (box.callbacks.compare) {
 		return box.callbacks.compare(box, a,b);
@@ -394,13 +381,7 @@ function do_compare(box, a, b)
 	return false;
 }
 
-
-
-
-
-
-function insert_option(box, res, value, core_name)
-{
+function insert_option(box, res, value, core_name){
 	var z;
 	if (res) {
 		var opt_new = document.createElement('option');
@@ -426,8 +407,7 @@ function insert_option(box, res, value, core_name)
 	}
 }
 
-function reformat_option(box, index)
-{
+function reformat_option(box, index){
 	var v, tmp, res;
 	var cfg = box.stored_config;
 	
@@ -444,8 +424,7 @@ function reformat_option(box, index)
 	}
 }
 
-function update_option(box, index)
-{
+function update_option(box, index){
 	var v, tmp;
 	var cfg = box.stored_config;
 	v = box.options[index].value;
@@ -494,19 +473,6 @@ function update_box(box) {
 	}
 	select_item(box);
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 function select_item(box, errmsg) {
 	var category;
@@ -565,22 +531,6 @@ function select_item(box, errmsg) {
 	return true;
 };
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 function cancel_item(box) {
 	var tmp = box.options[box.selectedIndex].value.split(']');
 	if (tmp.length > 1) {
@@ -611,22 +561,6 @@ function cancel_item(box) {
 	}
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 function first_free_exten(box, start) {
 	var x = start;
 	var y;
@@ -642,10 +576,6 @@ function first_free_exten(box, start) {
 	return x;
 }
 
-
-
-
-
 function action_issuccess(responseText) {
 	if ( responseText.indexOf("Response: Success") == -1 ){
 			return false;
@@ -658,7 +588,6 @@ function action_errmsg (responseText){
 	var tmp = responseText.split("Message:");
 	return tmp[1];
 }
-
 
 function delete_item(box, value, noconfirm) {
 	var opt = {
@@ -675,7 +604,6 @@ function delete_item(box, value, noconfirm) {
 //			}else{
 //				alert( action_errmsg (t.responseText) );
 //			}
-
 		},
 		onFailure: function(t) {
 			gui_alert("Config Error: " + t.status + ": " + t.statusText);
@@ -724,7 +652,7 @@ function delete_item(box, value, noconfirm) {
 				box.widgets['status'].innerHTML = "<i>Deleted.</i>";
 		} else {
 			uri = build_action('delete', 0, tmp[0], subname, "", suborig);
-			opt.parameters="action=updateconfig&reload=yes&srcfilename=" + encodeURIComponent(box.config_file) + "&dstfilename=" +
+			opt.parameters="action=updateconfig&srcfilename=" + encodeURIComponent(box.config_file) + "&dstfilename=" +
 						encodeURIComponent(box.config_file) + uri;
 			tmp = new Ajax.Request(box.engine.url, opt);
 		}
@@ -745,7 +673,7 @@ function delete_item(box, value, noconfirm) {
 				box.widgets['status'].innerHTML = "<i>Deleted.</i>";
 		} else {
 			uri = build_action('delcat', 0, value, "", "");
-			opt.parameters="action=updateconfig&reload=yes&srcfilename=" + encodeURIComponent(box.config_file) + "&dstfilename=" +
+			opt.parameters="action=updateconfig&srcfilename=" + encodeURIComponent(box.config_file) + "&dstfilename=" +
 						encodeURIComponent(box.config_file) + uri;
 			tmp = new Ajax.Request(box.engine.url, opt);
 		}
@@ -769,30 +697,6 @@ function delete_item(box, value, noconfirm) {
 		select_item(box);
 	}
 };
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 function new_item(box) {
 	var category = null;
@@ -841,24 +745,6 @@ function new_item(box) {
 		//box.widgets['name'].focus();
 	}
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 function new_subitem(box) {
 	var name = null;
@@ -916,12 +802,7 @@ function new_subitem(box) {
 		box.widgets['name'].value = name;
 }
 
-
-
-
-
-function apply_uri(box, uri)
-{
+function apply_uri(box, uri){
 	var opt = {
 		method: 'get',
 		asynchronous: true,
@@ -945,25 +826,10 @@ function apply_uri(box, uri)
 	};
 	var tmp;
 	
-	opt.parameters="action=updateconfig&reload=yes&srcfilename=" + encodeURIComponent(box.config_file) + "&dstfilename=" +
+	opt.parameters="action=updateconfig&srcfilename=" + encodeURIComponent(box.config_file) + "&dstfilename=" +
 				encodeURIComponent(box.config_file) + uri;
 	tmp = new Ajax.Request(box.engine.url, opt);
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 function save_item(box) {
@@ -1042,7 +908,7 @@ function save_item(box) {
 				}
 			} else
 				box.remove(box.selectedIndex);
-			opt.parameters="action=updateconfig&reload=yes&srcfilename=" + encodeURIComponent(box.config_file) + "&dstfilename=" +
+			opt.parameters="action=updateconfig&srcfilename=" + encodeURIComponent(box.config_file) + "&dstfilename=" +
 						encodeURIComponent(box.config_file) + uri;
 			temp = new Ajax.Request(box.engine.url, opt);
 		}
@@ -1088,7 +954,7 @@ function save_item(box) {
 					box.remove(box.selectedIndex);
 				}
 			}
-			opt.parameters="action=updateconfig&reload=yes&srcfilename=" + encodeURIComponent(box.config_file) + "&dstfilename=" +
+			opt.parameters="action=updateconfig&srcfilename=" + encodeURIComponent(box.config_file) + "&dstfilename=" +
 						encodeURIComponent(box.config_file) + uri;
 			temp = new Ajax.Request(box.engine.url, opt);
 		}
@@ -1105,37 +971,7 @@ function save_item(box) {
 	}
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-function ast_true(s)
-{
+function ast_true(s){
 	if ((s == 'yes') ||
 		(s == 'true') ||
 		(s == 'y') ||
@@ -1147,19 +983,7 @@ function ast_true(s)
 		return false;
 }
 
-
-
-
-
-
-
-
-
-
-
-
-function build_action(action, count, cat, name, value, match)
-{
+function build_action(action, count, cat, name, value, match){
 	var s="";
 	var cnt = "" + count;
 	while(cnt.length < 6)
@@ -1174,11 +998,7 @@ function build_action(action, count, cat, name, value, match)
 	return s;
 }
 
-
-
-
-function check_pattern(pattern, text)
-{
+function check_pattern(pattern, text){
 	if(typeof text != "undefined"){
 		if (text.search(pattern) == -1)
 				return false;
@@ -1187,10 +1007,6 @@ function check_pattern(pattern, text)
 	}
 	return true;
 }
-
-
-
-
 
 
 function Astman() {
@@ -1926,17 +1742,6 @@ function Astman() {
 		return null;
 	}
 	
-
-
-
-
-
-
-
-
-
-
-
 	function format_extension(box, t, x, multipriority) {
 		var tmp;
 		var exten, app, rest, args, label, priority;
@@ -1944,7 +1749,6 @@ function Astman() {
 			return null;
 		tmp = t.fields[x].split(',');
 		priority = tmp[1];
-
 
 		// if it is a Voicemenu alias .. return "extension -- Voicemenu"
 		if ( tmp[2].match("Goto") && tmp[2].match("voicemenu-custom-" )  ){
@@ -1966,7 +1770,6 @@ function Astman() {
 				}
 		}
 		//
-
 
 		if (!multipriority && (tmp[1] != '1'))
 			return null;
@@ -2014,11 +1817,9 @@ function Astman() {
 		}
 	}	
 
-
 function merge_users(e, u) { 			// read u and add into e according to sort order
 	merge_extensions(e, u);
 }
-
 
 function merge_extensions(u, e) {			// read e and add into u according to sort order
 	var t = e.options.length ;

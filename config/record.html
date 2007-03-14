@@ -125,7 +125,7 @@ function save_recordedvmenuname( filename_torecord ){
 		};
 					
 		var uri = build_action('newcat', 0, filename_torecord ,"", ""); 
-		opt2.parameters ="action=updateconfig&reload=yes&srcfilename=" + encodeURIComponent(custom_voicemenusfile) + "&dstfilename=" + encodeURIComponent(custom_voicemenusfile) + uri;
+		opt2.parameters ="action=updateconfig&srcfilename=" + encodeURIComponent(custom_voicemenusfile) + "&dstfilename=" + encodeURIComponent(custom_voicemenusfile) + uri;
 		var tmp2 = new Ajax.Request("../../rawman", opt2);
 }
 

@@ -322,7 +322,7 @@ function save_new_incomingrule(){
 			}
 		};
 
-		opt.parameters="action=updateconfig&reload=yes&srcfilename=" + encodeURIComponent("extensions.conf") + "&dstfilename=" + encodeURIComponent("extensions.conf") + uri;
+		opt.parameters="action=updateconfig&srcfilename=" + encodeURIComponent("extensions.conf") + "&dstfilename=" + encodeURIComponent("extensions.conf") + uri;
 		var tmp = new Ajax.Request("../../rawman", opt);
 	// 
 }
@@ -393,7 +393,7 @@ function update_incomingrule(){
 			gui_alert("Config Error: " + t.status + ": " + t.statusText);
 		}
 	};
-	opt.parameters="action=updateconfig&reload=yes&srcfilename=" + encodeURIComponent("extensions.conf") + "&dstfilename=" + encodeURIComponent("extensions.conf") + uri;
+	opt.parameters="action=updateconfig&srcfilename=" + encodeURIComponent("extensions.conf") + "&dstfilename=" + encodeURIComponent("extensions.conf") + uri;
 	var tmp = new Ajax.Request("../../rawman", opt);
 
 }
@@ -452,7 +452,7 @@ function delete_incomingrule(a,b,c,d){ // a is pattern, b is DID_trunk, c is act
 			var tmp2_match = "s," + d + "," + c ;
 			uri += build_action('delete',1,b,"exten","", tmp2_match);
 		}
-		opt.parameters="action=updateconfig&reload=yes&srcfilename=" + encodeURIComponent("extensions.conf") + "&dstfilename=" + encodeURIComponent("extensions.conf") + uri;
+		opt.parameters="action=updateconfig&srcfilename=" + encodeURIComponent("extensions.conf") + "&dstfilename=" + encodeURIComponent("extensions.conf") + uri;
 		var tmp = new Ajax.Request("../../rawman", opt);
 }
 
