@@ -1,11 +1,12 @@
 <!--
- * Asterisk -- An open source telephony toolkit.
+ * Asterisk-GUI	-	an Asterisk configuration interface
  *
- * Configuration for "Users" generally
+ * Configure accounts in jingle.conf
  *
- * Copyright (C) 1999 - 2006, Digium, Inc.
+ * Copyright (C) 2006-2007, Digium, Inc.
  *
  * Mark Spencer <markster@digium.com>
+ * Pari Nannapaneni <pari@digium.com>
  *
  * See http://www.asterisk.org for more information about
  * the Asterisk project. Please do not directly contact
@@ -18,7 +19,6 @@
  * at the top of the source tree.
  *
 -->
-
 <script src="scripts/prototype.js"></script>
 <script src="scripts/rico.js"></script>
 <script src="scripts/astman.js"></script>
@@ -158,7 +158,6 @@ function update_div_setordercodecs(){
 
 function localajaxinit() {
 			setWindowTitle("Jingle");
-			// Load the jabber.conf->users into the Users, associate the field to other fields
 			parent.loadscreen(this);
 			for (var x =0; x < fieldnames.length; x++) {
 				widgets[fieldnames[x]] = $(fieldnames[x]);
