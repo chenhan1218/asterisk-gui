@@ -34,15 +34,13 @@
 	var phonecallbacks = new Object;
 	var providercallbacks = new Object;
 	var globalvars = new Object;
-	var fieldnames = new Array(
-				'delete', 'status', 'new', 'save', 'cancel','secret', 'provider', 'zapchan',
-				'trunkstyleanalog','trunkstylevoip','trunkstylecustomvoip', 'name', 'username', 'trunkname', 'callerid',
-				'hasexten', 'hassip', 'hasiax','registeriax','registersip','host','dialformat','context','group',
-				'insecure', 'host', 'fromuser', 'fromdomain','contact','disallow','allow');
-	var provfieldnames = new Array('providerdesc', 'providerlogo');
-	var focus_fields = new Array('provider','username','secret','customvoip_name','customvoip_protocol',
-	'customvoip_host','customvoip_username','customvoip_secret','fromuser','contact', "insecure", "port", "callerid", "fromdomain", "fromuser", "contact","custom_trunkname");
+	var fieldnames =[ 'allow','callerid','cancel','contact','context','delete','dialformat','disallow','fromdomain','fromuser','group','hasexten','hasiax','hassip','host','insecure',
+			'name','new','port','provider','registeriax','registersip','save','secret','status','trunkname','trunkstyleanalog','trunkstylecustomvoip',
+			'trunkstylevoip','username','zapchan'];
 
+	var provfieldnames = ['providerdesc', 'providerlogo'];
+	var focus_fields = ['callerid','contact','custom_trunkname','customvoip_host','customvoip_name','customvoip_protocol','customvoip_secret','customvoip_username',
+			'fromdomain','fromuser','insecure','port','provider','secret','username'] ;
 	var isnewtrunk;
 	var dids_array = [];
 	var old_trunkname;
