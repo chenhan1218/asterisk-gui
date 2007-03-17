@@ -33,8 +33,11 @@
 	var phonecallbacks = new Object;
 	var extencallbacks = new Object;
 	var numcallbacks = new Object;
-	var fieldnames = new Array( 'delete', 'status', 'new', 'save', 'cancel','name','fullname','secret','email','cid_number','zapchan','context', 'hasvoicemail','hasdirectory','hassip','hasiax','hasmanager','callwaiting','threewaycalling','mailbox','hasagent','group','host','vmsecret');
-	var focus_fields = new Array( 'name','fullname','secret','email','cid_number','zapchan','context','vmsecret');
+
+	var fieldnames = ['callwaiting' ,'cancel' ,'cid_number' ,'context' ,'delete' ,'email' ,'fullname' ,'group' ,'hasagent' ,'hasdirectory' ,'hasiax' ,'hasmanager' ,'hassip' ,'hasvoicemail' ,'host' ,'mailbox' ,'name' ,'new' ,'save' ,'secret' ,'status' ,'threewaycalling' ,'vmsecret' ,'zapchan'];
+
+	var focus_fields = ['cid_number' ,'context' ,'email' ,'fullname' ,'name' ,'secret' ,'vmsecret' ,'zapchan'] ;
+
 	var localextenlength = 4;
 	var allow_aliasextns = "no";
 	var allow_an_extns = "no" ;

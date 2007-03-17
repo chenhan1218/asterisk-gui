@@ -36,12 +36,8 @@ var callbacks = new Object;
 var phonecallbacks = new Object;
 var providercallbacks = new Object;
 var globalvars = new Object;
-var fieldnames = new Array(
-			'delete', 'status', 'new', 'save', 'cancel','secret', 'provider', 'zapchan',
-			'trunkstyleanalog','trunkstylevoip','trunkstylecustomvoip', 'name', 'username', 'trunkname', 'callerid',
-			'hasexten', 'hassip', 'hasiax','registeriax','registersip','host','dialformat','context','group',
-			'insecure', 'host', 'fromuser', 'fromdomain');
-			
+var fieldnames = ['callerid', 'cancel', 'context', 'delete', 'dialformat', 'fromdomain', 'fromuser', 'group', 'hasexten', 'hasiax', 'hassip', 'host', 'host', 'insecure', 'name', 'new', 'provider', 'registeriax', 'registersip', 'save', 'secret', 'status', 'trunkname', 'trunkstyleanalog', 'trunkstylecustomvoip', 'trunkstylevoip', 'username', 'zapchan'];
+
 var provfieldnames = new Array('providerdesc', 'providerlogo');
 var isnewtrunk;
 var dids_array = [];

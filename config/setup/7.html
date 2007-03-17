@@ -36,7 +36,8 @@ var callbacks = new Object;
 var phonecallbacks = new Object;
 var numcallbacks = new Object;
 var extencallbacks = new Object;
-var fieldnames = new Array( 'delete', 'status', 'new', 'save', 'cancel','name','fullname','secret','email','cid_number','zapchan','context','hasvoicemail','hasdirectory','hassip','hasiax','hasmanager','callwaiting','threewaycalling','mailbox','hasagent','group','host');
+var fieldnames = ['callwaiting', 'cancel', 'cid_number', 'context', 'delete', 'email', 'fullname', 'group', 'hasagent', 'hasdirectory', 'hasiax', 'hasmanager', 'hassip', 'hasvoicemail', 'host', 'mailbox', 'name', 'new', 'save', 'secret', 'status', 'threewaycalling', 'zapchan'];
+
 var allow_aliasextns;
 
 callbacks.format = function(t) {

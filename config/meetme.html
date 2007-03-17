@@ -35,7 +35,8 @@
 	var meetmecallbacks = { };
 	var localextenlength;
 	var temp_selectedexten;
-	var fieldnames = new Array( 'name', 'delete', 'status', 'newitem', 'music','menu', 'announce','room','record','waitmarked','setmarked','quiet','save', 'cancel') ;
+	var fieldnames = ['announce', 'cancel', 'delete', 'menu', 'music', 'name', 'newitem', 'quiet', 'record', 'room', 'save', 'setmarked', 'status', 'waitmarked'];
+
 	var focus_fields = new Array('name','room', 'pin','pinadmin');
 	function changed_extension() {
 		var app;

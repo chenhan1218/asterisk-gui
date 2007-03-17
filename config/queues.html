@@ -36,9 +36,8 @@ var callbacks = new Object;
 var widgets = new Array;
 var queueagents = new  Array;
 var queuenames = new Array;
-var fieldnames = new Array( 'name', 'delete','save', 'status', 'new', 'cancel','fullname', 'strategy', 'timeout', 'wrapuptime','autofill','autopause','maxlen', 'joinempty',  'leavewhenempty', 'reportholdtime','agents','musicclass');
-var focus_fields = new Array('name','fullname','strategy','timeout','wrapuptime','maxlen','musicclass');
-
+var fieldnames = ['agents', 'autofill', 'autopause', 'cancel', 'delete', 'fullname', 'joinempty', 'leavewhenempty', 'maxlen', 'musicclass', 'name', 'new', 'reportholdtime', 'save', 'status', 'strategy', 'timeout', 'wrapuptime'];
+var focus_fields = ['fullname', 'maxlen', 'musicclass', 'name', 'strategy', 'timeout', 'wrapuptime'];
 var k =0;
 var j = -1; 
 var extensions_conf_qs = new Array;
