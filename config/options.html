@@ -43,100 +43,95 @@ function cancel_guisettings(){
 }
 
 function	update_guisettings_manager(){
-		var _bindaddr = _$('bindaddr') ;
-		var _bindport = _$('bindport') ;
-		var _httptimeout = _$('httptimeout');
+	var _bindaddr = _$('bindaddr') ;
+	var _bindport = _$('bindport') ;
+	var _httptimeout = _$('httptimeout');
 
-		if( _bindaddr.value==""){
-			gui_alert("Please enter a Bind Address");
-			_bindaddr.focus();
-			return true;
-		}
-		if( _bindport.value==""){
-			gui_alert("Please enter a Port number");
-			_bindport.focus();
-			return true;
-		}
-		if(_httptimeout.value==""){
-			gui_alert("Please enter Http TimeOut in seconds");
-			_httptimeout.focus();
-			return true
-		}
-		var _sm = $('status_message').style ;
-		_sm.display ="";
-		setTimeout(function(){ _sm.display ='none'; },3000);
+	if( _bindaddr.value==""){
+		gui_alert("Please enter a Bind Address");
+		_bindaddr.focus();
+		return true;
+	}
+	if( _bindport.value==""){
+		gui_alert("Please enter a Port number");
+		_bindport.focus();
+		return true;
+	}
+	if(_httptimeout.value==""){
+		gui_alert("Please enter Http TimeOut in seconds");
+		_httptimeout.focus();
+		return true
+	}
+	var _sm = $('status_message').style ;
+	_sm.display ="";
+	setTimeout(function(){ _sm.display ='none'; },3000);
 	var opt = {
-			method: 'get',
-			asynchronous: true,
-			onSuccess: function() { 
-				update_guisettings_http();
-			},
-			onFailure: function(t) {
-				_sm.display ='none';
-				gui_alert("Config Error: " + t.status + ": " + t.statusText);
-			}
-		};
-		opt.parameters ="action=updateconfig&srcfilename=manager.conf&dstfilename=manager.conf&Action-000000=update&Cat-000000=general&Var-000000=httptimeout&Value-000000="+ encodeURIComponent(_httptimeout.value);
-		var tmp = new Ajax.Request("../../rawman", opt);
-		return;
+		method: 'get',
+		asynchronous: true,
+		onSuccess: function() { 
+			update_guisettings_http();
+		},
+		onFailure: function(t) {
+			_sm.display ='none';
+			gui_alert("Config Error: " + t.status + ": " + t.statusText);
+		}
+	};
+	opt.parameters ="action=updateconfig&srcfilename=manager.conf&dstfilename=manager.conf&Action-000000=update&Cat-000000=general&Var-000000=httptimeout&Value-000000="+ encodeURIComponent(_httptimeout.value);
+	var tmp = new Ajax.Request("../../rawman", opt);
+	return;
 }
 
 
 function update_guisettings_http(){
-		var _bindaddr = _$('bindaddr') ;
-		var _bindport = _$('bindport') ;
-		var _httptimeout = _$('httptimeout');
+	var _bindaddr = _$('bindaddr') ;
+	var _bindport = _$('bindport') ;
+	var _httptimeout = _$('httptimeout');
 
-		var opt = {
-			method: 'get',
-			asynchronous: true,
-			onSuccess: function() { 
-				_$('status_message').style.display='none';
-				_$('status').innerHTML = " <I> Configuration Saved ! </I>";
-				_$('save').disabled=true;
-				_$('cancel').disabled=true;
-				if( default_bindaddress != _bindaddr.value || default_port != _bindport.value ){
-					gui_alert("Port/IP settings of the GUI have been updated !! \n\n You will now be redirected to the new IP/Port ");
-					var previousurl =  parent.window.location.href.split("/");
-					parent.window.location.href = location.protocol + "//" + _bindaddr.value + ":" + _bindport.value + "/asterisk/static/config/" + previousurl[previousurl.length-1] ;
-				}
-				default_port = _bindport.value ;
-			},
-			onFailure: function(t) {
-				gui_alert("Config Error: " + t.status + ": " + t.statusText);
+	var opt = {
+		method: 'get',
+		asynchronous: true,
+		onSuccess: function() { 
+			_$('status_message').style.display='none';
+			_$('status').innerHTML = " <I> Configuration Saved ! </I>";
+			_$('save').disabled=true;
+			_$('cancel').disabled=true;
+			if( default_bindaddress != _bindaddr.value || default_port != _bindport.value ){
+				gui_alert("Port/IP settings of the GUI have been updated !! \n\n You will now be redirected to the new IP/Port ");
+				var previousurl =  parent.window.location.href.split("/");
+				parent.window.location.href = location.protocol + "//" + _bindaddr.value + ":" + _bindport.value + "/asterisk/static/config/" + previousurl[previousurl.length-1] ;
 			}
-		};
-		opt.parameters ="action=updateconfig&srcfilename=http.conf&dstfilename=http.conf&Action-000000=update&Cat-000000=general&Var-000000=bindport&Value-000000="+ encodeURIComponent(_bindport.value) + "&Action-000001=update&Cat-000001=general&Var-000001=bindaddr&Value-000001=" + encodeURIComponent( _bindaddr.value );
-		var tmp = new Ajax.Request("../../rawman", opt);
+			default_port = _bindport.value ;
+		},
+		onFailure: function(t) {
+			gui_alert("Config Error: " + t.status + ": " + t.statusText);
+		}
+	};
+	opt.parameters ="action=updateconfig&srcfilename=http.conf&dstfilename=http.conf&Action-000000=update&Cat-000000=general&Var-000000=bindport&Value-000000="+ encodeURIComponent(_bindport.value) + "&Action-000001=update&Cat-000001=general&Var-000001=bindaddr&Value-000001=" + encodeURIComponent( _bindaddr.value );
+	var tmp = new Ajax.Request("../../rawman", opt);
 }
 
 
 function showResponse(originalRequest)	{
-		var v = originalRequest.responseText.split("Success");
-		if( v.length > 1 ){
-			gui_alert("Password Updated!!  \n\n You will be now redirected to the login page \n You must relogin using your new password") ;
-			window.location.href=window.location.href;
-		}else{
-			_$('status').innerHTML= originalRequest.responseText ;
-			return;
-		}
+	var v = originalRequest.responseText.split("Success");
+	if( v.length > 1 ){
+		alert("Password Updated!!  \n\n You will be now redirected to the login page \n You must relogin using your new password") ;
+		window.location.href=window.location.href;
+	}else{
+		_$('status').innerHTML= originalRequest.responseText ;
+		return;
+	}
 }
 
 function askforRelogin(){
-			gui_alert("Password Updated Successfully!!  \n\n You will now be redirected to the login page \n You must relogin using your new password") ;
-			var opt2 = {
-				method: 'get',
-				asynchronous: true,
-				onSuccess: function() {	 
-						// reload the browser URL
-						parent.window.location.href=parent.window.location.href;
-				},
-				onFailure: function(t) {
-					gui_alert("Config Error: " + t.status + ": " + t.statusText);
-				}
-			};
-			opt2.parameters ="action=logoff";
-			var tmp2 = new Ajax.Request("../../rawman", opt2);
+	alert("Password Updated Successfully!!  \n\n You will now be redirected to the login page \n You must relogin using your new password") ;
+	var opt2 = {
+		method: 'get',
+		asynchronous: true,
+		onSuccess: function() { parent.window.location.href = parent.window.location.href; },
+		onFailure: function(t) { gui_alert("Config Error: " + t.status + ": " + t.statusText); }
+	};
+	opt2.parameters ="action=logoff";
+	var tmp2 = new Ajax.Request("../../rawman", opt2);
 }
 
 function changepassword(){
@@ -154,19 +149,14 @@ function changepassword(){
 	}
 
 	var opt = {
-			method: 'get',
-			asynchronous: true,
-			//onComplete: showResponse		// this is the better way to do it but http server is returning a 500 error
-			onSuccess: function() { 
-						askforRelogin();
-			},
-			onFailure: function(t) {
-				gui_alert("Config Error: " + t.status + ": " + t.statusText);
-			}
-		};
-		opt.parameters ="action=updateconfig&srcfilename=manager.conf&dstfilename=manager.conf&Action-000000=update&Cat-000000=" + current_username + "&Var-000000=secret&Value-000000="+ encodeURIComponent( _newpass.value );
-		var tmp = new Ajax.Request("../../rawman", opt);
-		return;
+		method: 'get',
+		asynchronous: true,
+		onSuccess: function() { askforRelogin(); },
+		onFailure: function(t) { gui_alert("Config Error: " + t.status + ": " + t.statusText); }
+	};
+	opt.parameters ="action=updateconfig&srcfilename=manager.conf&dstfilename=manager.conf&Action-000000=update&Cat-000000=" + current_username + "&Var-000000=secret&Value-000000="+ encodeURIComponent( _newpass.value );
+	var tmp = new Ajax.Request("../../rawman", opt);
+	return;
 }
 
 
@@ -184,11 +174,8 @@ function compare_passwords(){
 }
 
 managerconf_callbacks.format = function(t) {
-		var tmp = t.name.split('general');
-		if(tmp.length>1)
-			return t.name;
-		else
-			return false;
+	var tmp = t.name.split('general');
+	if(tmp.length>1){ return t.name; } else { return false; }
 }
 
 managerconf_callbacks.loaded = function() {
@@ -201,21 +188,17 @@ managerconf_callbacks.loaded = function() {
 }
 
 httpconf_callbacks.format = function(t) {
-		var tmp = t.name.split('general');
-		if(tmp.length>1)
-			return t.name;
-		else
-			return false;
+	var tmp = t.name.split('general');
+	if(tmp.length>1){ return t.name; } else { return false; }
 }
 
 httpconf_callbacks.loaded = function() {
-		_$('hiddenfield').selectitem(0);
-
-		for (var x =0; x < fieldnames2.length; x++) {
-			widgets2[fieldnames2[x]] = _$(fieldnames2[x]);
-			widgets2[fieldnames2[x]].disabled = true;
-		}
-		parent.astmanEngine.config2list("manager.conf", _$('hiddenfield2'), widgets2, managerconf_callbacks);
+	_$('hiddenfield').selectitem(0);
+	for (var x =0; x < fieldnames2.length; x++) {
+		widgets2[fieldnames2[x]] = _$(fieldnames2[x]);
+		widgets2[fieldnames2[x]].disabled = true;
+	}
+	parent.astmanEngine.config2list("manager.conf", _$('hiddenfield2'), widgets2, managerconf_callbacks);
 }
 
 
@@ -256,40 +239,53 @@ function localajaxinit(){
 </TABLE>
 <BR>
 <table class="mainscreenTable" align="center">
-	<tr valign="top" height="18">	
-			<td align="center">
-			</td>
-	</tr>
+	<tr valign="top" height="18"><td align="center"></td></tr>
 	<tr>	<td align="center" valign="top">
-					<div id="channellist" class="chanlist_small" style="width: 320px; height:110">
-					<table cellpadding=2 cellspacing=2 border=0>
-									<tr>	<td colspan=2 height=5></td></tr>
-									<tr  onmouseover="show_tooltip('en', 'options', 1);"><td class="field_text">Enter New Password:</td><td><input type="password" id="newpass" size=16 onkeyup="compare_passwords()"  class="input9"></td></tr>
-									<tr  onmouseover="show_tooltip('en', 'options', 2);"><td class="field_text">Retype New Password:</td><td><input type="password" id="newpass_rep" size=16 onkeyup="compare_passwords()"  class="input9"></td></tr>
-									<tr>	<td colspan=2 align="center" height=20><div id="dopwdsmatch" style="font-size : 10px;"></div></td></tr>
-									<tr>	<td align=center colspan=2><input type="button" id="pwdbutton" value="Update" onclick="changepassword()" class="buttonbold"></td></tr>
-					</table>
-					</div>
-			</td>
+		<div id="channellist" class="chanlist_small" style="width: 320px; height:110">
+		<table cellpadding=2 cellspacing=2 border=0>
+			<tr>	<td colspan=2 height=5></td></tr>
+			<tr  onmouseover="show_tooltip('en', 'options', 1);">
+				<td class="field_text">Enter New Password:</td>
+				<td><input type="password" id="newpass" size=16 onkeyup="compare_passwords()"  class="input9"></td></tr>
+			<tr  onmouseover="show_tooltip('en', 'options', 2);">
+				<td class="field_text">Retype New Password:</td>
+				<td><input type="password" id="newpass_rep" size=16 onkeyup="compare_passwords()"  class="input9"></td>
+			</tr>
+			<tr>	<td colspan=2 align="center" height=20><div id="dopwdsmatch" style="font-size : 10px;"></div></td></tr>
+			<tr>	<td align=center colspan=2><input type="button" id="pwdbutton" value="Update" onclick="changepassword()" class="buttonbold"></td></tr>
+		</table>
+		</div>
+		</td>
 	</tr>
 	<tr valign="top" height="18">	<td></td></tr>
 	<tr>	<td align="center" valign="top">
-					<div id="gui_accesssettings" class="chanlist_small"  style="width: 320px; height:135">
-					<table>	
-					<TR><TD colspan=2 align=center><B>GUI - access settings: </B></TD></TR>
-					<tr>	<td colspan=2 height=5></td></tr>
-									<tr  onmouseover="show_tooltip('en', 'options', 3);">
-											<td class="field_text">Bind Address:</td>		<td><input size=14 id='bindaddr' dfalt="127.0.0.1" onkeydown="$('save').disabled=false; $('cancel').disabled=false;"  class="input9"></td>
-									</tr>
-									<tr  onmouseover="show_tooltip('en', 'options', 4);"><td class="field_text">Port:</td>						<td><input size=14 id='bindport' dfalt=80  onkeydown="$('save').disabled=false; $('cancel').disabled=false;"  class="input9"></td></tr>
-									<tr  onmouseover="show_tooltip('en', 'options', 5);"><td class="field_text">HTTP Timeout:</td>	<td><input size=14 id='httptimeout'  onkeydown="$('save').disabled=false; $('cancel').disabled=false;"  class="input9"></td></tr>
-									<tr><td colspan=2 height=6> </td></tr>
-									<tr><td colspan=2 align=center><input type=button id=save value="Save"  onclick="update_guisettings_manager()" class="buttonbold">&nbsp;<input type=button id=cancel value="Cancel" onclick="cancel_guisettings()" class="buttonbold"></td></tr>
-					</table>
-					<select  size="5" id="hiddenfield" style="display:none;"></select>
-					<select  size="5" id="hiddenfield2" style="display:none; width:220px"></select>
-					</div>
+		<div id="gui_accesssettings" class="chanlist_small"  style="width: 320px; height:135">
+		<table>	
+		<TR><TD colspan=2 align=center><B>GUI - access settings: </B></TD></TR>
+		<tr><td colspan=2 height=5></td></tr>
+		<tr  onmouseover="show_tooltip('en', 'options', 3);">
+			<td class="field_text">Bind Address:</td>
+			<td><input size=14 id='bindaddr' dfalt="127.0.0.1" onkeydown="$('save').disabled=false; $('cancel').disabled=false;"  class="input9"></td>
+		</tr>
+		<tr  onmouseover="show_tooltip('en', 'options', 4);">
+			<td class="field_text">Port:</td>
+			<td><input size=14 id='bindport' dfalt=80  onkeydown="$('save').disabled=false; $('cancel').disabled=false;"  class="input9"></td>
+		</tr>
+		<tr  onmouseover="show_tooltip('en', 'options', 5);">
+			<td class="field_text">HTTP Timeout:</td>
+			<td><input size=14 id='httptimeout'  onkeydown="$('save').disabled=false; $('cancel').disabled=false;"  class="input9"></td>
+		</tr>
+		<tr><td colspan=2 height=6> </td></tr>
+		<tr><td colspan=2 align=center>
+			<input type=button id=save value="Save"  onclick="update_guisettings_manager()" class="buttonbold">&nbsp;
+			<input type=button id=cancel value="Cancel" onclick="cancel_guisettings()" class="buttonbold">
 			</td>
+		</tr>
+		</table>
+		<select  size="5" id="hiddenfield" style="display:none;"></select>
+		<select  size="5" id="hiddenfield2" style="display:none; width:220px"></select>
+		</div>
+		</td>
 	</tr>
 	<tr><td valign="top" align=center><div  id='status'></div></td></tr>
 	<tr><td></td></tr>

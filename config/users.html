@@ -34,7 +34,7 @@
 	var extencallbacks = new Object;
 	var numcallbacks = new Object;
 
-	var fieldnames = ['callwaiting' ,'cancel' ,'cid_number' ,'context' ,'delete' ,'email' ,'fullname' ,'group' ,'hasagent' ,'hasdirectory' ,'hasiax' ,'hasmanager' ,'hassip' ,'hasvoicemail' ,'host' ,'mailbox' ,'name' ,'new' ,'save' ,'secret' ,'status' ,'threewaycalling' ,'vmsecret' ,'zapchan'];
+	var fieldnames = ['callwaiting' ,'cancel' ,'cid_number' ,'context' ,'delete' ,'email' ,'fullname' ,'group' ,'hasagent' ,'hasdirectory' ,'hasiax' ,'hasmanager' ,'hassip' ,'hasvoicemail' ,'host' ,'mailbox' ,'name' ,'new' ,'save' ,'secret' ,'status' ,'threewaycalling' ,'vmsecret' ,'zapchan', 'registeriax', 'registersip'];
 
 	var focus_fields = ['cid_number' ,'context' ,'email' ,'fullname' ,'name' ,'secret' ,'vmsecret' ,'zapchan'] ;
 
@@ -45,81 +45,81 @@
 	extencallbacks.format = function(t, x) {
 		if ((t.name != specialcontext))
 			return null;
-		return format_extension($('extensions'), t, x);
+		return format_extension(_$('extensions'), t, x);
 	}
 	
 	extencallbacks.loaded = function() {
-		merge_extensions($('devices'), $('extensions'));
+		merge_extensions(_$('devices'), _$('extensions'));
 		parent.loadscreen(this);
 	}
 	
 	extencallbacks.eachline = true;
 
 	callbacks.format = function(t) {
-			if ((t.name == 'general')){
-						if (t.fieldbyname['localextenlength'] && t.fieldbyname['localextenlength'].length){
-							localextenlength =  t.fieldbyname['localextenlength'] ;
-						}
-						if ( t.fieldbyname['allow_an_extns'] && t.fieldbyname['allow_an_extns'].length ){
-							allow_an_extns =  t.fieldbyname['allow_an_extns'] ;
-							if(allow_an_extns == "yes"){
-									$('name').setAttribute("pattern", '^[a-zA-Z0-9]*$');
-							}
-						}
-						if (t.fieldbyname['allow_aliasextns'] && t.fieldbyname['allow_aliasextns'].length){
-							allow_aliasextns =  t.fieldbyname['allow_aliasextns'] ;
-						}
-				return null;
+		if ((t.name == 'general')){
+			if (t.fieldbyname['localextenlength'] && t.fieldbyname['localextenlength'].length){
+				localextenlength =  t.fieldbyname['localextenlength'] ;
 			}
-			
-			//if (t.name.substring(0,6) == 'trunk_')
-			//	return null;
-			if ( t.fieldbyname['context'] == asterisk_guiTDPrefix + t.name ) {
-				return null;
+			if ( t.fieldbyname['allow_an_extns'] && t.fieldbyname['allow_an_extns'].length ){
+				allow_an_extns =  t.fieldbyname['allow_an_extns'] ;
+				if(allow_an_extns == "yes"){
+						$('name').setAttribute("pattern", '^[a-zA-Z0-9]*$');
+				}
 			}
-			
-			if (t.fieldbyname['fullname'] && t.fieldbyname['fullname'].length ) {
-					if(	sortbynames ){
-						return t.fieldbyname['fullname'] + "  (" + t.name +")";
-					}else{
-						return t.name + " -- " + t.fieldbyname['fullname'];
-					}
+			if (t.fieldbyname['allow_aliasextns'] && t.fieldbyname['allow_aliasextns'].length){
+				allow_aliasextns =  t.fieldbyname['allow_aliasextns'] ;
+			}
+			return null;
+		}
+		
+		//if (t.name.substring(0,6) == 'trunk_')
+		//	return null;
+		if ( t.fieldbyname['context'] == asterisk_guiTDPrefix + t.name ) {
+			return null;
+		}
+		
+		if (t.fieldbyname['fullname'] && t.fieldbyname['fullname'].length ) {
+			if(	sortbynames ){
+				return t.fieldbyname['fullname'] + "  (" + t.name +")";
+			}else{
+				return t.name + " -- " + t.fieldbyname['fullname'];
+			}
 
-			} else{
-				return t.name;
-			}
+		} else{
+			return t.name;
+		}
 	}
 	callbacks.loaded = function() {
-		$('devices').contentEditable = 'true';
-		$('devices').disabled = 0;
-		parent.astmanEngine.config2list("extensions.conf", $('extensions'), new Array(), extencallbacks);
+		_$('devices').contentEditable = 'true';
+		_$('devices').disabled = 0;
+		parent.astmanEngine.config2list("extensions.conf", _$('extensions'), new Array(), extencallbacks);
 	}
 	callbacks.sortfunc = function(a,b) {
 		return (a.name < b.name) ? -1 : 1;
 	}
 	callbacks.checkparams = function(box) {
-		$('mailbox').value = $('name').value;
-		$('group').value = '';
+		_$('mailbox').value = _$('name').value;
+		_$('group').value = '';
 		return false;
 	}
 	callbacks.newcategory = function() {
 		var tmp = null;
 		var x;
-		gen = $('devices').stored_config.catbyname['general'];
+		var _devices = _$('devices');
+		gen = _devices.stored_config.catbyname['general'];
 		tmp = objcopy(gen);
 		if (gen){
 			x = gen.fieldbyname['userbase'];
-			for( var f=0; f < $('devices').options.length ; f++ ){
-					if( x < $('devices').options[f].innerHTML.split(' -- ')[0] )
-						break;
-					x++;
+			for( var f=0; f < _devices.options.length ; f++ ){
+				if( x < _devices.options[f].innerHTML.split(' -- ')[0] ){ break; }
+				x++;
 			}
 		}else{
-				try{ 
-					x = ( parseInt($('devices').options[$('devices').options.length - 1 ].innerHTML.split(' -- ')[0] ) ) + 1; 
-				}catch(err){
-					x = 6000; // a default value if one is not defined in users.conf's general context
-				}
+			try{ 
+				x = ( parseInt( _devices.options[ _devices.options.length - 1 ].innerHTML.split(' -- ')[0] ) ) + 1; 
+			}catch(err){
+				x = 6000; // a default value if one is not defined in users.conf's general context
+			}
 		}
 		tmp.name = x
 		return tmp;
@@ -127,39 +127,43 @@
 	callbacks.identifier = "extension";
 
 	callbacks.beforeSaving = function(){
-		if(!$('fullname').value.length){
-				gui_alert("Sorry, a User Name must be specified !");
-				$('fullname').focus();
-				return false;
+		var _devices = _$('devices');
+		var _name = _$('name');
+		var _fullname = _$('fullname');
+ 
+		if(!_fullname.value.length){
+			gui_alert("Sorry, a User Name must be specified !");
+			_fullname.focus();
+			return false;
 		}
 		// check whether the length of extension is valid
-		if( localextenlength !=0 && (allow_an_extns == "no" && localextenlength !=  $('name').value.length) ){
-				gui_alert( "Sorry, User Extension must be "+ localextenlength  + " digits !" );
-				return false;
+		if( localextenlength !=0 && (allow_an_extns == "no" && localextenlength !=  _name.value.length) ){
+			gui_alert( "Sorry, User Extension must be "+ localextenlength  + " digits !" );
+			return false;
 		}
 		if (!check_patternonfields( ['name', 'fullname', 'secret','email', 'cid_number'] ) ){
 			return false;
 		}
 
 		if(allow_aliasextns == "no"){	// check whether the selected analog line is assigned to another user extension
-				var tmp_usedanaloglines = [] ;
-				for ( var i=1; i < $('devices').stored_config.categories.length ; i++){
-						if ( $('devices').stored_config.categories[i] != null ){
-						if ( $('devices').stored_config.categories[i].fieldbyname['zapchan'] && $('devices').stored_config.categories[i].fieldbyname.zapchan.length && $('devices').stored_config.categories[i].name != $('devices').value )
-							tmp_usedanaloglines.push($('devices').stored_config.categories[i].fieldbyname.zapchan);
-						}
+			var tmp_usedanaloglines = [] ;
+			for ( var i=1; i < _devices.stored_config.categories.length ; i++){
+				if ( _devices.stored_config.categories[i] != null ){
+				if ( _devices.stored_config.categories[i].fieldbyname['zapchan'] && _devices.stored_config.categories[i].fieldbyname.zapchan.length && _devices.stored_config.categories[i].name != _devices.value )
+					tmp_usedanaloglines.push( _devices.stored_config.categories[i].fieldbyname.zapchan);
 				}
-				if ( InArray(tmp_usedanaloglines,$('zapchan').value)){
-					gui_alert("This Analog Phone has already been assigned to another user extension.\n Please select a different Phone");
-					return false;
-				}
+			}
+			if ( InArray(tmp_usedanaloglines,_$('zapchan').value)){
+				gui_alert("This Analog Phone has already been assigned to another user extension.\n Please select a different Phone");
+				return false;
+			}
 		}
 
-		if($('devices').value != $('name').value){
-			for(var k=0; k<$('devices').length; k++ ){
-				var tmp = $('devices').options[k].innerHTML.split(' -- '); 
-				if( tmp[0] ==  $('name').value ){
-					gui_alert("Sorry, an entry named " + $('name').value + " already exists!");
+		if(_devices.value != _name.value){
+			for(var k=0; k<_devices.length; k++ ){
+				var tmp = _devices.options[k].innerHTML.split(' -- '); 
+				if( tmp[0] ==  _name.value ){
+					gui_alert("Sorry, an entry named " + _name.value + " already exists!");
 					return false;
 				}
 			}
@@ -171,64 +175,41 @@
 	callbacks.postselect = function(box, val) {
 		if (adstatus == "hidden") {
 			adstatus = "shown";
-			 togglefeatures() ;
+			togglefeatures() ;
 		}
-		parent.$('tooltip').innerHTML = parent.tooltip_default ; 
+		parent._$('tooltip').innerHTML = parent.tooltip_default ; 
 		if( box.selectedIndex == -1)
 			return true;
 		if(val == "reserved" ){
-				if( box.options[box.selectedIndex].text.toLowerCase().match("-- call queue") || box.options[box.selectedIndex].text.toLowerCase().match('call queue ')  ){
-					//parent.$('tooltip').innerHTML = " <font size=\"-2\" color=\"#FF0000\">Click on \'Call Queues\' panel to edit call queues </font>";
-					box.selectedIndex = -1;
-					gui_alert(" You can not edit the selected entry from here.\n Please click on the \'Call Queues\' panel to edit the selected entry");
-					return true;
-				}
-				if( box.options[box.selectedIndex].text.toLowerCase().match("-- conference bridge") || box.options[box.selectedIndex].text.toLowerCase().match('conference bridge ')  ){
-					//parent.$('tooltip').innerHTML = " <font size=\"-2\" color=\"#FF0000\">Click on \'Conferencing\' panel to edit a Conference Bridge</font>";
-					box.selectedIndex = -1;
-					gui_alert(" You can not edit the selected entry from here.\n Please click on the \'Conferencing\' panel to edit the selected entry");
-					return true;
-				}
-				if( box.options[box.selectedIndex].text.toLowerCase().match("-- check voicemail") || box.options[box.selectedIndex].text.toLowerCase().match('check voicemail ') ){
-					box.selectedIndex = -1;
-					//parent.$('tooltip').innerHTML = " <font size=\"-2\" color=\"#FF0000\">Click on \'Voicemail\' panel to edit Voicemail Preferences</font>";
-					gui_alert(" You can not edit the selected entry from here.\n Please click on the \'Voicemail\' panel to edit the selected entry");
-					return true;
-				}
-				if( box.options[box.selectedIndex].text.toLowerCase().match("-- voice menu") || box.options[box.selectedIndex].text.toLowerCase().match('voice menu ')     ){
-					box.selectedIndex = -1;
-					//parent.$('tooltip').innerHTML = " <font size=\"-2\" color=\"#FF0000\">Click on \'Voicemail\' panel to edit Voicemail Preferences</font>";
-					gui_alert(" You can not edit the selected entry from here.\n Please click on the \'Voice Menus\' panel to edit the selected entry");
-					return true;
-				}
+			if( box.options[box.selectedIndex].text.toLowerCase().match("-- call queue") || box.options[box.selectedIndex].text.toLowerCase().match('call queue ')  ){
+				//parent.$('tooltip').innerHTML = " <font size=\"-2\" color=\"#FF0000\">Click on \'Call Queues\' panel to edit call queues </font>";
+				box.selectedIndex = -1;
+				gui_alert(" You can not edit the selected entry from here.\n Please click on the \'Call Queues\' panel to edit the selected entry");
+				return true;
+			}
+			if( box.options[box.selectedIndex].text.toLowerCase().match("-- conference bridge") || box.options[box.selectedIndex].text.toLowerCase().match('conference bridge ')  ){
+				//parent.$('tooltip').innerHTML = " <font size=\"-2\" color=\"#FF0000\">Click on \'Conferencing\' panel to edit a Conference Bridge</font>";
+				box.selectedIndex = -1;
+				gui_alert(" You can not edit the selected entry from here.\n Please click on the \'Conferencing\' panel to edit the selected entry");
+				return true;
+			}
+			if( box.options[box.selectedIndex].text.toLowerCase().match("-- check voicemail") || box.options[box.selectedIndex].text.toLowerCase().match('check voicemail ') ){
+				box.selectedIndex = -1;
+				//parent.$('tooltip').innerHTML = " <font size=\"-2\" color=\"#FF0000\">Click on \'Voicemail\' panel to edit Voicemail Preferences</font>";
+				gui_alert(" You can not edit the selected entry from here.\n Please click on the \'Voicemail\' panel to edit the selected entry");
+				return true;
+			}
+			if( box.options[box.selectedIndex].text.toLowerCase().match("-- voice menu") || box.options[box.selectedIndex].text.toLowerCase().match('voice menu ')     ){
+				box.selectedIndex = -1;
+				//parent.$('tooltip').innerHTML = " <font size=\"-2\" color=\"#FF0000\">Click on \'Voicemail\' panel to edit Voicemail Preferences</font>";
+				gui_alert(" You can not edit the selected entry from here.\n Please click on the \'Voice Menus\' panel to edit the selected entry");
+				return true;
+			}
 		}
 	}
 
 	callbacks.savechanges = function(){
-			var opt = {
-				method: 'get',
-				asynchronous: true,
-				onSuccess: function(t) { 									
-
-				},
-				onFailure: function(t) {
-					gui_alert("Config Error: " + t.status + ": " + t.statusText);
-				}
-			};
-			var p =0;
-			var uri = "";
-			if(	$('hassip').checked	){
-				uri += build_action('update', p, $('devices').value ,"registersip", "yes" ); p++;
-			}else{
-				uri += build_action('update', p, $('devices').value ,"registersip", "no" ); p++;
-			}
-			if(	$('hasiax').checked	){
-				uri += build_action('update', p, $('devices').value ,"registeriax", "yes" ); p++;
-			}else{
-				uri += build_action('update', p, $('devices').value ,"registeriax", "no" ); p++;
-			}
-			opt.parameters="action=updateconfig&srcfilename=" + encodeURIComponent("users.conf") + "&dstfilename=" + encodeURIComponent("users.conf") + uri;
-			var tmp = new Ajax.Request("../../rawman", opt);
+		
 	}
 
 	phonecallbacks.format = function(t) {
@@ -238,22 +219,17 @@
 	}
 
 	phonecallbacks.loaded = function() {
-		if( $('zapchan').options.length == 0) {
-			$('zapchan').style.display="none";
-			$('noanaloglines').style.display="";
+		var _zapchan = _$('zapchan') ;
+		if( _zapchan.options.length == 0) {
+			_zapchan.style.display="none";
+			_$('noanaloglines').style.display="";
 		}
 		var noneopt = document.createElement("OPTION");
-		//try {
-		$('zapchan').options.add(noneopt,0);
+		_zapchan.options.add(noneopt,0);
 		noneopt.value = "";
 		noneopt.innerText = "None";
 
-		//}
-		//catch(err) {
-		//	$('zapchan').add(noneopt);
-		//}
-		
-		parent.astmanEngine.config2list("extensions.conf", $('context'), new Array(), numcallbacks);
+		parent.astmanEngine.config2list("extensions.conf", _$('context'), new Array(), numcallbacks);
 	}
 	
 	numcallbacks.format = function(t) {
@@ -266,16 +242,16 @@
 	}
 
 	numcallbacks.loaded = function() {
-		parent.astmanEngine.config2list("users.conf", $('devices'), widgets, callbacks);
+		parent.astmanEngine.config2list("users.conf", _$('devices'), widgets, callbacks);
 	}
 	
 	function togglefeatures() {
 		if (adstatus == "shown") {
 			adstatus = "hidden";
-			new Rico.Effect.Size('features', null, 1, 120, 8, {complete:function() { $('features').style.height=1;} } );
+			new Rico.Effect.Size('features', null, 1, 120, 8, {complete:function() { _$('features').style.height=1;} } );
 		} else {
 			adstatus = "shown";
-			$('features').style.visibility = "visible";
+			_$('features').style.visibility = "visible";
 			new Rico.Effect.Size('features', null, 160, 120, 8 );
 		}
 	}
@@ -293,33 +269,42 @@
 		setWindowTitle("Users");
 		if(window.location.href.match("sortbynames") ){
 			sortbynames = true;
-			$('link_sortby').innerHTML = " <A href=\"users.html\">Sort By Extensions</A> ";
+			_$('link_sortby').innerHTML = " <A href=\"users.html\">Sort By Extensions</A> ";
 		}else{
-			$('link_sortby').innerHTML = " <A href=\"users.html?sortbynames\">Sort By Name</A> ";
+			_$('link_sortby').innerHTML = " <A href=\"users.html?sortbynames\">Sort By Name</A> ";
 		}
 
+		var _features = _$('features'); 
 		if( navigator.userAgent.indexOf("MSIE") != -1){
 			togglefeatures = function(){ } ;
-			$('features').style.display = "";
-			$('features').style.height=160;
+			_features.style.display = "";
+			_features.style.height=160;
 		}else{
-			$('features').style.overflow = "hidden";
-			$('features').style.height = 1;
-			$('devices').style.height = "415px";
+			_features.style.overflow = "hidden";
+			_features.style.height = 1;
+			_$('devices').style.height = "415px";
 		}
-		$('features').style.width = 302;
+		_features.style.width = 302;
 		adstatus = "hidden";
-		$('devices').contentEditable = 'false';
+		_$('devices').contentEditable = 'false';
 		for (var x =0; x < fieldnames.length; x++ ) {
-			widgets[fieldnames[x]] = $(fieldnames[x]);
+			widgets[fieldnames[x]] = _$(fieldnames[x]);
 			widgets[fieldnames[x]].disabled = true;
 		}
 		for (var x =0; x < focus_fields.length; x++ ) {
 			widgets[focus_fields[x]].onfocus = function(){this.className = 'input8_hilight';}
 			widgets[focus_fields[x]].onblur = function(){this.className = 'input8';}
 		}
-		parent.astmanEngine.config2list("zapscan.conf", $('zapchan'), new Array(), phonecallbacks);
+		add_event( _$('hasiax'), 'change' , updateregistersipiax ) ;
+		add_event( _$('hassip'), 'change' , updateregistersipiax ) ;
+
+		parent.astmanEngine.config2list("zapscan.conf", _$('zapchan'), new Array(), phonecallbacks);
 	}
+
+function updateregistersipiax(){
+	_$('registeriax').checked =_$('hasiax').checked ;
+	_$('registersip').checked =_$('hassip').checked ;
+}
 
 function free_mem(){
 	if( navigator.userAgent.indexOf("MSIE") == -1 ){ return true; }
@@ -343,49 +328,47 @@ function free_mem(){
 		<td colspan=2>Extensions: ( <span id="link_sortby"></span>) </td>	
 	</tr>
 	<tr valign="top">
-		<td>	<select disabled size="25" id="devices" style="width:220px;"  class="input10">
-						<option>Loading...</option>
-					</select>
-		</td>
+		<td><select disabled size="25" id="devices" style="width:220px;"  class="input10"><option>Loading...</option></select></td>
 		<td style="width:311px; height: 415px"><select id='extensions' style='display:none;width:0px;height:0px'></select>
-							<div id='adjustments' style='width:310'>
-								<table cellspacing='0' cellpadding='0' >
-									<tr valign="top"><td>
-												<table>
-												<tr onmouseover="show_tooltip('en', 'users', 0);" ><td class="field_text">Extension:</td><td><input size='5' id='name' pattern='^\d*$' class="input8"></td></tr>
-												<tr onmouseover="show_tooltip('en', 'users', 1);"><td class="field_text">Name:</td><td><input size='20' id='fullname' pattern='^[a-zA-Z_0-9 ]*$' class="input8"></td></tr>
-												<tr onmouseover="show_tooltip('en', 'users', 2);"><td class="field_text">Password:</td><td><input size='5' id='secret' pattern='^[a-zA-Z_0-9]*$'  class="input8"></td></tr>
-												<tr onmouseover="show_tooltip('en', 'users', 16);"><td class="field_text">VM Password:</td><td><input size='5' id='vmsecret' pattern='^[0-9*]*$'  class="input8"></td></tr>
-												<tr onmouseover="show_tooltip('en', 'users', 3);"><td class="field_text">E-mail:</td><td><input size='20' id='email' pattern='^[0-9a-zA-Z\.\-\_\@]*$' class="input8"></td></tr>
-												<tr onmouseover="show_tooltip('en', 'users', 4);"><td class="field_text">Caller ID:</td><td><input size='12' id='cid_number'  pattern='^[\d\-]*$' class="input8"></td></tr>
-												<tr onmouseover="show_tooltip('en', 'users', 5);"><td class="field_text">Analog Phone:</td><td><select size="1" id='zapchan' style='width:120px' class="input8"></select>
-												<span id="noanaloglines" style="display:none"><I>&nbsp;No Analog lines detected.</I></span></td></tr>
-												<tr onmouseover="show_tooltip('en', 'users', 6);"><td class="field_text">Dial Plan:</td><td><select size='1' id='context' style='width:120px' class="input8"></select></td></tr>
-												<tr><td colspan='2' align='center'><div style="height:15px" id='status'></div></td></tr>
-												<tr><td colspan='2' align='center'><input type='hidden' id='mailbox'><input type='hidden' id='group'></td></tr>
-												</table>
-										</td>
-									</tr>
-									<tr><td style="cursor: pointer; cursor: hand;"><img id="split" onClick="togglefeatures()" src="images/split-v.gif"></td></tr>
-									<tr><td align="center">
-											<div style="background-image:url(images/slice-v.gif); height:1px" id='features'>
-												<table align='center'  width='60%'  cellpadding=0 cellspacing=0>
-												<tr onmouseover="show_tooltip('en', 'users', 8);"><td class="field_text">Voicemail:</td><td><input type='checkbox' id='hasvoicemail'></td></tr>
-												<tr onmouseover="show_tooltip('en', 'users', 9);"><td class="field_text">In Directory:</td><td><input type='checkbox' id='hasdirectory'></td></tr>
-												<tr onmouseover="show_tooltip('en', 'users', 10);"><td class="field_text">SIP:</td><td><input type='checkbox' id='hassip'></td></tr>
-												<tr onmouseover="show_tooltip('en', 'users', 11);"><td class="field_text">IAX:</td><td><input type='checkbox' id='hasiax'></td></tr>
-												<tr onmouseover="show_tooltip('en', 'users', 12);"><td class="field_text">CTI:</td><td><input type='checkbox' id='hasmanager'></td></tr>
-												<tr onmouseover="show_tooltip('en', 'users', 13);"><td class="field_text">Call&nbsp;Waiting:</td><td><input type='checkbox' id='callwaiting'></td></tr>
-												<tr onmouseover="show_tooltip('en', 'users', 14);"><td class="field_text">3-Way&nbsp;Calling:</td><td><input type='checkbox' id='threewaycalling'></td></tr>
-												<tr onmouseover="show_tooltip('en', 'users', 15);"><td class="field_text">Is&nbsp;Agent:</td><td><input type='checkbox' id='hasagent' dfalt='1'><input type='hidden' dfalt='dynamic' id='host'></td>
-												</tr>
-												</table>
-											</div>
-											</td>
-									</tr>
-									<tr><td style="cursor: pointer; cursor: hand;"><img onClick="togglefeatures()" src="images/adv-v.gif"></td></tr>
-								</table>
-							</div>
+			<div id='adjustments' style='width:310'>
+			<table cellspacing='0' cellpadding='0' >
+			<tr valign="top">
+			<td>
+				<table>
+				<tr onmouseover="show_tooltip('en', 'users', 0);" ><td class="field_text">Extension:</td><td><input size='5' id='name' pattern='^\d*$' class="input8"></td></tr>
+				<tr onmouseover="show_tooltip('en', 'users', 1);"><td class="field_text">Name:</td><td><input size='20' id='fullname' pattern='^[a-zA-Z_0-9 ]*$' class="input8"></td></tr>
+				<tr onmouseover="show_tooltip('en', 'users', 2);"><td class="field_text">Password:</td><td><input size='5' id='secret' pattern='^[a-zA-Z_0-9]*$'  class="input8"></td></tr>
+				<tr onmouseover="show_tooltip('en', 'users', 16);"><td class="field_text">VM Password:</td><td><input size='5' id='vmsecret' pattern='^[0-9*]*$'  class="input8"></td></tr>
+				<tr onmouseover="show_tooltip('en', 'users', 3);"><td class="field_text">E-mail:</td><td><input size='20' id='email' pattern='^[0-9a-zA-Z\.\-\_\@]*$' class="input8"></td></tr>
+				<tr onmouseover="show_tooltip('en', 'users', 4);"><td class="field_text">Caller ID:</td><td><input size='12' id='cid_number'  pattern='^[\d\-]*$' class="input8"></td></tr>
+				<tr onmouseover="show_tooltip('en', 'users', 5);"><td class="field_text">Analog Phone:</td><td><select size="1" id='zapchan' style='width:120px' class="input8"></select>
+				<span id="noanaloglines" style="display:none"><I>&nbsp;No Analog lines detected.</I></span></td></tr>
+				<tr onmouseover="show_tooltip('en', 'users', 6);"><td class="field_text">Dial Plan:</td><td><select size='1' id='context' style='width:120px' class="input8"></select></td></tr>
+				<tr><td colspan='2' align='center'><div style="height:15px" id='status'></div></td></tr>
+				<tr><td colspan='2' align='center'><input type='hidden' id='mailbox'><input type='hidden' id='group'><input type='hidden' id='registersip'><input type='hidden' id='registeriax'></td></tr>
+				</table>
+			</td>
+			</tr>
+			<tr><td style="cursor: pointer; cursor: hand;"><img id="split" onClick="togglefeatures()" src="images/split-v.gif"></td></tr>
+			<tr><td align="center">
+				<div style="background-image:url(images/slice-v.gif); height:1px" id='features'>
+				<table align='center'  width='60%'  cellpadding=0 cellspacing=0>
+				<tr onmouseover="show_tooltip('en', 'users', 8);"><td class="field_text">Voicemail:</td><td><input type='checkbox' id='hasvoicemail'></td></tr>
+				<tr onmouseover="show_tooltip('en', 'users', 9);"><td class="field_text">In Directory:</td><td><input type='checkbox' id='hasdirectory'></td></tr>
+				<tr onmouseover="show_tooltip('en', 'users', 10);"><td class="field_text">SIP:</td><td><input type='checkbox' id='hassip'></td></tr>
+				<tr onmouseover="show_tooltip('en', 'users', 11);"><td class="field_text">IAX:</td><td><input type='checkbox' id='hasiax'></td></tr>
+				<tr onmouseover="show_tooltip('en', 'users', 12);"><td class="field_text">CTI:</td><td><input type='checkbox' id='hasmanager'></td></tr>
+				<tr onmouseover="show_tooltip('en', 'users', 13);"><td class="field_text">Call&nbsp;Waiting:</td><td><input type='checkbox' id='callwaiting'></td></tr>
+				<tr onmouseover="show_tooltip('en', 'users', 14);"><td class="field_text">3-Way&nbsp;Calling:</td><td><input type='checkbox' id='threewaycalling'></td></tr>
+				<tr onmouseover="show_tooltip('en', 'users', 15);"><td class="field_text">Is&nbsp;Agent:</td><td><input type='checkbox' id='hasagent' dfalt='1'><input type='hidden' dfalt='dynamic' id='host'></td>
+				</tr>
+				</table>
+				</div>
+			</td>
+			</tr>
+			<tr><td style="cursor: pointer; cursor: hand;"><img onClick="togglefeatures()" src="images/adv-v.gif"></td></tr>
+			</table>
+			</div>
 		</td></tr>				
 		<tr>	<td align='center'><input type='button' id='new' value='New' class="buttonbold">&nbsp;&nbsp;<input type='button' id='delete' value='Delete' class="buttonbold"></td>
 				<td align='center'><input type='button' id='save' value='Save'  class="buttonbold">&nbsp;&nbsp;<input type='button' id='cancel' value='Cancel' class="buttonbold"></td>

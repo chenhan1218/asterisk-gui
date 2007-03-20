@@ -231,17 +231,21 @@ function change_vmenuname_inlistofmenus(oldname,newname){
 
 function  key_action(a, field){
 	enable_savecancel();
-	_mft = _$('keypress_'+ field + '_text' ).style.display = "none";
-	_mfe = _$('keypress_'+ field + '_exts').style.display = "none";
-	_mfm = _$('keypress_'+ field + '_menus').style.display = "none";
+
+	_mft = _$('keypress_'+ field + '_text' );
+	_mfe = _$('keypress_'+ field + '_exts').style;
+	_mfm = _$('keypress_'+ field + '_menus').style
+	_mft.style.display = "none";
+	_mfe.display = "none";
+	_mfm.display = "none";
 
 	if(a=='gotomenu'){ //show menus dropdown
-		_mfm = "";
+		_mfm.display = "";
 	}else if(a=='gotoextension'){ //show extensions dropdown
-		_mfe = "";
+		_mfe.display = "";
 	}else if(a=='Custom'){ //show a  text box
-		_mft = "";
-		_$('keypress_'+ field + '_text').focus();
+		_mft.style.display = "";
+		_mft.focus();
 	}else if(a=='disabled' || a=='Hangup' || a=='PlayInvalid'){	//show nothing
 
 	}
@@ -255,24 +259,22 @@ function sortNumber(a,b){
 function add_newstep(){
 	var _vmv = _$('vmenus').value ;
 	var _nsa = _$('newstep_action');
-	var _nsa_v = _nsa.value ;
 	var _nsv = _$('newstep_var') ;
-	var _nsv_v = _nsv.value;
 
-	if( !_nsa_v ){
+	if( !_nsa.value ){
 		gui_alert("Please select an action for this step");
 		_nsa.focus();
 		return;
 	}
 
-	if( _nsa_v != "Answer" &&   _nsa_v != "Hangup" && !_nsv_v ){
-		gui_alert("Please enter a value for '" + _nsa_v +"'");
+	if( _nsa.value != "Answer" &&   _nsa.value != "Hangup" && !_nsv .value ){
+		gui_alert("Please enter a value for '" + _nsa.value +"'");
 		_nsv.focus();
 		return;
 	}
 
-	var _sm = _$('status_message').style.display;
-	_sm = "";
+	var _sm = _$('status_message').style;
+	_sm.display = "";
 
 	// prepare a request to add the new step to the voicemenu
 	// make a request to append
@@ -280,7 +282,7 @@ function add_newstep(){
 		method: 'get',
 		asynchronous: true,
 		onSuccess: function() { 
-			setTimeout(function(){ _sm = 'none'; },sc_displaytime);
+			setTimeout(function(){ _sm.display = 'none'; },sc_displaytime);
 			// if request successfull then add this to the steps select box
 			var newoption = document.createElement("option"); 
 			newoption.text = format_step(action_string ); 
@@ -300,7 +302,7 @@ function add_newstep(){
 			_steps.selectedIndex = _steps.length - 1 ;
 			_$('status').innerHTML = "<i>New step added !</i>";
 			update_updown();
-			_nsv_v= "";
+			_nsv.value = "";
 			_nsv.style.display = "none" ;
 			_$('add_newstep_extensions').style.display = "none";
 			_$('add_newstep_menus').style.display = "none";
@@ -310,7 +312,7 @@ function add_newstep(){
 			_nsvd.style.display= "none" ;
 		},
 		onFailure: function(t) {
-			_sm='none';
+			_sm.display = 'none';
 			gui_alert("Config Error: " + t.status + ": " + t.statusText);
 		}
 	};
@@ -330,33 +332,33 @@ function add_newstep(){
 		newpriority = 1;
 	}
 
-	switch ( _nsa_v ){
+	switch ( _nsa.value ){
 	case 'Answer':
 		action_string = "s,"+ newpriority+ ",Answer";
 		break;
 	case 'Background':
-		action_string = "s,"+ newpriority+ ",Background(" + _nsv_v + ")";
+		action_string = "s,"+ newpriority+ ",Background(" + _nsv.value + ")";
 		break;
 	case 'DigitTimeout':
-		action_string = "s,"+ newpriority+ ",DigitTimeout(" + _nsv_v + ")";
+		action_string = "s,"+ newpriority+ ",DigitTimeout(" + _nsv.value + ")";
 		break;
 	case 'ResponseTimeout':
-		action_string = "s,"+ newpriority+ ",ResponseTimeout(" + _nsv_v + ")";
+		action_string = "s,"+ newpriority+ ",ResponseTimeout(" + _nsv.value + ")";
 		break;
 	case 'Playback':
-		action_string = "s,"+ newpriority+ ",Playback(" + _nsv_v + ")";
+		action_string = "s,"+ newpriority+ ",Playback(" + _nsv.value + ")";
 		break;
 	case 'Wait':
-		action_string = "s,"+ newpriority+ ",Wait(" + _nsv_v + ")";
+		action_string = "s,"+ newpriority+ ",Wait(" + _nsv.value + ")";
 		break;
 	case 'WaitExten':
-		action_string = "s,"+ newpriority+ ",WaitExten(" + _nsv_v + ")";
+		action_string = "s,"+ newpriority+ ",WaitExten(" + _nsv.value + ")";
 		break;
 	case 'GotoMenu':
-		action_string = "s,"+ newpriority+ ",Goto(" + _nsv_v + "|s|1)";
+		action_string = "s,"+ newpriority+ ",Goto(" + _nsv.value + "|s|1)";
 		break;
 	case 'GotoExtension':
-		action_string = "s,"+ newpriority+ ",Goto(default|" + _nsv_v + "|1)";
+		action_string = "s,"+ newpriority+ ",Goto(default|" + _nsv.value + "|1)";
 		break;
 	case 'Hangup':
 		action_string = "s,"+ newpriority+ ",Hangup";
@@ -370,6 +372,7 @@ function add_newstep(){
 	tmp = new Ajax.Request('../../rawman', opt);
 
 }
+
 
 
 function next_freevmenu(){	 // return the next smallest available voicemenu name
@@ -393,15 +396,15 @@ function save_vmenu(){
 		return false;
 	}
 
-	var _sm = _$('status_message').style.display ; 
-	_sm="";
+	var _sm = _$('status_message').style ; 
+	_sm.display ="" ;
 	var _cmv = _$('comment').value ;
 
 	var opt = {
 		method: 'get',
 		asynchronous: true,
 		onSuccess: function() { 
-			setTimeout(function(){ _sm="none"; },sc_displaytime);
+			setTimeout( function(){ _sm.display="none"; },sc_displaytime );
 			_$('status').innerHTML = "<i>Updated.</i>";
 			_$('savevmenu').disabled = true;
 			_$('save').disabled = true;
@@ -438,17 +441,17 @@ function save_vmenu(){
 							voicemenusdata[current_vmenu].extensions[keys[k]] = [];
 						}
 					}
-				}							
+				}
 			}
 
 		},
 		onFailure: function(t) {
-			_sm='none';
+			_sm.display='none';
 			gui_alert("Config Error: " + t.status + ": " + t.statusText);
 		}
 	};
 	var uri = "" ;
-	var p =0 ;
+	var p = 0 ;
 	var buildstring = new Object ;
 
 	if( _vms.options[_vms.selectedIndex].innerHTML=='New Entry' ){
@@ -535,6 +538,35 @@ function save_vmenu(){
 	// send the request
 	tmp = new Ajax.Request('../../rawman', opt);
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 function  enable_savecancel(){
@@ -637,30 +669,35 @@ function swap_step(a,b){
 
 function delete_step(){
 	// delete the selected step and update voicemenusdata and update 'select' object - steps
-	$('status_message').style.display="block";
+	var _sm = _$('status_message').style; 
+	_sm.display="";
+	var _vmenus = _$('vmenus');
+	var _steps = _$('steps');
+
 	var opt = {
 		method: 'get',
 		asynchronous: true,
 		onSuccess: function() { 
-			setTimeout("$('status_message').style.display='none'",sc_displaytime);
+			setTimeout(function(){ _sm.display='none';} ,sc_displaytime);
 			// Update voicemenusdata
-			for(var p=0; p< voicemenusdata[$('vmenus').value].extensions['s'].length; p++){
-				if( voicemenusdata[$('vmenus').value].extensions['s'][p] == $('steps').value )
-					voicemenusdata[$('vmenus').value].extensions['s'].splice(p,1);
+			for(var p=0; p< voicemenusdata[_vmenus.value].extensions['s'].length; p++){
+				if( voicemenusdata[_vmenus.value].extensions['s'][p] == _steps.value ){ 
+					voicemenusdata[_vmenus.value].extensions['s'].splice(p,1); 
+				}
 			}
 
-			$('steps').remove( $('steps').selectedIndex);
-			$('status').innerHTML = "<i>Step Deleted !</i>";
-			$('deletestep').disabled = true;
+			_steps.remove( _steps.selectedIndex);
+			_$('status').innerHTML = "<i>Step Deleted !</i>";
+			_$('deletestep').disabled = true;
 
 		},
 		onFailure: function(t) {
-			$('status_message').style.display='none';
+			_sm.display='none';
 			gui_alert("Config Error: " + t.status + ": " + t.statusText);
 		}
 	};	
 	var uri = "";
-	uri += build_action('delete', 0, $('vmenus').value,"exten", "", $('steps').value); 
+	uri += build_action('delete', 0, _vmenus.value,"exten", "", _steps.value); 
 	opt.parameters="action=updateconfig&srcfilename=" + encodeURIComponent("extensions.conf") + "&dstfilename=" + encodeURIComponent("extensions.conf") + uri;
 	tmp = new Ajax.Request('../../rawman', opt);
 }
@@ -669,37 +706,36 @@ function delete_step(){
 function update_newstep_var(){
 	var _nsv = _$('newstep_var') ;
 	var _nsa = _$('newstep_action');
-	var _nsa_v = _nsa.value;
 	var _ane = _$('add_newstep_extensions') ;
 	var _anm = _$('add_newstep_menus') ;
 
-	_anm.style.display = "none";
-	_nsv_v = "";
+	_nsv.value = "";
 	_nsv.style.display = "none";
-	_ane.style.display = "none";
 	_$('newstep_var_digit').style.display= "none" ;
 	_$('combodiv_sounds').style.display = "none" ;
+	_ane.style.display = "none";
+	_anm.style.display = "none";
 
-	if( _nsa_v == "" || _nsa_v == "Answer"  || _nsa_v == "Hangup"  ){
+        if( _nsa.value== "" || _nsa.value== "Answer"  || _nsa.value== "Hangup"  ){
 
-	}else if( _nsa_v == "Background"  || _nsa_v == "Playback" ){
-		_nsv.style.display = "";
-		_nsv.size= 12;
-	}else if( _nsa_v== "DigitTimeout" || _nsa_v== "ResponseTimeout" || _nsa_v == "Wait" ||  _nsa_v == "WaitExten" ){
-		_$('newstep_var_digit').style.display= "" ;
-	}else if( _nsa_v== "GotoMenu" ){
+        }else if( _nsa.value== "Background"  || _nsa.value== "Playback" ){
+                _nsv.style.display = "";
+                _nsv.size= 12;
+        }else if( _nsa.value== "DigitTimeout"  || _nsa.value== "ResponseTimeout" ||  _nsa.value== "Wait"  ||  _nsa.value== "WaitExten" ){
+                _$('newstep_var_digit').style.display= "" ;
+        }else if(_nsa.value== "GotoMenu"  ){
 		_nsv.value = _anm.value;
 		_anm.style.display = "";
-	}else if( _nsa_v == "GotoExtension"  ){
+        }else if(_nsa.value== "GotoExtension"  ){
 		_nsv.value = _ane.value;
 		_ane.style.display = "";
-	}
+        }
 }
 
 
 function select_vmenu(){
 	// show all the //s, lines in the select box -
-	if($('vmenus').selectedIndex ==-1){ return true;}
+	if(_$('vmenus').selectedIndex ==-1){ return true;}
 
 	var _steps = _$('steps');
 	current_context = _$('vmenus').value;
@@ -967,7 +1003,7 @@ extencallbacks.format = function(t, x) {
 
 
 rfilescallbacks.format = function(t) {
-		return t.name;
+	return t.name;
 }
 
 rfilescallbacks.loaded= function() {

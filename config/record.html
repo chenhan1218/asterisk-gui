@@ -37,12 +37,8 @@ function play_existing(filename){
 	var opt = {
 		method: 'get',
 		asynchronous: true,
-		onSuccess: function(t) { 
-			_$('status').innerHTML = " <I> Play Request Successfull ! </I>";
-		},
-		onFailure: function(t) {
-			gui_alert("Config Error: " + t.status + ": " + t.statusText);
-		}
+		onSuccess: function(t) { _$('status').innerHTML = " <I> Play Request Successfull ! </I>"; },
+		onFailure: function(t) { gui_alert("Config Error: " + t.status + ": " + t.statusText); }
 	};
 	opt.parameters ="action=originate&channel=Local/"+extension + "&context="+asterisk_guitools+"&exten=play_file&priority=1&Variable=var1%3d"+ encodeURIComponent( filename );
 	var tmp = new Ajax.Request("../../rawman", opt);
@@ -103,12 +99,10 @@ function save_recordedvmenuname( filename_torecord ){
 		onSuccess: function(t) {	 
 			addrow_totable(filename_torecord);
 			var _trf = _$('table_recordefileslist'); 
-			$('maintable').style.display = ( _trf.rows.length == 0) ? 'none' : '';
-			$('no_rvmns').style.display = ( _trf.rows.length == 0) ? '':'none';
+			_$('maintable').style.display = ( _trf.rows.length == 0) ? 'none' : '';
+			_$('no_rvmns').style.display = ( _trf.rows.length == 0) ? '':'none';
 		},
-		onFailure: function(t) {
-			gui_alert("Config Error: " + t.status + ": " + t.statusText);
-		}
+		onFailure: function(t) { gui_alert("Config Error: " + t.status + ": " + t.statusText); }
 	};
 
 	var uri = build_action('newcat', 0, filename_torecord ,"", ""); 
@@ -117,12 +111,13 @@ function save_recordedvmenuname( filename_torecord ){
 }
 
 function originate_recordrequest(should_save, newvmenu_ext, filename_torecord){
-	_$('status_message').style.display="";
+	var _sm = _$('status_message').style ; 
+	_sm.display="";
 	var opt = {
 		method: 'get',
 		asynchronous: true,
 		onSuccess: function(t) { 
-			setTimeout( function(){ $('status_message').style.display='none'; },sc_displaytime);
+			setTimeout( function(){ _sm.display='none'; },sc_displaytime);
 			if ( t.responseText.indexOf("Originate successfully queued") == -1 ){
 					// Request Failed
 			}else{
@@ -137,7 +132,7 @@ function originate_recordrequest(should_save, newvmenu_ext, filename_torecord){
 			}				
 		},
 		onFailure: function(t) {
-			_$('status_message').style.display='none';
+			_sm.display='none';
 			gui_alert("Config Error: " + t.status + ": " + t.statusText);
 		}
 	};
@@ -242,7 +237,7 @@ function localajaxinit() {
 
 function check_filexists(originalRequest){
 	if( originalRequest.responseText.indexOf("Config file not found") != -1 ){
-		parent.astmanEngine.run_tool("/bin/touch /etc/asterisk/"+custom_voicemenusfile ,	function(){	 load_page();  } );
+		parent.astmanEngine.run_tool("/bin/touch /etc/asterisk/"+custom_voicemenusfile , function(){ load_page();} );
 		return;
 	}
 	load_page();

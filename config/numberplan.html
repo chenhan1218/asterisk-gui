@@ -148,9 +148,7 @@ function add_rule_fromeditform( this_priority, oncomplete ){
 
 function saverule(){
 	if ( !checkfields() ) return false;
-	if( !iscustom){
-		buildpatternstring();
-	}
+	if( !iscustom){	buildpatternstring();}
 	var _extv = _$('extensions').value ;
 	var _pv = _$('pattern').value ;
 
@@ -188,72 +186,68 @@ function parse_nprulesAndnpcomments(){
 	//			parse "numberplansdata[t.name]['nprules']" and add to "numberplansdata[t.name]['npdata']"
 	//			parse "numberplansdata[t.name]['npcomments']" and add to "numberplansdata[t.name]['npdata']"
 	//	}
-	for(x in numberplansdata){
-		if (numberplansdata.hasOwnProperty(x)) {
-			var z = numberplansdata[x];
-			var y = z['npdata'];
-			for ( k =0 ; k < z['nprules'].length ; k++ ){
-				var temp = z['nprules'][k].split(","); // temp[0] is the pattern, temp[1] is the priority,temp[2] is 'Macro(trunkdial', temp[3] is ${trunkname}/${EXTEN:1})
-				var temp1 = temp[3].split("{");
-				var temp1b = temp1[1].split("/");
-				var temp1c = temp1b[1].split("$") ;
-				var temp2 = temp1[1].split("}");
-				var temp3 = temp1[2].split("}");
-				var temp4 = temp3[0].split(":");
-				temp[4] = temp2[0] ; // temp[4] is trunkname
-				temp[5] = temp4[1] ; // temp[5] is the #digits to strip in the front
-				if ( typeof y[temp[0]] == 'undefined' ) {
-					y[temp[0]] = { };
-				}
-				y[temp[0]][temp[1]] = new ruleinanpdata(temp[4], temp[5],temp1c[0]);
+	for(x in numberplansdata){ if (numberplansdata.hasOwnProperty(x)) {
+		var z = numberplansdata[x];
+		var y = z['npdata'];
+		for ( k =0 ; k < z['nprules'].length ; k++ ){
+			var temp = z['nprules'][k].split(","); // temp[0] is the pattern, temp[1] is the priority,temp[2] is 'Macro(trunkdial', temp[3] is ${trunkname}/${EXTEN:1})
+			var temp1 = temp[3].split("{");
+			var temp1b = temp1[1].split("/");
+			var temp1c = temp1b[1].split("$") ;
+			var temp2 = temp1[1].split("}");
+			var temp3 = temp1[2].split("}");
+			var temp4 = temp3[0].split(":");
+			temp[4] = temp2[0] ; // temp[4] is trunkname
+			temp[5] = temp4[1] ; // temp[5] is the #digits to strip in the front
+			if ( typeof y[temp[0]] == 'undefined' ) {
+				y[temp[0]] = { };
 			}
-			for ( k =0 ; k < z['npcomments'].length ; k++ ){
-				var temp = z['npcomments'][k].split(","); 
-				if( typeof y[temp[0]] == "undefined"){ continue ; }
-				if ( typeof y[temp[0]][temp[1]]  == "undefined" ){  continue ; }
-				y[temp[0]][temp[1]].rulename = temp[2] ;
-				y[temp[0]][temp[1]].ruledesc = ( temp[3] !="custom" ) ? parsepattern(temp[0],0) : "custom" ; 
-			}
+			y[temp[0]][temp[1]] = new ruleinanpdata(temp[4], temp[5],temp1c[0]);
 		}
-	}
+		for ( k =0 ; k < z['npcomments'].length ; k++ ){
+			var temp = z['npcomments'][k].split(","); 
+			if( typeof y[temp[0]] == "undefined"){ continue ; }
+			if ( typeof y[temp[0]][temp[1]]  == "undefined" ){  continue ; }
+			y[temp[0]][temp[1]].rulename = temp[2] ;
+			y[temp[0]][temp[1]].ruledesc = ( temp[3] !="custom" ) ? parsepattern(temp[0],0) : "custom" ; 
+		}
+	}}
 }
 
 function show_npdata_table(a){
 	// now show m in a table - where m is the npdata of the selected numberplan
 	clear_table();
-	$('table_one').style.display="";
+	_$('table_one').style.display="";
 	var rules_nosp = new Array ;
 	var m = numberplansdata[a]['npdata'];
 	var _trunks = _$('trunks') ;
 
-	for( var x in  m ){ // x is the pattern
-		if (m.hasOwnProperty(x)) {
-			var sorted_priorities = [ ];
-			for ( var y in m[x] ){
-				if (m[x].hasOwnProperty(y)) { sorted_priorities.push(y); }
-			}
-			sorted_priorities.sort();
-			for( var z=0; z < sorted_priorities.length ; z++ ){
-				var trunk_exists = 0;
-				for(var i=0; i < _trunks.length ; i++ ){
-					if( _trunks.options[i].value == m[x][sorted_priorities[z]].trunk ){
-						trunk_exists = 1;
-						break;
-					}
-				}				
-				if ( m[x][sorted_priorities[z]].trunk  == "" ){
-					rules_nosp.push(m[x][sorted_priorities[z]].rulename) ;
-					addrowtotable( x , sorted_priorities[z] , "undefined" , m[x][sorted_priorities[z]].digits2strip );
-				}else if(trunk_exists == 0){
-					rules_nosp.push(m[x][sorted_priorities[z]].rulename) ;
-					//$('trunks').selectedIndex = -1;							
-					addrowtotable( x , sorted_priorities[z] , "invalid" , m[x][sorted_priorities[z]].digits2strip );
-				}else{
-					addrowtotable( x , sorted_priorities[z] , m[x][sorted_priorities[z]].trunk , m[x][sorted_priorities[z]].digits2strip );
+	for( var x in  m ){ if (m.hasOwnProperty(x)) {
+		var sorted_priorities = [ ];
+		for ( var y in m[x] ){
+			if (m[x].hasOwnProperty(y)) { sorted_priorities.push(y); }
+		}
+		sorted_priorities.sort();
+		for( var z=0; z < sorted_priorities.length ; z++ ){
+			var trunk_exists = 0;
+			for(var i=0; i < _trunks.length ; i++ ){
+				if( _trunks.options[i].value == m[x][sorted_priorities[z]].trunk ){
+					trunk_exists = 1;
+					break;
 				}
+			}				
+			if ( m[x][sorted_priorities[z]].trunk  == "" ){
+				rules_nosp.push(m[x][sorted_priorities[z]].rulename) ;
+				addrowtotable( x , sorted_priorities[z] , "undefined" , m[x][sorted_priorities[z]].digits2strip );
+			}else if(trunk_exists == 0){
+				rules_nosp.push(m[x][sorted_priorities[z]].rulename) ;
+				//$('trunks').selectedIndex = -1;							
+				addrowtotable( x , sorted_priorities[z] , "invalid" , m[x][sorted_priorities[z]].digits2strip );
+			}else{
+				addrowtotable( x , sorted_priorities[z] , m[x][sorted_priorities[z]].trunk , m[x][sorted_priorities[z]].digits2strip );
 			}
 		}
-	}
+	}}
 
 	if(rules_nosp.length > 0 ){
 		_$('status').innerHTML = "Note: A Service Provider is not defined for the Rule(s) <BR>" + rules_nosp ;
@@ -320,50 +314,45 @@ return returnstring;
 
 
 function addrowtotable(a,b,c,d){	// a is pattern, b is priority, c is trunk, d is digits2strip
-		var m = numberplansdata[$('extensions').value]['npdata'];
-		var _crt = _$('callingRulesTable') ;
-		var sno = _crt.rows.length + 1;
-		var newRow = _crt.insertRow(-1);
-		newRow.id = "row" + sno; 
+	var m = numberplansdata[_$('extensions').value]['npdata'];
+	var _crt = _$('callingRulesTable') ;
+	var sno = _crt.rows.length + 1;
+	var newRow = _crt.insertRow(-1);
+	newRow.id = "row" + sno; 
 
-		var newCell0 = newRow.insertCell(0);
-		newCell0.innerHTML = sno ;
-		newCell0.width=35;
-		newCell0.align="center";
+	var newCell0 = newRow.insertCell(0);
+	newCell0.innerHTML = sno ;
+	newCell0.width=35;
+	newCell0.align="center";
 
-		var newCell1 = newRow.insertCell(1);
-		newCell1.innerHTML =  (m[a][b].rulename) ? m[a][b].rulename : "Not Defined" ; 
-		newCell1.width=90;
+	var newCell1 = newRow.insertCell(1);
+	newCell1.innerHTML =  (m[a][b].rulename) ? m[a][b].rulename : "Not Defined" ; 
+	newCell1.width=90;
 
-		var newCell2 = newRow.insertCell(2);
-		newCell2.innerHTML =  (m[a][b].ruledesc) ? m[a][b].ruledesc : a ; 
-		if(newCell2.innerHTML == "custom"){ newCell2.innerHTML = "custom ("+ a + ")"; }
+	var newCell2 = newRow.insertCell(2);
+	newCell2.innerHTML =  (m[a][b].ruledesc) ? m[a][b].ruledesc : a ; 
+	if(newCell2.innerHTML == "custom"){ newCell2.innerHTML = "custom ("+ a + ")"; }
 
-		if(c == "invalid" || c== "undefined"  ){
-			var newCell3 = newRow.insertCell(3);
-			newCell3.innerHTML = "<B><font color=red>invalid trunk</font></B>"  ;
-			newCell3.width=85;
-		}else{
-			var newCell3 = newRow.insertCell(3);
-			newCell3.innerHTML = trunks_desc[c].comment  ;
-			newCell3.width=85;
-		}
+	if(c == "invalid" || c== "undefined"  ){
+		var newCell3 = newRow.insertCell(3);
+		newCell3.innerHTML = "<B><font color=red>invalid trunk</font></B>"  ;
+		newCell3.width=85;
+	}else{
+		var newCell3 = newRow.insertCell(3);
+		newCell3.innerHTML = trunks_desc[c].comment  ;
+		newCell3.width=85;
+	}
 
-		var newCell4 = newRow.insertCell(4);
-		newCell4.innerHTML = "<A href=\"#\" onclick=\"editcallingrule('"+ a +"', '"+ b +"')\"  onmouseover=\"show_tooltip('en', 'callingrules', 2);\">Edit</A>&nbsp;&nbsp;<A href=\"#\" onclick=\"deletecallingrule('"+ a +"', '"+ b +"')\"   onmouseover=\"show_tooltip('en', 'callingrules', 3);\">Delete</A>";
-		newCell4.width=75;
-		newCell4.align="center";
-		return true;
+	var newCell4 = newRow.insertCell(4);
+	newCell4.innerHTML = "<A href=\"#\" onclick=\"editcallingrule('"+ a +"', '"+ b +"')\"  onmouseover=\"show_tooltip('en', 'callingrules', 2);\">Edit</A>&nbsp;&nbsp;<A href=\"#\" onclick=\"deletecallingrule('"+ a +"', '"+ b +"')\"   onmouseover=\"show_tooltip('en', 'callingrules', 3);\">Delete</A>";
+	newCell4.width=75;
+	newCell4.align="center";
+	return true;
 }
 
 function deletecallingrule(a,b){ // a is pattern, b is priority
-		t=confirm("Are you sure ?")
-		if(t == false)
-			return true;
-		delete_callingrule(a,b, oncomplete = function(){
-				show_npdata_table( _$('extensions').value );
-			} 
-		) ;
+	if(!confirm("Are you sure ?")) { return true; }
+	delete_callingrule(a,b, oncomplete = function(){ show_npdata_table( _$('extensions').value ); } ) ;
 }
 
 function delete_callingrule(a,b,oncomplete){ // a is pattern, b is priority
@@ -491,7 +480,7 @@ numplan_callbacks.loaded = function() {
 numplan_callbacks.newcategory = function() {
 	var _extns = _$('extensions') ;
 	np_oldselect = _extns.selectedIndex ;
-	$('include').value = "default";
+	_$('include').value = "default";
 	var c = 1 ;
 	for(var u =0 ; u < _extns.length ; u++ ){
 		var tmp =  _extns.options[u].value.split("-") ;
@@ -542,8 +531,8 @@ function localajaxinit(){
 		widgets[fieldnames[x]].disabled = true;
 	}
 	for (var x =0; x < focus_fields.length; x++ ) {
-		$(focus_fields[x]).onfocus = function(){this.className = 'input9_hilight';}
-		$(focus_fields[x]).onblur = function(){this.className = 'input9';}
+		_$(focus_fields[x]).onfocus = function(){this.className = 'input9_hilight';}
+		_$(focus_fields[x]).onblur = function(){this.className = 'input9';}
 	}
 	_$('message_text').innerHTML ="Saving Changes...";
 
@@ -585,10 +574,7 @@ function newnumberplan(){
 	_$('new').click();
 }
 
-function delete_numberplan(){
-	_$('delete').click();
-}
-
+function delete_numberplan(){	_$('delete').click();	}
 
 function addthe_default_callingplan(){
 	if(!confirm("A default Dial Plan is not found. \n Do you want to create a default Dial Plan ") ){ 

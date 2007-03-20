@@ -489,7 +489,7 @@ function callbacks_savechanges_step2(){
 			$(focus_fields[x]).onfocus = function(){this.className = 'input8_hilight';}
 			$(focus_fields[x]).onblur = function(){this.className = 'input8';}
 		}
-		parent.astmanEngine.config2list("zapscan.conf", $('zapchan'), new Array(), phonecallbacks);
+		parent.astmanEngine.config2list("zapscan.conf", _$('zapchan'), new Array(), phonecallbacks);
 	}
 
 
@@ -498,7 +498,7 @@ function loadServiceProvidersintotable(){
 	for( var i=0; i <  _spt.rows.length; ){
 		_spt.deleteRow(i);
 	}
-	var _devices = $('devices');
+	var _devices = _$('devices');
  
 	if( _devices.length == "0" ){
 		_$('table_one').style.display="none";

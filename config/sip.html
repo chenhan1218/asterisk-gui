@@ -103,29 +103,29 @@ function 	selectbox_remove(selectbox_id,codec){
 	}
 }
 function update_ordercodecs(){
-			$('disallow').value = "";
-			$('allow').value = "";
-			if($('disallow_all').checked){
-					$('disallow').value = "all";
-			}else{
-					for (var x=0; x < $('disallowed').length ; x++){
-						if(x==0){
-							$('disallow').value = $('disallowed').options[x].value ;
-						}else{
-							$('disallow').value = $('disallow').value + "," + $('disallowed').options[x].value ;
-						}
-					}
-			}
-
-			for (var x=0; x < $('allowed').length ; x++){
-				if(x==0){ 	
-						$('allow').value = $('allowed').options[x].value ; 
+		$('disallow').value = "";
+		$('allow').value = "";
+		if($('disallow_all').checked){
+				$('disallow').value = "all";
+		}else{
+			for (var x=0; x < $('disallowed').length ; x++){
+				if(x==0){
+					$('disallow').value = $('disallowed').options[x].value ;
 				}else{
-						$('allow').value = $('allow').value + "," +  $('allowed').options[x].value ; 
+					$('disallow').value = $('disallow').value + "," + $('disallowed').options[x].value ;
 				}
 			}
-			$('bg_transparent').style.display='none';
-			$('div_setordercodecs').style.display = "none";
+		}
+
+		for (var x=0; x < $('allowed').length ; x++){
+			if(x==0){ 	
+					$('allow').value = $('allowed').options[x].value ; 
+			}else{
+					$('allow').value = $('allow').value + "," +  $('allowed').options[x].value ; 
+			}
+		}
+		$('bg_transparent').style.display='none';
+		$('div_setordercodecs').style.display = "none";
 		$('save').disabled = false;
 		$('cancel').disabled = false;
 }

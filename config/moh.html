@@ -31,7 +31,7 @@ var widgets = new Array;
 var fieldnames = ['application', 'cancel', 'delete', 'directory', 'format', 'mode', 'name', 'new', 'random', 'save', 'status']; 
 
 mohcallbacks.format = function(t) {
-			return t.name;
+	return t.name;
 }
 
 mohcallbacks.postselect = function(box, val) {
@@ -43,15 +43,15 @@ mohcallbacks.loaded = function() {
 }
 
 function localajaxinit() {
-			setWindowTitle("Music on Hold");
-			// Load the jabber.conf->users into the Users, associate the field to other fields
-			parent.loadscreen(this);
-			for (var x =0; x < fieldnames.length; x++) {
-				widgets[fieldnames[x]] = $(fieldnames[x]);
-				widgets[fieldnames[x]].disabled = true;
-			}
-			parent.astmanEngine.config2list("musiconhold.conf", $('moh_classes'), widgets, mohcallbacks);
-			return;
+	setWindowTitle("Music on Hold");
+	// Load the jabber.conf->users into the Users, associate the field to other fields
+	parent.loadscreen(this);
+	for (var x =0; x < fieldnames.length; x++) {
+		widgets[fieldnames[x]] = _$(fieldnames[x]);
+		widgets[fieldnames[x]].disabled = true;
+	}
+	parent.astmanEngine.config2list("musiconhold.conf", _$('moh_classes'), widgets, mohcallbacks);
+	return;
 }
 </script>
 <body id="foo" onload="localajaxinit()"  bgcolor="EFEFEF">
