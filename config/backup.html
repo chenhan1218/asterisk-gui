@@ -45,15 +45,15 @@ return x;
 }
 
 function removebkpfile(){
-	$('message_text').innerHTML = "Please wait while the system <BR> Generates a Backup ... ";
-	$('status_message').style.display="block";
+	_$('message_text').innerHTML = "Please wait while the system <BR> Generates a Backup ... ";
+	_$('status_message').style.display="block";
 	//remove bkpfile on server 
 	parent.astmanEngine.run_tool("/bin/rm " + bkp_path+ "conf_* -f", download_bkp );
 }
 
 
 function showremovebkpfile(){
-	$('status_message').style.display='none';
+	_$('status_message').style.display='none';
 //	$('message_text').innerHTML =  "<A href=\"#\" onclick=\"removebkpfile()\">I have downloaded the file</A><BR><BR>" + "<A href=\"./bkps/"+ bkpfile  +"\" onclick=\"showremovebkpfile()\">ReDownload</A>";
 }
 
@@ -61,20 +61,20 @@ function showremovebkpfile(){
 
 function download_bkp(){
 
-		var today=new Date()
-		var year = today.getFullYear();
-		var month = addzero(today.getMonth() + 1);
-		var day = addzero(today.getDate());
-		var hour =addzero(today.getHours());
-		var minute =addzero(today.getMinutes());
-		var seconds =addzero(today.getSeconds());
-		bkpfile =  "conf_" + year + month + day + hour  + minute +seconds  +".tar";
-		parent.astmanEngine.run_tool("/bin/tar -cf "+ bkp_path + bkpfile +" /etc/asterisk/", callback=function(){
-							$('status').innerHTML = " <I> Finished generating Backup ! </I>";
-							$('status_message').style.display="none";
-							window.location.href = "./bkps/"+ bkpfile ;
-							//$('message_text').innerHTML = "<A href=\"./bkps/"+ bkpfile  +"\" onclick=\"showremovebkpfile()\">Click Here to Download</A>";
-		} );
+	var today=new Date()
+	var year = today.getFullYear();
+	var month = addzero(today.getMonth() + 1);
+	var day = addzero(today.getDate());
+	var hour =addzero(today.getHours());
+	var minute =addzero(today.getMinutes());
+	var seconds =addzero(today.getSeconds());
+	bkpfile =  "conf_" + year + month + day + hour  + minute +seconds  +".tar";
+	parent.astmanEngine.run_tool("/bin/tar -cf "+ bkp_path + bkpfile +" /etc/asterisk/", callback=function(){
+		_$('status').innerHTML = " <I> Finished generating Backup ! </I>";
+		_$('status_message').style.display="none";
+		window.location.href = "./bkps/"+ bkpfile ;
+		//$('message_text').innerHTML = "<A href=\"./bkps/"+ bkpfile  +"\" onclick=\"showremovebkpfile()\">Click Here to Download</A>";
+	} );
 }
 
 </script>

@@ -144,24 +144,24 @@ function refreshtable(){
 }
 
 function addrowtotable(a,b,c,d){	// a is pattern, b is DID_trunk, c is action, d is priority
-		var crt = _$('callingRulesTable') ;
-		var sno = crt.rows.length + 1;
-		var newRow = crt.insertRow(-1);
-		newRow.id = "row" + sno; 
-		
-		var newCell0 = newRow.insertCell(0);
-		newCell0.innerHTML = sno ;
-		newCell0.align="center";
-		newCell0.width=35;
+	var crt = _$('callingRulesTable') ;
+	var sno = crt.rows.length + 1;
+	var newRow = crt.insertRow(-1);
+	newRow.id = "row" + sno; 
+	
+	var newCell0 = newRow.insertCell(0);
+	newCell0.innerHTML = sno ;
+	newCell0.align="center";
+	newCell0.width=35;
 
-		var newCell1 = newRow.insertCell(1);
-		newCell1.innerHTML =  convert_tohuman(a,b,c) ; 
+	var newCell1 = newRow.insertCell(1);
+	newCell1.innerHTML =  convert_tohuman(a,b,c) ; 
 
-		var newCell2 = newRow.insertCell(2);
-		newCell2.innerHTML = "<A href=\"#\" onclick=\"edit_incomingrule('"+ a +"', '"+ b +"', '" + c + "','" + d+"')\">Edit</A>&nbsp;&nbsp;<A href=\"#\" onclick=\"delete_incomingrule('"+ a +"', '"+ b +"', '" + c + "','" + d+"')\">Delete</A>";
-		newCell2.width=75;
-		newCell2.align="center";
-		return true;
+	var newCell2 = newRow.insertCell(2);
+	newCell2.innerHTML = "<A href=\"#\" onclick=\"edit_incomingrule('"+ a +"', '"+ b +"', '" + c + "','" + d+"')\">Edit</A>&nbsp;&nbsp;<A href=\"#\" onclick=\"delete_incomingrule('"+ a +"', '"+ b +"', '" + c + "','" + d+"')\">Delete</A>";
+	newCell2.width=75;
+	newCell2.align="center";
+	return true;
 }
 
 
@@ -425,31 +425,28 @@ function enablesave(){
 
 
 function delete_incomingrule(a,b,c,d){ // a is pattern, b is DID_trunk, c is action, d is priority
-	t=confirm("Are you sure you want to delete this Incoming Calling Rule?");
-	if(t == false){ 
-		return true; 				
-	}
+	if( !confirm("Are you sure you want to delete this Incoming Calling Rule?") ){ return true; }
 
 	var tmp_match = a+","+d+","+c ;
-		var opt = {
-			method: 'get',
-			asynchronous: true,
-			onSuccess: function(t) { 									
-				// add this to the global object
-				delete didtrunks[b][a];
-				refreshtable();
-			},
-			onFailure: function(t) {
-				gui_alert("Config Error: " + t.status + ": " + t.statusText);
-			}
-		};
-		var uri = build_action('delete',0, b, "exten" ,"", tmp_match);
-		if( a == "_X." ){
-			var tmp2_match = "s," + d + "," + c ;
-			uri += build_action('delete',1,b,"exten","", tmp2_match);
+	var opt = {
+		method: 'get',
+		asynchronous: true,
+		onSuccess: function(t) { 									
+			// add this to the global object
+			delete didtrunks[b][a];
+			refreshtable();
+		},
+		onFailure: function(t) {
+			gui_alert("Config Error: " + t.status + ": " + t.statusText);
 		}
-		opt.parameters="action=updateconfig&srcfilename=" + encodeURIComponent("extensions.conf") + "&dstfilename=" + encodeURIComponent("extensions.conf") + uri;
-		var tmp = new Ajax.Request("../../rawman", opt);
+	};
+	var uri = build_action('delete',0, b, "exten" ,"", tmp_match);
+	if( a == "_X." ){
+		var tmp2_match = "s," + d + "," + c ;
+		uri += build_action('delete',1,b,"exten","", tmp2_match);
+	}
+	opt.parameters="action=updateconfig&srcfilename=" + encodeURIComponent("extensions.conf") + "&dstfilename=" + encodeURIComponent("extensions.conf") + uri;
+	var tmp = new Ajax.Request("../../rawman", opt);
 }
 
 
@@ -458,10 +455,10 @@ function localajaxinit() {
 	showdiv_statusmessage();
 	setWindowTitle("Incoming Calls");
 	for (var x =0; x < focus_fields.length; x++ ) {
-		$(focus_fields[x]).onfocus = function(){this.className = 'input9_hilight';}
-		$(focus_fields[x]).onblur = function(){this.className = 'input9';}
+		_$(focus_fields[x]).onfocus = function(){this.className = 'input9_hilight';}
+		_$(focus_fields[x]).onblur = function(){this.className = 'input9';}
 	}
-	parent.astmanEngine.config2list("users.conf", $('users'), new Array(), user_callbacks);
+	parent.astmanEngine.config2list("users.conf", _$('users'), new Array(), user_callbacks);
 }
 
 

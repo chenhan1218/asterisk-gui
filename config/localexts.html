@@ -97,18 +97,18 @@ function localajaxinit(){
 
 
 function update_spae(){
-	var lel = $('localextenlength').value;
-	var ub = $('userbase').value ;
+	var lel = $('localextenlength');
+	var ub = $('userbase') ;
 
-	if( lel == "0" ) { return; }
+	if( lel.value == "0" ) { return; }
 
-	if( lel == ub.length ) { 
+	if( lel.value == ub.value.length ) { 
 		return;
-	}else if( lel < ub.length ){
-		ub = ub.substr(0,lel);
+	}else if( lel.value < ub.value.length ){
+		ub.value = ub.value.substr(0,lel);
 		return;
-	}else if( lel > ub.length ){
-		while ( lel != ub.length  ){ ub = ub+ "0" ; }
+	}else if( lel.value > ub.value.length ){
+		while ( lel.value != ub.value.length  ){ ub.value = ub.value + "0" ; }
 	}
 }
 
