@@ -1,3 +1,5 @@
+function _$(x){ return document.getElementById(x); } // not a part of protoype 1.5, added for use in asterisk gui 
+
 /*  Prototype JavaScript framework, version 1.5.0
  *  (c) 2005-2007 Sam Stephenson
  *

@@ -1,7 +1,7 @@
 <!--
  * Asterisk-GUI	-	an Asterisk configuration interface
  *
- * Top level for configuration file  (with some additional advanced tabs )
+ * Top level for configuration file (with some advanced options)
  *
  * Copyright (C) 2006-2007, Digium, Inc.
  *
@@ -21,9 +21,6 @@
 -->
 <script>
 var browser_alert = "Asterisk Configuration GUI is currently supported in Firefox (recommended 1.5 or above) \n SeaMonkey (1.0 or above), Netscape (8.0 or above) and Opera (9.0 or above) \n\n" +	"Support for other browsers is under development \n" + 	" and will be supported in future versions";
-if( navigator.userAgent.indexOf("MSIE") != -1 || navigator.userAgent.indexOf("Konqueror") != -1 || navigator.userAgent.indexOf("Safari") != -1 ){
-	gui_alert(browser_alert);
-}
 </script>
 <script src="scripts/prototype.js"></script>
 <script src="scripts/rico.js"></script>
@@ -45,13 +42,16 @@ if( navigator.userAgent.indexOf("MSIE") != -1 || navigator.userAgent.indexOf("Ko
 	var loggedon = -1;
 	var started = 0;
 	var accordion;
-	var copyright = "Copyright &copy;2006 Digium, Inc.  All Rights Reserved. &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
+	var copyright = "Copyright &copy;2006-2007 Digium, Inc.  All Rights Reserved. &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
 	var tooltip_default = "Move the mouse over to a field to see tooltips";
+	var asterisk_guitools_inextconf = 0;
 
 	eventeater.eventcb = function(msgs) {
-		if (loggedon == 1)
+		if (loggedon == 1){
 			astmanEngine.pollEvents();
+		}
 	}
+
 
 	panels.push( 
 
@@ -98,8 +98,8 @@ if( navigator.userAgent.indexOf("MSIE") != -1 || navigator.userAgent.indexOf("Ko
 
 		new PanelDef("jingle", "Jingle", "accordion-icon.gif", "Jingle configuration lets users connect to google talk networks"),
 
-//		new PanelDef("zapata", "Zap Channel", "accordion-icon.gif", "Zapata telephony interface configuration"),
-
+		new PanelDef("zapata", "Zap Channel", "accordion-icon.gif", "Zapata telephony interface configuration"),
+		
 		new PanelDef("status", "Active Channels", "accordion-icon.gif", "Monitor active channels."),
 
 		new PanelDef("sysinfo", "System Info", "accordion-icon.gif", "System Information."),
@@ -112,87 +112,73 @@ if( navigator.userAgent.indexOf("MSIE") != -1 || navigator.userAgent.indexOf("Ko
 
 	function setLoggedOn(onoff) {
 		loggedon = onoff;
-		if (loggedon == 1) {
-			for (var i = 0; i < panels.length; i++) {
-				if (panels[i].name == 'home'){
-					continue;
-				}
-				$(panels[i].name).onclick = $(panels[i].name).realonclick;
-				$(panels[i].name).onmouseover = $(panels[i].name).realonmouseover;
-				$(panels[i].name).style.visibility = 'inherit';
-			}
-		} else {
-			for (var i = 0; i < panels.length; i++) {
-				if (panels[i].name == 'home'){
-					// class :: accordionTabContentBox panelHeight = 474;
-					continue;
-				}
-				$(panels[i].name).onClick = false;
-				$(panels[i].name).onMouseOver = false;
-				$(panels[i].name).style.visibility = 'hidden';
-
-			}
+		for (var i = 0; i < panels.length; i++) {
+			if (panels[i].name == 'home'){continue;}
+			var w = _$(panels[i].name); 
+			w.onClick = (loggedon == 1)?$(panels[i].name).realonclick: false;
+			w.onMouseOver = (loggedon == 1)?$(panels[i].name).realonmouseover:false;
+			w.style.visibility = (loggedon == 1)?'inherit':'hidden';
 		}
 	}
 	
 	function loadscreen(srcbody) {
-		$('mainscreen').style.display = '';
-		new Rico.Effect.FadeTo($('mainscreen'), 1, 100, 1);
-		if (loggedon == 1)
-			astmanEngine.pollEvents();
+		_$('mainscreen').style.display = '';
+		if (loggedon == 1){ astmanEngine.pollEvents(); }
 	}
-	function finishfade(page) {	$('mainscreen').style.display = "none"; 	}
-	function setstatus(status) {	$('status').innerHTML = copyright + status;	}
+	
+	function setstatus(status) {	_$('status').innerHTML = copyright + status;	}
 	function showmainscreen(page) {
 		if (started) {
 			var opt = {
 				method: 'get',
 				asynchronous: true,
 				onComplete: function (originalRequest){
-						if ( originalRequest.responseText.match("Error") ) {
-							window.location.href=window.location.href;
-							return ;
-						}
-						if ( originalRequest.responseText.match("Pong") ) {
-								$('mainscreen').src = page.titleBar.id + ".html";
-						}
+					if ( originalRequest.responseText.match("Error") ) {
+						window.location.href=window.location.href;
+						return ;
 					}
+					if ( originalRequest.responseText.match("Pong") ) {
+							_$('mainscreen').src = page.titleBar.id + ".html";
+					}
+				}
 			};
 			opt.parameters="action=ping" ;
 			var tmp = new Ajax.Request("../../rawman" , opt);
+			//$('mainscreen').src = page.titleBar.id + ".html";
 		}
 	}
 
+	
+
 	function fademainscreen(page, newpage) {
 		// Confirm Discard Changes goes here 
-		$('tooltip').innerHTML = tooltip_default;
-		new Rico.Effect.FadeTo($('mainscreen'), 0, 100, 5, {complete:finishfade(page)});
+		_$('tooltip').innerHTML = tooltip_default;
+		_$('mainscreen').style.display = "none";
 	}
 
 	function show_Acctooltip(name, tip){
 		if( loggedon != 1){ return; }
-			new Rico.Effect.FadeTo( 'tooltip_round', .01, 100, 10, {
-			complete:function() { 
-				$('tooltip').innerHTML = 	tip ; 
-				new Rico.Effect.FadeTo( 'tooltip_round', 1, 10, 1, {complete:function() { } } );		
-			} 
-		} );
+		_$('tooltip').innerHTML = tip ;
 	}
 
 	function registerajax() {
 		Rico.Corner.round('tooltip_round', {compact:true});
+		if( navigator.userAgent.indexOf("MSIE") != -1 || navigator.userAgent.indexOf("Konqueror") != -1 || navigator.userAgent.indexOf("Safari") != -1 ){
+			gui_alert(browser_alert);
+		}
 		var pnameheight = 22;
 		var pheight = (503  - (pnameheight*panels.length) ) ;
 		accordion = new Rico.Accordion( $('configpanel'), { panelHeight: pheight,onHideTab:fademainscreen,onShowTab:showmainscreen });
 		//$('borderbox').style.height = $('screenholder').clientHeight;
 		//$('titlebar').style.width = $('borderbox').clientWidth - 12;
 		for (var i = 0; i < panels.length; i++) {
+			var w = _$(panels[i].name) ;
 			if (panels[i].name == 'home'){
-				$(panels[i].name).style.height = "19px";
+				w.style.height =  "19px";
 				continue;
 			}
-			$(panels[i].name).realonclick = $(panels[i].name).onclick;
-			$(panels[i].name).realonmouseover = $(panels[i].name).onmouseover;
+			w.realonclick = w.onclick;
+			w.realonmouseover = w.onmouseover;
 		}
 		started = 1;
 	}
@@ -201,15 +187,15 @@ if( navigator.userAgent.indexOf("MSIE") != -1 || navigator.userAgent.indexOf("Ko
 	astmanEngine.setEventCallback(eventeater.eventcb);
 
 	function Logoff() {
-		var t=confirm("Are you sure ?");
-		if(t == false)
-			return true;
+		if(!confirm("Are you sure ?")){ return true; }
 		var opt2 = {
 			method: 'get',
 			asynchronous: true,
 			onSuccess: function() {	 
-					// reload the browser URL
-					window.location.href=window.location.href;
+				setLoggedOn(0);
+				loggedon == -1;
+				// reload the browser URL
+				window.location.href=window.location.href;
 			},
 			onFailure: function(t) {
 				gui_alert("Config Error: " + t.status + ": " + t.statusText);
@@ -223,51 +209,53 @@ if( navigator.userAgent.indexOf("MSIE") != -1 || navigator.userAgent.indexOf("Ko
 		var newwindow_href = location.protocol + '//' + location.hostname + ':8003';
 		window.open(newwindow_href ,'mainwindow','width=1024,height=768,resizable=no, scrollbars=no, toolbar=no, location=no,status=yes, menubar=no')
 	}
+
 </script>
 <head>
 	<title>Asterisk Configuration GUI (Beta)</title>
 	<link rel="shortcut icon" href="images/favicon.ico" />
 </head>
-<body onload="javascript:registerajax()" topmargin=1>
+<body onload="registerajax( )" topmargin=1>
 <table border="0" align="center" cellspacing="0" cellpadding="0" bgcolor="#dddddd" width=950 height=570>
-<tr height=47><td valign="bottom" align='right' bgcolor='white' height=47><img align='left' src="images/digiumlogo.gif" align="left"></td>
-							<td valign='bottom' align='right' bgcolor='white' colspan=2>
-							<!-- <a href="#" onclick=" system_link()">System Configuration</a>&nbsp;|&nbsp; -->
-							<a target='_extern' href="http://www.digium.com/en/company/profile/">About Digium</a>&nbsp;|&nbsp;
-							<a target='_extern' href="http://www.asterisknow.org/bugs">Report a Bug</a>&nbsp;|&nbsp;
-							<a target='_extern' href="http://www.asterisknow.org/help">Help</a>&nbsp;
-							<input type="hidden" id="login_name">
-							</td>
+<tr height=47>
+	<td valign="bottom" align='right' bgcolor='white' height=47><img align='left' src="images/digiumlogo.gif" align="left"></td>
+	<td valign='bottom' align='right' bgcolor='white' colspan=2>
+			<!-- <a href="#" onclick=" system_link()">System Configuration</a>&nbsp;|&nbsp; -->
+			<a target='_extern' href="http://www.digium.com/en/company/profile/">About Digium</a>&nbsp;|&nbsp;
+			<a target='_extern' href="http://www.asterisknow.org/bugs">Report a Bug</a>&nbsp;|&nbsp;
+			<a target='_extern' href="http://www.asterisknow.org/help">Help</a>&nbsp;
+			<input type="hidden" id="login_name">
+	</td>
 </tr>
-<tr><td height="505"><div id="configpanel" style="width:150px; height: 505px;">
-										<script>
-												for (var i = 0; i < panels.length; i++) {
-													document.write("<div onmouseover='show_Acctooltip(\""+ panels[i].name +"\", \""+ panels[i].content +"\")'  onmouseout='show_Acctooltip(\""+ panels[i].name +"\", \"" + tooltip_default +"\")'>");
-													document.write("	<div id='" + panels[i].name + "' class='accordionTabTitleBar'>");
-													document.write("		<nobr><img style='vertical-align:middle' src='images/" + panels[i].icon + "'>");
-													document.write("		<span style='margin-left: 0px;font-weight:bold'>" + panels[i].label + "</span></nobr>");
-													document.write("    </div>");
-													document.write("	<div class='accordionTabContentBox' style='background-image:url(images/panel.png)'>");
-													document.write(panels[i].content);
-													document.write("	</div>");
-													document.write("</div>");
-												}
-										</script>
-									</div>
-		</td>
-		<td width="550" height="505" bgcolor="#EFEFEF" valign="top" id="screenholder">
-				<div id="titlebar" class="mainscreenTitleBar" style="position:absolute;top:48px">
-						<span style="margin-left: 4px;font-weight:bold">Loading Screen&nbsp;<img src='images/dots.gif'></span>
-				</div>
-				<div id="borderbox" class="mainscreenBorderBox" height="100%"></div>
-				<iframe width="540" height="505" frameborder="0" border="0" marginheight="0" marginwidth="0" src="home.html" id="mainscreen" style="position:absolute;top:48px;" SCROLLING=no></iframe>
-		</td>
-		<td valign=top width=250 height="505">
-			<div id="logoutlink" class="mainscreenTooltipBar" align=right style="font-weight:bold;cursor: pointer; cursor: hand;">&nbsp;</div>
-			<div id="tooltip_round" class="tooltip_round">
-			<div id='tooltip' style="margin-left:4px; font-family : Trebuchet MS, Arial, Helvetica, sans-serif;font-size: 11px; "><script>document.write(tooltip_default);</script></div>
-			</div>
-		</td>
+<tr><td height="505">
+	<div id="configpanel" style="width:150px; height: 505px;">
+	<script>
+	for (var i = 0; i < panels.length; i++) {
+		var t = "<div onmouseover='show_Acctooltip(\""+ panels[i].name +"\", \""+ panels[i].content +"\")'  onmouseout='show_Acctooltip(\""+ panels[i].name +"\", \"" + tooltip_default +"\")'>";
+		t += "	<div id='" + panels[i].name + "' class='accordionTabTitleBar'>";
+		t += "		<nobr><img style='vertical-align:middle' src='images/" + panels[i].icon + "'>";
+		t += "		<span style='margin-left: 0px;font-weight:bold'>" + panels[i].label + "</span></nobr>";
+		t += "  </div>";
+		t += "  <div class='accordionTabContentBox' style='background-image:url(images/panel.png)'>" +  panels[i].content + "</div>";
+		t += "</div>";
+		document.write(t);
+	}
+	</script>
+	</div>
+	</td>
+	<td width="550" height="505" bgcolor="#EFEFEF" valign="top" id="screenholder">
+		<div id="titlebar" class="mainscreenTitleBar" style="position:absolute;top:48px">
+			<span style="margin-left: 4px;font-weight:bold">Loading Screen&nbsp;<img src='images/dots.gif'></span>
+		</div>
+		<div id="borderbox" class="mainscreenBorderBox" height="100%"></div>
+		<iframe width="540" height="505" frameborder="0" border="0" marginheight="0" marginwidth="0" src="home.html" id="mainscreen" style="position:absolute;top:48px;" SCROLLING=no></iframe>
+	</td>
+	<td valign=top width=250 height="505">
+		<div id="logoutlink" class="mainscreenTooltipBar" align=right style="font-weight:bold;cursor: pointer; cursor: hand;">&nbsp;</div>
+		<div id="tooltip_round" class="tooltip_round">
+		<div id='tooltip' style="margin-left:4px; font-family : Trebuchet MS, Arial, Helvetica, sans-serif;font-size: 11px; "><script>document.write(tooltip_default);</script></div>
+		</div>
+	</td>
 </tr>
 <tr><td colspan="3" align=center height=18>
 		<div id="status" class="statusbar">Copyright &copy;2006-2007 Digium, Inc.  Digium&reg; and Asterisk&reg; are registered <a href="http://www.digium.com/en/company/profile/trademarkpolicy.php">trademarks</a> of Digium, Inc.  All Rights Reserved. <i><a href="#">Legal Information</a></i></div>

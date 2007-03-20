@@ -29,9 +29,8 @@
 var numplan_callbacks = new Object;
 var user_callbacks = new Object;
 var didtrunks = new Object;
-var editstatus ;
 var old_incomingrule, old_fromprovider ;
-var  edit_pattern, edit_DIDtrunk, edit_action, edit_priority ;
+var editstatus , edit_pattern, edit_DIDtrunk, edit_action, edit_priority ;
 var listOfExtensions = [] ;	// to store all the list of extensions to be displayed in the select menu
 var focus_fields = new Array('incomingrule','frompattern','fromprovider','toextension');
 
@@ -45,16 +44,6 @@ user_callbacks.format = function(t, x) {
 	if (t.fieldbyname['fullname'] && t.fieldbyname['fullname'].length && x == undefined && t.name != "general" ) {
 		listOfExtensions.push( t.name + " -- " + t.fieldbyname['fullname'] );
 	}
-	/*
-	var tmp = 'DID_' + t.name;
-	if ( t.name.substring(0,6) == 'trunk_' && x == undefined){
-		didtrunks[tmp] = new Object();
-		return t.name;
-	}
-	if ( t.name.substring(0,6) == 'trunk_'  && t.names[x]=='trunkname' ){
-		didtrunks[tmp].trunkname = t.fields[x];
-	}
-	*/
 	return false;
 }
 
@@ -68,7 +57,7 @@ user_callbacks.includecats = true;
 // and show each entry in the table
 numplan_callbacks.format = function(t, x) {
 	if ((t.name == specialcontext && x != undefined )){
-		var p = format_extension( $('extensions'), t, x)  ;
+		var p = format_extension( _$('extensions'), t, x)  ;
 		if ( p != null ){ listOfExtensions.push(p); }
 	}
 	if (		( t.name.substring(0,asterisk_guiTDPrefix.length) == asterisk_guiTDPrefix ) && x == undefined){
@@ -98,9 +87,9 @@ numplan_callbacks.loaded = function() {
 		  New_OPTION.text = listOfExtensions[a] ;
 		  New_OPTION.value = b[0] ;
 		  try {
-			$('toextension').add(New_OPTION, null); // W3C way
+			_$('toextension').add(New_OPTION, null); // W3C way
 		  }catch(ex) {
-			$('toextension').add(New_OPTION); // IE way
+			_$('toextension').add(New_OPTION); // IE way
 		  }
 	}
 
@@ -129,9 +118,8 @@ numplan_callbacks.eachline = true;
 numplan_callbacks.includecats = true;
 
 function refreshtable(){
-	for( var i=0; i <  $('callingRulesTable').rows.length; ){
-			 $('callingRulesTable').deleteRow(i);
-	}
+	var crt = _$('callingRulesTable') ;
+	for( var i=0; i <  crt.rows.length; ){ crt.deleteRow(i); }
 	
 	for ( var i in didtrunks ){ // for each trunk
 		if( didtrunks.hasOwnProperty(i) ){ 
@@ -144,9 +132,9 @@ function refreshtable(){
 		}
 	}
 
-	if( $('callingRulesTable').rows.length == 0){
+	if( crt.rows.length == 0){
 		$('table_one').style.display="none";
-		var newRow = $('callingRulesTable').insertRow(-1);
+		var newRow = crt.insertRow(-1);
 		var newCell0 = newRow.insertCell(0);
 		newCell0 .align = "center";
 		newCell0 .innerHTML = "<BR>An <I>incoming Calling Rule</I> is not defined<BR><BR> Please click on 'Add a Incoming Rule' button<BR> to add a new incoming call rule.<BR><BR>" ;
@@ -156,8 +144,9 @@ function refreshtable(){
 }
 
 function addrowtotable(a,b,c,d){	// a is pattern, b is DID_trunk, c is action, d is priority
-		var sno = $('callingRulesTable').rows.length + 1;
-		var newRow = $('callingRulesTable').insertRow(-1);
+		var crt = _$('callingRulesTable') ;
+		var sno = crt.rows.length + 1;
+		var newRow = crt.insertRow(-1);
 		newRow.id = "row" + sno; 
 		
 		var newCell0 = newRow.insertCell(0);
@@ -192,16 +181,16 @@ function convert_tohuman(a,b,c) { // a is pattern, b is DID_trunk, c is action,
 
 function add_incomingrule(){
 	editstatus = "NEW";
-	$('incomingrule').selectedIndex = 0;
-	$('fromprovider').selectedIndex = -1;
 	old_incomingrule = "allunmatched";
 	old_fromprovider = "";
-	$('toextension').selectedIndex = -1;
-	$('frompattern').value = "";
-	$('save_a').disabled = true;
-	$('thatmatch').style.display = "none" ;
-	$('userscontent').style.display = "";
-	$('bg_transparent').style.display = "";
+	_$('incomingrule').selectedIndex = 0;
+	_$('fromprovider').selectedIndex = -1;
+	_$('toextension').selectedIndex = -1;
+	_$('frompattern').value = "";
+	_$('save_a').disabled = true;
+	_$('thatmatch').style.display = "none" ;
+	_$('userscontent').style.display = "";
+	_$('bg_transparent').style.display = "";
 }
 
 function edit_incomingrule(a,b,c,d){// a is pattern, b is DID_trunk, c is action, d is priority
@@ -212,19 +201,20 @@ function edit_incomingrule(a,b,c,d){// a is pattern, b is DID_trunk, c is action
 
 	editstatus = "EDIT";
 	if(a == "_X."){
-		$('incomingrule').selectedIndex = 0;
-		$('thatmatch').style.display = "none" ;
+		_$('incomingrule').selectedIndex = 0;
+		_$('thatmatch').style.display = "none" ;
 		old_incomingrule = "allunmatched";
 	}else{
-		$('frompattern').value = a ;
-		$('incomingrule').selectedIndex = 1;
-		$('thatmatch').style.display = "" ;
+		_$('frompattern').value = a ;
+		_$('incomingrule').selectedIndex = 1;
+		_$('thatmatch').style.display = "" ;
 		old_incomingrule = "frompattern";
 	}
 
-	for(var i=0; i < $('fromprovider').length ; i++){
-		if($('fromprovider').options[i].value == b){
-			$('fromprovider').selectedIndex = i;		
+	var q = _$('fromprovider') ;
+	for(var i=0; i < q.length ; i++){
+		if(q.options[i].value == b){
+			q.selectedIndex = i;		
 			old_fromprovider = b;
 			break;
 		}
@@ -233,17 +223,18 @@ function edit_incomingrule(a,b,c,d){// a is pattern, b is DID_trunk, c is action
 	if( c.match("Goto") && !c.match("voicemenu-")  ){ 
 		var tmp = c.split('(');
 		var exten = tmp[1].split('|'); // extension is exten[1]
-		$('toextension').selectedIndex = -1 ;
-		for(var t=0; t < $('toextension').length ; t++ ){
-			if( $('toextension').options[t].value == exten[1] ){
-				$('toextension').selectedIndex = t;
+		var y = _$('toextension');
+		y.selectedIndex = -1 ;
+		for(var t=0; t < y.length ; t++ ){
+			if( y.options[t].value == exten[1] ){
+				y.selectedIndex = t;
 				break;
 			}
 		}
 	}
 
-	$('userscontent').style.display = "";
-	$('bg_transparent').style.display ='';
+	_$('userscontent').style.display = "";
+	_$('bg_transparent').style.display ='';
 }
 
 
@@ -257,43 +248,46 @@ function save_incomingrule(){
 
 
 function save_new_incomingrule(){
-	// field validation 
-	if($('incomingrule').value == "frompattern" && $('frompattern').value == "" ){
+	// field validation
+	var fp = _$('frompattern') ;
+	var fpv = _$('fromprovider') ;
+	var ir = _$('incomingrule').value ;
+	var te = _$('toextension') ;
+
+	if( ir == "frompattern" && fp.value == "" ){
 		gui_alert("Please define an incoming call pattern !");
-		$('frompattern').focus();
-		$('frompattern').select();
+		fp.focus();
+		fp.select();
 		return false;
 	}
-	if( $('fromprovider').selectedIndex == -1 ){
+	if( fpv.selectedIndex == -1 ){
 		gui_alert("Please select a service provider !");
-		$('fromprovider').focus();
+		fpv.focus();
 		return false;
 	}
-	if( $('toextension').selectedIndex == -1 ){
+	if( te.selectedIndex == -1 ){
 		gui_alert("Please select an extension to which an incoming call should be routed to !");
-		$('toextension').focus();
+		te.focus();
 		return false;
 	}
 
-	if($('incomingrule').value == "frompattern" && $('frompattern').value.substr(0,1) != "_" ){
-				$('frompattern').value = "_" + $('frompattern').value ;
-	}
+	if(ir == "frompattern" && fp.value.substr(0,1) != "_" ){ fp.value = "_" + fp.value ; }
 
 	// create an entry under the selected trunk
 	// $('incomingrule') == "allunmatched" or "frompattern" , $('frompattern'), $('fromprovider'), $('toextension')
-	if ($('incomingrule').value == "allunmatched" ){
+	if (ir == "allunmatched" ){
 			var newpattern = "_X." ;
-			var temp_provider = $('fromprovider').value;
+			var temp_provider = fpv.value;
 			var temp_priority = "1";
-			var temp_action = "Goto(default|" + $('toextension').value + "|1)";
+			var temp_action = "Goto(default|" + te.value + "|1)";
 			var new_exten = newpattern  + "," + temp_priority + "," + temp_action;
 			var new_exten2 = "s,1," + temp_action;
 			var uri = build_action('append', 0, temp_provider ,"exten", new_exten);
 			uri += build_action('append', 1, temp_provider ,"exten", new_exten2);
 	}else{
-			var newpattern = $('frompattern').value ;
-			var temp_provider = $('fromprovider').value ;
-			var temp_action = "Goto(default|" + $('toextension').value + "|1)";
+			var newpattern = fp.value ;
+			var temp_provider = fpv.value ;
+			var temp_action = "Goto(default|" + te.value + "|1)";
 			var temp_priority = "1";
 			var new_exten = newpattern  + "," + temp_priority + "," + temp_action;
 			var uri = build_action('append', 0, temp_provider ,"exten", new_exten ); 
@@ -305,53 +299,55 @@ function save_new_incomingrule(){
 		return false;
 	}
 	
-		var opt = {
-			method: 'get',
-			asynchronous: true,
-			onSuccess: function(t) { 									
-				// add this to the global object
-				didtrunks[temp_provider][newpattern] = new Object();
-				didtrunks[temp_provider][newpattern].priority = temp_priority;
-				didtrunks[temp_provider][newpattern].action = temp_action ;
-				//addrowtotable(newpattern,temp_provider,temp_action,temp_priority) ; // a is pattern, b is DID_trunk, c is action, d is priority
-				refreshtable();
-				$('userscontent').style.display = "none";
-				$('bg_transparent').style.display ='none';
-			},
-			onFailure: function(t) {
-				gui_alert("Config Error: " + t.status + ": " + t.statusText);
-			}
-		};
+	var opt = {
+		method: 'get',
+		asynchronous: true,
+		onSuccess: function(t) { 									
+			// add this to the global object
+			didtrunks[temp_provider][newpattern] = new Object();
+			didtrunks[temp_provider][newpattern].priority = temp_priority;
+			didtrunks[temp_provider][newpattern].action = temp_action ;
+			//addrowtotable(newpattern,temp_provider,temp_action,temp_priority) ; // a is pattern, b is DID_trunk, c is action, d is priority
+			refreshtable();
+			_$('userscontent').style.display = "none";
+			_$('bg_transparent').style.display ='none';
+		},
+		onFailure: function(t) {
+			gui_alert("Config Error: " + t.status + ": " + t.statusText);
+		}
+	};
 
-		opt.parameters="action=updateconfig&srcfilename=" + encodeURIComponent("extensions.conf") + "&dstfilename=" + encodeURIComponent("extensions.conf") + uri;
-		var tmp = new Ajax.Request("../../rawman", opt);
+	opt.parameters="action=updateconfig&srcfilename=" + encodeURIComponent("extensions.conf") + "&dstfilename=" + encodeURIComponent("extensions.conf") + uri;
+	var tmp = new Ajax.Request("../../rawman", opt);
 	// 
 }
 
 
 function update_incomingrule(){
-	// field validation 
-	if($('incomingrule').value == "frompattern" && $('frompattern').value == "" ){
+	// field validation
+	var ir = _$('incomingrule').value ;
+ 	var fp = _$('frompattern') ;
+	var te = _$('toextension') ;
+ 
+	if( ir == "frompattern" && fp.value == "" ){
 		gui_alert("Please define an incoming call pattern !");
-		$('frompattern').focus();
-		$('frompattern').select();
+		fp.focus();
+		fp.select();
 		return false;
 	}
-	if( $('toextension').selectedIndex == -1 ){
+	if( te.selectedIndex == -1 ){
 		gui_alert("Please select an extension to which an incoming call should be routed to !");
-		$('toextension').focus();
+		te.focus();
 		return false;
 	}
 
-	if($('incomingrule').value == "frompattern" && $('frompattern').value.substr(0,1) != "_" ){
-				$('frompattern').value = "_" + $('frompattern').value ;
-	}
+	if( ir == "frompattern" && fp.value.substr(0,1) != "_" ){ fp.value = "_" + fp.value ; }
 	// old values before editing are - edit_pattern, edit_DIDtrunk, edit_action, edit_priority
 	// check for duplicate other than old
 	var p = 0 ;
 	var uri = "" ;
-	var temp_provider = $('fromprovider').value ;
-	var temp_action = "Goto(default|" + $('toextension').value + "|1)";
+	var temp_provider = _$('fromprovider').value ;
+	var temp_action = "Goto(default|" + te.value + "|1)";
 	var temp_priority = "1";
 	var tmp_old_string = edit_pattern  + "," + edit_priority + "," + edit_action;
 	uri += build_action('delete', p, edit_DIDtrunk ,"exten", "", tmp_old_string); p++;
@@ -360,14 +356,14 @@ function update_incomingrule(){
 		uri += build_action('delete', p, edit_DIDtrunk ,"exten", "", tmp2_old_string); p++;
 	}
 
-	if ($('incomingrule').value == "allunmatched" ){
+	if ( ir == "allunmatched" ){
 		var newpattern = "_X." ;
 		var new_exten = newpattern  + "," + temp_priority + "," + temp_action;
 		var new_exten2 = "s," + temp_priority + "," + temp_action;
 		uri += build_action('append', p , temp_provider ,"exten", new_exten ); p++ ;
 		uri += build_action('append', p , temp_provider ,"exten", new_exten2 ); p++ ;
 	}else{
-		var newpattern = $('frompattern').value ;
+		var newpattern = fp.value ;
 		var new_exten = newpattern  + "," + temp_priority + "," + temp_action;
 		uri += build_action('append', p , temp_provider ,"exten", new_exten ); p++ ;
 	}
@@ -386,8 +382,8 @@ function update_incomingrule(){
 			didtrunks[temp_provider][newpattern] = new Object();
 			didtrunks[temp_provider][newpattern].priority = temp_priority;
 			didtrunks[temp_provider][newpattern].action = temp_action ;
-			$('userscontent').style.display = "none";
-			$('bg_transparent').style.display ='none';
+			_$('userscontent').style.display = "none";
+			_$('bg_transparent').style.display ='none';
 			refreshtable();
 		},
 		onFailure: function(t) {
@@ -396,34 +392,33 @@ function update_incomingrule(){
 	};
 	opt.parameters="action=updateconfig&srcfilename=" + encodeURIComponent("extensions.conf") + "&dstfilename=" + encodeURIComponent("extensions.conf") + uri;
 	var tmp = new Ajax.Request("../../rawman", opt);
-
 }
 
 
 
 function checksave(k){
-	if( old_incomingrule == $('incomingrule').value && old_fromprovider == $('fromprovider').value ){
-		return true;
-	}
+	var ir = _$('incomingrule').value ;
+	var fpv = _$('fromprovider').value ;
+	if( old_incomingrule == ir && old_fromprovider == fpv ){ return true; }
 
-	if($('incomingrule').value == "frompattern" ){
-		$('thatmatch').style.display = "" ;
+	if( ir == "frompattern" ){
+		_$('thatmatch').style.display = "" ;
 		if(k.id=="incomingrule"){
-			$('frompattern').focus();
-			$('frompattern').select();
+			_$('frompattern').focus();
+			_$('frompattern').select();
 		}
 	}else{
-		$('thatmatch').style.display = "none" ;
+		_$('thatmatch').style.display = "none" ;
 	}
 
-	$('save_a').disabled = false;
-	old_incomingrule = $('incomingrule').value ;
-	old_fromprovider = $('fromprovider').value ;
+	_$('save_a').disabled = false;
+	old_incomingrule = ir ;
+	old_fromprovider = fpv ;
 }
 
 
 function enablesave(){
-	$('save_a').disabled = false;
+	_$('save_a').disabled = false;
 }
 
 

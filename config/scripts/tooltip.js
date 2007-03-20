@@ -4,12 +4,7 @@ var lang = 'en';
 var tooltips = new Object;
 
 function show_tooltip(lang, file,tip){
-	new top.Rico.Effect.FadeTo( 'tooltip_round', .01, 100, 10, {
-		complete:function() { 
-			top.$('tooltip').innerHTML = 	tooltips[file][lang][tip]; 
-			new top.Rico.Effect.FadeTo( 'tooltip_round', 1, 10, 1, {complete:function() { } } );		
-		} 
-	} );
+	top._$('tooltip').innerHTML = 	tooltips[file][lang][tip]; 
 }
 
 

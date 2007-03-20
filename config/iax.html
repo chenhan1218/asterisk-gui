@@ -31,24 +31,19 @@ var widgets = new Array;
 var fieldnames = ['accountcode', 'adsi', 'allow', 'amaflags', 'authdebug', 'autokill', 'bandwidth', 'bindaddr', 'bindport', 'cancel', 'codecpriority', 'delayreject', 'disallow', 'dropcount', 'forcejitterbuffer', 'iaxcompat', 'iaxmaxthreadcount', 'iaxthreadcount', 'jitterbuffer', 'jittershrinkrate', 'language', 'maxexcessbuffer', 'maxjitterbuffer', 'maxjitterinterps', 'maxregexpire', 'minexcessbuffer', 'minregexpire', 'mohinterpret', 'mohsuggest', 'nochecksums', 'regcontext', 'register', 'resyncthreshold', 'rtautoclear', 'rtcachefriends', 'rtignoreexpire', 'rtupdate', 'save', 'status', 'tos', 'trunkfreq', 'trunktimestamps'];
 
 phonecallbacks.format = function(t) {
-		if(t.name.match('general'))
-			return t.name;
-		else
-			return false;
+	if(t.name.match('general'))
+		return t.name;
+	else
+		return false;
 }
-
 
 phonecallbacks.postselect = function(box, val) {
 
 }
 
-
-
 phonecallbacks.loaded = function() {
 		$('hiddenfield').selectitem(0);
 }
-
-
 
 function localajaxinit(){
 	setWindowTitle("IAX");
@@ -75,18 +70,18 @@ function disable_selectedcodec(){
 	selectbox_remove("allowed", $('allowed').value );
 }
 function selectbox_add(selectbox_id, codec){
-		switch(codec) {
-		  case 'ulaw': addtosel("u-law","ulaw",selectbox_id) ; break;
-		  case 'alaw': addtosel("a-law","alaw",selectbox_id) ; break;
-		  case 'gsm': addtosel("GSM","gsm",selectbox_id) ; break ;
-		  case 'ilbc': addtosel("ILBC","ilbc",selectbox_id) ; break ;
-		  case 'speex': addtosel("SPEEX","speex",selectbox_id) ; break ;
-		  case 'g726':  addtosel("G.726","g726",selectbox_id) ; break ;
-		  case 'adpcm': addtosel("ADPCM","adpcm",selectbox_id) ; break ;
-		  case 'lpc10': addtosel("LPC10","lpc10",selectbox_id) ; break ;
-		  case 'g729': addtosel("G.729","g729",selectbox_id) ; break ;
-		  default: break
-	   }
+	switch(codec) {
+		case 'ulaw': addtosel("u-law","ulaw",selectbox_id) ; break;
+		case 'alaw': addtosel("a-law","alaw",selectbox_id) ; break;
+		case 'gsm': addtosel("GSM","gsm",selectbox_id) ; break ;
+		case 'ilbc': addtosel("ILBC","ilbc",selectbox_id) ; break ;
+		case 'speex': addtosel("SPEEX","speex",selectbox_id) ; break ;
+		case 'g726':  addtosel("G.726","g726",selectbox_id) ; break ;
+		case 'adpcm': addtosel("ADPCM","adpcm",selectbox_id) ; break ;
+		case 'lpc10': addtosel("LPC10","lpc10",selectbox_id) ; break ;
+		case 'g729': addtosel("G.729","g729",selectbox_id) ; break ;
+		default: break
+	}
 
 	function addtosel(a,b,c){ // a is text, b is value, c is the select box id
 	  var newoption = document.createElement('option');
@@ -101,36 +96,37 @@ function selectbox_add(selectbox_id, codec){
 	}
 }
 function 	selectbox_remove(selectbox_id,codec){
-	for (var x=0; x < $(selectbox_id).length; x++){
-		if( $(selectbox_id).options[x].value==codec ){	$(selectbox_id).remove(x);		return true;		}
+	var r = _$(selectbox_id) ;
+	for (var x=0; x < r.length; x++){
+		if( r.options[x].value==codec ){ r.remove(x); return true; }
 	}
 }
 function update_ordercodecs(){
-			$('disallow').value = "";
-			$('allow').value = "";
-			if($('disallow_all').checked){
-					$('disallow').value = "all";
+	$('disallow').value = "";
+	$('allow').value = "";
+	if($('disallow_all').checked){
+			$('disallow').value = "all";
+	}else{
+		for (var x=0; x < $('disallowed').length ; x++){
+			if(x==0){
+				$('disallow').value = $('disallowed').options[x].value ;
 			}else{
-					for (var x=0; x < $('disallowed').length ; x++){
-						if(x==0){
-							$('disallow').value = $('disallowed').options[x].value ;
-						}else{
-							$('disallow').value = $('disallow').value + "," + $('disallowed').options[x].value ;
-						}
-					}
+				$('disallow').value = $('disallow').value + "," + $('disallowed').options[x].value ;
 			}
-
-			for (var x=0; x < $('allowed').length ; x++){
-				if(x==0){ 	
-						$('allow').value = $('allowed').options[x].value ; 
-				}else{
-						$('allow').value = $('allow').value + "," +  $('allowed').options[x].value ; 
-				}
-			}
-			$('div_setordercodecs').style.display = "none";
-			$('bg_transparent').style.display = "none";
-		$('save').disabled = false;
-		$('cancel').disabled = false;
+		}
+	}
+	
+	for (var x=0; x < $('allowed').length ; x++){
+		if(x==0){ 	
+				$('allow').value = $('allowed').options[x].value ; 
+		}else{
+				$('allow').value = $('allow').value + "," +  $('allowed').options[x].value ; 
+		}
+	}
+	$('div_setordercodecs').style.display = "none";
+	$('bg_transparent').style.display = "none";
+	$('save').disabled = false;
+	$('cancel').disabled = false;
 }
 function cancel_ordercodecs(){
 			$('bg_transparent').style.display = "none";

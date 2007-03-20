@@ -41,53 +41,53 @@ var pattern_beingedited_priority ;
 var np_oldselect;
 
 function ownpattern(){
-		iscustom = true;
-		$('define_advanced').style.display="";
-		$('define_usual').style.display="none";
+	iscustom = true;
+	_$('define_advanced').style.display="";
+	_$('define_usual').style.display="none";
 }
 
 function enablesave(){
-	$('save_a').disabled = 0;
+	_$('save_a').disabled = 0;
 	return true;
 }
 
 function add_callingrule(){
 	isnewrule = true;
 	iscustom = false;
-	$('rulename').value = "";
-	$('trunks').selectedIndex = -1 ;
-	$('pattern').value = "";
-	$('prepend').value = "";
-	$('strip').value = "0" ;
-	$('save_a').disabled = 1;
-	$('define_advanced').style.display="none";
-	$('define_usual').style.display="";
-	$('userscontent').style.display="";
-	$('bg_transparent').style.display ='';
-	$('addrule').disabled =1;
-	$('beginswith').value = "";
-	$('followedby').value ="";
-	$('ormore').checked = false;
+	_$('rulename').value = "";
+	_$('trunks').selectedIndex = -1 ;
+	_$('pattern').value = "";
+	_$('prepend').value = "";
+	_$('strip').value = "0" ;
+	_$('save_a').disabled = 1;
+	_$('define_advanced').style.display="none";
+	_$('define_usual').style.display="";
+	_$('userscontent').style.display="";
+	_$('bg_transparent').style.display ='';
+	_$('addrule').disabled =1;
+	_$('beginswith').value = "";
+	_$('followedby').value ="";
+	_$('ormore').checked = false;
 }
 
 function checkfields(){
-	if( $('rulename').value.length == 0 ){
+	if( _$('rulename').value.length == 0 ){
 		gui_alert("Please enter a Rule Name");
-		$('rulename').focus();
+		_$('rulename').focus();
 		return false;
 	}
-	if($('trunks').selectedIndex == -1){
+	if( _$('trunks').selectedIndex == -1){
 		gui_alert("Please select a service provider to place this call through");
 		return false;
 	}
-	if($('define_advanced').style.display=="none" && $('beginswith').value.length==0 ){
+	if( _$('define_advanced').style.display=="none" && _$('beginswith').value.length==0 ){
 		gui_alert("Please Enter the beginning pattern of the number");
-		$('beginswith').focus();
+		_$('beginswith').focus();
 		return false;
 	}
-	if($('define_usual').style.display=="none" && $('pattern').value.length == 0 ){
+	if( _$('define_usual').style.display=="none" && _$('pattern').value.length == 0 ){
 		gui_alert("Please Enter a custom pattern");
-		$('pattern').focus();
+		_$('pattern').focus();
 		return false;
 	}
 return true;
@@ -97,53 +97,53 @@ function	buildpatternstring(){
 	var pattern = $('beginswith').value;
 	// Add an underscore
 	pattern = "_" + pattern;
-	// append 'followedby' number of X's 
-	for (var r=0; r < $('followedby').value ; r++){
+	// append 'followedby' number of X's
+ 	var s = _$('followedby').value ;
+	for (var r=0; r < s ; r++){
 		pattern = pattern + "X" ;
 	}
 	// append a '.' if 'ormore' is checked
-	if( $('ormore').checked ){
-			pattern = pattern + "." ;
+	if( _$('ormore').checked ){
+		pattern = pattern + "." ;
 	}
 	// assign this to the field 'pattern'
-	$('pattern').value = pattern;
+	_$('pattern').value = pattern;
 }
 
 function add_rule_fromeditform( this_priority, oncomplete ){
-					if(	iscustom ){ // custom - take pattern as is
-						var commentstring = "custom";
-					}else{
-						var commentstring = "standard";
-					}
+	var commentstring = (iscustom )? "custom" :"standard" ;
+	var _ptv = _$('pattern').value ;
+	var _extv = _$('extensions').value ;
+	var _rnv = _$('rulename').value ;
+	var _tv = _$('trunks').value ;
+	var _sv = _$('strip').value ;
+	var _pv = _$('prepend').value ;
+	var rule_string = _ptv + ',' + this_priority + ',Macro(trunkdial,${' + _tv + '}/'+ _pv +'${EXTEN:' + _sv + '})' ;
+	var uri = build_action('append', 0 , _extv ,"exten", rule_string );
+	commentstring = _ptv + ',' + this_priority + ',' + _rnv + "," + commentstring ;
+	uri += build_action('append', 1 , _extv ,"comment", commentstring );
 
-					var rule_string = $('pattern').value + ',' + this_priority + ',Macro(trunkdial,${' + $('trunks').value + '}/'+ $('prepend').value +'${EXTEN:' + $('strip').value + '})' ;
-					var uri = build_action('append', 0 , $('extensions').value  ,"exten", rule_string );
-					commentstring = $('pattern').value + ',' + this_priority + ',' + $('rulename').value + "," + commentstring ;
-					uri += build_action('append', 1 , $('extensions').value  ,"comment", commentstring );
-
-					var opt = {
-						method: 'get',
-						asynchronous: true,
-						onSuccess: function(t) { 
-									$('status_message').style.display="none";
-									var m = numberplansdata[$('extensions').value]['npdata'];
-									if ( typeof m[$('pattern').value] == 'undefined' ) {
-										m[$('pattern').value] = { };
-									}
-									m[$('pattern').value][this_priority] = new ruleinanpdata($('trunks').value, $('strip').value, $('prepend').value);
-									m[$('pattern').value][this_priority].rulename =  $('rulename').value ; 
-									m[$('pattern').value][this_priority].ruledesc = (iscustom) ? "custom" : parsepattern($('pattern').value,0) ;
-									oncomplete(); 
-						},
-						onFailure: function(t) {
-							gui_alert("Config Error: " + t.status + ": " + t.statusText);
-						}
-					};
-					opt.parameters= "action=updateconfig&srcfilename=" + encodeURIComponent("extensions.conf") + "&dstfilename=" + encodeURIComponent("extensions.conf") + uri;
-					$('userscontent').style.display="none";
-					$('bg_transparent').style.display ='none';
-					$('status_message').style.display="block";
-					var tmp = new Ajax.Request("../../rawman", opt);
+	var opt = {
+		method: 'get',
+		asynchronous: true,
+		onSuccess: function(t) { 
+			_$('status_message').style.display="none";
+			var m = numberplansdata[_extv]['npdata'];
+			if ( typeof m[_ptv] == 'undefined' ) { m[_ptv] = { }; }
+			m[_ptv][this_priority] = new ruleinanpdata(_tv, _sv , _pv );
+			m[_ptv][this_priority].rulename =  _rnv ; 
+			m[_ptv][this_priority].ruledesc = (iscustom) ? "custom" : parsepattern(_ptv,0) ;
+			oncomplete(); 
+		},
+		onFailure: function(t) {
+			gui_alert("Config Error: " + t.status + ": " + t.statusText);
+		}
+	};
+	opt.parameters= "action=updateconfig&srcfilename=" + encodeURIComponent("extensions.conf") + "&dstfilename=" + encodeURIComponent("extensions.conf") + uri;
+	_$('userscontent').style.display = "none";
+	_$('bg_transparent').style.display = "none";
+	_$('status_message').style.display = "";
+	var tmp = new Ajax.Request("../../rawman", opt);
 }
 
 function saverule(){
@@ -151,32 +151,34 @@ function saverule(){
 	if( !iscustom){
 		buildpatternstring();
 	}
-	 if(isnewrule){ 
-					var newpriority=1;
-					var m = numberplansdata[$('extensions').value]['npdata'];
+	var _extv = _$('extensions').value ;
+	var _pv = _$('pattern').value ;
 
-					if(  m.hasOwnProperty($('pattern').value)  && m[$('pattern').value].hasOwnProperty(''+newpriority)  ) { 
-						gui_alert("A rule for this pattern is already defined !") ; 
-						return ;
-					}
+	if(isnewrule){ 
+		var newpriority=1;
+		var m = numberplansdata[_extv]['npdata'];
+		if( m.hasOwnProperty(_pv) && m[_pv].hasOwnProperty(''+newpriority)  ) { 
+			gui_alert("A rule for this pattern is already defined !") ; 
+			return ;
+		}
 
-//					if( typeof m[$('pattern').value] !="undefined" ){
-//						for ( var y in m[$('pattern').value] ){
-//							if ( m[$('pattern').value].hasOwnProperty( y ) ){break;}
-//							newpriority++;
-//						}
-//					}
-					add_rule_fromeditform( newpriority, oncomplete = function(){ show_npdata_table( $('extensions').value ); } );
+		//if( typeof m[$('pattern').value] !="undefined" ){
+		//	for ( var y in m[$('pattern').value] ){
+		//		if ( m[$('pattern').value].hasOwnProperty( y ) ){break;}
+		//		newpriority++;
+		//	}
+		//}
+		add_rule_fromeditform( newpriority, oncomplete = function(){ show_npdata_table(_extv); } );
 	 }else{	// update exiting rule
-			// delete existing rule
-			// add rule with new values
-					delete_callingrule(pattern_beingedited,pattern_beingedited_priority, oncomplete = function(){
-					add_rule_fromeditform( pattern_beingedited_priority, oncomplete = function(){ show_npdata_table( $('extensions').value ); } );
-				} 
-			) ;
-			//$('userscontent').style.display='none';
-			//$('addrule').disabled =0;
-			//return true;
+		// delete existing rule
+		// add rule with new values
+		delete_callingrule(pattern_beingedited,pattern_beingedited_priority, oncomplete = function(){
+				add_rule_fromeditform( pattern_beingedited_priority, oncomplete = function(){ show_npdata_table(_extv); } );
+			} 
+		);
+		//$('userscontent').style.display='none';
+		//$('addrule').disabled =0;
+		//return true;
 	 }
 }
 
@@ -186,36 +188,33 @@ function parse_nprulesAndnpcomments(){
 	//			parse "numberplansdata[t.name]['nprules']" and add to "numberplansdata[t.name]['npdata']"
 	//			parse "numberplansdata[t.name]['npcomments']" and add to "numberplansdata[t.name]['npdata']"
 	//	}
-	for(x in  numberplansdata){
-			if (numberplansdata.hasOwnProperty(x)) {
+	for(x in numberplansdata){
+		if (numberplansdata.hasOwnProperty(x)) {
 			var z = numberplansdata[x];
 			var y = z['npdata'];
 			for ( k =0 ; k < z['nprules'].length ; k++ ){
-					var temp = z['nprules'][k].split(","); // temp[0] is the pattern, temp[1] is the priority,temp[2] is 'Macro(trunkdial', temp[3] is ${trunkname}/${EXTEN:1})
-					var temp1 = temp[3].split("{");
-					var temp1b = temp1[1].split("/");
-					var temp1c = temp1b[1].split("$") ;
-					var temp2 = temp1[1].split("}");
-					var temp3 = temp1[2].split("}");
-					var temp4 = temp3[0].split(":");
-					temp[4] = temp2[0] ; // temp[4] is trunkname
-					temp[5] = temp4[1] ; // temp[5] is the #digits to strip in the front
-					if ( typeof y[temp[0]] == 'undefined' ) {
-						y[temp[0]] = { };
-					}
-					y[temp[0]][temp[1]] = new ruleinanpdata(temp[4], temp[5],temp1c[0]);
+				var temp = z['nprules'][k].split(","); // temp[0] is the pattern, temp[1] is the priority,temp[2] is 'Macro(trunkdial', temp[3] is ${trunkname}/${EXTEN:1})
+				var temp1 = temp[3].split("{");
+				var temp1b = temp1[1].split("/");
+				var temp1c = temp1b[1].split("$") ;
+				var temp2 = temp1[1].split("}");
+				var temp3 = temp1[2].split("}");
+				var temp4 = temp3[0].split(":");
+				temp[4] = temp2[0] ; // temp[4] is trunkname
+				temp[5] = temp4[1] ; // temp[5] is the #digits to strip in the front
+				if ( typeof y[temp[0]] == 'undefined' ) {
+					y[temp[0]] = { };
+				}
+				y[temp[0]][temp[1]] = new ruleinanpdata(temp[4], temp[5],temp1c[0]);
 			}
 			for ( k =0 ; k < z['npcomments'].length ; k++ ){
-					var temp = z['npcomments'][k].split(","); 
-					if( typeof y[temp[0]] == "undefined"){ continue ; }
-					if ( typeof y[temp[0]][temp[1]]  == "undefined" ){  continue ; }
-					y[temp[0]][temp[1]].rulename = temp[2] ;
-					if(temp[3] !="custom")
-						y[temp[0]][temp[1]].ruledesc = parsepattern(temp[0],0) ;
-					else
-						y[temp[0]][temp[1]].ruledesc = "custom" ;
+				var temp = z['npcomments'][k].split(","); 
+				if( typeof y[temp[0]] == "undefined"){ continue ; }
+				if ( typeof y[temp[0]][temp[1]]  == "undefined" ){  continue ; }
+				y[temp[0]][temp[1]].rulename = temp[2] ;
+				y[temp[0]][temp[1]].ruledesc = ( temp[3] !="custom" ) ? parsepattern(temp[0],0) : "custom" ; 
 			}
-	}
+		}
 	}
 }
 
@@ -225,58 +224,57 @@ function show_npdata_table(a){
 	$('table_one').style.display="";
 	var rules_nosp = new Array ;
 	var m = numberplansdata[a]['npdata'];
-	for( var x in  m ){	// x is the pattern
-				 if (m.hasOwnProperty(x)) {
-				var sorted_priorities = [ ];
-				for ( var y in m[x] ){
-					 if (m[x].hasOwnProperty(y)) {
-					sorted_priorities.push(y);
+	var _trunks = _$('trunks') ;
+
+	for( var x in  m ){ // x is the pattern
+		if (m.hasOwnProperty(x)) {
+			var sorted_priorities = [ ];
+			for ( var y in m[x] ){
+				if (m[x].hasOwnProperty(y)) { sorted_priorities.push(y); }
+			}
+			sorted_priorities.sort();
+			for( var z=0; z < sorted_priorities.length ; z++ ){
+				var trunk_exists = 0;
+				for(var i=0; i < _trunks.length ; i++ ){
+					if( _trunks.options[i].value == m[x][sorted_priorities[z]].trunk ){
+						trunk_exists = 1;
+						break;
 					}
+				}				
+				if ( m[x][sorted_priorities[z]].trunk  == "" ){
+					rules_nosp.push(m[x][sorted_priorities[z]].rulename) ;
+					addrowtotable( x , sorted_priorities[z] , "undefined" , m[x][sorted_priorities[z]].digits2strip );
+				}else if(trunk_exists == 0){
+					rules_nosp.push(m[x][sorted_priorities[z]].rulename) ;
+					//$('trunks').selectedIndex = -1;							
+					addrowtotable( x , sorted_priorities[z] , "invalid" , m[x][sorted_priorities[z]].digits2strip );
+				}else{
+					addrowtotable( x , sorted_priorities[z] , m[x][sorted_priorities[z]].trunk , m[x][sorted_priorities[z]].digits2strip );
 				}
-				sorted_priorities.sort();
-				for( var z=0; z < sorted_priorities.length ; z++ ){
-						var trunk_exists = 0;
-						for(var i=0; i < $('trunks').length ; i++ ){
-								if( $('trunks').options[i].value == m[x][sorted_priorities[z]].trunk ){
-									trunk_exists = 1;
-									break;
-								}
-						}				
-						if ( m[x][sorted_priorities[z]].trunk  == "" ){
-								rules_nosp.push(m[x][sorted_priorities[z]].rulename) ;
-								addrowtotable( x , sorted_priorities[z] , "undefined" , m[x][sorted_priorities[z]].digits2strip );
-						}else if(trunk_exists == 0){
-								rules_nosp.push(m[x][sorted_priorities[z]].rulename) ;
-								//$('trunks').selectedIndex = -1;							
-								addrowtotable( x , sorted_priorities[z] , "invalid" , m[x][sorted_priorities[z]].digits2strip );							
-						}else{
-								addrowtotable( x , sorted_priorities[z] , m[x][sorted_priorities[z]].trunk , m[x][sorted_priorities[z]].digits2strip );
-						}
-				}
-				}
+			}
+		}
 	}
 
 	if(rules_nosp.length > 0 ){
-		$('status').innerHTML = "Note: A Service Provider is not defined for the Rule(s) <BR>" + rules_nosp ;
-		$('trunks').selectedIndex = -1;
+		_$('status').innerHTML = "Note: A Service Provider is not defined for the Rule(s) <BR>" + rules_nosp ;
+		_trunks.selectedIndex = -1;
 	}
 
-	if( $('callingRulesTable').rows.length == 0 ){
-		$('table_one').style.display="none";
-		var newRow = $('callingRulesTable').insertRow(-1);
+	if( _$('callingRulesTable').rows.length == 0 ){
+		_$('table_one').style.display="none";
+		var newRow = _$('callingRulesTable').insertRow(-1);
 		var newCell0 = newRow.insertCell(0);
 		newCell0 .align = "center";
 		newCell0 .innerHTML = "<BR>A <I>Calling Rule</I> is not defined<BR><BR> Please click on the 'Add a Calling Rule' button<BR> to add a Calling Rule<BR><BR>" ;
 		return true;
 	}
 
-	$('addrule').disabled = false;
+	_$('addrule').disabled = false;
 } 
 
 function clear_table(){
-	for( var i=0; i <  $('callingRulesTable').rows.length; ){
-			 $('callingRulesTable').deleteRow(i);
-	}
+	var _crt = _$('callingRulesTable') ;
+	for( var i=0; i <  _crt.rows.length; ){ _crt.deleteRow(i); }
 }
 
 function parsepattern(a,e){
@@ -289,42 +287,43 @@ function parsepattern(a,e){
 	if( temp.substr(-1,1) == "." ){
 		temp = temp.slice(0, -1);
 		returnstring = "or more";
-		if(e == 1)
-		$('ormore').checked = true;
+		if(e == 1){ _$('ormore').checked = true; }
 	}
 	var posofx = temp.indexOf('X');
 	// if X does not occur anywhere followedby is = 0
 	// if X happens somewhere then beginswith = string till somewhere
 	//		and followedby = length of string from somewhere till end
 	if(posofx == -1){ 	
-			if(returnstring == "or more"){
-				returnstring = "Begins with " + temp + " and followed by 0 or more digits" ;
-			}else{
-				returnstring = "Exactly macthes " + temp  ;
-			}
-			if(e == 1){
-				$('beginswith').value = temp;
-				$('followedby').value = 0;
-			}
+		if(returnstring == "or more"){
+			returnstring = "Begins with " + temp + " and followed by 0 or more digits" ;
+		}else{
+			returnstring = "Exactly macthes " + temp  ;
+		}
+		if(e == 1){
+			_$('beginswith').value = temp;
+			_$('followedby').value = 0;
+		}
 	}else{
-			if(returnstring == "or more"){
-				returnstring = "Begins with " + temp.substr(0,posofx) + " and followed by "+(temp.length - posofx)+" or more digits" ;
-			}else{
-				returnstring = "Begins with " + temp.substr(0,posofx) + " and followed by "+(temp.length - posofx) + " digits";
-			}
-			if(e == 1){
-				$('beginswith').value = temp.substr(0,posofx);
-				$('followedby').value = (temp.length - posofx);
-			}
+		if(returnstring == "or more"){
+			returnstring = "Begins with " + temp.substr(0,posofx) + " and followed by "+(temp.length - posofx)+" or more digits" ;
+		}else{
+			returnstring = "Begins with " + temp.substr(0,posofx) + " and followed by "+(temp.length - posofx) + " digits";
+		}
+		if(e == 1){
+			_$('beginswith').value = temp.substr(0,posofx);
+			_$('followedby').value = (temp.length - posofx);
+		}
 	}
 
 return returnstring;
 }
 
+
 function addrowtotable(a,b,c,d){	// a is pattern, b is priority, c is trunk, d is digits2strip
 		var m = numberplansdata[$('extensions').value]['npdata'];
-		var sno = $('callingRulesTable').rows.length + 1;
-		var newRow = $('callingRulesTable').insertRow(-1);
+		var _crt = _$('callingRulesTable') ;
+		var sno = _crt.rows.length + 1;
+		var newRow = _crt.insertRow(-1);
 		newRow.id = "row" + sno; 
 
 		var newCell0 = newRow.insertCell(0);
@@ -362,77 +361,77 @@ function deletecallingrule(a,b){ // a is pattern, b is priority
 		if(t == false)
 			return true;
 		delete_callingrule(a,b, oncomplete = function(){
-				show_npdata_table( $('extensions').value );
+				show_npdata_table( _$('extensions').value );
 			} 
 		) ;
 }
 
 function delete_callingrule(a,b,oncomplete){ // a is pattern, b is priority
-		var m = numberplansdata[$('extensions').value]['npdata'];
-		if(m[a][b].ruledesc == 'custom'){
-			var commentstring = "custom";
-		}else{
-			var commentstring = "standard";
-		}
-		var rule_string = a + ',' + b + ',Macro(trunkdial,${' + m[a][b].trunk + '}/'+ m[a][b].prepend + '${EXTEN:' + m[a][b].digits2strip + '})' ;
-		var uri = build_action('delete', 0, $('extensions').value ,"exten", "", rule_string ); 
-		commentstring = a + ',' + b + ',' + m[a][b].rulename + ',' + commentstring ;
-		uri += build_action('delete', 1 , $('extensions').value ,"comment","", commentstring );
+	var _extv = $('extensions').value ;
+	var m = numberplansdata[_extv]['npdata'];
+	var commentstring = (m[a][b].ruledesc == 'custom') ? "custom" : "standard" ;
+	var rule_string = a + ',' + b + ',Macro(trunkdial,${' + m[a][b].trunk + '}/'+ m[a][b].prepend + '${EXTEN:' + m[a][b].digits2strip + '})' ;
+	var uri = build_action('delete', 0, _extv ,"exten", "", rule_string ); 
+	commentstring = a + ',' + b + ',' + m[a][b].rulename + ',' + commentstring ;
+	uri += build_action('delete', 1 , _extv ,"comment","", commentstring );
 
-		var opt = {
-			method: 'get',
-			asynchronous: true,
-			onSuccess: function(t) { 
-							$('status_message').style.display="none";
-							delete numberplansdata[ $('extensions').value ]['npdata'][a][b] ;
-							oncomplete(); 
-			},
-			onFailure: function(t) {
-				gui_alert("Config Error: " + t.status + ": " + t.statusText);
-			}
-		};
-		opt.parameters= "action=updateconfig&srcfilename=" + encodeURIComponent("extensions.conf") + "&dstfilename=" + encodeURIComponent("extensions.conf") + uri;
-		$('userscontent').style.display="none";
-		$('bg_transparent').style.display ='none';
-		$('status_message').style.display="block";
-		var tmp = new Ajax.Request("../../rawman", opt);
+	var opt = {
+		method: 'get',
+		asynchronous: true,
+		onSuccess: function(t) { 
+			_$('status_message').style.display="none";
+			delete numberplansdata[ _extv ]['npdata'][a][b] ;
+			oncomplete(); 
+		},
+		onFailure: function(t) {
+			gui_alert("Config Error: " + t.status + ": " + t.statusText);
+		}
+	};
+	opt.parameters= "action=updateconfig&srcfilename=" + encodeURIComponent("extensions.conf") + "&dstfilename=" + encodeURIComponent("extensions.conf") + uri;
+	_$('userscontent').style.display = "none";
+	_$('bg_transparent').style.display = "none";
+	_$('status_message').style.display = "";
+	var tmp = new Ajax.Request("../../rawman", opt);
 }
 
+
 function editcallingrule(a,b){	// a is pattern, b is priority
-		pattern_beingedited = a ;
-		pattern_beingedited_priority = b ;
-//		oldselect = $('trunks').value;
-		isnewrule = false ;
-		var m = numberplansdata[$('extensions').value]['npdata'];
-		$('rulename').value = m[a][b].rulename;
-		$('trunks').selectedIndex = -1 ;
-		for(var i=0; i < $('trunks').length ; i++ ){
-				if( $('trunks').options[i].value == m[a][b].trunk ){
-				$('trunks').selectedIndex = i ;
-				break;
-				}
+	pattern_beingedited = a ;
+	pattern_beingedited_priority = b ;
+	//oldselect = $('trunks').value;
+	isnewrule = false ;
+	var _trunks = _$('trunks') ;
+
+	var m = numberplansdata[_$('extensions').value]['npdata'];
+	_$('rulename').value = m[a][b].rulename;
+	_trunks.selectedIndex = -1 ;
+	for(var i=0; i < _trunks.length ; i++ ){
+		if( _trunks.options[i].value == m[a][b].trunk ){
+			_trunks.selectedIndex = i ;
+			break;
 		}
-		$('pattern').value = a;
-		$('strip').value = m[a][b].digits2strip;
-		$('prepend').value = m[a][b].prepend;
-		$('save_a').disabled = 1;
-		if( m[a][b].ruledesc == 'custom' || !m[a][b].ruledesc ){
-			// if this is a custom pattern then donot try to parse the pattern
-			iscustom = true;
-			(m[a][b].rulename) ? $('rulename').value = m[a][b].rulename : $('rulename').value = "";
-			m[a][b].ruledesc = 'custom' ;
-			$('define_advanced').style.display="";
-			$('define_usual').style.display="none";
-		}else{
-			// if this is standard pattern then parse the pattern into 'beginswith', 'followedby'
-			var temp = parsepattern(a,1);
-			iscustom = false;
-			$('define_advanced').style.display="none";
-			$('define_usual').style.display="";
-		}
-		$('userscontent').style.display="";
-		$('bg_transparent').style.display ='';
-		$('addrule').disabled =1;
+	}
+	_$('pattern').value = a;
+	_$('strip').value = m[a][b].digits2strip;
+	_$('prepend').value = m[a][b].prepend;
+	_$('save_a').disabled = 1;
+	if( m[a][b].ruledesc == 'custom' || !m[a][b].ruledesc ){
+		// if this is a custom pattern then donot try to parse the pattern
+		iscustom = true;
+		_$('rulename').value = (m[a][b].rulename) ? m[a][b].rulename : "";
+		m[a][b].ruledesc = 'custom' ;
+		_$('define_advanced').style.display="";
+		_$('define_usual').style.display="none";
+	}else{
+		// if this is standard pattern then parse the pattern into 'beginswith', 'followedby'
+		var temp = parsepattern(a,1);
+		iscustom = false;
+		_$('define_advanced').style.display="none";
+		_$('define_usual').style.display="";
+	}
+	_$('userscontent').style.display="";
+	_$('bg_transparent').style.display ='';
+	_$('addrule').disabled =1;
 }
 
 function ruleinanpdata(a,b,c){
@@ -449,85 +448,88 @@ function numberplan_context(){
 }
 
 numplan_callbacks.format = function(t, x) {
-		if ((t.name.substr(0,11) != 'numberplan-'))
-			return null;
-		if( x == undefined ){  // is a new number plan 
-			numberplansdata[t.name] = new numberplan_context ;
-			try{
-				return t.fieldbyname['plancomment'] ;
-			}catch(err){
-				return t.name;
-			}
-		}else if( t.names[x]=='plancomment' ){ 
-			numberplansdata[t.name]['plancomment'] =  t.fields[x] ; 
-		}else if( t.names[x]=='exten' ){ 
-			numberplansdata[t.name]['nprules'].push( t.fields[x] ) ; 
-		}else if( t.names[x]=='comment' ){ 
-			var tmp = t.fields[x].split(",");
-			if( tmp.length > 1 ){
-						numberplansdata[t.name]['npcomments'].push( t.fields[x] ) ; 
-			}
+	if ((t.name.substr(0,11) != 'numberplan-'))
+		return null;
+	if( x == undefined ){  // is a new number plan 
+		numberplansdata[t.name] = new numberplan_context ;
+		try{
+			return t.fieldbyname['plancomment'] ;
+		}catch(err){
+			return t.name;
 		}
-		
+	}else if( t.names[x]=='plancomment' ){ 
+		numberplansdata[t.name]['plancomment'] =  t.fields[x] ; 
+	}else if( t.names[x]=='exten' ){ 
+		numberplansdata[t.name]['nprules'].push( t.fields[x] ) ; 
+	}else if( t.names[x]=='comment' ){ 
+		var tmp = t.fields[x].split(",");
+		if( tmp.length > 1 ){
+			numberplansdata[t.name]['npcomments'].push( t.fields[x] ) ; 
+		}
+	}
+	
 	return null;
 }
 
 numplan_callbacks.loaded = function() {
+	var _extns = _$('extensions') ;
 
-	add_event( $('extensions') , 'change', select_differentplan );
+	add_event( _extns , 'change', select_differentplan );
 
-	if($('extensions').options.length ==0 ){
-			parent.loadscreen(this);
-			addthe_default_callingplan();
+	if( _extns.options.length ==0 ){
+		parent.loadscreen(this);
+		addthe_default_callingplan();
 	}else{
-		$('extensions').selectedIndex = 0;
-		$('extensions').selectitem(0);
+		_extns.selectedIndex = 0;
+		_extns.selectitem(0);
 		parse_nprulesAndnpcomments();
-		show_npdata_table($('extensions').options[0].value);
+		show_npdata_table(_extns.options[0].value);
 		parent.loadscreen(this);
 	}
 }
 
 numplan_callbacks.newcategory = function() {
-	np_oldselect = $('extensions').selectedIndex ;
+	var _extns = _$('extensions') ;
+	np_oldselect = _extns.selectedIndex ;
 	$('include').value = "default";
 	var c = 1 ;
-	for(var u =0 ; u < $('extensions').length ; u++ ){
-			var tmp =  $('extensions').options[u].value.split("-") ;
-			if( c < tmp[2] )
-				break;
-			c++ ;
+	for(var u =0 ; u < _extns.length ; u++ ){
+		var tmp =  _extns.options[u].value.split("-") ;
+		if( c < tmp[2] ){ break; }
+		c++ ;
 	}
-	gen = $('extensions').stored_config.catbyname[$('extensions').value];
+	gen = _extns.stored_config.catbyname[_extns.value];
 	temp = objcopy(gen);
 	temp.name = "numberplan-custom-" + c ;
 	temp.fieldbyname['plancomment'] = "DialPlan" + c;
-	$('plancomment').value = "DialPlan" + c;
+	_$('plancomment').value = "DialPlan" + c;
 	return temp;
 }
 
-numplan_callbacks.cancelnewcategory = function(){ 
-	$('extensions').selectedIndex = np_oldselect;
-	$('extensions').selectitem(np_oldselect);
-	$('npcontent').style.display="none";
-	$('bg_transparent').style.display ='none';
+numplan_callbacks.cancelnewcategory = function(){
+	var _extns = _$('extensions') ; 
+	_extns.selectedIndex = np_oldselect;
+	_extns.selectitem(np_oldselect);
+	_$('npcontent').style.display="none";
+	_$('bg_transparent').style.display ='none';
 }
 
 numplan_callbacks.savechanges = function(){
-	$('npcontent').style.display="none";
-	$('bg_transparent').style.display ='none';
-	show_npdata_table($('extensions').value);
+	_$('npcontent').style.display="none";
+	_$('bg_transparent').style.display ='none';
+	show_npdata_table( _$('extensions').value );
 }
 
-	numplan_callbacks.delchanges = function(box, value) {
-			if($('extensions').options.length ==0 ){
-				addthe_default_callingplan();
-			}else{
-				$('extensions').selectedIndex = 0;
-				$('extensions').selectitem(0);
-				show_npdata_table($('extensions').options[0].value);
-			}
+numplan_callbacks.delchanges = function(box, value) {
+	var _extns = _$('extensions') ;
+	if( _extns.options.length ==0 ){
+		addthe_default_callingplan();
+	}else{
+		_extns.selectedIndex = 0;
+		_extns.selectitem(0);
+		show_npdata_table( _extns.options[0].value );
 	}
+}
 
 numplan_callbacks.eachline = true;
 numplan_callbacks.includecats = true;
@@ -536,14 +538,14 @@ function localajaxinit(){
 	showdiv_statusmessage();
 	setWindowTitle("Calling Rules");
 	for (var x =0; x < fieldnames.length; x++ ) {
-		widgets[fieldnames[x]] = $(fieldnames[x]);
+		widgets[fieldnames[x]] = _$(fieldnames[x]);
 		widgets[fieldnames[x]].disabled = true;
 	}
 	for (var x =0; x < focus_fields.length; x++ ) {
 		$(focus_fields[x]).onfocus = function(){this.className = 'input9_hilight';}
 		$(focus_fields[x]).onblur = function(){this.className = 'input9';}
 	}
-	$('message_text').innerHTML ="Saving Changes...";
+	_$('message_text').innerHTML ="Saving Changes...";
 
 	config2json('users.conf', 1, trunks_loaded ) ;
 	//parent.astmanEngine.config2list("users.conf", $('trunks'), new Array(), trunkcallbacks);
@@ -559,43 +561,45 @@ function trunks_loaded(b){
 			New_OPTION.text =  trunks_desc[d].comment ;
 			New_OPTION.value =d ;
 			try {
-				$('trunks').add(New_OPTION, null); // W3C way
+				_$('trunks').add(New_OPTION, null); // W3C way
 			}catch(ex) {
-				$('trunks').add(New_OPTION); // IE way
+				_$('trunks').add(New_OPTION); // IE way
 			}
 		}
 	}
-	parent.astmanEngine.config2list("extensions.conf", $('extensions'), widgets , numplan_callbacks);
+	parent.astmanEngine.config2list("extensions.conf", _$('extensions'), widgets , numplan_callbacks);
 }
 
 function select_differentplan(){
-	if(typeof numberplansdata[$('extensions').value] == "undefined"){
-		numberplansdata[$('extensions').value] = new numberplan_context ;
-		numberplansdata[$('extensions').value].plancomment = $("plancomment").value;
+	var _extns = _$('extensions').value ;
+	if(typeof numberplansdata[_extns] == "undefined"){
+		numberplansdata[_extns] = new numberplan_context ;
+		numberplansdata[_extns].plancomment = $("plancomment").value;
 	}
-	show_npdata_table($('extensions').value);
+	show_npdata_table(_extns);
 }
 
 function newnumberplan(){
-	$('npcontent').style.display="";
-	$('bg_transparent').style.display ='';
-	$('new').click();
+	_$('npcontent').style.display="";
+	_$('bg_transparent').style.display ='';
+	_$('new').click();
 }
 
 function delete_numberplan(){
-	$('delete').click();
+	_$('delete').click();
 }
 
 
 function addthe_default_callingplan(){
-	t=confirm("A default Dial Plan is not found. \n" + " Do you want to create a default Dial Plan ");
-	if(t == false){ 
-		$('message_text').innerHTML = "A default DialPlan is not found !! "
+	if(!confirm("A default Dial Plan is not found. \n Do you want to create a default Dial Plan ") ){ 
+		_$('message_text').innerHTML = "A default DialPlan is not found !! "
 		+ "<BR><BR> <A href=\"#\" class=\"splbutton\" onclick=\"addthe_default_callingplan()\">click here</A> to create a default DialPlan";
-		$('bg_transparent').style.display = '' ;
-		$('status_message').style.left = 120 ;
-		$('status_message').style.display = "block" ;
-		$('status_message').style.zIndex = $('bg_transparent').style.zIndex + 1;
+		var _bg_s = _$('bg_transparent').style ;
+		var _sm_s = _$('status_message').style ;
+		_sm_s.left = 120 ;
+		_sm_s.zIndex = _bg_s.zIndex + 1;
+		_bg_s.display = '' ;
+		_sm_s.display = "" ;
 		return true;
 	}
 	var default_planname = 'numberplan-custom-1' ;
@@ -606,9 +610,7 @@ function addthe_default_callingplan(){
 		method: 'get',
 		asynchronous: true,
 		onSuccess: function(t) { location.reload(); },
-		onFailure: function(t) {
-			gui_alert("Config Error: " + t.status + ": " + t.statusText);
-		}
+		onFailure: function(t) { gui_alert("Config Error: " + t.status + ": " + t.statusText); }
 	};
 	opt.parameters= "action=updateconfig&srcfilename=" + encodeURIComponent("extensions.conf") + "&dstfilename=" + encodeURIComponent("extensions.conf") + uri;
 	var tmp = new Ajax.Request("../../rawman", opt);
@@ -617,13 +619,13 @@ function addthe_default_callingplan(){
 
 function free_mem( ){
 	if( navigator.userAgent.indexOf("MSIE") == -1 ){ return true; }
-		try{
-			widgets['save'].hostselectbox = null ;
-			widgets['cancel'].hostselectbox = null ;
-			widgets['new'].hostselectbox = null ;
-			widgets['delete'].hostselectbox = null ;
-			purge( document.body );
-		}catch(e){ }
+	try{
+		widgets['save'].hostselectbox = null ;
+		widgets['cancel'].hostselectbox = null ;
+		widgets['new'].hostselectbox = null ;
+		widgets['delete'].hostselectbox = null ;
+		purge( document.body );
+	}catch(e){ }
 }
 </script>
 <body id="foo" onload="localajaxinit()"  bgcolor="EFEFEF" onunload="free_mem()">

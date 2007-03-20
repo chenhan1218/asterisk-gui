@@ -26,21 +26,21 @@
 <link href="stylesheets/rico.css" media="all" rel="Stylesheet" type="text/css" />
 <link href="stylesheets/schwing.css" media="all" rel="Stylesheet" type="text/css" />
 <script>
-	var widgets = new Array;
-	var adstatus;
-	var menuscallbacks = new Object;
-	var extencallbacks = new Object;
-	var usercallbacks = new Object;
-	var numcallbacks = new Object;
-	var fieldnames = new Array('delete', 'status', 'new','save','cancel');
-	var voicemenusdata = new Object;
-	var current_context;
-	var keys = new Array('0','1','2','3','4','5','6','7','8','9','*','#','t','i');
-	var extensions_array = new Array;
-	var answer_call_string = "s,1,Answer";
-	var localextenlength ;
-	var rfilescallbacks = new Object;
-	var custom_voicemenusfile = "gui_custommenus.conf";
+var widgets = new Array;
+var adstatus;
+var menuscallbacks = new Object;
+var extencallbacks = new Object;
+var usercallbacks = new Object;
+var numcallbacks = new Object;
+var fieldnames = new Array('delete', 'status', 'new','save','cancel');
+var voicemenusdata = new Object;
+var current_context;
+var keys = new Array('0','1','2','3','4','5','6','7','8','9','*','#','t','i');
+var extensions_array = new Array;
+var answer_call_string = "s,1,Answer";
+var localextenlength ;
+var rfilescallbacks = new Object;
+var custom_voicemenusfile = "gui_custommenus.conf";
 
 function format_step(this_step){
 	var temp = this_step.split(',');
@@ -53,12 +53,6 @@ function format_step(this_step){
 		temp[2] = temp[2].replace(/\)/, "");
 		return "Play '" + temp[2] + "' & Listen for KeyPress";
 	}
-//	if( temp[2].match("SetMusicOnHold") ){
-//		// Background('') - whatever in the brackets
-//		temp[2] = temp[2].replace(/SetMusicOnHold\(/, "");
-//		temp[2] = temp[2].replace(/\)/, "");
-//		return "Music on Hold  -  '" + temp[2] + "'";
-//	}
 	if( temp[2].match("DigitTimeout") ){
 		temp[2] = temp[2].replace(/DigitTimeout\(/, "");
 		temp[2] = temp[2].replace(/\)/, "");
@@ -108,146 +102,148 @@ function format_step(this_step){
 }
 
 function load_extensions(my_field_options){
-		$(my_field_options).options.length=0;
-		for(x=0; x< extensions_array.length; x++){
-				var newoption = document.createElement("option"); 
-				newoption.text = extensions_array[x] ; 
-				newoption.value = extensions_array[x] ;
-				$(my_field_options).options.add(newoption);
-		}
+	var _mo = _$(my_field_options); 
+	_mo.options.length=0;
+	for(var x=0; x < extensions_array.length; x++){
+		var newoption = document.createElement("option"); 
+		newoption.text = extensions_array[x] ; 
+		newoption.value = extensions_array[x] ;
+		_mo.options.add(newoption);
+	}
 }
 
 function load_menus(my_field_options){
-		$(my_field_options).options.length=0;
-		for(x=0; x< $('vmenus').length; x++){
-				if($('vmenus').options[x].text != "New Entry" ){
-					var newoption = document.createElement("option"); 
-					newoption.text = voicemenusdata[$('vmenus').options[x].value].comment ; 
-					newoption.value = $('vmenus').options[x].value ;
-					$(my_field_options).options.add(newoption);
-				}
-		}
+	var _mo = _$(my_field_options) ;
+	var _vms = _$('vmenus') ;
+	_mo.options.length=0;
+	
+	for(var x=0; x < _vms.length; x++){
+		if( _vms.options[x].text == "New Entry" ){ continue ; }
+		var newoption = document.createElement("option"); 
+		newoption.text = voicemenusdata[ _vms.options[x].value].comment ; 
+		newoption.value = _vms.options[x].value ;
+		_mo.options.add(newoption);
+	}
 }
 
 function select_menu (my_field_options, menustring, a){
-		var tmp = menustring.split('(');
-		var tmp1 = tmp[1].split('|');
-		if(a == "ismenu"){var check_against = tmp1[0]; }
-		if(a == "isext"){ var check_against = tmp1[1] ;}
-		for(y=0; y < $(my_field_options).options.length; y++ ){
-			if( $(my_field_options).options[y].value == check_against ){
-				$(my_field_options).options[y].selected = true;
-				return true;
-			}
+	var tmp = menustring.split('(');
+	var tmp1 = tmp[1].split('|');
+	var _mfo = _$(my_field_options) ;
+
+	if(a == "ismenu"){
+		var check_against = tmp1[0]; 
+	}else if(a == "isext"){ 
+		var check_against = tmp1[1] ;
+	}
+
+	for(var y=0; y < _mfo.options.length; y++ ){
+		if( _mfo.options[y].value == check_against ){
+			_mfo.options[y].selected = true;
+			return true;
 		}
-		// if not in the current list of voicemenus/extensions then add it to the menu
-		var newoption = document.createElement("option"); 
-		newoption.text = check_against ; 
-		newoption.value = check_against ;
-		$(my_field_options).options.add(newoption);
-		$(my_field_options).options[y].style.fontWeight = 'bold';
-		$(my_field_options).options[y].selected = true;
-		$(my_field_options).style.color = '#CC0000';
+	}
+	// if not in the current list of voicemenus/extensions then add it to the menu
+	var newoption = document.createElement("option"); 
+	newoption.text = check_against ; 
+	newoption.value = check_against ;
+	_mfo.options.add(newoption);
+	_mfo.options[y].style.fontWeight = 'bold';
+	_mfo.options[y].selected = true;
+	_mfo.style.color = '#CC0000';
 }
 
 function add_newvmenu_tolistofkeymenus(){
+	var _vms = _$('vmenus') ;
+	var _vmsv = _vms.options[_vms.selectedIndex].value ;
+	var _cv = _$('comment').value ;
 	for (var k=0; k< keys.length; k++){
-			var current_key_menus='keypress_'+ keys[k] + '_menus';
-			var newoption = document.createElement("option"); 
-			newoption.text = $('comment').value; 
-			newoption.value = $('vmenus').options[$('vmenus').selectedIndex].value ;
-			$(current_key_menus).options.add(newoption);
+		var current_key_menus='keypress_'+ keys[k] + '_menus';
+		var newoption = document.createElement("option"); 
+		newoption.text = _cv ; 
+		newoption.value = _vmsv ;
+		_$(current_key_menus).options.add(newoption);
 	}
-			// and also add it to $('add_newstep_menus')
-			var newoption = document.createElement("option"); 
-			newoption.text = $('comment').value; 
-			newoption.value = $('vmenus').options[$('vmenus').selectedIndex].value ;
-			$('add_newstep_menus').options.add(newoption);
+	// and also add it to $('add_newstep_menus')
+	var newoption = document.createElement("option"); 
+	newoption.text = _cv ; 
+	newoption.value = _vmsv ;
+	_$('add_newstep_menus').options.add(newoption);
 }
 
+
 function delete_vmenu_fromlistofmenus(){
+	var _cv = _$('comment').value ;
 	for (var k=0; k< keys.length; k++){
-			var current_key_menus='keypress_'+ keys[k] + '_menus';
-					for(var i=0; i< $(current_key_menus).options.length; i++){
-								if( $(current_key_menus).options[i].text == $('comment').value ){
-										// delete this option from the $(current_key_menus)
-										var deleted_voicmenu = $(current_key_menus).options[i].value ;
-										$(current_key_menus).remove(i);
-										break;
-								}
-					}
+		var current_key_menus='keypress_'+ keys[k] + '_menus';
+		var _ckm = _$(current_key_menus);
+
+		for(var i=0; i< _ckm.options.length; i++){
+			if( _ckm.options[i].text == _cv ){
+				// delete this option from the $(current_key_menus)
+				var deleted_voicmenu = _ckm.options[i].value ;
+				_ckm.remove(i);
+				break;
+			}
+		}
 	}
-	for(var i=0; i< $('add_newstep_menus').options.length; i++){
-				if( $('add_newstep_menus').options[i].text == $('comment').value ){
-						$('add_newstep_menus').remove(i);
-						break;
-				}
+	var _anm = _$('add_newstep_menus') ;
+	for(var i=0; i< _anm.options.length; i++){
+		if( _anm.options[i].text == _cv ){
+			_anm.remove(i);
+			break;
+		}
 	}
 	// use the deleted_voicmenu to delete the alias (if it exists) in the default
-	if($('alias_exten').value.length > 0){
-				var opt = {
-					method: 'get',
-					asynchronous: true,
-					onSuccess: function(t) { 									
-						delete voicemenusdata[deleted_voicmenu];
-					},
-					onFailure: function(t) {
-						gui_alert("Config Error: " + t.status + ": " + t.statusText);
-					}
-				};
-			var existing_alias_string = voicemenusdata[deleted_voicmenu].alias_exten + ",1,Goto(" + deleted_voicmenu + "|s|1)"  ;
-			var uri = build_action('delete', 0, specialcontext ,"exten", "", existing_alias_string ); 
-			opt.parameters="action=updateconfig&srcfilename=" + encodeURIComponent("extensions.conf") + "&dstfilename=" + encodeURIComponent("extensions.conf") + uri;
-			var tmp = new Ajax.Request("../../rawman", opt);
+	if(_$('alias_exten').value.length > 0){
+		var opt = {
+			method: 'get',
+			asynchronous: true,
+			onSuccess: function(t) { 									
+				delete voicemenusdata[deleted_voicmenu];
+			},
+			onFailure: function(t) {
+				gui_alert("Config Error: " + t.status + ": " + t.statusText);
+			}
+		};
+		var existing_alias_string = voicemenusdata[deleted_voicmenu].alias_exten + ",1,Goto(" + deleted_voicmenu + "|s|1)"  ;
+		var uri = build_action('delete', 0, specialcontext ,"exten", "", existing_alias_string ); 
+		opt.parameters="action=updateconfig&srcfilename=" + encodeURIComponent("extensions.conf") + "&dstfilename=" + encodeURIComponent("extensions.conf") + uri;
+		var tmp = new Ajax.Request("../../rawman", opt);
 	}
 	delete voicemenusdata[deleted_voicmenu];
 }
 
+
 function change_vmenuname_inlistofmenus(oldname,newname){
 	for (var k=0; k< keys.length; k++){
-			var current_key_menus='keypress_'+ keys[k] + '_menus';
-					for(var i=0; i< $(current_key_menus).options.length; i++){
-								if( $(current_key_menus).options[i].text == oldname ){
-										// delete this option from the $(current_key_menus)
-										$(current_key_menus).options[i].text = newname;
-										break;
-								}
-					}
+		var current_key_menus='keypress_'+ keys[k] + '_menus';
+		var _ckm = _$(current_key_menus) ;
+		for(var i=0; i< _ckm.options.length; i++){
+			if( _ckm.options[i].text == oldname ){
+				_ckm.options[i].text = newname;
+				break;
+			}
+		}
 	}
 }
 
 
-
 function  key_action(a, field){
 	enable_savecancel();
-	my_field_text = 'keypress_'+ field + '_text' ;
-	my_field_menus = 'keypress_'+ field + '_menus' ;
-	my_field_exts = 'keypress_'+ field + '_exts' ;
+	_mft = _$('keypress_'+ field + '_text' ).style.display = "none";
+	_mfe = _$('keypress_'+ field + '_exts').style.display = "none";
+	_mfm = _$('keypress_'+ field + '_menus').style.display = "none";
 
-	if(a=='gotomenu'){
-		//show menus dropdown
-		$(my_field_menus).style.display = "";
-		$(my_field_text).style.display = "none";
-		$(my_field_exts).style.display = "none";
-	}
-	if(a=='gotoextension'){
-		//show extensions dropdown
-		$(my_field_exts).style.display = "";
-		$(my_field_text).style.display = "none";
-		$(my_field_menus).style.display = "none";
-	}
-	if(a=='Custom'){
-		//show a  text box
-		$(my_field_exts).style.display = "none";
-		$(my_field_menus).style.display = "none";
-		$(my_field_text).style.display = "";
-		$(my_field_text).focus();
-	}
-	if(a=='disabled' || a=='Hangup' || a=='PlayInvalid'){
-		//show nothing
-		$(my_field_text).style.display = "none";
-		$(my_field_exts).style.display = "none";
-		$(my_field_menus).style.display = "none";
+	if(a=='gotomenu'){ //show menus dropdown
+		_mfm = "";
+	}else if(a=='gotoextension'){ //show extensions dropdown
+		_mfe = "";
+	}else if(a=='Custom'){ //show a  text box
+		_mft = "";
+		_$('keypress_'+ field + '_text').focus();
+	}else if(a=='disabled' || a=='Hangup' || a=='PlayInvalid'){	//show nothing
+
 	}
 }
 
@@ -255,67 +251,77 @@ function sortNumber(a,b){
 	return a - b ;
 }
 
+
 function add_newstep(){
-	if( !$('newstep_action').value ){
+	var _vmv = _$('vmenus').value ;
+	var _nsa = _$('newstep_action');
+	var _nsa_v = _nsa.value ;
+	var _nsv = _$('newstep_var') ;
+	var _nsv_v = _nsv.value;
+
+	if( !_nsa_v ){
 		gui_alert("Please select an action for this step");
-		$('newstep_action').focus();
+		_nsa.focus();
 		return;
 	}
 
-	if( $('newstep_action').value != "Answer" &&   $('newstep_action').value != "Hangup" && !$('newstep_var').value ){
-		gui_alert("Please enter a value for '" + $('newstep_action').value +"'");
-		$('newstep_var').focus();
+	if( _nsa_v != "Answer" &&   _nsa_v != "Hangup" && !_nsv_v ){
+		gui_alert("Please enter a value for '" + _nsa_v +"'");
+		_nsv.focus();
 		return;
 	}
 
-	$('status_message').style.display="block";
+	var _sm = _$('status_message').style.display;
+	_sm = "";
 
 	// prepare a request to add the new step to the voicemenu
 	// make a request to append
 	var opt = {
-			method: 'get',
-			asynchronous: true,
-			onSuccess: function() { 
-				setTimeout("$('status_message').style.display='none'",sc_displaytime);
-				// if request successfull then add this to the steps select box
-				var newoption = document.createElement("option"); 
-				newoption.text = format_step(action_string ); 
-				newoption.value = action_string ;
-				$('steps').options.add ( newoption );
-				// and also add the information to the voicemenus data
-				if(voicemenusdata[$('vmenus').value].extensions['s']){
-					voicemenusdata[$('vmenus').value].extensions['s'].push(action_string);
-				}else{
-					voicemenusdata[$('vmenus').value].extensions['s'] = new Array;
-					voicemenusdata[$('vmenus').value].extensions['s'][0] = action_string;
-				}
-				// empty this textbox & disable this button, select the newly added item to the steps options box
-				$('newstep_action').selectedIndex = 0;
-					$('deletestep').disabled = false;
-				$('steps').selectedIndex = $('steps').length - 1 ;
-				$('status').innerHTML = "<i>New step added !</i>";
-				update_updown();
-				$('newstep_var').value= "";
-				$('newstep_var').style.display = "none" ;
-				$('add_newstep_extensions').style.display = "none";
-				$('add_newstep_menus').style.display = "none";
-				$('combodiv_sounds').style.display = "none" ;
-				$('newstep_var_digit').value= "";
-				$('newstep_var_digit').style.display= "none" ;
-			},
-			onFailure: function(t) {
-				$('status_message').style.display='none';
-				gui_alert("Config Error: " + t.status + ": " + t.statusText);
+		method: 'get',
+		asynchronous: true,
+		onSuccess: function() { 
+			setTimeout(function(){ _sm = 'none'; },sc_displaytime);
+			// if request successfull then add this to the steps select box
+			var newoption = document.createElement("option"); 
+			newoption.text = format_step(action_string ); 
+			newoption.value = action_string ;
+			var _steps = _$('steps') ;
+			_steps.options.add ( newoption );
+			// and also add the information to the voicemenus data
+			if(voicemenusdata[_vmv].extensions['s']){
+				voicemenusdata[_vmv].extensions['s'].push(action_string);
+			}else{
+				voicemenusdata[_vmv].extensions['s'] = new Array;
+				voicemenusdata[_vmv].extensions['s'][0] = action_string;
 			}
+			// empty this textbox & disable this button, select the newly added item to the steps options box
+			_nsa.selectedIndex = 0;
+			_$('deletestep').disabled = false;
+			_steps.selectedIndex = _steps.length - 1 ;
+			_$('status').innerHTML = "<i>New step added !</i>";
+			update_updown();
+			_nsv_v= "";
+			_nsv.style.display = "none" ;
+			_$('add_newstep_extensions').style.display = "none";
+			_$('add_newstep_menus').style.display = "none";
+			_$('combodiv_sounds').style.display = "none" ;
+			_nsvd = _$('newstep_var_digit'); 
+			_nsvd.value= "";
+			_nsvd.style.display= "none" ;
+		},
+		onFailure: function(t) {
+			_sm='none';
+			gui_alert("Config Error: " + t.status + ": " + t.statusText);
+		}
 	};
 	var uri = "";
 	var action_string = "";
 	var priorities = new Array;
 
 	// algorithm 4 calculate new priority
-	if(voicemenusdata[$('vmenus').value].extensions['s'] && voicemenusdata[$('vmenus').value].extensions['s'].length > 0 ){
-		for( var p=0; p < voicemenusdata[$('vmenus').value].extensions['s'].length; p ++){
-			var temp  = voicemenusdata[$('vmenus').value].extensions['s'][p].split(',');
+	if(voicemenusdata[_vmv].extensions['s'] && voicemenusdata[_vmv].extensions['s'].length > 0 ){
+		for( var p=0; p < voicemenusdata[_vmv].extensions['s'].length; p ++){
+			var temp  = voicemenusdata[_vmv].extensions['s'][p].split(',');
 			priorities.push(temp[1]);
 		}
 		priorities = priorities.sort(sortNumber);
@@ -324,36 +330,46 @@ function add_newstep(){
 		newpriority = 1;
 	}
 
-	if( $('newstep_action').value == 'Answer' ){
+	switch ( _nsa_v ){
+	case 'Answer':
 		action_string = "s,"+ newpriority+ ",Answer";
-	}else if ( $('newstep_action').value == 'Background'  ){
-		action_string = "s,"+ newpriority+ ",Background(" + $('newstep_var').value + ")";
-//	}else if ( $('newstep_action').value == 'SetMusicOnHold'  ){
-//		action_string = "s,"+ newpriority+ ",SetMusicOnHold(" + $('newstep_var').value + ")";
-	}else if ( $('newstep_action').value == 'DigitTimeout'  ){
-		action_string = "s,"+ newpriority+ ",DigitTimeout(" + $('newstep_var').value + ")";
-	}else if ( $('newstep_action').value == 'ResponseTimeout'  ){
-		action_string = "s,"+ newpriority+ ",ResponseTimeout(" + $('newstep_var').value + ")";
-	}else if ( $('newstep_action').value == 'Playback'  ){
-		action_string = "s,"+ newpriority+ ",Playback(" + $('newstep_var').value + ")";
-	}else if ( $('newstep_action').value == 'Wait'  ){
-		action_string = "s,"+ newpriority+ ",Wait(" + $('newstep_var').value + ")";
-	}else if ( $('newstep_action').value == 'WaitExten'  ){
-		action_string = "s,"+ newpriority+ ",WaitExten(" + $('newstep_var').value + ")";
-	}else if ( $('newstep_action').value == 'GotoMenu'  ){
-		action_string = "s,"+ newpriority+ ",Goto(" + $('newstep_var').value + "|s|1)";
-	}else if ( $('newstep_action').value == 'GotoExtension'  ){
-		action_string = "s,"+ newpriority+ ",Goto(default|" + $('newstep_var').value + "|1)";
-	}else if ( $('newstep_action').value == 'Hangup'  ){
+		break;
+	case 'Background':
+		action_string = "s,"+ newpriority+ ",Background(" + _nsv_v + ")";
+		break;
+	case 'DigitTimeout':
+		action_string = "s,"+ newpriority+ ",DigitTimeout(" + _nsv_v + ")";
+		break;
+	case 'ResponseTimeout':
+		action_string = "s,"+ newpriority+ ",ResponseTimeout(" + _nsv_v + ")";
+		break;
+	case 'Playback':
+		action_string = "s,"+ newpriority+ ",Playback(" + _nsv_v + ")";
+		break;
+	case 'Wait':
+		action_string = "s,"+ newpriority+ ",Wait(" + _nsv_v + ")";
+		break;
+	case 'WaitExten':
+		action_string = "s,"+ newpriority+ ",WaitExten(" + _nsv_v + ")";
+		break;
+	case 'GotoMenu':
+		action_string = "s,"+ newpriority+ ",Goto(" + _nsv_v + "|s|1)";
+		break;
+	case 'GotoExtension':
+		action_string = "s,"+ newpriority+ ",Goto(default|" + _nsv_v + "|1)";
+		break;
+	case 'Hangup':
 		action_string = "s,"+ newpriority+ ",Hangup";
+		break;
+	default : 
+		action_string = "s,undefined,undefined"; 
 	}
 
-	uri += build_action('append', 0, $('vmenus').value,"exten", action_string ); 
+	uri += build_action('append', 0, _vmv,"exten", action_string ); 
 	opt.parameters="action=updateconfig&srcfilename=" + encodeURIComponent("extensions.conf") + "&dstfilename=" + encodeURIComponent("extensions.conf") + uri;
 	tmp = new Ajax.Request('../../rawman', opt);
 
 }
-
 
 
 function next_freevmenu(){	 // return the next smallest available voicemenu name
@@ -363,151 +379,156 @@ function next_freevmenu(){	 // return the next smallest available voicemenu name
 }
 
 
-
 function save_vmenu(){
+	var _ae = _$('alias_exten') ;
+	var _vms = _$('vmenus') ;
+	var _ale = _$('allowexten');
 
-	if( $('alias_exten').value.length > 0 && localextenlength !=0 && localextenlength !=  $('alias_exten').value.length){
-			gui_alert("Sorry, An Extension must be  "+ localextenlength  + " digits !");
-			$('alias_exten').focus();
-			return false;
+	if( _ae.value.length > 0 && localextenlength !=0 && localextenlength !=  _ae.value.length){
+		gui_alert("Sorry, An Extension must be  "+ localextenlength  + " digits !");
+		_ae.focus();
+		return false;
 	}
 	if (!check_patternonfields( [ 'comment', 'newstep_var_digit' ] ) ){
 		return false;
 	}
 
-	$('status_message').style.display="block";
+	var _sm = _$('status_message').style.display ; 
+	_sm="";
+	var _cmv = _$('comment').value ;
+
 	var opt = {
-			method: 'get',
-			asynchronous: true,
-			onSuccess: function() { 
-					setTimeout("$('status_message').style.display='none'",sc_displaytime);
-					$('status').innerHTML = "<i>Updated.</i>";
-					$('savevmenu').disabled = true;
-					$('save').disabled = true;
-					$('cancel').disabled = true;
-					
-					if( $('vmenus').options[$('vmenus').selectedIndex].innerHTML=='New Entry' ){ // (if new Voicemenu 
-							voicemenusdata[current_vmenu] = new Object();	
-							voicemenusdata[current_vmenu].comment =  $('comment').value;
-							voicemenusdata[current_vmenu].alias_exten =  $('alias_exten').value;
-							voicemenusdata[current_vmenu].extensions = new Object();
-							// add the "s,1,Answer" data to voicemenus data
-							voicemenusdata[current_vmenu].extensions['s'] = new Array();
-							voicemenusdata[current_vmenu].extensions['s'][0] = answer_call_string;
-							for (var k=0; k< keys.length; k++){
-								if( buildstring[keys[k]] ){
-									voicemenusdata[current_vmenu].extensions[keys[k]] = new Array();
-									voicemenusdata[current_vmenu].extensions[keys[k]][0] = buildstring[keys[k]] ;
-								}
-							}
-							// update vmenus
-							$('vmenus').options[$('vmenus').selectedIndex].text = "VoiceMenu - " + $('comment').value;
-							$('vmenus').options[$('vmenus').selectedIndex].value = current_vmenu;
-							select_vmenu();
-							// add the new menu to the list of menus being displayed in the keypad options
-							add_newvmenu_tolistofkeymenus();
-
-					}else{ // if editing existing keypress options
-							for (var k=0; k< keys.length; k++){
-									if( buildstring[keys[k]] ){
-										voicemenusdata[current_vmenu].extensions[keys[k]] = new Array();
-										voicemenusdata[current_vmenu].extensions[keys[k]][0] = buildstring[keys[k]] ;
-									}else{
-										if( voicemenusdata[current_vmenu].extensions[keys[k]] ){
-											voicemenusdata[current_vmenu].extensions[keys[k]] = [];
-										}
-									}
-							}							
+		method: 'get',
+		asynchronous: true,
+		onSuccess: function() { 
+			setTimeout(function(){ _sm="none"; },sc_displaytime);
+			_$('status').innerHTML = "<i>Updated.</i>";
+			_$('savevmenu').disabled = true;
+			_$('save').disabled = true;
+			_$('cancel').disabled = true;
+			
+			if( _vms.options[_vms.selectedIndex].innerHTML=='New Entry' ){ // (if new Voicemenu 
+				voicemenusdata[current_vmenu] = new Object();	
+				voicemenusdata[current_vmenu].comment =  _cmv ;
+				voicemenusdata[current_vmenu].alias_exten =  _ae.value;
+				voicemenusdata[current_vmenu].extensions = new Object();
+				// add the "s,1,Answer" data to voicemenus data
+				voicemenusdata[current_vmenu].extensions['s'] = new Array();
+				voicemenusdata[current_vmenu].extensions['s'][0] = answer_call_string;
+				for (var k=0; k< keys.length; k++){
+					if( buildstring[keys[k]] ){
+						voicemenusdata[current_vmenu].extensions[keys[k]] = new Array();
+						voicemenusdata[current_vmenu].extensions[keys[k]][0] = buildstring[keys[k]] ;
 					}
+				}
+				// update vmenus
+				_vms.options[_vms.selectedIndex].text = "VoiceMenu - " + _cmv;
+				_vms.options[_vms.selectedIndex].value = current_vmenu;
+				select_vmenu();
+				// add the new menu to the list of menus being displayed in the keypad options
+				add_newvmenu_tolistofkeymenus();
 
-			},
-			onFailure: function(t) {
-				$('status_message').style.display='none';
-				gui_alert("Config Error: " + t.status + ": " + t.statusText);
+			}else{ // if editing existing keypress options
+				for (var k=0; k< keys.length; k++){
+					if( buildstring[keys[k]] ){
+						voicemenusdata[current_vmenu].extensions[keys[k]] = new Array();
+						voicemenusdata[current_vmenu].extensions[keys[k]][0] = buildstring[keys[k]] ;
+					}else{
+						if( voicemenusdata[current_vmenu].extensions[keys[k]] ){
+							voicemenusdata[current_vmenu].extensions[keys[k]] = [];
+						}
+					}
+				}							
 			}
+
+		},
+		onFailure: function(t) {
+			_sm='none';
+			gui_alert("Config Error: " + t.status + ": " + t.statusText);
+		}
 	};
 	var uri = "" ;
 	var p =0 ;
 	var buildstring = new Object ;
 
-	if( $('vmenus').options[$('vmenus').selectedIndex].innerHTML=='New Entry' ){
-			var current_vmenu = next_freevmenu();
-			uri += build_action('newcat', p, current_vmenu,"", ""); p = p+1;
-			uri += build_action('append', p, current_vmenu,"comment", $('comment').value); p = p+1;
-			uri += build_action('append', p, current_vmenu,"alias_exten", $('alias_exten').value); p = p+1;
-			if($('alias_exten').value.length > 0){
-				// alias for this voicemenu in [default] section of extensions.conf
-				var alias_string = $('alias_exten').value + ",1,Goto(" + current_vmenu + "|s|1)"  ;
-				uri += build_action('append', p, specialcontext ,"exten", alias_string ); p = p+1;
-			}
+	if( _vms.options[_vms.selectedIndex].innerHTML=='New Entry' ){
+		var current_vmenu = next_freevmenu();
+		uri += build_action('newcat', p, current_vmenu,"", ""); p = p+1;
+		uri += build_action('append', p, current_vmenu,"comment", _cmv ); p = p+1;
+		uri += build_action('append', p, current_vmenu,"alias_exten", _ae.value); p = p+1;
+		if(_ae.value.length > 0){
+			// alias for this voicemenu in [default] section of extensions.conf
+			var alias_string = _ae.value + ",1,Goto(" + current_vmenu + "|s|1)"  ;
+			uri += build_action('append', p, specialcontext ,"exten", alias_string ); p = p+1;
+		}
 
-			if( $('allowexten').checked){
-				uri += build_action('append', p, current_vmenu,"include", "default"); p = p+1;
-			}
-			uri += build_action('append', p, current_vmenu,"exten", answer_call_string); p = p+1;
+		if( _ale.checked){ uri += build_action('append', p, current_vmenu,"include", "default"); p = p+1; }
+		uri += build_action('append', p, current_vmenu,"exten", answer_call_string); p = p+1;
 	}else{
-			// Updating existing Voicemenu
-			var current_vmenu = $('vmenus').value;
-			if(  voicemenusdata[current_vmenu].comment != $('comment').value ){
-					uri += build_action('update', p, current_vmenu ,"comment", $('comment').value ); p = p+1;
-					change_vmenuname_inlistofmenus(voicemenusdata[current_vmenu].comment,$('comment').value);
-					 voicemenusdata[current_vmenu].comment = $('comment').value;
-			}
-			
-			if(  voicemenusdata[current_vmenu].alias_exten != $('alias_exten').value ){
-					var existing_alias_string = voicemenusdata[current_vmenu].alias_exten + ",1,Goto(" + current_vmenu + "|s|1)"  ;
-					if( $('alias_exten').value.length > 0 ){
-						// change alias for this voicemenu in 'default' section of extensions.conf
-						var new_alias_string = $('alias_exten').value + ",1,Goto(" + current_vmenu + "|s|1)"  ;
-						uri += build_action('update', p, specialcontext ,"exten", new_alias_string,existing_alias_string); p = p+1;
-					}else{
-						// if the user is deleting the alias for this voicemenu, then delete the defined alias in the [default] extensions.conf
-						uri += build_action('delete', p, specialcontext ,"exten", "",existing_alias_string); p = p+1;
-					}
-
-					uri += build_action('update', p, current_vmenu ,"alias_exten", $('alias_exten').value ); p = p+1;
-					 voicemenusdata[current_vmenu].alias_exten = $('alias_exten').value;
-			}
-			
-			 if( voicemenusdata[current_vmenu].include =="default" && !$('allowexten').checked ){
-						uri += build_action('delete', p, current_vmenu ,"include",""); p = p+1;
-						voicemenusdata[current_vmenu].include = "" ;
-			}else if ( voicemenusdata[current_vmenu].include !="default"  && $('allowexten').checked ){
-						uri += build_action('append', p, current_vmenu,"include", "default"); p = p+1;
-						voicemenusdata[current_vmenu].include = "default" ;
-			}else if ( !voicemenusdata[current_vmenu].include && $('allowexten').checked ){
-						uri += build_action('append', p, current_vmenu ,"include", "default"); p = p+1;
-						voicemenusdata[current_vmenu].include = "default" ;
+		// Updating existing Voicemenu
+		var current_vmenu = _vms.value;
+		if(  voicemenusdata[current_vmenu].comment != _cmv ){
+			uri += build_action('update', p, current_vmenu ,"comment", _cmv); p = p+1;
+			change_vmenuname_inlistofmenus(voicemenusdata[current_vmenu].comment,_cmv);
+			voicemenusdata[current_vmenu].comment = _cmv;
+		}
+		
+		if(  voicemenusdata[current_vmenu].alias_exten != _ae.value ){
+			var existing_alias_string = voicemenusdata[current_vmenu].alias_exten + ",1,Goto(" + current_vmenu + "|s|1)"  ;
+			if( _ae.value.length > 0 ){
+				// change alias for this voicemenu in 'default' section of extensions.conf
+				var new_alias_string = _ae.value + ",1,Goto(" + current_vmenu + "|s|1)"  ;
+				uri += build_action('update', p, specialcontext ,"exten", new_alias_string,existing_alias_string); p = p+1;
+			}else{
+				// if the user is deleting the alias for this voicemenu, then delete the defined alias in the [default] extensions.conf
+				uri += build_action('delete', p, specialcontext ,"exten", "",existing_alias_string); p = p+1;
 			}
 
-			for (var k=0; k< keys.length; k++){
-				if(voicemenusdata[current_vmenu].extensions[keys[k]]){
-					uri += build_action('delete', p, current_vmenu,"exten", "", voicemenusdata[current_vmenu].extensions[keys[k]][0] ); p = p+1;
-				}
+			uri += build_action('update', p, current_vmenu ,"alias_exten", _ae.value ); p = p+1;
+			voicemenusdata[current_vmenu].alias_exten = _ae.value;
+		}
+		
+		if( voicemenusdata[current_vmenu].include =="default" && !_ale.checked ){
+			uri += build_action('delete', p, current_vmenu ,"include",""); p = p+1;
+			voicemenusdata[current_vmenu].include = "" ;
+		}else if ( voicemenusdata[current_vmenu].include !="default"  && _ale.checked ){
+			uri += build_action('append', p, current_vmenu,"include", "default"); p = p+1;
+			voicemenusdata[current_vmenu].include = "default" ;
+		}else if ( !voicemenusdata[current_vmenu].include && _ale.checked ){
+			uri += build_action('append', p, current_vmenu ,"include", "default"); p = p+1;
+			voicemenusdata[current_vmenu].include = "default" ;
+		}
+
+		for (var k=0; k< keys.length; k++){
+			if(voicemenusdata[current_vmenu].extensions[keys[k]]){
+				uri += build_action('delete', p, current_vmenu,"exten", "", voicemenusdata[current_vmenu].extensions[keys[k]][0] ); p = p+1;
 			}
+		}
 	}
 
 	// Build exten strings for enabled keys and append/update the 
 	for (var k=0; k< keys.length; k++){
-			var current_key_action='keypress_'+ keys[k] + '_action';
-			var current_key_text='keypress_'+ keys[k] + '_text';
-			var current_key_exts='keypress_'+ keys[k] + '_exts';
-			var current_key_menus='keypress_'+ keys[k] + '_menus';
-		
-			if( $(current_key_action).value == "disabled")
-				continue;
-			else if( $(current_key_action).value == "gotomenu" )
-					buildstring[keys[k]] = keys[k] + ",1,Goto("+ $(current_key_menus).value + "|s|1)" ;					
-			else if( $(current_key_action).value == "gotoextension" )
-					buildstring[keys[k]] = keys[k] + ",1,Goto(default|"+ $(current_key_exts).value + "|1)" ;					
-			else if( $(current_key_action).value == "Custom" ) 
-					buildstring[keys[k]] = keys[k] + ",1,"+ $(current_key_text).value ;
-			else if( $(current_key_action).value == "Hangup" )
-					buildstring[keys[k]] = keys[k] + ",1,"+ "Hangup" ;					
-			else if( $(current_key_action).value == "PlayInvalid" ) 
-					buildstring[keys[k]] = keys[k] + ",1,"+ "Playback(invalid)" ;
-						
-			uri += build_action('append', p, current_vmenu,"exten", buildstring[keys[k]]); p = p+1;
+		switch ( _$('keypress_'+ keys[k] + '_action').value ){
+		case 'disabled':
+			break;
+		case 'gotomenu':
+			buildstring[keys[k]] = keys[k] + ",1,Goto("+ _$('keypress_'+ keys[k] + '_menus').value + "|s|1)" ;
+			break;
+		case 'gotoextension':
+			buildstring[keys[k]] = keys[k] + ",1,Goto(default|"+ _$('keypress_'+ keys[k] + '_exts').value + "|1)" ;
+			break;
+		case 'Custom':
+			buildstring[keys[k]] = keys[k] + ",1,"+ _$('keypress_'+ keys[k] + '_text').value ;
+			break;
+		case 'Hangup':
+			buildstring[keys[k]] = keys[k] + ",1,"+ "Hangup" ;
+			break;
+		case 'PlayInvalid':
+			buildstring[keys[k]] = keys[k] + ",1,"+ "Playback(invalid)" ;
+			break;
+		default :
+		}
+		uri += build_action('append', p, current_vmenu,"exten", buildstring[keys[k]]); p = p+1;
 	}
 
 	opt.parameters="action=updateconfig&srcfilename=" + encodeURIComponent("extensions.conf") + "&dstfilename=" + encodeURIComponent("extensions.conf") + uri;
@@ -517,30 +538,30 @@ function save_vmenu(){
 
 
 function  enable_savecancel(){
-		$('save').disabled=false;
-		$('savevmenu').disabled = false;
-		$('cancel').disabled = false;
+	_$('save').disabled=false;
+	_$('savevmenu').disabled = false;
+	_$('cancel').disabled = false;
 }
 
 
 function generate_fields(key){
-			var t = '<select  class="input8" style="font-family: Verdana, Arial, Helvetica, Sans-Serif;font-size: 11px;"   id=\'keypress_'+ key + '_action\' onchange="key_action(this.value, \'' + key + '\')">\n';
-			t += '<option value="disabled">Disabled</option>\n' ;
-			t += '<option value="gotomenu">Goto Menu</option>\n';
-			t += '<option value="gotoextension">Goto Extension</option>\n';
-			t += '<option value="Custom">Custom</option>\n';
-			t += '<option value="Hangup">Hangup</option>\n';
-			t += '<option value="PlayInvalid">Play Invalid</option>\n';
-			t += '</select>&nbsp;<input type="text" class="input8" size=16 style="display:none;font-family: Verdana, Arial, Helvetica, Sans-Serif;font-size: 11px;" id="keypress_' + key+ '_text" onchange="enable_savecancel()">\n';
-			t += '<select  style="display:none; font-family: Verdana, Arial, Helvetica, Sans-Serif;font-size: 11px;"  id="keypress_'+ key + '_menus" onchange="enable_savecancel()" class="input8"></select>\n';
-			t += '<select  style="display:none; font-family: Verdana, Arial, Helvetica, Sans-Serif;font-size: 11px;"  id="keypress_'+ key + '_exts" onchange="enable_savecancel()" class="input8"></select>\n';
-			return t;
+	var t = '<select  class="input8" style="font-family: Verdana, Arial, Helvetica, Sans-Serif;font-size: 11px;"   id=\'keypress_'+ key + '_action\' onchange="key_action(this.value, \'' + key + '\')">\n';
+	t += '<option value="disabled">Disabled</option>\n' ;
+	t += '<option value="gotomenu">Goto Menu</option>\n';
+	t += '<option value="gotoextension">Goto Extension</option>\n';
+	t += '<option value="Custom">Custom</option>\n';
+	t += '<option value="Hangup">Hangup</option>\n';
+	t += '<option value="PlayInvalid">Play Invalid</option>\n';
+	t += '</select>&nbsp;<input type="text" class="input8" size=16 style="display:none;font-family: Verdana, Arial, Helvetica, Sans-Serif;font-size: 11px;" id="keypress_' + key+ '_text" onchange="enable_savecancel()">\n';
+	t += '<select  style="display:none; font-family: Verdana, Arial, Helvetica, Sans-Serif;font-size: 11px;"  id="keypress_'+ key + '_menus" onchange="enable_savecancel()" class="input8"></select>\n';
+	t += '<select  style="display:none; font-family: Verdana, Arial, Helvetica, Sans-Serif;font-size: 11px;"  id="keypress_'+ key + '_exts" onchange="enable_savecancel()" class="input8"></select>\n';
+	return t;
 }
 
 function step_onselect(){
 	// enable delete button
-	if($('steps').value){
-		$('deletestep').disabled = false;
+	if(_$('steps').value){
+		_$('deletestep').disabled = false;
 	}
 
 	// enable Up/Down buttons accordingly
@@ -548,103 +569,95 @@ function step_onselect(){
 }
 
 function update_updown(){
-	if( !$('steps').selectedIndex == 0){
-		$('stepUp').disabled = false;
-	}else{
-		$('stepUp').disabled = true;
-	}
+	var _steps = _$('steps') ;
+	_$('stepUp').disabled =( _steps.selectedIndex ) ? false : true ; 
+	_$('stepDown').disabled = ( _steps.selectedIndex != (_steps.length-1) ) ? false: true ;
+}
 
-	if( $('steps').selectedIndex != ($('steps').length-1) ){
-		$('stepDown').disabled = false;
-	}else{
-		$('stepDown').disabled = true;
-	}
-
+function step_up(){ // Swap x, x-1
+	var _steps = _$('steps') ; 
+	swap_step(_steps.selectedIndex, _steps.selectedIndex-1 );
 }
 
 
-function step_up(){
-	// Swap x, x-1
-	swap_step($('steps').selectedIndex, $('steps').selectedIndex-1);
-}
-
-
-function step_down(){
-	//swap x, x+1
-	swap_step($('steps').selectedIndex, $('steps').selectedIndex+1 );
+function step_down(){	//swap x, x+1
+	var _steps = _$('steps') ;
+	swap_step( _steps.selectedIndex, _steps.selectedIndex+1 );
 }
 
 
 function swap_step(a,b){
-	var tmp1 = $('steps').options[a].value.split(",") ;
+	var _steps = _$('steps');
+	var _vms_v = _$('vmenus').value ;
+
+	var tmp1 = _steps.options[a].value.split(",") ;
 	var priority_1 = tmp1[1];
-	var tmp2 = $('steps').options[b].value.split(",") ;
+	var tmp2 = _steps.options[b].value.split(",") ;
 	var priority_2 = tmp2[1];
 
 	tmp1.splice(1,1,priority_2);
 	tmp2.splice(1,1,priority_1);
 
 	var opt = {
-			method: 'get',
-			asynchronous: true,
-			onSuccess: function() { 
-					// update voicemenusdata
-					for(var p=0; p< voicemenusdata[$('vmenus').value].extensions['s'].length; p++){
-							if( voicemenusdata[$('vmenus').value].extensions['s'][p] == $('steps').options[a].value )
-							voicemenusdata[$('vmenus').value].extensions['s'][p] = tmp1.join();
-							else if (voicemenusdata[$('vmenus').value].extensions['s'][p] == $('steps').options[b].value  ) 
-							voicemenusdata[$('vmenus').value].extensions['s'][p] = tmp2.join();
-					}
-					// swap select values of a to b
-					$('steps').options[a].value = tmp2.join();
-					$('steps').options[b].value = tmp1.join();
-					var buffer = $('steps').options[a].text;
-					$('steps').options[a].text = $('steps').options[b].text;
-					$('steps').options[b].text = buffer;
-					$('steps').selectedIndex = b;
-					$('status').innerHTML = "<i>Step Priority Updated!</i>";
-					update_updown();
-
-			},
-			onFailure: function(t) {
-				gui_alert("Config Error: " + t.status + ": " + t.statusText);
+		method: 'get',
+		asynchronous: true,
+		onSuccess: function() { 
+			// update voicemenusdata
+			for(var p=0; p< voicemenusdata[_vms_v].extensions['s'].length; p++){
+				if( voicemenusdata[_vms_v].extensions['s'][p] == _steps.options[a].value ){
+					voicemenusdata[_vms_v].extensions['s'][p] = tmp1.join();
+				}else if (voicemenusdata[_vms_v].extensions['s'][p] == _steps.options[b].value  ){ 
+					voicemenusdata[_vms_v].extensions['s'][p] = tmp2.join();
+				}
 			}
+			// swap select values of a to b
+			_steps.options[a].value = tmp2.join();
+			_steps.options[b].value = tmp1.join();
+			var buffer = _steps.options[a].text;
+			_steps.options[a].text = _steps.options[b].text;
+			_steps.options[b].text = buffer;
+			_steps.selectedIndex = b;
+			_$('status').innerHTML = "<i>Step Priority Updated!</i>";
+			update_updown();
+
+		},
+		onFailure: function(t) {
+			gui_alert("Config Error: " + t.status + ": " + t.statusText);
+		}
 	};	
 	var uri = "";
 
 	// ok find $('steps').options[a].value in extensions.conf and replace it with tmp1.join() and also replace $('steps').options[b].value with tmp2.join()	
-	uri += build_action('update', 0, $('vmenus').value ,"exten",tmp1.join(), $('steps').options[a].value);
-	uri += build_action('update', 1, $('vmenus').value ,"exten",tmp2.join(), $('steps').options[b].value);
+	uri += build_action('update', 0, _vms_v ,"exten",tmp1.join(), _steps.options[a].value);
+	uri += build_action('update', 1, _vms_v ,"exten",tmp2.join(), _steps.options[b].value);
 	opt.parameters="action=updateconfig&srcfilename=" + encodeURIComponent("extensions.conf") + "&dstfilename=" + encodeURIComponent("extensions.conf") + uri;
 	tmp = new Ajax.Request('../../rawman', opt);
 }
-
-
 
 
 function delete_step(){
 	// delete the selected step and update voicemenusdata and update 'select' object - steps
 	$('status_message').style.display="block";
 	var opt = {
-			method: 'get',
-			asynchronous: true,
-			onSuccess: function() { 
-						setTimeout("$('status_message').style.display='none'",sc_displaytime);
-						// Update voicemenusdata
-						for(var p=0; p< voicemenusdata[$('vmenus').value].extensions['s'].length; p++){
-							if( voicemenusdata[$('vmenus').value].extensions['s'][p] == $('steps').value )
-								voicemenusdata[$('vmenus').value].extensions['s'].splice(p,1);
-						}
-
-						$('steps').remove( $('steps').selectedIndex);
-						$('status').innerHTML = "<i>Step Deleted !</i>";
-						$('deletestep').disabled = true;
-
-			},
-			onFailure: function(t) {
-				$('status_message').style.display='none';
-				gui_alert("Config Error: " + t.status + ": " + t.statusText);
+		method: 'get',
+		asynchronous: true,
+		onSuccess: function() { 
+			setTimeout("$('status_message').style.display='none'",sc_displaytime);
+			// Update voicemenusdata
+			for(var p=0; p< voicemenusdata[$('vmenus').value].extensions['s'].length; p++){
+				if( voicemenusdata[$('vmenus').value].extensions['s'][p] == $('steps').value )
+					voicemenusdata[$('vmenus').value].extensions['s'].splice(p,1);
 			}
+
+			$('steps').remove( $('steps').selectedIndex);
+			$('status').innerHTML = "<i>Step Deleted !</i>";
+			$('deletestep').disabled = true;
+
+		},
+		onFailure: function(t) {
+			$('status_message').style.display='none';
+			gui_alert("Config Error: " + t.status + ": " + t.statusText);
+		}
 	};	
 	var uri = "";
 	uri += build_action('delete', 0, $('vmenus').value,"exten", "", $('steps').value); 
@@ -654,205 +667,190 @@ function delete_step(){
 
 
 function update_newstep_var(){
-		$('newstep_var').value = "";
-		$('newstep_var').style.display = "none";
-		$('newstep_var_digit').style.display= "none" ;
-		$('combodiv_sounds').style.display = "none" ;
-		$('add_newstep_extensions').style.display = "none";
-		$('add_newstep_menus').style.display = "none";
+	var _nsv = _$('newstep_var') ;
+	var _nsa = _$('newstep_action');
+	var _nsa_v = _nsa.value;
+	var _ane = _$('add_newstep_extensions') ;
+	var _anm = _$('add_newstep_menus') ;
 
-	if( $('newstep_action').value== "" || $('newstep_action').value== "Answer"  || $('newstep_action').value== "Hangup"  ){
+	_anm.style.display = "none";
+	_nsv_v = "";
+	_nsv.style.display = "none";
+	_ane.style.display = "none";
+	_$('newstep_var_digit').style.display= "none" ;
+	_$('combodiv_sounds').style.display = "none" ;
 
-	}else if( $('newstep_action').value== "Background"  || $('newstep_action').value== "Playback" ){
-//	}else if( $('newstep_action').value== "Background"  || $('newstep_action').value== "SetMusicOnHold" || $('newstep_action').value== "Playback" ){
-		$('newstep_var').style.display = "";
-		$('newstep_var').size= 12;
-	}else if( $('newstep_action').value== "DigitTimeout"  || $('newstep_action').value== "ResponseTimeout" ||  $('newstep_action').value== "Wait"  ||  $('newstep_action').value== "WaitExten" ){
-		$('newstep_var_digit').style.display= "" ;
-	}else if($('newstep_action').value== "GotoMenu"  ){
-			$('newstep_var').value = $('add_newstep_menus').value;
-			$('add_newstep_menus').style.display = "";
-	}else if($('newstep_action').value== "GotoExtension"  ){
-			$('newstep_var').value = $('add_newstep_extensions').value;
-			$('add_newstep_extensions').style.display = "";
+	if( _nsa_v == "" || _nsa_v == "Answer"  || _nsa_v == "Hangup"  ){
+
+	}else if( _nsa_v == "Background"  || _nsa_v == "Playback" ){
+		_nsv.style.display = "";
+		_nsv.size= 12;
+	}else if( _nsa_v== "DigitTimeout" || _nsa_v== "ResponseTimeout" || _nsa_v == "Wait" ||  _nsa_v == "WaitExten" ){
+		_$('newstep_var_digit').style.display= "" ;
+	}else if( _nsa_v== "GotoMenu" ){
+		_nsv.value = _anm.value;
+		_anm.style.display = "";
+	}else if( _nsa_v == "GotoExtension"  ){
+		_nsv.value = _ane.value;
+		_ane.style.display = "";
 	}
-
 }
 
 
 function select_vmenu(){
-	// show al lthe //s, lines in the select box - 
-	if($('vmenus').selectedIndex	==-1){ return true;}
+	// show all the //s, lines in the select box -
+	if($('vmenus').selectedIndex ==-1){ return true;}
 
-	current_context = $('vmenus').value;
+	var _steps = _$('steps');
+	current_context = _$('vmenus').value;
 	var x, y, tmp;
 	var priority_1, priority_2, buffer;
 	
-	$('allowexten').checked = false;
-
-	if ( voicemenusdata[current_context].include == "default" ){
-			$('allowexten').checked = true;
-	}
-
-	//$('keypressoptions').innerHTML = "";
-	$('steps').options.length =0;
-	$('comment').value = voicemenusdata[current_context].comment;
-	$('alias_exten').disabled = false; 
-	if( voicemenusdata[current_context].alias_exten ){
-		$('alias_exten').value = voicemenusdata[current_context].alias_exten;
-	}else{
-		$('alias_exten').value = ""; 
-	}
+	_$('allowexten').checked = (voicemenusdata[current_context].include == "default") ? true : false ;
+ 	//$('keypressoptions').innerHTML = "";
+	_steps.options.length =0;
+	_$('comment').value = voicemenusdata[current_context].comment;
+	_$('alias_exten').disabled = false;
+ 	_$('alias_exten').value = ( voicemenusdata[current_context].alias_exten  ) ? voicemenusdata[current_context].alias_exten : "" ;
 
 	if(voicemenusdata[current_context].extensions['s']){
 		for (x=0;x<voicemenusdata[current_context].extensions['s'].length ; x++ ){
 			var newoption = document.createElement("option");
 			newoption.text = format_step(voicemenusdata[current_context].extensions['s'][x]);
 			newoption.value = voicemenusdata[current_context].extensions['s'][x];
-			$('steps').options.add ( newoption );
+			_steps.options.add ( newoption );
 		}
 	}
 
 	// I know .. bubble sort really sucks ... but something for now.
-	for (x = ($('steps').length - 1); x >= 0; x--){
-				for (y = 1; y <= x; y++){
-					tmp = $('steps').options[y].value.split(",") ;
-					priority_1 = tmp[1];
-					tmp = $('steps').options[y-1].value.split(",") ;
-					priority_2 = tmp[1];
-					  if (priority_2 - priority_1 > 0){
-							buffer = $('steps').options[y-1].value;
-							$('steps').options[y-1].value = $('steps').options[y].value;
-							$('steps').options[y].value = buffer;
-							buffer = $('steps').options[y-1].text;
-							$('steps').options[y-1].text = $('steps').options[y].text;
-							$('steps').options[y].text = buffer;
-					  }
-				}
+	for (x = (_steps.length - 1); x >= 0; x--){
+		for (y = 1; y <= x; y++){
+			tmp = _steps.options[y].value.split(",") ;
+			priority_1 = tmp[1];
+			tmp = _steps.options[y-1].value.split(",") ;
+			priority_2 = tmp[1];
+			if (priority_2 - priority_1 > 0){
+				buffer = _steps.options[y-1].value;
+				_steps.options[y-1].value = _steps.options[y].value;
+				_steps.options[y].value = buffer;
+				buffer = _steps.options[y-1].text;
+				_steps.options[y-1].text = _steps.options[y].text;
+				_steps.options[y].text = buffer;
+			}
+		}
 	}
 
-
-	$('steps').disabled = false;
-	$('comment').disabled = false;
-	$('newstep_action').disabled = false;
-	$('newstep_var').disabled = false;
-	$('addstep').disabled = false;
-	$('allowexten').disabled = false;
-	$('keypressoptions').style.display = "";
-	$('deletestep').disabled = true;
-	$('stepDown').disabled = true;
-	$('stepUp').disabled = true;
-	$('delete').disabled = false;
-	$('savevmenu').disabled = true;
+	_steps.disabled = false;
+	_$('addstep').disabled = false;
+	_$('allowexten').disabled = false;
+	_$('comment').disabled = false;
+	_$('deletestep').disabled = true;
+	_$('delete').disabled = false;
+	_$('newstep_action').disabled = false;
+	_$('newstep_var').disabled = false;
+	_$('keypressoptions').style.display = "";
+	_$('stepDown').disabled = true;
+	_$('stepUp').disabled = true;
+	_$('savevmenu').disabled = true;
 
 	for (y=0; y<keys.length ; y++ ){
-			current_key_action='keypress_'+ keys[y] + '_action';
-			current_key_text='keypress_'+ keys[y] + '_text';
-			current_key_exts='keypress_'+ keys[y] + '_exts';
-			current_key_menus='keypress_'+ keys[y] + '_menus';
+		current_key_action='keypress_'+ keys[y] + '_action';
+		current_key_text='keypress_'+ keys[y] + '_text';
+		current_key_exts='keypress_'+ keys[y] + '_exts';
+		current_key_menus='keypress_'+ keys[y] + '_menus';
 
-			if(voicemenusdata[current_context].extensions[keys[y]]){
-					// Load the appropriate Key menu according to the voicemenusdata[current_context].extensions[y][x]
-					// actually we are assuming that there is only voicemenusdata[current_context].extensions[y][0]
-					tmp = voicemenusdata[current_context].extensions[keys[y]][0].split(',');
+		_$(current_key_action).options.selectedIndex = -1;
+		_$(current_key_menus).style.display = "none";
+		_$(current_key_text).style.display = "none";
+		_$(current_key_exts).style.display = "none";
 
-					if( tmp[2].match("Goto") && tmp[2].match("voicemenu-") ){ //  if "is a voicemenu"
-							$(current_key_action).options[1].selected = true;
-							$(current_key_menus).style.display = "";
-							$(current_key_text).style.display = "none";
-							$(current_key_exts).style.display = "none";
-							select_menu (current_key_menus, tmp[2],"ismenu");
-					}else  if( tmp[2].match("Goto") && !tmp[2].match("voicemenu-") ){ // //  if "goto an extension " (no 'voicemenu-')
-							$(current_key_action).options[2].selected = true;
-							$(current_key_exts).style.display = "";
-							$(current_key_text).style.display = "none";
-							$(current_key_menus).style.display = "none";
-							select_menu(current_key_exts, tmp[2],"isext"); // select_menu common for exts and menus
-					}else if(tmp[2].match("Hangup") ){ // if HangUp
-							$(current_key_action).options[4].selected = true;
-							$(current_key_text).style.display = "none";
-							$(current_key_menus).style.display = "none";
-							$(current_key_exts).style.display = "none";							
-					}else if( tmp[2].match('Playback') &&  tmp[2].match( "(invalid)" ) ){
-							$(current_key_action).options[5].selected = true;
-							$(current_key_text).style.display = "none";
-							$(current_key_menus).style.display = "none";
-							$(current_key_exts).style.display = "none";												
-					}else{ // if custom (no 'goto')
-							$(current_key_action).options[3].selected = true;
-							$(current_key_text).style.display = "";
-							$(current_key_text).value = tmp[2];
-							$(current_key_exts).style.display = "none";
-							$(current_key_menus).style.display = "none";
-					}
-			}else{	// Key_action is disabled => hide the text & options (which already are)
-							$(current_key_action).options[0].selected = true;
-							$(current_key_text).style.display = "none";
-							$(current_key_menus).style.display = "none";
-							$(current_key_exts).style.display = "none";
+		if(voicemenusdata[current_context].extensions[keys[y]]){
+			// Load the appropriate Key menu according to the voicemenusdata[current_context].extensions[y][x]
+			// actually we are assuming that there is only voicemenusdata[current_context].extensions[y][0]
+			tmp = voicemenusdata[current_context].extensions[keys[y]][0].split(',');
+
+			if( tmp[2].match("Goto") && tmp[2].match("voicemenu-") ){ //  if "is a voicemenu"
+				_$(current_key_action).options[1].selected = true;
+				_$(current_key_menus).style.display = "";
+				select_menu (current_key_menus, tmp[2],"ismenu");
+			}else  if( tmp[2].match("Goto") && !tmp[2].match("voicemenu-") ){ // //  if "goto an extension " (no 'voicemenu-')
+				_$(current_key_action).options[2].selected = true;
+				_$(current_key_exts).style.display = "";
+				select_menu(current_key_exts, tmp[2],"isext"); // select_menu common for exts and menus
+			}else if(tmp[2].match("Hangup") ){ // if HangUp
+				_$(current_key_action).options[4].selected = true;							
+			}else if( tmp[2].match('Playback') &&  tmp[2].match( "(invalid)" ) ){
+				_$(current_key_action).options[5].selected = true;											
+			}else{ // if custom (no 'goto')
+				_$(current_key_action).options[3].selected = true;
+				_$(current_key_text).style.display = "";
+				_$(current_key_text).value = tmp[2];
 			}
+		}else{	// Key_action is disabled => hide the text & options (which already are)
+
+		}
 	}
 }
 
 
 menuscallbacks.postselect = function() {
-	
 	select_vmenu();
 }
 
 menuscallbacks.format = function(t, x) {
-		var tmp = t.name.split('general');
-		var exten_fields;
+	var tmp = t.name.split('general');
+	var exten_fields;
 
-		if(tmp.length>1)
-				return false;
-		else if ( t.name.substr(0,10) == 'voicemenu-' && x==undefined ){	 				// if is a category
-				current_context = t.name;
-				voicemenusdata[current_context] = new Object();
-				return t.name ;
-		}else if(t.name.substr(0,10) == 'voicemenu-' ) {											// if is a subcategory 
-				if (t.names[x]=='comment'){
-					voicemenusdata[current_context].comment =  t.fields[x];
-					voicemenusdata[current_context].extensions = new Object();
-					return false;
-				}
-				if (t.names[x]=='alias_exten'){
-					voicemenusdata[current_context].alias_exten =  t.fields[x];
-					return false;
-				}
-				if (t.names[x]=='include'){
-					voicemenusdata[current_context].include=  t.fields[x];
-					return false;
-				}
-				if (t.names[x]=='exten'){
-					exten_fields = t.fields[x].split (',');
-					if(!voicemenusdata[current_context].extensions[exten_fields[0]]){
-						voicemenusdata[current_context].extensions[exten_fields[0]] = new Array();
-					}
-					voicemenusdata[current_context].extensions[exten_fields[0]].push( t.fields[x] ) ;
-				}
-				return false;
-		}else{	
+	if(tmp.length > 1 ){
 			return false;
+	}else if ( t.name.substr(0,10) == 'voicemenu-' && x==undefined ){	// if is a category
+			current_context = t.name;
+			voicemenusdata[current_context] = new Object();
+			return t.name ;
+	}else if(t.name.substr(0,10) == 'voicemenu-' ) { 	// if is a subcategory
+		switch( t.names[x] ){
+			case 'comment':
+				voicemenusdata[current_context].comment =  t.fields[x];
+				voicemenusdata[current_context].extensions = new Object();
+				return false;
+			case 'alias_exten':
+				voicemenusdata[current_context].alias_exten =  t.fields[x];
+				return false;
+			case 'include':
+				voicemenusdata[current_context].include=  t.fields[x];
+				return false;
+			case 'exten':
+				exten_fields = t.fields[x].split (',');
+				if(!voicemenusdata[current_context].extensions[exten_fields[0]]){
+					voicemenusdata[current_context].extensions[exten_fields[0]] = new Array();
+				}
+				voicemenusdata[current_context].extensions[exten_fields[0]].push( t.fields[x] ) ;
+				return false;
+			default :
+				return false;
 		}
+		return false;
+	}else{	
+		return false;
+	}
 }
 
 
-
 menuscallbacks.loaded = function(){
-			for (x=0;x<$('vmenus').options.length ; x++ ){
-					$('vmenus').options[x].text = "VoiceMenu - " + voicemenusdata[$('vmenus').options[x].value].comment;
-			}
-			// Load the menus and extensions into corresponding fields
-			for (y=0;y<keys.length; y++){
-				current_key_exts='keypress_'+ keys[y] + '_exts';
-				current_key_menus='keypress_'+ keys[y] + '_menus';
-				load_extensions(current_key_exts);
-				load_menus(current_key_menus);
-			}
-			load_extensions('add_newstep_extensions');
-			load_menus('add_newstep_menus');
-			parent.loadscreen(this);
+	var _vmenus = _$('vmenus') ;
+	for (var x=0; x< _vmenu.options.length ; x++ ){
+		_vmenu.options[x].text = "VoiceMenu - " + voicemenusdata[_vmenu.options[x].value].comment;
+	}
+	// Load the menus and extensions into corresponding fields
+	for (var y=0;y < keys.length; y++){
+		current_key_exts='keypress_'+ keys[y] + '_exts';
+		current_key_menus='keypress_'+ keys[y] + '_menus';
+		load_extensions(current_key_exts);
+		load_menus(current_key_menus);
+	}
+	load_extensions('add_newstep_extensions');
+	load_menus('add_newstep_menus');
+	parent.loadscreen(this);
 }
 
 menuscallbacks.identifier = "extension";
@@ -862,86 +860,87 @@ menuscallbacks.eachline = true;
 menuscallbacks.includecats = true;
 
 menuscallbacks.cancelnewcategory =function(){
-	$('comment').disabled = true;
-	$('keypressoptions').style.display = "none";
+	_$('comment').disabled = true;
+	_$('keypressoptions').style.display = "none";
 }
 
 menuscallbacks.oncategorydelete =function(){
 	delete_vmenu_fromlistofmenus();
-	$('comment').disabled = true;
-	$('keypressoptions').style.display = "none";
-	$('savevmenu').disabled = true;
-	$('steps').options.length =0;
-	$('newstep_action').disabled = true;
-	$('newstep_var').disabled = true;
-	$('addstep').disabled = true;
-	$('steps').disabled = true;
-	$('stepUp').disabled = true;
-	$('stepDown').disabled = true;
-	$('alias_exten').value = "";
-	$('alias_exten').disabled = true;
+	_$('comment').disabled = true;
+	_$('keypressoptions').style.display = "none";
+	_$('savevmenu').disabled = true;
+	_$('steps').options.length =0;
+	_$('newstep_action').disabled = true;
+	_$('newstep_var').disabled = true;
+	_$('addstep').disabled = true;
+	_$('steps').disabled = true;
+	_$('stepUp').disabled = true;
+	_$('stepDown').disabled = true;
+	_$('alias_exten').value = "";
+	_$('alias_exten').disabled = true;
 }
 
 menuscallbacks.cancelchanges =function(){
-	$('savevmenu').disabled = true;
+	_$('savevmenu').disabled = true;
 }
 
 menuscallbacks.newcategory = function(t) {
 	// 1. Reset all Keyoptions
-		// Load the menus and extensions into corresponding fields
-		for (y=0;y<keys.length; y++){
-			current_key_exts='keypress_'+ keys[y] + '_exts';
-			current_key_menus='keypress_'+ keys[y] + '_menus';
-			current_key_text = 'keypress_'+ keys[y] + '_text' ;
-			current_key_action='keypress_'+ keys[y] + '_action';
-
-			load_extensions(current_key_exts);
-			load_menus(current_key_menus);
-			$(current_key_action).selectedIndex = 0;
-			$(current_key_exts).style.display = "none";
-			$(current_key_menus).style.display = "none";
-			$(current_key_text).style.display = "none";
-		}
+	// Load the menus and extensions into corresponding fields
+	for (var y=0;y<keys.length; y++){
+		current_key_exts='keypress_'+ keys[y] + '_exts';
+		current_key_menus='keypress_'+ keys[y] + '_menus';
+		current_key_text = 'keypress_'+ keys[y] + '_text' ;
+		current_key_action='keypress_'+ keys[y] + '_action';
+	
+		load_extensions(current_key_exts);
+		load_menus(current_key_menus);
+		_$(current_key_action).selectedIndex = 0;
+		_$(current_key_exts).style.display = "none";
+		_$(current_key_menus).style.display = "none";
+		_$(current_key_text).style.display = "none";
+	}
 	// 2. Reset Steps - only 1 step -> Answer
-
-		$('steps').options.length =0;
-		var newoption = document.createElement("option");
-		newoption.text = format_step(answer_call_string);
-		newoption.value = answer_call_string;
-		$('steps').options.add ( newoption );
+	var _steps = _$('steps') ;
+	var _comment = _$('comment'); 
+	var _allowexten = _$('allowexten') ;
+	var _alias_exten = _$('alias_exten') ;
+	_steps.options.length =0;
+	var newoption = document.createElement("option");
+	newoption.text = format_step(answer_call_string);
+	newoption.value = answer_call_string;
+	_steps.options.add ( newoption );
 	// 3. Disable Steps - Add Step , Up , Down Arrows
-		$('stepUp').disabled = true;
-		$('stepDown').disabled = true;
-		$('allowexten').checked = false;
-		$('allowexten').disabled = false;
-		$('newstep_action').disabled = true;
-		$('newstep_var').disabled = true;
-		$('addstep').disabled = true;
-		$('steps').disabled = true;
+	_$('stepUp').disabled = true;
+	_$('stepDown').disabled = true;
+	_allowexten.checked = false;
+	_allowexten.disabled = false;
+	_$('newstep_action').disabled = true;
+	_$('newstep_var').disabled = true;
+	_$('addstep').disabled = true;
+	_steps.disabled = true;
 	//  4. Reset Comment
-		$('keypressoptions').style.display = "";
-		
-		$('alias_exten').disabled = false;
-		$('alias_exten').value = "";
-		$('comment').disabled = false;
-		$('comment').value = "";
-		$('comment').focus();
-
+	_$('keypressoptions').style.display = "";
+	_alias_exten.disabled = false;
+	_alias_exten.value = "";
+	_comment.disabled = false;
+	_comment.value = "";
+	_comment.focus();
 }
 
 
 
 
 function localajaxinit() {
-		showdiv_statusmessage();
-		setWindowTitle("Voice Menus");
-		$('message_text').innerHTML ="Saving Changes...";
-		for (x =0 ; x<fieldnames.length; x++){
-			widgets[fieldnames[x]] = $(fieldnames[x]);
-			widgets[fieldnames[x]].disabled = true;
-		}
-		//parent.loadscreen(this);
-		parent.astmanEngine.config2list("extensions.conf", $('extensions'), new Array(), extencallbacks);
+	showdiv_statusmessage();
+	setWindowTitle("Voice Menus");
+	_$('message_text').innerHTML ="Saving Changes...";
+	for (x =0 ; x<fieldnames.length; x++){
+		widgets[fieldnames[x]] = _$(fieldnames[x]);
+		widgets[fieldnames[x]].disabled = true;
+	}
+	//parent.loadscreen(this);
+	parent.astmanEngine.config2list("extensions.conf", _$('extensions'), new Array(), extencallbacks);
 }
 
 
@@ -951,20 +950,18 @@ extencallbacks.format = function(t, x) {
 	var res;
 	var qname;
 	if ((t.name != specialcontext))
-		return null;
+	return null;
 
-		// check whether the extension is an alias to a custom voice menu
-		try{
-					var temp = t.fields[x].split(',') ;
-					if ( temp[2].match("Goto") && temp[2].match("voicemenu-custom-" )  ){
-							return null ;
-					}
-		}
-		catch(e){
+	// check whether the extension is an alias to a custom voice menu
+	try{
+		var temp = t.fields[x].split(',') ;
+		if ( temp[2].match("Goto") && temp[2].match("voicemenu-custom-" )  ){ return null ; }
+	}
+	catch(e){
 
-		}
+	}
 
-	res = format_extension($('extensions'), t, x);
+	res = format_extension(_$('extensions'), t, x);
 	return res;
 }
 
@@ -974,52 +971,57 @@ rfilescallbacks.format = function(t) {
 }
 
 rfilescallbacks.loaded= function() {
-	for (var i=0; i < $('recorded_files').length; i++){
-		var tmp_fname = $('recorded_files').options[i].value.slice(0, -4);
-		$('combosel_sounds').innerHTML += '<option value="'+ tmp_fname + '">' + tmp_fname + "</option>" ;
+	var _rf = _$('recorded_files') ;
+	var _cs_ih = _$('combosel_sounds').innerHTML ;
+
+	for (var i=0; i < _rf.length; i++){
+		var tmp_fname = _rf.options[i].value.slice(0, -4);
+		_cs_ih += '<option value="'+ tmp_fname + '">' + tmp_fname + "</option>" ;
 	}
-	parent.astmanEngine.config2list("users.conf", $('users'), new Array(), usercallbacks);
+	parent.astmanEngine.config2list("users.conf", _$('users'), new Array(), usercallbacks);
 }
 
 extencallbacks.loaded = function() {
-	parent.astmanEngine.config2list(custom_voicemenusfile, $('recorded_files'), new Array, rfilescallbacks);
+	parent.astmanEngine.config2list(custom_voicemenusfile, _$('recorded_files'), new Array, rfilescallbacks);
 }
 
 extencallbacks.eachline = true;
 
-
 // user callbacks
 usercallbacks.format = function (t,x){
-		if ((t.name == 'general')){
-			if (t.fieldbyname['localextenlength'] && t.fieldbyname['localextenlength'].length){
-				localextenlength =  t.fieldbyname['localextenlength'] ;
-			}else{
-				localextenlength =  4 ;
-			}
-			return null;
-		}
-
-		//if (t.name.substring(0,6) == 'trunk_')
-		//	return null;
-		if ( t.fieldbyname['context'] == asterisk_guiTDPrefix + t.name ) {
-			return null;
+	if ((t.name == 'general')){
+		if (t.fieldbyname['localextenlength'] && t.fieldbyname['localextenlength'].length){
+			localextenlength =  t.fieldbyname['localextenlength'] ;
 		}else{
-			return t.name;
+			localextenlength =  4 ;
 		}
+		return null;
+	}
+
+	//if (t.name.substring(0,6) == 'trunk_')
+	//	return null;
+	if ( t.fieldbyname['context'] == asterisk_guiTDPrefix + t.name ) {
+		return null;
+	}else{
+		return t.name;
+	}
 }
 
 usercallbacks.identifier = "extension";
 
 usercallbacks.loaded = function (){
-	for(var p=0; p < $('extensions').length; p++){
-		var tmp = $('extensions').options[p].text.split (" -- ");
+	var _exts = _$('extensions') ;
+	var _users = _$('users') ;
+
+	for(var p=0; p < _exts.length; p++){
+		var tmp = _exts.options[p].text.split (" -- ");
 		extensions_array.push (tmp[0]);
 	}
-	for(var p=0; p < $('users').length; p++){
-		extensions_array.push ($('users').options[p].text);
+	for(var p=0; p < _users.length; p++){
+		extensions_array.push (_users.options[p].text);
 	}
 	extensions_array = extensions_array.sort(); // or extensions_array.sort(sortNumber);
-	parent.astmanEngine.config2list("extensions.conf", $('vmenus'), widgets, menuscallbacks);
+	parent.astmanEngine.config2list("extensions.conf", _$('vmenus'), widgets, menuscallbacks);
 }
 
 function free_mem(){

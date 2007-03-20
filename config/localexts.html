@@ -36,9 +36,7 @@ function tosetup(){
 }
 
 usercallbacks.format =  function(t) {
-	if(t.name == "general" ){
-			return t.name;
-	}
+	if(t.name == "general" ){ return t.name; }
 	return null;
 }
 
@@ -47,68 +45,71 @@ usercallbacks.savechanges = function(){
 }
 
 usercallbacks.beforeSaving= function(){
-		if(	$('localextenlength').value !=0 && $('localextenlength').value != $('userbase').value.length ){
-			gui_alert("'length of Local Extensions' does not match \n the 'length of the Starting point of Allocation'");
-			return false;
-		}
+	if(	_$('localextenlength').value !=0 && _$('localextenlength').value != _$('userbase').value.length ){
+		gui_alert("'length of Local Extensions' does not match \n the 'length of the Starting point of Allocation'");
+		return false;
+	}
 
 	return true;
 }
 
 
 usercallbacks.loaded = function(){
-		$('devices').selectitem(0);
-		
-		if ( typeof $('devices').stored_config.catbyname['general'].fieldbyname['localextenlength'] == "undefined" ){ 
-				var opt = {
-						method: 'get',
-						asynchronous: true,
-						onSuccess: function(t) { 
-									$('localextenlength').selectedIndex = 2 ;
-										parent.loadscreen(this);
-						},
-						onFailure: function(t) {
-							gui_alert("Config Error: " + t.status + ": " + t.statusText);
-						}
-					};
-					opt.parameters="action=updateconfig&srcfilename=" + encodeURIComponent("users.conf") + "&dstfilename=" + encodeURIComponent("users.conf") + "&Action-000000=update&Cat-000000=general&Var-000000=localextenlength&Value-000000=4"; ;
-					var tmp = new Ajax.Request("../../rawman", opt);
-					return;
-		}
-		parent.loadscreen(this);
+	var d = _$('devices') ; 
+	d.selectitem(0);
+	
+	if ( typeof d.stored_config.catbyname['general'].fieldbyname['localextenlength'] == "undefined" ){ 
+		var opt = {
+			method: 'get',
+			asynchronous: true,
+			onSuccess: function(t) { 
+				_$('localextenlength').selectedIndex = 2 ;
+				parent.loadscreen(this);
+			},
+			onFailure: function(t) {
+				gui_alert("Config Error: " + t.status + ": " + t.statusText);
+			}
+		};
+		opt.parameters="action=updateconfig&srcfilename=" + encodeURIComponent("users.conf") + "&dstfilename=" + encodeURIComponent("users.conf") + "&Action-000000=update&Cat-000000=general&Var-000000=localextenlength&Value-000000=4"; ;
+		var tmp = new Ajax.Request("../../rawman", opt);
+		return;
+	}
+	parent.loadscreen(this);
 }
 
 
 
 function localajaxinit(){
-			setWindowTitle("Local Extension Settings");
-			for (var x =0 ; x < fieldnames.length ; x++ ) {
-				widgets[fieldnames[x]] = $(fieldnames[x]);
-				widgets[fieldnames[x]].disabled = true;
-			}
-			for (var x =0; x < focus_fields.length; x++ ) {
-				widgets[focus_fields[x]].onfocus = function(){this.className = 'input9_hilight';}
-				widgets[focus_fields[x]].onblur = function(){this.className = 'input9';}
-			}
+	setWindowTitle("Local Extension Settings");
+	for (var x =0 ; x < fieldnames.length ; x++ ) {
+		widgets[fieldnames[x]] = _$(fieldnames[x]);
+		widgets[fieldnames[x]].disabled = true;
+	}
+	for (var x =0; x < focus_fields.length; x++ ) {
+		widgets[focus_fields[x]].onfocus = function(){this.className = 'input9_hilight';}
+		widgets[focus_fields[x]].onblur = function(){this.className = 'input9';}
+	}
 
-			add_event( $('localextenlength') , 'change' , update_spae ) ;
+	add_event( _$('localextenlength') , 'change' , update_spae ) ;
 
-			parent.astmanEngine.config2list("users.conf", $('devices'),widgets, usercallbacks);
+	parent.astmanEngine.config2list("users.conf", _$('devices'),widgets, usercallbacks);
 }
 
 
 function update_spae(){
-		if( $('localextenlength').value == 0 ) return;
-		if(	$('localextenlength').value == $('userbase').value.length ) return;
-		if(	$('localextenlength').value < $('userbase').value.length ){
-				$('userbase').value = $('userbase').value.substr(0,$('localextenlength').value);
-				return;
-		}
-		if(	$('localextenlength').value > $('userbase').value.length ){
-				while ( $('localextenlength').value != $('userbase').value.length  ){
-					$('userbase').value = $('userbase').value + "0" ; 
-				}
-		}
+	var lel = $('localextenlength').value;
+	var ub = $('userbase').value ;
+
+	if( lel == "0" ) { return; }
+
+	if( lel == ub.length ) { 
+		return;
+	}else if( lel < ub.length ){
+		ub = ub.substr(0,lel);
+		return;
+	}else if( lel > ub.length ){
+		while ( lel != ub.length  ){ ub = ub+ "0" ; }
+	}
 }
 
 function free_mem( ){
@@ -126,7 +127,7 @@ function free_mem( ){
 <TABLE align=center width="520" cellpadding=0 cellspacing=0 style="margin: 5px 0 0 0;">
 <TR>
 	<TD valign="bottom" align="center" class="tab"><a href="#" class="tabselected">Local Extension settings</a></TD>
-	<TD><a href="options.html" class="tab">Change Password</a></TD>
+	<TD><a href="options.html" class="tab">Change Password</a></TD>if( lel == "" ) { return; }
 	<TD valign="bottom" align="left"><a href="#" class="tab" onclick="tosetup();">Run Setup Wizard</a></TD> 
 </TR>
 </TABLE>

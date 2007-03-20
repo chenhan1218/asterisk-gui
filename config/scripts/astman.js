@@ -28,17 +28,18 @@ var sortbynames = false;
 var dragdata = new Object;
 var asterisk_guiTDPrefix = "DID_";
 
+
 function  gui_alert(msg){
 	gui_alertmsg( 1, msg );
 }
 
 function gui_alertmsg( msgtype, msg ){
-		// Alternative to javascript's alert box - the native alert boxes are stopping the background XHRs
-		//  usage - msgtype could be 1 or 2 or 3 , msg is the alert message
-		top.alertframename = "alertiframe";
-		top.alertmsg = msg ;
-		top.alertmsgtype = msgtype ;
-		if( !top.document.getElementById(top.alertframename)){
+	// Alternative to javascript's alert box - the native alert boxes are stopping the background XHRs
+	//  usage - msgtype could be 1 or 2 or 3 , msg is the alert message
+	top.alertframename = "alertiframe";
+	top.alertmsg = msg ;
+	top.alertmsgtype = msgtype ;
+	if( !top.document.getElementById(top.alertframename)){
 		var h= top.document.createElement("IFRAME");
 		h.setAttribute("id", top.alertframename );
 		h.setAttribute("ALLOWTRANSPARENCY", "true");
@@ -54,10 +55,10 @@ function gui_alertmsg( msgtype, msg ){
 		h.style.filter='progid:DXImageTransform.Microsoft.Alpha(style=0,opacity=90)';
 		//h.style.MozOpacity = .90;
 		top.document.body.appendChild(h);
-		}else{
+	}else{
 		top.document.getElementById( top.alertframename ).contentWindow.update( );
 		top.document.getElementById( top.alertframename ).style.display = "";
-		}
+	}
 }
 
 
@@ -124,59 +125,59 @@ function toJSON(z, p){
 	var  json_data = "";
 	var t = z.split("\n");
 	for(var r=0; r < t.length ; r++){
-			var f = t[r].split("-") ;
-			var h = f[0].toLowerCase();
-			var catno = parseInt( f[1] ,10 );
-			if( h == "category" ){
-						var g = t[r].indexOf(":") ; 
-						var catname = t[r].substr(g+1) ; // catogory 
-						catname = catname.replace(/^\s*|\s*$/g,'') ; // trim 
-						a[ catno ] = { };
-						a[ catno ].categoryname = catname  ;
-						a[ catno ].subfields = [ ] ;
-			}else if ( h == "line" ){
-						var j = t[r].indexOf(":") ;
-						var subfield = t[r].substr(j+1) ; // subfield
-						subfield = subfield.replace(/^\s*|\s*$/g,'') ; // trim 
-						if( !p){
-							a[ catno ].subfields.push( subfield ) ;
-						}else{
-								var v = subfield.indexOf("=");
-								var subfield_a = subfield.substring(0,v); // subfield variable
-								var subfield_b =  subfield.substr(v+1) ; // subfield variable value
-								a[ catno ].subfields[subfield_a] = subfield_b;
-						}
+		var f = t[r].split("-") ;
+		var h = f[0].toLowerCase();
+		var catno = parseInt( f[1] ,10 );
+		if( h == "category" ){
+			var g = t[r].indexOf(":") ; 
+			var catname = t[r].substr(g+1) ; // catogory 
+			catname = catname.replace(/^\s*|\s*$/g,'') ; // trim 
+			a[ catno ] = { };
+			a[ catno ].categoryname = catname  ;
+			a[ catno ].subfields = [ ] ;
+		}else if ( h == "line" ){
+			var j = t[r].indexOf(":") ;
+			var subfield = t[r].substr(j+1) ; // subfield
+			subfield = subfield.replace(/^\s*|\s*$/g,'') ; // trim 
+			if( !p){
+				a[ catno ].subfields.push( subfield ) ;
+			}else{
+				var v = subfield.indexOf("=");
+				var subfield_a = subfield.substring(0,v); // subfield variable
+				var subfield_b =  subfield.substr(v+1) ; // subfield variable value
+				a[ catno ].subfields[subfield_a] = subfield_b;
 			}
+		}
 	}
 	// start building the json string
 	json_data = "{" ;
 	if(!p){
 		for( var s=0; s < a.length; s++ ){
-				var b = a[s].subfields ;
-				json_data += '"' + a[s].categoryname + '" : [ ' ;
-				for ( var y = 0 ;  y < b.length ;  y++ ){
-						json_data += '"' + b[y] + '"' ;
-						if( y < b.length - 1 ){	json_data += ',' ;	}
-				}
-				if( s < a.length - 1 ){ json_data += ' ],' ; }else{ json_data += ' ]}' ; }
+			var b = a[s].subfields ;
+			json_data += '"' + a[s].categoryname + '" : [ ' ;
+			for ( var y = 0 ;  y < b.length ;  y++ ){
+				json_data += '"' + b[y] + '"' ;
+				if( y < b.length - 1 ){	json_data += ',' ;	}
+			}
+			if( s < a.length - 1 ){ json_data += ' ],' ; }else{ json_data += ' ]}' ; }
 		}
 	}else{
 		for( var s=0; s < a.length; s++ ){
-				var b = a[s].subfields ;
-				json_data += '"' + a[s].categoryname + '" :  {' ;
-				var hascomma = 0;
-				for ( var y in b ){ 
-					if ( b.hasOwnProperty(y) ){ 
-						if(hascomma){
-							json_data += ', "' + y + '":"' + b[y] + '"' ; 
-						}else{
-							json_data += '"' + y + '":"' + b[y] + '"' ; 
-							hascomma = 1;
-						}
-					} 
-				}
-				 //if( json_data.substr(-1) =="," ){  json_data = json_data.substring( 0 , (json_data.length - 1) ); } // if last character is a comma remove it - But this does not work in IE - substr( ) is broken in IE
-				if( s < a.length - 1 ){ json_data += ' },' ; }else{ json_data += ' }}' ; }
+			var b = a[s].subfields ;
+			json_data += '"' + a[s].categoryname + '" :  {' ;
+			var hascomma = 0;
+			for ( var y in b ){ 
+				if ( b.hasOwnProperty(y) ){ 
+					if(hascomma){
+						json_data += ', "' + y + '":"' + b[y] + '"' ; 
+					}else{
+						json_data += '"' + y + '":"' + b[y] + '"' ; 
+						hascomma = 1;
+					}
+				} 
+			}
+				//if( json_data.substr(-1) =="," ){  json_data = json_data.substring( 0 , (json_data.length - 1) ); } // if last character is a comma remove it - But this does not work in IE - substr( ) is broken in IE
+			if( s < a.length - 1 ){ json_data += ' },' ; }else{ json_data += ' }}' ; }
 		}
 	}
 	// done building the json string
@@ -232,31 +233,31 @@ function movewindow(event){
 function check_patternonfields(fields){
 	// for checking validity of field contents before form submitting 
 	for (var i=0; i < fields.length; i++){
-			var x = document.getElementById(fields[i]);
-			if( x.getAttribute('pattern') && !check_pattern(x.getAttribute('pattern') , x.value)   ){
-						gui_alert("Invalid Characters in "+ fields[i]);
-						x.focus();
-						return false;
-			}
+		var x = document.getElementById(fields[i]);
+		if( x.getAttribute('pattern') && !check_pattern(x.getAttribute('pattern') , x.value)   ){
+			gui_alert("Invalid Characters in "+ fields[i]);
+			x.focus();
+			return false;
+		}
 	}
 	return true;
 }
 
 function showdiv_statusmessage(){
         var h= document.createElement("div");
-		h.setAttribute("id","status_message");
-		h.style.display="none";
-		h.style.position="absolute";
-		h.style.left= 170;
-		h.style.top= 190;
-		h.style.width= 350;
-		h.style.height= 115;
-		h.style.backgroundColor= "#F4EFE5";
-		h.style.borderWidth= "1px";
-		h.style.borderColor= "#7E5538";
-		h.style.borderStyle= "solid";
-		h.innerHTML = "<BR><BR><TABLE border=0 cellpadding=0 cellspacing=3 align=\"center\"> <TR>	<TD><img src=\"images/loading.gif\"></TD> <TD valign=\"middle\" align=\"center\">&nbsp;&nbsp;<div id=\"message_text\"></div></TD> </TR> </TABLE> ";
-		document.body.appendChild(h);
+	h.setAttribute("id","status_message");
+	h.style.display="none";
+	h.style.position="absolute";
+	h.style.left= 170;
+	h.style.top= 190;
+	h.style.width= 350;
+	h.style.height= 115;
+	h.style.backgroundColor= "#F4EFE5";
+	h.style.borderWidth= "1px";
+	h.style.borderColor= "#7E5538";
+	h.style.borderStyle= "solid";
+	h.innerHTML = "<BR><BR><TABLE border=0 cellpadding=0 cellspacing=3 align=\"center\"> <TR>	<TD><img src=\"images/loading.gif\"></TD> <TD valign=\"middle\" align=\"center\">&nbsp;&nbsp;<div id=\"message_text\"></div></TD> </TR> </TABLE> ";
+	document.body.appendChild(h);
 }
 
 function combo_box(a, b, c ){	
@@ -271,46 +272,46 @@ function combo_box(a, b, c ){
 		var BKSPACE = 8;
 
 		function xyz(event){
-					if( event.keyCode == ENTER || event.keyCode == ESC || event.keyCode == TAB){
-							combo_selectdiv.style.display = "none";
-							return false;
-					}else if( event.keyCode == KEYDN ||  event.keyCode == KEYUP ){
-							combo_selectbox.focus();
-							return false;
-					}else if( event.keyCode == BKSPACE && combo_text.value.length ==0 ){
-							combo_selectdiv.style.display = "none";
-							return false;
-					}else{
-							combo_selectdiv.style.display = "";
-							return true;
-					}
+			if( event.keyCode == ENTER || event.keyCode == ESC || event.keyCode == TAB){
+				combo_selectdiv.style.display = "none";
+				return false;
+			}else if( event.keyCode == KEYDN ||  event.keyCode == KEYUP ){
+				combo_selectbox.focus();
+				return false;
+			}else if( event.keyCode == BKSPACE && combo_text.value.length ==0 ){
+				combo_selectdiv.style.display = "none";
+				return false;
+			}else{
+				combo_selectdiv.style.display = "";
+				return true;
+			}
 		}
 		
 		function	abcd(event){
-				if( event.keyCode == ENTER || event.keyCode == ESC || event.keyCode == TAB){
-				return false;
+			if( event.keyCode == ENTER || event.keyCode == ESC || event.keyCode == TAB){
+			return false;
+			}
+			for (var i=0; i < combo_selectbox.options.length; i++){
+				if(combo_selectbox.options[i].value.toLowerCase().match(combo_text.value.toLowerCase()) ){
+					combo_selectbox.selectedIndex = i;
+					return true;
 				}
-				for (var i=0; i < combo_selectbox.options.length; i++){
-						if(	combo_selectbox.options[i].value.toLowerCase().match(combo_text.value.toLowerCase()) ){
-							combo_selectbox.selectedIndex = i;
-							return true;
-						}
-				}
-				combo_selectdiv.style.display = "none";				
+			}
+			combo_selectdiv.style.display = "none";				
 		}
 
 		function	efgh(event) {
-				if( event.keyCode == ENTER ){
-						combo_text.value = combo_selectbox.value;
-						combo_text.focus();
-						combo_selectdiv.style.display = "none";
-						return false;
-				}else if( event.keyCode == ESC ){
-						combo_text.focus();
-						combo_selectdiv.style.display = "none";
-				}else{
-						return true;
-				}
+			if( event.keyCode == ENTER ){
+				combo_text.value = combo_selectbox.value;
+				combo_text.focus();
+				combo_selectdiv.style.display = "none";
+				return false;
+			}else if( event.keyCode == ESC ){
+				combo_text.focus();
+				combo_selectdiv.style.display = "none";
+			}else{
+				return true;
+			}
 		}
 		function	ijkl(event) {
 			combo_text.value = combo_selectbox.value;
@@ -333,28 +334,28 @@ function combo_box(a, b, c ){
 	add_event( combo_selectbox, 'click' , ijkl ) ;
 
 		function combobox_activate(){
-				var tmp_left = combo_text.offsetLeft;
-				var tmp_top = combo_text.offsetTop + combo_text.offsetHeight;
-				var tmp_parent = combo_text;
-				while(tmp_parent.offsetParent != document.body){
-						tmp_parent = tmp_parent.offsetParent;
-						tmp_left += tmp_parent.offsetLeft;
-						tmp_top += tmp_parent.offsetTop;
-				}
-				combo_selectdiv.style.left = tmp_left;
-				combo_selectdiv.style.top = tmp_top ;
-				combo_selectdiv.style.width = combo_text.offsetWidth;
-				combo_selectdiv.style.display = "";
+			var tmp_left = combo_text.offsetLeft;
+			var tmp_top = combo_text.offsetTop + combo_text.offsetHeight;
+			var tmp_parent = combo_text;
+			while(tmp_parent.offsetParent != document.body){
+				tmp_parent = tmp_parent.offsetParent;
+				tmp_left += tmp_parent.offsetLeft;
+				tmp_top += tmp_parent.offsetTop;
+			}
+			combo_selectdiv.style.left = tmp_left;
+			combo_selectdiv.style.top = tmp_top ;
+			combo_selectdiv.style.width = combo_text.offsetWidth;
+			combo_selectdiv.style.display = "";
 		}
 }
 
 function  InArray(search_array, searchstring ){
 	var i = search_array.length
 	if( i>0){
-			for(i=0; i < search_array.length; i++ ){
-				if( search_array[i] === searchstring )
-					return true;
-			}
+		for(i=0; i < search_array.length; i++ ){
+			if( search_array[i] === searchstring )
+				return true;
+		}
 	}
 
 	return false;	
@@ -392,36 +393,28 @@ function insert_option(box, res, value, core_name){
 		// Now decide where to add in box, and add it to box
 		var add = 0;
 		for ( var g=0; g < box.options.length  ; g++) {
-				if(	opt_new.text < box.options[g].text  ){ // add before this element in box
-					add = 1;
-					try{
-						box.add(opt_new, box.options[g] );
-						break;
-					}catch(err){
-						box.add(opt_new, g);
-						break;
-					}
+			if(	opt_new.text < box.options[g].text  ){ // add before this element in box
+				add = 1;
+				try{
+					box.add(opt_new, box.options[g] );
+					break;
+				}catch(err){
+					box.add(opt_new, g);
+					break;
 				}
 			}
-			if ( add ==0 ){ try{ box.add(opt_new, null); } catch(err){ box.add(opt_new); }}
+		}
+		if ( add ==0 ){ try{ box.add(opt_new, null); } catch(err){ box.add(opt_new); }}
 	}
 }
 
 function reformat_option(box, index){
 	var v, tmp, res;
 	var cfg = box.stored_config;
-	
 	v = box.options[index].value;
 	tmp = v.split(']');
-	if (tmp.length > 1) {
-		res = box.callbacks.format(cfg.catbyname[tmp[0]], tmp[1]);
-		if (res)
-			box.options[index].innerHTML = res;
-	} else {
-		res = box.callbacks.format(cfg.catbyname[v]);
-		if (res)
-			box.options[index].innerHTML = res;
-	}
+	res = ( tmp.length > 1 ) ? box.callbacks.format(cfg.catbyname[tmp[0]], tmp[1]) : box.callbacks.format(cfg.catbyname[v]) ;
+	if (res){ box.options[index].innerHTML = res;}
 }
 
 function update_option(box, index){
@@ -934,53 +927,45 @@ function save_item(box) {
 				box.options[box.selectedIndex].value = cattmp.catname;
 				box.options[box.selectedIndex].core_name = cattmp.catname;
 				if (tmp) {
-								box.options[box.selectedIndex].innerHTML = tmp;
-								for (var y = 0; y < box.options.length + 1; y++) {
-														if (!box.options[y] ||  do_compare(box, box.options[box.selectedIndex], box.options[y])) {
-																			try{
-																				box.options.add(box.options[box.selectedIndex], y);
-																			}catch(err){
-																				var new_option = document.createElement('option') ;
-																				new_option.text = box.options[box.selectedIndex].text  ;
-																				new_option.value = box.options[box.selectedIndex].value ;
-																				new_option.core_name = box.options[box.selectedIndex].core_name ;
-																				box.remove(box.selectedIndex);
-																				box.add( new_option , y);
-																			}
-																			break;
-														}
-								}
+					box.options[box.selectedIndex].innerHTML = tmp;
+					for (var y = 0; y < box.options.length + 1; y++) {
+						if (!box.options[y] ||  do_compare(box, box.options[box.selectedIndex], box.options[y])) {
+							try{
+								box.options.add(box.options[box.selectedIndex], y);
+							}catch(err){
+								var new_option = document.createElement('option') ;
+								new_option.text = box.options[box.selectedIndex].text  ;
+								new_option.value = box.options[box.selectedIndex].value ;
+								new_option.core_name = box.options[box.selectedIndex].core_name ;
+								box.remove(box.selectedIndex);
+								box.add( new_option , y);
+							}
+							break;
+						}
+					}
 				} else{
 					box.remove(box.selectedIndex);
 				}
 			}
-			opt.parameters="action=updateconfig&srcfilename=" + encodeURIComponent(box.config_file) + "&dstfilename=" +
-						encodeURIComponent(box.config_file) + uri;
+			opt.parameters="action=updateconfig&srcfilename=" + encodeURIComponent(box.config_file) + "&dstfilename=" + encodeURIComponent(box.config_file) + uri;
 			temp = new Ajax.Request(box.engine.url, opt);
 		}
 	}
 	if (!uri.length) {
 		if (!box.callbacks.savechanges || !box.callbacks.savechanges()) {
-			if (box.widgets['status'])
-				box.widgets['status'].innerHTML = "<i>No changes made!</i>";
+			if (box.widgets['status']){  box.widgets['status'].innerHTML = "<i>No changes made!</i>"; }
 		}
-		if (box.widgets['save'])
-			box.widgets['save'].disabled = true;
-		if (box.widgets['cancel'])
-			box.widgets['cancel'].disabled = true;
+		if (box.widgets['save']){  box.widgets['save'].disabled = true; }
+		if (box.widgets['cancel']) { box.widgets['cancel'].disabled = true; }
 	}
 }
 
 function ast_true(s){
-	if ((s == 'yes') ||
-		(s == 'true') ||
-		(s == 'y') ||
-		(s == 't') ||
-		(s == '1') ||
-		(s == 'on'))
+	if ( s == 'yes' || s == 'true' || s == 'y' || s == 't' || s == '1' || s == 'on' ){
 			return true;
-	else
+	}else{
 		return false;
+	}
 }
 
 function build_action(action, count, cat, name, value, match){
@@ -1824,28 +1809,28 @@ function merge_users(e, u) { 			// read u and add into e according to sort order
 function merge_extensions(u, e) {			// read e and add into u according to sort order
 	var t = e.options.length ;
 	for( var f =0 ; f < t ; f++ ){
-			// take each element in e
-			var opt_new = document.createElement('option');
-			opt_new.text = e.options[f].text ;
-			opt_new.value = 'reserved';
-			//if( navigator.userAgent.indexOf("Firefox") != -1 ){ opt_new.disabled = true; }
-			opt_new.style.color = "#ABABAB";
+		// take each element in e
+		var opt_new = document.createElement('option');
+		opt_new.text = e.options[f].text ;
+		opt_new.value = 'reserved';
+		//if( navigator.userAgent.indexOf("Firefox") != -1 ){ opt_new.disabled = true; }
+		opt_new.style.color = "#ABABAB";
 
-			// Now decide where to add in u, and add it to u
-			var add = 0;
-			for ( var g=0; g < u.options.length  ; g++) {
-					if(	opt_new.text < u.options[g].text  ){ // add before this element in u 
-						add = 1;
-						try{
-							u.add(opt_new, u.options[g]);
-							break;
-						}catch(err){
-							u.add(opt_new, g);
-							break;
-						}
-					}
+		// Now decide where to add in u, and add it to u
+		var add = 0;
+		for ( var g=0; g < u.options.length  ; g++) {
+			if(	opt_new.text < u.options[g].text  ){ // add before this element in u 
+				add = 1;
+				try{
+					u.add(opt_new, u.options[g]);
+					break;
+				}catch(err){
+					u.add(opt_new, g);
+					break;
 				}
-				if ( add ==0 ){ try{ u.add(opt_new, null); } catch(err){ u.add(opt_new); }}
+			}
+		}
+		if ( add ==0 ){ try{ u.add(opt_new, null); } catch(err){ u.add(opt_new); }}
 	}
 }
 

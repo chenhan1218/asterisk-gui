@@ -32,8 +32,9 @@ function localajaxinit() {
 	showdiv_statusmessage();
 	setWindowTitle("Backup");
 	parent.loadscreen(this);
-	$('status_message').style.top  = 	100;
-	$('status_message').style.left  = 	100;
+	var d = _$('status_message'); 
+	d.style.top = 100;
+	d.style.left = 100;
 }
 
 
