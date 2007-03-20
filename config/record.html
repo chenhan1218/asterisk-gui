@@ -34,65 +34,60 @@ var focus_fields = new Array('newvmenu_name','newvmenu_ext');
 
 function play_existing(filename){
 	var extension = prompt("Please enter an Extension on which you want to listen to the file",""); 
+	var opt = {
+		method: 'get',
+		asynchronous: true,
+		onSuccess: function(t) { 
+			_$('status').innerHTML = " <I> Play Request Successfull ! </I>";
+		},
+		onFailure: function(t) {
+			gui_alert("Config Error: " + t.status + ": " + t.statusText);
+		}
+	};
+	opt.parameters ="action=originate&channel=Local/"+extension + "&context="+asterisk_guitools+"&exten=play_file&priority=1&Variable=var1%3d"+ encodeURIComponent( filename );
+	var tmp = new Ajax.Request("../../rawman", opt);
+}
+
+function delete_sounds(filename){
+	if ( confirm("Delete recorded file "+ filename +" ?") ){
 		var opt = {
 			method: 'get',
 			asynchronous: true,
 			onSuccess: function(t) { 
-							$('status').innerHTML = " <I> Play Request Successfull ! </I>";
+				_$('status').innerHTML = " <I> Delete Request Successfull ! </I>";
+				// remove file name from stored config file
+				var opt2 = {
+					method: 'get',
+					asynchronous: true,
+					onSuccess: function() { 
+						// Remove this TR
+						var delete_id = "delete_" + filename;
+						var tableRow = _$(delete_id).parentNode.parentNode; //gets TR object
+						 var _trf = _$('table_recordefileslist');
+						for( var i=0; i <  _trf. rows.length; i++){
+							if  ( _trf. rows[i].id == tableRow.id){
+								_trf.deleteRow(i);
+								break;
+							}
+						}
+						_$('maintable').style.display = ( _trf. rows.length == 0) ? 'none' : '' ;
+						_$('no_rvmns').style.display = ( _trf. rows.length == 0) ? '': 'none' ;
+					},
+					onFailure: function(t) {
+						_$('status_message').style.display='none';
+						gui_alert("Config Error: " + t.status + ": " + t.statusText);
+					}
+				};	
+				var uri = build_action('delcat', 0, filename,"", ""); 
+				opt2.parameters = "action=updateconfig&srcfilename=" + encodeURIComponent(custom_voicemenusfile) + "&dstfilename=" + encodeURIComponent(custom_voicemenusfile) + uri;
+				var tmp2 = new Ajax.Request('../../rawman', opt2);
 			},
 			onFailure: function(t) {
 				gui_alert("Config Error: " + t.status + ": " + t.statusText);
 			}
 		};
-		opt.parameters ="action=originate&channel=Local/"+extension + "&context="+asterisk_guitools+"&exten=play_file&priority=1&Variable=var1%3d"+ encodeURIComponent( filename );
+		opt.parameters="action=originate&channel=" + encodeURIComponent("Local/removefile@"+asterisk_guitools) + "&Variable=var1%3d"+ encodeURIComponent("/var/lib/asterisk/sounds/" + filename )+"&application=noop&timeout=60000";
 		var tmp = new Ajax.Request("../../rawman", opt);
-}
-
-function delete_sounds(filename){
-	var ans = confirm("Delete recorded file "+ filename +" ?");
-	if (ans){
-			var opt = {
-				method: 'get',
-				asynchronous: true,
-				onSuccess: function(t) { 
-						$('status').innerHTML = " <I> Delete Request Successfull ! </I>";
-						// remove file name from stored config file
-						var opt2 = {
-							method: 'get',
-							asynchronous: true,
-							onSuccess: function() { 
-								// Remove this TR
-								var delete_id = "delete_" + filename;
-								var tableRow = $(delete_id).parentNode.parentNode; //gets TR object
-								for( var i=0; i <  $('table_recordefileslist'). rows.length; i++){
-									if  ( $('table_recordefileslist'). rows[i].id == tableRow.id){
-										 $('table_recordefileslist').deleteRow(i);
-										 break;
-									}
-								}
-								if( $('table_recordefileslist'). rows.length == 0){
-										$('maintable').style.display = 'none';
-										$('no_rvmns').style.display = '';
-								}else{
-										$('no_rvmns').style.display = 'none';
-										$('maintable').style.display = '';
-								}
-							},
-							onFailure: function(t) {
-								$('status_message').style.display='none';
-								gui_alert("Config Error: " + t.status + ": " + t.statusText);
-							}
-						};	
-						var uri = build_action('delcat', 0, filename,"", ""); 
-						opt2.parameters = "action=updateconfig&srcfilename=" + encodeURIComponent(custom_voicemenusfile) + "&dstfilename=" + encodeURIComponent(custom_voicemenusfile) + uri;
-						var tmp2 = new Ajax.Request('../../rawman', opt2);
-				},
-				onFailure: function(t) {
-					gui_alert("Config Error: " + t.status + ": " + t.statusText);
-				}
-			};
-			opt.parameters="action=originate&channel=" + encodeURIComponent("Local/removefile@"+asterisk_guitools) + "&Variable=var1%3d"+ encodeURIComponent("/var/lib/asterisk/sounds/" + filename )+"&application=noop&timeout=60000";
-			var tmp = new Ajax.Request("../../rawman", opt);
 	}
 	else{
 		//
@@ -102,116 +97,106 @@ function delete_sounds(filename){
 
 function save_recordedvmenuname( filename_torecord ){
 	// open custom_voicemenusfile
-		var opt2 = {
-			method: 'get',
-			asynchronous: true,
-			onSuccess: function(t) {	 
-					 addrow_totable(filename_torecord);
-					// var newoption = document.createElement("option"); // realised that we'r not using this select field any where .. so no point in updating this field.
-					// newoption.text = filename_torecord ;
-					// newoption.value = filename_torecord ;
-					// $('recorded_files').options.add ( newoption );
-					if( $('table_recordefileslist'). rows.length == 0){
-							$('maintable').style.display = 'none';
-							$('no_rvmns').style.display = '';
-					}else{
-							$('no_rvmns').style.display = 'none';
-							$('maintable').style.display = '';
-					}
-			},
-			onFailure: function(t) {
-				gui_alert("Config Error: " + t.status + ": " + t.statusText);
-			}
-		};
-					
-		var uri = build_action('newcat', 0, filename_torecord ,"", ""); 
-		opt2.parameters ="action=updateconfig&srcfilename=" + encodeURIComponent(custom_voicemenusfile) + "&dstfilename=" + encodeURIComponent(custom_voicemenusfile) + uri;
-		var tmp2 = new Ajax.Request("../../rawman", opt2);
+	var opt2 = {
+		method: 'get',
+		asynchronous: true,
+		onSuccess: function(t) {	 
+			addrow_totable(filename_torecord);
+			var _trf = _$('table_recordefileslist'); 
+			$('maintable').style.display = ( _trf.rows.length == 0) ? 'none' : '';
+			$('no_rvmns').style.display = ( _trf.rows.length == 0) ? '':'none';
+		},
+		onFailure: function(t) {
+			gui_alert("Config Error: " + t.status + ": " + t.statusText);
+		}
+	};
+
+	var uri = build_action('newcat', 0, filename_torecord ,"", ""); 
+	opt2.parameters ="action=updateconfig&srcfilename=" + encodeURIComponent(custom_voicemenusfile) + "&dstfilename=" + encodeURIComponent(custom_voicemenusfile) + uri;
+	var tmp2 = new Ajax.Request("../../rawman", opt2);
 }
 
-
 function originate_recordrequest(should_save, newvmenu_ext, filename_torecord){
-		$('status_message').style.display="block";
-		var opt = {
-			method: 'get',
-			asynchronous: true,
-			onSuccess: function(t) { 
-					setTimeout("$('status_message').style.display='none'",sc_displaytime);
-					if ( t.responseText.indexOf("Originate successfully queued") == -1 ){
-							// Request Failed
-					}else{
-						// save the filename in a seperate file so that we can display the list of "Recorded file"
-						if(should_save =="YES"){
-							$('status').innerHTML = " <I> Configuration Saved ! </I>";
-							$("newvmenu_name").value="";
-							$("format").selectedIndex =0;
-							$("newvmenu_ext").selectedIndex= -1;
-							save_recordedvmenuname( filename_torecord);
-						}
-					}				
-			},
-			onFailure: function(t) {
-				$('status_message').style.display='none';
-				gui_alert("Config Error: " + t.status + ": " + t.statusText);
-			}
-		};
-		opt.parameters ="action=originate&channel=Local/"+newvmenu_ext + "&context="+asterisk_guitools+"&exten=record_vmenu&priority=1&Variable=var1%3d"+ encodeURIComponent( filename_torecord );
+	_$('status_message').style.display="";
+	var opt = {
+		method: 'get',
+		asynchronous: true,
+		onSuccess: function(t) { 
+			setTimeout( function(){ $('status_message').style.display='none'; },sc_displaytime);
+			if ( t.responseText.indexOf("Originate successfully queued") == -1 ){
+					// Request Failed
+			}else{
+				// save the filename in a seperate file so that we can display the list of "Recorded file"
+				if(should_save =="YES"){
+					_$('status').innerHTML = " <I> Configuration Saved ! </I>";
+					_$("newvmenu_name").value="";
+					_$("format").selectedIndex =0;
+					_$("newvmenu_ext").selectedIndex= -1;
+					save_recordedvmenuname( filename_torecord);
+				}
+			}				
+		},
+		onFailure: function(t) {
+			_$('status_message').style.display='none';
+			gui_alert("Config Error: " + t.status + ": " + t.statusText);
+		}
+	};
+	opt.parameters ="action=originate&channel=Local/"+newvmenu_ext + "&context="+asterisk_guitools+"&exten=record_vmenu&priority=1&Variable=var1%3d"+ encodeURIComponent( filename_torecord );
 
-		var tmp = new Ajax.Request("../../rawman", opt);
+	var tmp = new Ajax.Request("../../rawman", opt);
 }
 
 function record_new(){
-	if($('newvmenu_name').value == "" ){ 
-			gui_alert("Please Enter a name for the new Voice Menu");
-			$('newvmenu_name').focus();
-			return true;
-	}else if ( $('newvmenu_ext').value == ""){
-			gui_alert("Please Select an extension to record the VoiceMenu");
-			$('newvmenu_ext').focus();
-			return true;
+	var _nm_n = _$('newvmenu_name');
+	var _nm_e = _$('newvmenu_ext');
+ 
+	if( _nm_n.value == "" ){ 
+		gui_alert("Please Enter a name for the new Voice Menu");
+		_nm_n.focus();
+		return true;
+	}
+	if ( _nm_e.value == ""){
+		gui_alert("Please Select an extension to record the VoiceMenu");
+		_nm_e.focus();
+		return true;
 	}
 
-	var filename_torecord = $('newvmenu_name').value + "." + $('format').value;
-	originate_recordrequest("YES", $('newvmenu_ext').value, filename_torecord);
+	var filename_torecord = _nm_n.value + "." + _$('format').value;
+	originate_recordrequest("YES", _nm_e.value, filename_torecord);
 	hide_record();
 }
 
 function record_existing(filename){
-	t=confirm("Are you sure you want to Record over an existing Voicemenu?")
-	if(t == false)
-		return true;
-	var extension = prompt("Please enter an Extension to call ",""); 
-	if(!extension){
-		return false;
-	}
+	if(!confirm("Are you sure you want to Record over an existing Voicemenu?")){ return true; }
+	var extension = prompt("Please enter an Extension to call ","");
+	if(!extension){ return false; }
 	originate_recordrequest("NO", extension, filename);
 }
 
 function addrow_totable(filename){
-		var newRow = $('table_recordefileslist').insertRow(-1);
-		newRow.id = "row" + filename; 
+	var newRow = _$('table_recordefileslist').insertRow(-1);
+	newRow.id = "row" + filename; 
 
-		var newCell1 = newRow.insertCell(0);
-		newCell1 .innerHTML = filename ;
+	var newCell1 = newRow.insertCell(0);
+	newCell1 .innerHTML = filename ;
 
-		var newCell2 = newRow.insertCell(1);
-		newCell2 .innerHTML = "<input "+ "type=\"button\"" + " id=\"recordover_" + filename +"\""+ " value='Record Again'"+  " onclick='record_existing(\"" + filename + "\")'>" 
-		+ "&nbsp;"+ "<input type=button id=\"play_"+filename+"\""+ " value='Play'" + " onclick='play_existing(\"" + filename.substr(0,(filename.length - 4) )+ "\")'>" 
-		+ "&nbsp;"+ "<input type=\"button\" id='delete_" + filename + "' onclick='delete_sounds(\""+ filename + "\")'  value=\"Delete\">" ;
+	var newCell2 = newRow.insertCell(1);
+	newCell2 .innerHTML = "<input "+ "type=\"button\"" + " id=\"recordover_" + filename +"\""+ " value='Record Again'"+  " onclick='record_existing(\"" + filename + "\")'>" 
+	+ "&nbsp;"+ "<input type=button id=\"play_"+filename+"\""+ " value='Play'" + " onclick='play_existing(\"" + filename.substr(0,(filename.length - 4) )+ "\")'>" 
+	+ "&nbsp;"+ "<input type=\"button\" id='delete_" + filename + "' onclick='delete_sounds(\""+ filename + "\")'  value=\"Delete\">" ;
 }
 
 callbacks.format = function(t) {
 	if ((t.name == 'general'))
 		return null;
-	//if (t.name.substring(0,6) == 'trunk_')
-	//	return null;
+
 	if ( t.fieldbyname['context'] == asterisk_guiTDPrefix + t.name ) {
-			return null;
+		return null;
 	}
 	if (t.fieldbyname['fullname'] && t.fieldbyname['fullname'].length) {
 		return t.name + " -- " + t.fieldbyname['fullname'];
 	} else
-		return t.name;
+	return t.name;
 }
 
 callbacks.loaded = function(){
@@ -219,39 +204,35 @@ callbacks.loaded = function(){
 }
 
 rfilescallbacks.format = function(t) {
-		return t.name;
+	return t.name;
 }
 
 rfilescallbacks.loaded= function() {
-	for (var i=0; i < $('recorded_files').length; i++){
-		addrow_totable($('recorded_files').options[i].value);
+	var _rf = _$('recorded_files');
+	for (var i=0; i < _rf.length; i++){
+		addrow_totable( _rf.options[i].value);
 	}
-	if($('recorded_files').length == 0){
-		$('maintable').style.display = 'none';
-		$('no_rvmns').style.display = '';
-	}else{
-		$('no_rvmns').style.display = 'none';
-		$('maintable').style.display = '';
-	}
+	_$('maintable').style.display = ( _rf.length == 0) ? 'none' : '';
+	_$('no_rvmns').style.display = ( _rf.length == 0) ? '' : 'none' ;
 }
 
 function show_record(){
-	$('bg_transparent').style.display = "";
-	$('recordnew_content').style.display = "";
-	$('newvmenu_name').focus();
+	_$('bg_transparent').style.display = "";
+	_$('recordnew_content').style.display = "";
+	_$('newvmenu_name').focus();
 }
 
 function hide_record(){
-	$('bg_transparent').style.display = "none";
-	$('recordnew_content').style.display = "none";
+	_$('bg_transparent').style.display = "none";
+	_$('recordnew_content').style.display = "none";
 }
 
 function localajaxinit() {
 	showdiv_statusmessage();
 	setWindowTitle("Record a Menu");
 	for (var x =0; x < focus_fields.length; x++ ) {
-		$(focus_fields[x]).onfocus = function(){this.className = 'input8_hilight';}
-		$(focus_fields[x]).onblur = function(){this.className = 'input8';}
+		_$(focus_fields[x]).onfocus = function(){this.className = 'input8_hilight';}
+		_$(focus_fields[x]).onblur = function(){this.className = 'input8';}
 	}
 
 	var opt = { method: 'get', asynchronous: true, onComplete: check_filexists };
@@ -268,9 +249,9 @@ function check_filexists(originalRequest){
 }
 
 function load_page(){
-	parent.astmanEngine.config2list(custom_voicemenusfile, $('recorded_files'), new Array, rfilescallbacks);
-	parent.astmanEngine.config2list("users.conf", $('newvmenu_ext'), new Array, callbacks);
-	$('message_text').innerHTML = "Please wait while the system <BR> Calls the specified Extension ... ";
+	parent.astmanEngine.config2list(custom_voicemenusfile, _$('recorded_files'), new Array, rfilescallbacks);
+	parent.astmanEngine.config2list("users.conf", _$('newvmenu_ext'), new Array, callbacks);
+	_$('message_text').innerHTML = "Please wait while the system <BR> Calls the specified Extension ... ";
 }
 
 function free_mem(){

@@ -37,30 +37,34 @@ var default_bindaddress, default_port, default_httptimeout;
 var focus_fields = new Array('newpass','newpass_rep','bindaddr','bindport','httptimeout');
 
 function cancel_guisettings(){
-	$('bindaddr').value = default_bindaddress ; $('bindport').value =default_port ; $('httptimeout').value = default_httptimeout ;
-	$('save').disabled=true;
-	$('cancel').disabled=true;
+	_$('bindaddr').value = default_bindaddress ; _$('bindport').value =default_port ; _$('httptimeout').value = default_httptimeout ;
+	_$('save').disabled=true;
+	_$('cancel').disabled=true;
 }
 
 function	update_guisettings_manager(){
-		if($('bindaddr').value==""){
+		var _bindaddr = _$('bindaddr') ;
+		var _bindport = _$('bindport') ;
+		var _httptimeout = _$('httptimeout');
+
+		if( _bindaddr.value==""){
 			gui_alert("Please enter a Bind Address");
-			$('bindaddr').focus();
+			_bindaddr.focus();
 			return true;
 		}
-		if($('bindport').value==""){
+		if( _bindport.value==""){
 			gui_alert("Please enter a Port number");
-			$('bindport').focus();
+			_bindport.focus();
 			return true;
 		}
-		if($('httptimeout').value==""){
+		if(_httptimeout.value==""){
 			gui_alert("Please enter Http TimeOut in seconds");
-			$('httptimeout').focus();
+			_httptimeout.focus();
 			return true
 		}
-
-		$('status_message').style.display="block";
-		setTimeout("$('status_message').style.display='none'",3000);
+		var _sm = $('status_message').style ;
+		_sm.display ="";
+		setTimeout(function(){ _sm.display ='none'; },3000);
 	var opt = {
 			method: 'get',
 			asynchronous: true,
@@ -68,37 +72,41 @@ function	update_guisettings_manager(){
 				update_guisettings_http();
 			},
 			onFailure: function(t) {
-				$('status_message').style.display='none';
+				_sm.display ='none';
 				gui_alert("Config Error: " + t.status + ": " + t.statusText);
 			}
 		};
-		opt.parameters ="action=updateconfig&srcfilename=manager.conf&dstfilename=manager.conf&Action-000000=update&Cat-000000=general&Var-000000=httptimeout&Value-000000="+ encodeURIComponent($('httptimeout').value);
+		opt.parameters ="action=updateconfig&srcfilename=manager.conf&dstfilename=manager.conf&Action-000000=update&Cat-000000=general&Var-000000=httptimeout&Value-000000="+ encodeURIComponent(_httptimeout.value);
 		var tmp = new Ajax.Request("../../rawman", opt);
 		return;
 }
 
 
 function update_guisettings_http(){
+		var _bindaddr = _$('bindaddr') ;
+		var _bindport = _$('bindport') ;
+		var _httptimeout = _$('httptimeout');
+
 		var opt = {
-				method: 'get',
-				asynchronous: true,
-				onSuccess: function() { 
-							$('status_message').style.display='none';
-							$('status').innerHTML = " <I> Configuration Saved ! </I>";
-							$('save').disabled=true;
-							$('cancel').disabled=true;
-							if( default_bindaddress != $('bindaddr').value || default_port != $('bindport').value ){
-								gui_alert("Port/IP settings of the GUI have been updated !! \n\n You will now be redirected to the new IP/Port ");
-								var previousurl =  parent.window.location.href.split("/");
-								parent.window.location.href = location.protocol + "//" + $('bindaddr').value + ":" + $('bindport').value + "/asterisk/static/config/" + previousurl[previousurl.length-1] ;
-							}
-							default_port = $('bindport').value ;
-				},
-				onFailure: function(t) {
-					gui_alert("Config Error: " + t.status + ": " + t.statusText);
+			method: 'get',
+			asynchronous: true,
+			onSuccess: function() { 
+				_$('status_message').style.display='none';
+				_$('status').innerHTML = " <I> Configuration Saved ! </I>";
+				_$('save').disabled=true;
+				_$('cancel').disabled=true;
+				if( default_bindaddress != _bindaddr.value || default_port != _bindport.value ){
+					gui_alert("Port/IP settings of the GUI have been updated !! \n\n You will now be redirected to the new IP/Port ");
+					var previousurl =  parent.window.location.href.split("/");
+					parent.window.location.href = location.protocol + "//" + _bindaddr.value + ":" + _bindport.value + "/asterisk/static/config/" + previousurl[previousurl.length-1] ;
 				}
+				default_port = _bindport.value ;
+			},
+			onFailure: function(t) {
+				gui_alert("Config Error: " + t.status + ": " + t.statusText);
+			}
 		};
-		opt.parameters ="action=updateconfig&srcfilename=http.conf&dstfilename=http.conf&Action-000000=update&Cat-000000=general&Var-000000=bindport&Value-000000="+ encodeURIComponent($('bindport').value) + "&Action-000001=update&Cat-000001=general&Var-000001=bindaddr&Value-000001=" + encodeURIComponent($('bindaddr').value );
+		opt.parameters ="action=updateconfig&srcfilename=http.conf&dstfilename=http.conf&Action-000000=update&Cat-000000=general&Var-000000=bindport&Value-000000="+ encodeURIComponent(_bindport.value) + "&Action-000001=update&Cat-000001=general&Var-000001=bindaddr&Value-000001=" + encodeURIComponent( _bindaddr.value );
 		var tmp = new Ajax.Request("../../rawman", opt);
 }
 
@@ -109,7 +117,7 @@ function showResponse(originalRequest)	{
 			gui_alert("Password Updated!!  \n\n You will be now redirected to the login page \n You must relogin using your new password") ;
 			window.location.href=window.location.href;
 		}else{
-			$('status').innerHTML= originalRequest.responseText ;
+			_$('status').innerHTML= originalRequest.responseText ;
 			return;
 		}
 }
@@ -132,15 +140,16 @@ function askforRelogin(){
 }
 
 function changepassword(){
-	if( $('newpass').value!=$('newpass_rep').value ){
+	var _newpass = _$('newpass'); 
+	if( _newpass.value!=_$('newpass_rep').value ){
 		gui_alert( "Passwords do not match  !") ;
-		$('newpass').focus();
+		_newpass.focus();
 		return true;
 	}
 
-	if( $('newpass').value.length < 4 ){
+	if( _newpass.value.length < 4 ){
 		gui_alert( "Password should be at least 4 characters !") ;
-		$('newpass').focus();
+		_newpass.focus();
 		return true;
 	}
 
@@ -155,22 +164,22 @@ function changepassword(){
 				gui_alert("Config Error: " + t.status + ": " + t.statusText);
 			}
 		};
-		opt.parameters ="action=updateconfig&srcfilename=manager.conf&dstfilename=manager.conf&Action-000000=update&Cat-000000=" + current_username + "&Var-000000=secret&Value-000000="+ encodeURIComponent($('newpass').value );
+		opt.parameters ="action=updateconfig&srcfilename=manager.conf&dstfilename=manager.conf&Action-000000=update&Cat-000000=" + current_username + "&Var-000000=secret&Value-000000="+ encodeURIComponent( _newpass.value );
 		var tmp = new Ajax.Request("../../rawman", opt);
 		return;
 }
 
 
 function compare_passwords(){
-	if( $('newpass').value.length < 4 ){
-		$('dopwdsmatch').style.color = "#EE0000";
-		$('dopwdsmatch').innerHTML = "Password should be at least 4 characters !" ;
-	}else if ( $('newpass').value==$('newpass_rep').value){
-		$('dopwdsmatch').style.color = "#005D2E";
-		$('dopwdsmatch').innerHTML = "Passwords Match !" ;
+	if( _$('newpass').value.length < 4 ){
+		_$('dopwdsmatch').style.color = "#EE0000";
+		_$('dopwdsmatch').innerHTML = "Password should be at least 4 characters !" ;
+	}else if ( _$('newpass').value==_$('newpass_rep').value){
+		_$('dopwdsmatch').style.color = "#005D2E";
+		_$('dopwdsmatch').innerHTML = "Passwords Match !" ;
 	}else{
-		$('dopwdsmatch').style.color = "#EE0000";
-		$('dopwdsmatch').innerHTML = "Passwords do not match  !" ;
+		_$('dopwdsmatch').style.color = "#EE0000";
+		_$('dopwdsmatch').innerHTML = "Passwords do not match  !" ;
 	}
 }
 
@@ -183,11 +192,11 @@ managerconf_callbacks.format = function(t) {
 }
 
 managerconf_callbacks.loaded = function() {
-	$('hiddenfield2').selectitem(0);
-	$('message_text').innerHTML = " Saving Changes ... ";
-	default_bindaddress = $('bindaddr').value; default_port = $('bindport').value ; default_httptimeout = $('httptimeout').value;
-	$('save').disabled=true;
-	$('cancel').disabled=true;
+	_$('hiddenfield2').selectitem(0);
+	_$('message_text').innerHTML = " Saving Changes ... ";
+	default_bindaddress = _$('bindaddr').value; default_port = _$('bindport').value ; default_httptimeout = _$('httptimeout').value;
+	_$('save').disabled=true;
+	_$('cancel').disabled=true;
 	parent.loadscreen(this);
 }
 
@@ -200,13 +209,13 @@ httpconf_callbacks.format = function(t) {
 }
 
 httpconf_callbacks.loaded = function() {
-		$('hiddenfield').selectitem(0);
+		_$('hiddenfield').selectitem(0);
 
 		for (var x =0; x < fieldnames2.length; x++) {
-			widgets2[fieldnames2[x]] = $(fieldnames2[x]);
+			widgets2[fieldnames2[x]] = _$(fieldnames2[x]);
 			widgets2[fieldnames2[x]].disabled = true;
 		}
-		parent.astmanEngine.config2list("manager.conf", $('hiddenfield2'), widgets2, managerconf_callbacks);
+		parent.astmanEngine.config2list("manager.conf", _$('hiddenfield2'), widgets2, managerconf_callbacks);
 }
 
 
@@ -218,19 +227,19 @@ function localajaxinit(){
 	showdiv_statusmessage();
 	setWindowTitle("Options");
 	for (var x =0; x < fieldnames.length; x++) {
-		widgets[fieldnames[x]] = $(fieldnames[x]);
+		widgets[fieldnames[x]] = _$(fieldnames[x]);
 		widgets[fieldnames[x]].disabled = true;
 	}
 	for (var x =0; x < focus_fields.length; x++ ) {
-		$(focus_fields[x]).onfocus = function(){this.className = 'input9_hilight';}
-		$(focus_fields[x]).onblur = function(){this.className = 'input9';}
+		_$(focus_fields[x]).onfocus = function(){this.className = 'input9_hilight';}
+		_$(focus_fields[x]).onblur = function(){this.className = 'input9';}
 	}
 	// if not appliance - hide the gui_accesssettings DIV
 	if ( !parent.window.location.href.match("cfgappliance.html") ){
-		$('gui_accesssettings').style.display="none";
+		_$('gui_accesssettings').style.display="none";
 	}
 
-	parent.astmanEngine.config2list("http.conf", $('hiddenfield'), widgets, httpconf_callbacks);
+	parent.astmanEngine.config2list("http.conf", _$('hiddenfield'), widgets, httpconf_callbacks);
 	return;
 }
 </script>

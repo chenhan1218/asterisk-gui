@@ -38,7 +38,7 @@ function doHangup() {
 
 function afterHangup(){
 	refreshChannelsList();
-	$('status').innerHTML = "Hungup " + hungupchan;
+	_$('status').innerHTML = "Hungup " + hungupchan;
 }
 
 
@@ -63,14 +63,14 @@ function doTransfer() {
 
 function afterTransfer(){
 	refreshChannelsList();
-	$('status').innerHTML = "Transferred " + transferredchan;
+	_$('status').innerHTML = "Transferred " + transferredchan;
 }
 
 function refreshChannelsList() {
 	selectedchan = null;
-	$('transfer').disabled = 1;
-	$('hangup').disabled = 1;
-	$('status').innerHTML = "<i>Updating channel status...</i>";
+	_$('transfer').disabled = 1;
+	_$('hangup').disabled = 1;
+	_$('status').innerHTML = "<i>Updating channel status...</i>";
 	parent.astmanEngine.channelClear();
 	parent.astmanEngine.sendRequest('action=status', onStatusCheck);
 	updateButtons();
@@ -83,21 +83,21 @@ onStatusCheck = function(msgs) {
 
 	for (i=1;i<msgs.length - 1;i++) 
 		parent.astmanEngine.channelUpdate(msgs[i]);
-	$('channellist').innerHTML = parent.astmanEngine.channelTable(channelsCallback);
-	$('status').innerHTML = "Ready";
+	_$('channellist').innerHTML = parent.astmanEngine.channelTable(channelsCallback);
+	_$('status').innerHTML = "Ready";
 }
 
 
 function updateButtons(){
 	if ($(selectedchan)) {
-		$('transfer').disabled = 0;
-		$('hangup').disabled = 0;
+		_$('transfer').disabled = 0;
+		_$('hangup').disabled = 0;
 	} else {
-		$('transfer').disabled = 1;
-		$('hangup').disabled = 1;
+		_$('transfer').disabled = 1;
+		_$('hangup').disabled = 1;
 		selectedchan = null;
 	}
-		$('refresh').disabled = 0;
+	_$('refresh').disabled = 0;
 }
 
 channelsCallback = function(target) {
@@ -106,25 +106,25 @@ channelsCallback = function(target) {
 }
 
 parent.eventeater.eventcd = function (msgs) {
-		for (i=1;i<msgs.length - 1;i++) 
-			parent.astmanEngine.channelUpdate(msgs[i]);
-		$('channellist').innerHTML = parent.astmanEngine.channelTable(channelsCallback);
-		parent.astmanEngine.pollEvents();
+	for (i=1;i<msgs.length - 1;i++) 
+		parent.astmanEngine.channelUpdate(msgs[i]);
+	_$('channellist').innerHTML = parent.astmanEngine.channelTable(channelsCallback);
+	parent.astmanEngine.pollEvents();
 }
 
 
 function localajaxinit(){
-		setWindowTitle("Active Channels");
-		refreshChannelsList() ;
-		parent.astmanEngine.setEventCallback(parent.eventeater.eventcd );
-		parent.loadscreen(this);
+	setWindowTitle("Active Channels");
+	refreshChannelsList() ;
+	parent.astmanEngine.setEventCallback(parent.eventeater.eventcd );
+	parent.loadscreen(this);
 }
 
 function localajaxend(){
-		parent.astmanEngine.setEventCallback(parent.eventeater.eventcb );
-		if( navigator.userAgent.indexOf("MSIE") != -1 ){ 
-			try{ purge( document.body ); } catch(e){ }	
-		}
+	parent.astmanEngine.setEventCallback(parent.eventeater.eventcb );
+	if( navigator.userAgent.indexOf("MSIE") != -1 ){ 
+		try{ purge( document.body ); } catch(e){ }	
+	}
 }
 
 </script>
