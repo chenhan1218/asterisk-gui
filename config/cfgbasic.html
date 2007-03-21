@@ -87,18 +87,6 @@ panels.push(
 
 	new PanelDef("record", "Record a Menu", "accordion-icon.gif",
 		"Allows you to record custom voicemenus over a phone"),
-
-//	new PanelDef("moh", "Music On Hold", "accordion-icon.gif", " Music on hold sometimes keeps people less angry while they wait for an answer"),
-
-//	new PanelDef("sip", "SIP", "accordion-icon.gif", "SIP (Session Initiation Protocol) Configuration"),
-
-//	new PanelDef("iax", "IAX", "accordion-icon.gif", "IAX (Inter-Asterisk eXchange Protocol) Configuration"),
-
-//	new PanelDef("jabber", "Jabber", "accordion-icon.gif", "Jabber users configuration"),
-
-//	new PanelDef("jingle", "Jingle", "accordion-icon.gif", "Jingle configuration lets users connect to google talk networks"),
-
-//	new PanelDef("zapata", "Zap Channel", "accordion-icon.gif", "Zapata telephony interface configuration"),
 	
 	new PanelDef("status", "Active Channels", "accordion-icon.gif", "Monitor active channels."),
 
@@ -109,6 +97,24 @@ panels.push(
 	new PanelDef("localexts", "Options", "accordion-icon.gif", "Admin Settings")
 
 );
+
+// show additional panels for advanced mode
+if(window.location.href.match("advanced=yes") ){
+panels.splice(10,0,
+	new PanelDef("moh", "Music On Hold", "accordion-icon.gif", " Music on hold sometimes keeps people less angry while they wait for an answer"),
+
+	new PanelDef("sip", "SIP", "accordion-icon.gif", "SIP (Session Initiation Protocol) Configuration"),
+
+	new PanelDef("iax", "IAX", "accordion-icon.gif", "IAX (Inter-Asterisk eXchange Protocol) Configuration"),
+
+	new PanelDef("jabber", "Jabber", "accordion-icon.gif", "Jabber users configuration"),
+
+	new PanelDef("jingle", "Jingle", "accordion-icon.gif", "Jingle configuration lets users connect to google talk networks"),
+
+	new PanelDef("zapata", "Zap Channel", "accordion-icon.gif", "Zapata telephony interface configuration")
+	);
+}
+
 
 function setLoggedOn(onoff) {
 	loggedon = onoff;

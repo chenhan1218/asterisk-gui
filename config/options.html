@@ -227,6 +227,14 @@ function localajaxinit(){
 	parent.astmanEngine.config2list("http.conf", _$('hiddenfield'), widgets, httpconf_callbacks);
 	return;
 }
+
+
+function basicadvanced(){
+	var _url = "";
+	if(top.window.location.href.match("advanced=yes") ){ _url = "./cfgbasic.html"; }else{ _url = "./cfgbasic.html?advanced=yes" }
+	parent.window.location.href = _url ;
+}
+
 </script>
 <body id="foo" onload="localajaxinit()" bgcolor="EFEFEF">
 <div class="mainscreenTitleBar"><span style="margin-left: 4px;font-weight:bold">Admin Options</span></div>
@@ -236,6 +244,13 @@ function localajaxinit(){
 <TR>
 	<TD valign="bottom" align="center"><a href="localexts.html" class="tab">Local Extension settings</a></TD>
 	<TD><a href="#" class="tabselected">Change Password</a></TD>
+	<TD valign="bottom" align="left">
+		<a href="#" class="tab" onclick="basicadvanced();">
+		<script>
+			if(top.window.location.href.match("advanced=yes") ){ document.write("Basic"); }else{ document.write("Advanced"); }
+		</script>
+		</a>
+	</TD>
 	<TD valign="bottom" align="left"><a href="#" onclick="tosetup();" class="tab">Run Setup Wizard</a></TD> 
 </TR>
 </TABLE>
