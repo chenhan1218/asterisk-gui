@@ -41,8 +41,10 @@ function loggedOn() {
 	if(_$('secret').value=="password"){
 		parent.loggedon = 1;
 		localloggedon = 1;
-		parent.document.getElementById('logoutlink').innerHTML = "Logout";
-		parent.document.getElementById('logoutlink').onclick = parent.Logoff ;
+		var _ll = parent._$('logoutlink'); 
+		_ll.innerHTML = "Logout";
+		_ll.onclick = parent.Logoff ;
+		_ll.style.display = "" ;
 		parent.gui_alert("You are using the default password provided by AsteriskNOW !! \n\n It is strongly recommended that you change your default password ");
 		window.location.href="options.html";
 		return;
@@ -63,10 +65,14 @@ function loggedOn() {
 	_$('secret').className  = "input9_disabled";
 	updateButtons();
 	_$('statusbar').innerHTML = "<img src='images/tick.gif'><i>Connected!</i>";
-	parent.document.getElementById('reloadconfig').innerHTML = "ApplySettings";
-	parent.document.getElementById('reloadconfig').onclick = parent.reloadConfig ;
-	parent.document.getElementById('logoutlink').innerHTML = "Logout";
-	parent.document.getElementById('logoutlink').onclick = parent.Logoff ;
+	var _rc = parent._$('reloadconfig'); 
+	_rc.innerHTML = "Activate Changes";
+	_rc.onclick = parent.reloadConfig ;
+	_rc.style.display = "" ;
+	var _ll = parent._$('logoutlink'); 
+	_ll.innerHTML = "Logout";
+	_ll.onclick = parent.Logoff ;
+	_ll.style.display = "" ;
 
 }
 

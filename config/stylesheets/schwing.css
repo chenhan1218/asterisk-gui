@@ -1,57 +1,57 @@
 .mainscreenTitleBar {
-		font-size           : 12px;
-		padding             : 4px 6px 4px 6px;
-		border-style        : solid none solid none;
-		border-top-color    : #BDC7E7;
-		border-bottom-color : #182052;
-		border-width        : 1px 0px 1px 0px;
-		background-color : #ef8700;
-		color            : #ffffff;
-		width: 550px;
+	font-size           : 12px;
+	padding             : 4px 6px 4px 6px;
+	border-style        : solid none solid none;
+	border-top-color    : #BDC7E7;
+	border-bottom-color : #182052;
+	border-width        : 1px 0px 1px 0px;
+	background-color : #ef8700;
+	color            : #ffffff;
+	width: 550px;
 }
 
 .mainscreenTooltipBar {
-		font-size           : 12px;
-		padding             : 4px 6px 4px 6px;
-		border-style        : solid none solid none;
-		border-top-color    : #BDC7E7;
-		border-bottom-color : #182052;
-		border-width        : 1px 0px 1px 0px;
-		background-color : #ef8700;
-		color            : #ffffff;
-		width: 250px;
+	font-size           : 12px;
+	padding             : 4px 6px 4px 6px;
+	border-style        : solid none solid none;
+	border-top-color    : #BDC7E7;
+	border-bottom-color : #182052;
+	border-width        : 1px 0px 1px 0px;
+	background-color : #ef8700;
+	color            : #ffffff;
+	width: 250px;
 }
 
 .mainscreenTitleBarHover {
-   font-size        : 11px;
+	font-size        : 11px;
 	background-color : #1f669b;
 	color            : #000000;
 }
 
 .mainscreenContentBox {
-   font-size        : 11px;
-   border           : 0px;
-   padding          : 0px 8px 0px 2px;
+	font-size        : 11px;
+	border           : 0px;
+	padding          : 0px 8px 0px 2px;
 }
 
 .mainscreenBorderBox {
-   font-size        : 11px;
-   border           : 1px solid #1f669b;
-   border-top-width : 0px;
-   border-left-width : 0px;
-   border-bottom-width: 0px;
-   padding          : 0px 8px 0px 8px;
+	font-size        : 11px;
+	border           : 1px solid #1f669b;
+	border-top-width : 0px;
+	border-left-width : 0px;
+	border-bottom-width: 0px;
+	padding          : 0px 8px 0px 8px;
 }
 
 .mainSettings {
-	font-size		: 8px;
+	font-size	: 8px;
 }
 
 .mainscreenTable {
-	border 			: 0;
+	border : 0;
 	/*height          : 426px;*/
-	 width				: 536px; 
-	 font-size: 11px;
+	width	: 536px; 
+	font-size: 11px;
 }
 
 .statusbar {
@@ -230,17 +230,17 @@ td {
 
 /* for DHTML tabs */
   a.tab { 
-		border-bottom: 0px solid #778;
-		font: bold 11px arial,Verdana, sans-serif;
-		margin: 0;
-		display: inline;
-		padding: 2px 0.5em;
-		margin-left: 3px;
-		border: 0px solid #778;
-		background: #DDE;
-		text-decoration: none;
-		color: #448; 
-		height: 11px;
+	border-bottom: 0px solid #778;
+	font: bold 11px arial,Verdana, sans-serif;
+	margin: 0;
+	display: inline;
+	padding: 2px 0.5em;
+	margin-left: 3px;
+	border: 0px solid #778;
+	background: #DDE;
+	text-decoration: none;
+	color: #448; 
+	height: 11px;
  }
 
 a.tab:visited { 
@@ -248,26 +248,26 @@ a.tab:visited {
 }
 
 a.tab:hover { 
-		color: #000;
-		background: #AAE;
-		border-color: #227;
-		text-decoration: none;
+	color: #000;
+	background: #AAE;
+	border-color: #227;
+	text-decoration: none;
 }
 
   a.tabselected { 
-		border-bottom: 4px solid #000000;
-		font: bold 13px arial,Verdana, sans-serif;
-		margin:0pt 0pt 0pt 3px;
-		padding:2px 0.5em;
-		display: inline;
-		border: 0px solid #778;
-		background: #FFF;
-		text-decoration: none;
-		color: #448; 
-		height: 11px;
-		border-bottom-color:#000000;
-		border-bottom-style:solid;
-		border-bottom-width:4px;
+	border-bottom: 4px solid #000000;
+	font: bold 13px arial,Verdana, sans-serif;
+	margin:0pt 0pt 0pt 3px;
+	padding:2px 0.5em;
+	display: inline;
+	border: 0px solid #778;
+	background: #FFF;
+	text-decoration: none;
+	color: #448; 
+	height: 11px;
+	border-bottom-color:#000000;
+	border-bottom-style:solid;
+	border-bottom-width:4px;
  }
 
 div.tooltip_round {
@@ -301,3 +301,19 @@ div.tooltip_round {
 }
 
 /* End of right click menus */
+
+.mainscreenTooltipBar span{
+	font-size:11px;
+	font-weight : bold;
+	border:1px solid #FFFFFF;
+	color:#FFFFFF;
+	padding:1px 5px 1px 5px;
+	text-decoration:none;
+	cursor: pointer;
+	cursor: hand;
+}
+
+.mainscreenTooltipBar span:hover {
+	border-color: #000;
+	color:#000000;
+}
