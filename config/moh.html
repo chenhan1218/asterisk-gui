@@ -62,44 +62,59 @@ function localajaxinit() {
 <div class="mainscreenContentBox" id="userscontent">
 <table class="mainscreenTable" align="center">
 	<tr valign="top">
-		<td colspan='2'>
-		Users:
-		</td>
+		<td colspan='2'>Users:</td>
 	</tr>
 	<tr valign="top">
 		<td height="415">
-				<select size="20" id="moh_classes" style="width:220px;height: 415px">
-						<option>Loading...</option>
-				</select>
+			<select size="20" id="moh_classes" style="width:220px;height: 415px"><option>Loading...</option></select>
 		</td>
 		<td colspan='3' height=415>
-		<div id='adjustments' style='width:308'>
-		<table cellspacing='0' cellpadding='0'>
-			<tr valign="top"><td>
-				<table>
-						<tr><td class="field_text">Class:</td>						<td>&nbsp;<input size='12' id='name' class="input8"></td></tr>
-						<tr><td class="field_text">Mode:</td>						<td>&nbsp;<select id='mode'  class="input8">
-																																			<option value="quietmp3">mp3 (Quiet)</option><option value="mp3">mp3 (Loud)</option><option value="mp3nb">mp3 (Unbuffered)</option><option value="quietmp3nb ">mp3 (Quiet Unbuffered)</option><option value="custom">Custom</option><option value="files">files</option>
-																																		</select></td></tr>
-						<tr><td class="field_text">Directory:</td>					<td>&nbsp;<input size='20' id='directory' class="input8"></td></tr>
-						<tr><td class="field_text">Application:</td>				<td>&nbsp;<input size='25' id='application' class="input8"></td></tr>
-						<tr><td class="field_text">Format:</td>					<td>&nbsp;<input size='12' id='format' class="input8"></td></tr>
-						<tr><td class="field_text">Random:</td>					<td><input type=checkbox id='random'></td></tr>
-						<tr><td colspan='2' align='center'><div style="height:15px" id='status'></div></td></tr>
+			<div id='adjustments' style='width:308'>
+				<table cellspacing='0' cellpadding='0'>
+				<tr valign="top">
+				<td>	<table>
+					<tr>	<td class="field_text">Class:</td>
+						<td>&nbsp;<input size='12' id='name' class="input8"></td>
+					</tr>
+					<tr>	<td class="field_text">Mode:</td>
+						<td>&nbsp;<select id='mode'  class="input8">
+							<option value="quietmp3">mp3 (Quiet)</option>
+							<option value="mp3">mp3 (Loud)</option>
+							<option value="mp3nb">mp3 (Unbuffered)</option>
+							<option value="quietmp3nb ">mp3 (Quiet Unbuffered)</option>
+							<option value="custom">Custom</option>
+							<option value="files">files</option>
+							</select>
+						</td>
+					</tr>
+					<tr>	<td class="field_text">Directory:</td>
+						<td>&nbsp;<input size='20' id='directory' class="input8"></td>
+					</tr>
+					<tr>	<td class="field_text">Application:</td>
+						<td>&nbsp;<input size='25' id='application' class="input8"></td>
+					</tr>
+					<tr>	<td class="field_text">Format:</td>
+						<td>&nbsp;<input size='12' id='format' class="input8"></td>
+					</tr>
+					<tr>	<td class="field_text">Random:</td>
+						<td><input type=checkbox id='random'></td>
+					</tr>
+					<tr>	<td colspan='2' align='center'><div style="height:15px" id='status'></div></td>	</tr>
+					</table>
+				</td>
+				</tr>
 				</table>
-			</td>
-			</tr>
-		</table>
-		</div>
-		</td></tr>				
-		<tr>
-		<td align='center'>
+			</div>
+		</td>
+	</tr>				
+	<tr>	<td align='center'>
 				<input type='button' id='new' value='New' class="buttonbold">&nbsp;&nbsp;<input type='button' id='delete' value='Delete' class="buttonbold">
 		</td>
 		<td colspan='1' align='center'>
 				<input type='button' id='save' value='Save' class="buttonbold">&nbsp;<input type='button' id='cancel' value='Cancel'  class="buttonbold">
 		</td>
-	</tr><tr>
+	</tr>
+	<tr>
 	</tr>
 </table>
 </div>

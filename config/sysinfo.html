@@ -163,52 +163,70 @@ function free_mem(){
 <div class="mainscreenContentBox" id="userscontent">
 <table class="mainscreenTable" align="center">
 	<tr valign="top" height="18">	
-			<td align="left">
+	<td align="left">
+		<a href="#" class="tab" onclick="return show_window(1);" id="tab1"  onmouseover="show_tooltip('en', 'sysinfo', 0);">General</a>&nbsp;&nbsp;
+		<a href="#" class="tab" onclick="return show_window(2);" id="tab2"  onmouseover="show_tooltip('en', 'sysinfo', 1);">ifconfig</a>&nbsp;&nbsp;
+		<a href="#" class="tab" onclick="return show_window(3);" id="tab3"  onmouseover="show_tooltip('en', 'sysinfo', 2);">Resources</a>&nbsp;&nbsp;
+		<a href="#" class="tab" onclick="return show_window(4);" id="tab4"  onmouseover="show_tooltip('en', 'sysinfo', 3);">Logs</a>&nbsp;&nbsp;
+		<div id="sysinfohtml" style="display:none"></div>
 
-				<a href="#" class="tab" onclick="return show_window(1);" id="tab1"  onmouseover="show_tooltip('en', 'sysinfo', 0);">General</a>&nbsp;&nbsp;
-				<a href="#" class="tab" onclick="return show_window(2);" id="tab2"  onmouseover="show_tooltip('en', 'sysinfo', 1);">ifconfig</a>&nbsp;&nbsp;
-				<a href="#" class="tab" onclick="return show_window(3);" id="tab3"  onmouseover="show_tooltip('en', 'sysinfo', 2);">Resources</a>&nbsp;&nbsp;
-				<a href="#" class="tab" onclick="return show_window(4);" id="tab4"  onmouseover="show_tooltip('en', 'sysinfo', 3);">Logs</a>&nbsp;&nbsp;
-				<div id="sysinfohtml" style="display:none"></div>
+		<div id="information" style=" border: solid 0px black; background: transparent; padding: 4px; height:440px; width:95%;">
+			<BR>
+			<div id="osversion_div" style="display:none">
+					OS Version: <div id="osversion" style="font-family:courier; font-size:10pt;"></div><BR>
+			</div>
+			<div id="uptime_div" style="display:none">
+					Uptime: <div id="uptime" style="font-family:courier; font-size:10pt;"></div><BR>
+			</div>
+			<div id="asterisk_div" style="display:none">
+					Asterisk Build: <div id="asterisk" style="font-family:courier; font-size:10pt;"></div><BR>
+			</div>
+			<div id="today_div" style="display:none">
+					Server Date & TimeZone: <div id="today" style="font-family:courier; font-size:10pt;"></div><BR>
+			</div>
+			<div id="hostname_div" style="display:none">
+					Hostname: <div id="hostname" style="font-family:courier; font-size:10pt;"></div><BR>
+			</div>
+			<div id="ifconfig_div" style="display:none; height:430px; ">
+					ifconfig:<PRE><div id="ifconfig" style="font-family:courier; font-size:8.5pt; height:410px; overflow :auto;"></div></PRE>
+			</div>
+			<div id="df_div" style="display:none;">
+					Disk Usage:<PRE><div id="diskusage" style="font-family:courier; font-size:10pt;"></div></PRE>
+			</div>
+			<div id="memory_div" style="display:none;">
+					Memory Usage:<PRE><div id="memoryusage" style="font-family:courier; font-size:8.5pt;"></div></PRE>
+			</div>
+			<div id="today_log" style="display:none;">
+				Asterisk Log messages (today): 
+					<select id="log_month">
+					<option value="Jan">Jan</option>
+					<option value="Feb">Feb</option>
+					<option value="Mar">Mar</option>
+					<option value="Apr">Apr</option>
+					<option value="May">May</option>
+					<option value="Jun">Jun</option>
+					<option value="Jul">Jul</option>
+					<option value="Aug">Aug</option>
+					<option value="Sep">Sep</option>
+					<option value="Oct">Oct</option>
+					<option value="Nov">Nov</option>
+					<option value="Dec">Dec</option>
+					</select>
+					<select id="log_day">
+					<script> for(var i=1; i < 32; i++){ document.write( '<option value="' + i + '">' + i + '</option>' ); }</script>
+					</select>
+					<input type="button" value="Go" onclick="thisday_log();">
 
-				<div id="information" style=" border: solid 0px black; background: transparent; padding: 4px; height:440px; width:95%;">
-						<BR>
-						<div id="osversion_div" style="display:none">
-								OS Version: <div id="osversion" style="font-family:courier; font-size:10pt;"></div><BR>
-						</div>
-						<div id="uptime_div" style="display:none">
-								Uptime: <div id="uptime" style="font-family:courier; font-size:10pt;"></div><BR>
-						</div>
-						<div id="asterisk_div" style="display:none">
-								Asterisk Build: <div id="asterisk" style="font-family:courier; font-size:10pt;"></div><BR>
-						</div>
-						<div id="today_div" style="display:none">
-								Server Date & TimeZone: <div id="today" style="font-family:courier; font-size:10pt;"></div><BR>
-						</div>
-						<div id="hostname_div" style="display:none">
-								Hostname: <div id="hostname" style="font-family:courier; font-size:10pt;"></div><BR>
-						</div>
-						<div id="ifconfig_div" style="display:none; height:430px; ">
-								ifconfig:<PRE><div id="ifconfig" style="font-family:courier; font-size:8.5pt; height:410px; overflow :auto;"></div></PRE>
-						</div>
-						<div id="df_div" style="display:none;">
-								Disk Usage:<PRE><div id="diskusage" style="font-family:courier; font-size:10pt;"></div></PRE>
-						</div>
-						<div id="memory_div" style="display:none;">
-								Memory Usage:<PRE><div id="memoryusage" style="font-family:courier; font-size:8.5pt;"></div></PRE>
-						</div>
-						<div id="today_log" style="display:none;">
-								Asterisk Log messages (today): <select id="log_month"><option value="Jan">Jan</option><option value="Feb">Feb</option> <option value="Mar">Mar</option><option value="Apr">Apr</option>
-										<option value="May">May</option><option value="Jun">Jun</option><option value="Jul">Jul</option><option value="Aug">Aug</option><option value="Sep">Sep</option>
-										<option value="Oct">Oct</option><option value="Nov">Nov</option><option value="Dec">Dec</option></select>
-								<select id="log_day"><SCRIPT LANGUAGE="JavaScript">
-											for(var i=1; i < 32; i++){ document.write( '<option value="' + i + '">' + i + '</option>' ); }</SCRIPT></select><input type="button" value="Go" onclick="thisday_log();">
-								<div id="todaylog" style="font-family:courier; font-size:8.5pt; width:522px; height:405px; overflow :auto;"></div>
-						</div>
-				</div>
-			</td>
+				<div id="todaylog" style="font-family:courier; font-size:8.5pt; width:522px; height:405px; overflow :auto;"></div>
+			</div>
+		</div>
+	</td>
 	</tr>
-	<tr><td valign="top" align=center><div  id='status'></div></td></tr>
+	<tr>
+	<td valign="top" align=center>
+		<div  id='status'></div>
+	</td>
+	</tr>
 	<tr><td></td></tr>
 </table>
 </div>

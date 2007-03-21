@@ -264,63 +264,64 @@ function free_mem(){
 <div class="mainscreenContentBox" id="userscontent">
 <table class="mainscreenTable" align="center">
 	<tr><td valign="top" align="center">
-			<BR>
-			<table id="maintable" cellpadding=3 cellspacing=0 border=0 width=400 style="border-width: 1px 1px 1px 1px; border-style: solid; border-color: #7E7E7E; ">
-				<tr><td colspan=2 align=center class="field_text"><B>List of recorded voicemenus</B><select id='recorded_files' style="display:none"></select></td></tr>
-				<tr bgcolor="#FFFFFF"><td><font color="#2D4E93" width="300">File Name</font></td><td  color="#2D4E93" ></td></tr>
-				<tr><td colspan=2>
-						<div style="height:125px;width=400px; overflow :auto;">
-						<table id="table_recordefileslist"  cellpadding=3 cellspacing=0 border=0 width="100%"  class="field_text"></table>
-						</div>
-						</td>
-				</tr>
-			</table>
-
-			<table width="500" cellspacing="1" cellpadding="2" border="0" align="center" id="no_rvmns" style="display: none"  bgcolor="#C2C2C2">
-				<tr>
-				<td align="center" bgcolor="#FFFFFF">
-				<br/>You do not have any <i>Recorded Voicemenus</i> <br/><br/>
-				Please click on the 'Record a new Voice Menu' button<br/> 
-				to record a new Voicemenu.<br/><br/>
+		<BR>
+		<table id="maintable" cellpadding=3 cellspacing=0 border=0 width=400 style="border-width: 1px 1px 1px 1px; border-style: solid; border-color: #7E7E7E; ">
+			<tr><td colspan=2 align=center class="field_text"><B>List of recorded voicemenus</B><select id='recorded_files' style="display:none"></select></td></tr>
+			<tr bgcolor="#FFFFFF"><td><font color="#2D4E93" width="300">File Name</font></td><td  color="#2D4E93" ></td></tr>
+			<tr><td colspan=2>
+				<div style="height:125px;width=400px; overflow :auto;">
+				<table id="table_recordefileslist"  cellpadding=3 cellspacing=0 border=0 width="100%"  class="field_text"></table>
+				</div>
 				</td>
-				</tr>
-			</table>
-			<BR><BR>
-			<div id="status"></div>
-			<BR><BR>
-			<input type="button" id="vvv" value="Record a new Voice Menu" onclick="show_record();"  onmouseover="show_tooltip('en', 'record', 0);">
+			</tr>
+		</table>
+
+		<table width="500" cellspacing="1" cellpadding="2" border="0" align="center" id="no_rvmns" style="display: none"  bgcolor="#C2C2C2">
+			<tr>
+			<td align="center" bgcolor="#FFFFFF">
+			<br/>You do not have any <i>Recorded Voicemenus</i> <br/><br/>
+			Please click on the 'Record a new Voice Menu' button<br/> 
+			to record a new Voicemenu.<br/><br/>
+			</td>
+			</tr>
+		</table>
+		<BR><BR>
+		<div id="status"></div>
+		<BR><BR>
+		<input type="button" id="vvv" value="Record a new Voice Menu" onclick="show_record();"  onmouseover="show_tooltip('en', 'record', 0);">
 
 		<div id="recordnew_content" STYLE="display:none; position: absolute; left: 20; top: 125; width:475; height:150;  background-color:#F4EFE5;   border-width: 1px; border-color: #7E5538; border-style: solid;z-index:5">
 			<table width="100%" cellpadding=0 cellspacing=0 onmousedown="startDrag(event , 'recordnew_content');">
 			<TR bgcolor="#7E5538"  style="background-image:url('images/title_gradient.gif');">
-					<TD Height="20" align="center" style="cursor: move">
+				<TD Height="20" align="center" style="cursor: move">
 					<font style="color:#FFFFFF; font-size: 12px; font-weight:bold;">Record a new Voicemenu</font>
-					</TD>
-				   <TD Height="20" align="right" style="cursor: move">
-						<A href="#" onclick="hide_record();"><font style="color:#FFFFFF; font-size: 12px; font-weight:bold;">X</font></A>
-					</TD>
-					<TD width=4></TD>
+				</TD>
+				<TD Height="20" align="right" style="cursor: move">
+					<A href="#" onclick="hide_record();"><font style="color:#FFFFFF; font-size: 12px; font-weight:bold;">X</font></A>
+				</TD>
+				<TD width=4></TD>
 			</TR>
 			</table>
 			<table cellpadding=2 cellspacing=2 border=0>
 				<tr>	<td colspan=2 height=15 valign=middle align=center class="field_text"></td></tr>
-				<tr   onmouseover="show_tooltip('en', 'record', 1);"><td class="field_text">File Name:</td>
-						<td><input id='newvmenu_name' size=24 class="input9">
-								<input type="hidden" id="format" value="gsm">
-						</td>
+				<tr onmouseover="show_tooltip('en', 'record', 1);">
+					<td class="field_text">File Name:</td>
+					<td><input id='newvmenu_name' size=24 class="input9">
+						<input type="hidden" id="format" value="gsm">
+					</td>
 				</tr>
-<!-- 				<tr><td>Format:</td>
+				<!-- 	<tr><td>Format:</td>
 						<td><select id='format'>
-										<option value="gsm">gsm</option>
--										<option value="g723">g723</option>
-										<option value="g729">g729</option>
-										<option value="h623">h623</option>
-										<option value="ulaw">ulaw</option>
-										<option value="alaw">alaw</option>
-										<option value="vox">vox</option>
-										<option value="wav">wav</option>
-										<option value="WAV">WAV</option> 
-								</select>
+							<option value="gsm">gsm</option>
+	-						<option value="g723">g723</option>
+							<option value="g729">g729</option>
+							<option value="h623">h623</option>
+							<option value="ulaw">ulaw</option>
+							<option value="alaw">alaw</option>
+							<option value="vox">vox</option>
+							<option value="wav">wav</option>
+							<option value="WAV">WAV</option> 
+							</select>
 						</td>
 				</tr> -->
 				<tr   onmouseover="show_tooltip('en', 'record', 2);">	<td class="field_text">Extension used for recording:</td>
@@ -329,7 +330,9 @@ function free_mem(){
 				<tr>	<td colspan=2 align=center height=10></td></tr>
 				<tr>	<td colspan=2 align=center>
 						<input type="button" id='record' Value="Record" onclick="record_new()" class="buttonbold">&nbsp;&nbsp;&nbsp;
-						<input type="button" Value="Cancel" onclick="hide_record();" class="buttonbold"></td></tr>
+						<input type="button" Value="Cancel" onclick="hide_record();" class="buttonbold">
+					</td>
+				</tr>
 				<tr>	<td colspan=2 align=center height=10></td></tr>
 			</table>
 		</div>

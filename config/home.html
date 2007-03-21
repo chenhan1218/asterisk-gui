@@ -23,127 +23,127 @@
 <link href="stylesheets/rico.css" media="all" rel="Stylesheet" type="text/css" />
 <link href="stylesheets/schwing.css" media="all" rel="Stylesheet" type="text/css" />
 <script>
-	var demo = new Object;
-	var localloggedon = -1;
-	var asterisk_guitools = parent.asterisk_guitools;
+var demo = new Object;
+var localloggedon = -1;
+var asterisk_guitools = parent.asterisk_guitools;
 
-	function updateButtons(){
-		var f = parent.loggedon;
-		_$('username').disabled = (f)?1:0;
-		_$('secret').disabled = (f)?1:0;
-		_$('logoff').disabled = (f)?0:1;
-		_$('reloadconfig').disabled = (f)?0:1;
-		_$('login').disabled = (f)?1:0;
-		if(!f){ try{ _$('username').focus();}catch(err){ } }
-	}
-	
-	function loggedOn() {
-		if ((parent.loggedon == 1) && (localloggedon == 1))
-			return;
-		if(_$('secret').value=="password"){
-			parent.loggedon = 1;
-			localloggedon = 1;
-			parent.document.getElementById('logoutlink').innerHTML = "Logout";
-			parent.document.getElementById('logoutlink').onclick = parent.Logoff ;
-			parent.gui_alert("You are using the default password provided by AsteriskNOW !! \n\n It is strongly recommended that you change your default password ");
-			window.location.href="options.html";
-			return;
-		}
+function updateButtons(){
+	var f = parent.loggedon;
+	_$('username').disabled = (f)?1:0;
+	_$('secret').disabled = (f)?1:0;
+	_$('logoff').disabled = (f)?0:1;
+	_$('reloadconfig').disabled = (f)?0:1;
+	_$('login').disabled = (f)?1:0;
+	if(!f){ try{ _$('username').focus();}catch(err){ } }
+}
 
-		//if(!asterisk_guitools  || !correct version || !hasSetup ){
-				// redirect to setup
-		//}
-	
-		if( parent.asterisk_guitools_inextconf == 0){
-			checkessentials();
-		}
-
-		parent.setLoggedOn(1);
+function loggedOn() {
+	if ((parent.loggedon == 1) && (localloggedon == 1)){ return; }
+	if(_$('secret').value=="password"){
 		parent.loggedon = 1;
 		localloggedon = 1;
-		_$('username').className  = "input9_disabled";
-		_$('secret').className  = "input9_disabled";
-		updateButtons();
-		_$('statusbar').innerHTML = "<img src='images/tick.gif'><i>Connected!</i>";
 		parent.document.getElementById('logoutlink').innerHTML = "Logout";
 		parent.document.getElementById('logoutlink').onclick = parent.Logoff ;
+		parent.gui_alert("You are using the default password provided by AsteriskNOW !! \n\n It is strongly recommended that you change your default password ");
+		window.location.href="options.html";
+		return;
 	}
-	
-	function loggedOff() {
-		if ((parent.loggedon == 0) && (localloggedon == 0))
-			return;
-		parent.setLoggedOn(0);
-		parent.document.getElementById('logoutlink').innerHTML = "&nbsp;";
-		localloggedon = 0;
-		_$('username').className  = "input9";
-		_$('secret').className  = "input9";
-		updateButtons();
+
+	//if(!asterisk_guitools  || !correct version || !hasSetup ){
+			// redirect to setup
+	//}
+
+	if( parent.asterisk_guitools_inextconf == 0){
+		checkessentials();
 	}
-	
-	demo.logoffs = function(msgs) {
-		_$('statusbar').innerHTML = msgs[0].headers['message'];
+
+	parent.setLoggedOn(1);
+	parent.loggedon = 1;
+	localloggedon = 1;
+	_$('username').className  = "input9_disabled";
+	_$('secret').className  = "input9_disabled";
+	updateButtons();
+	_$('statusbar').innerHTML = "<img src='images/tick.gif'><i>Connected!</i>";
+	parent.document.getElementById('logoutlink').innerHTML = "Logout";
+	parent.document.getElementById('logoutlink').onclick = parent.Logoff ;
+}
+
+function loggedOff() {
+	if ((parent.loggedon == 0) && (localloggedon == 0))
+		return;
+	parent.setLoggedOn(0);
+	parent.document.getElementById('logoutlink').innerHTML = "&nbsp;";
+	localloggedon = 0;
+	_$('username').className  = "input9";
+	_$('secret').className  = "input9";
+	updateButtons();
+}
+
+demo.logoffs = function(msgs) {
+	_$('statusbar').innerHTML = msgs[0].headers['message'];
+	loggedOff();
+};
+
+demo.logins = function(msgs) {
+	_$('statusbar').innerHTML = msgs[0].headers['message'];
+	resp = msgs[0].headers['response'];
+	if (resp == "Success" || msgs[0].headers['message'] == "Invalid/unknown command" ){
+		_$('statusbar').innerHTML = "<img src='images/tick.gif'><i>Connected!</i>";
+		parent.astmanEngine.pollEvents();
+		loggedOn();
+	}else
 		loggedOff();
-	};
+};
 
-	demo.logins = function(msgs) {
-		_$('statusbar').innerHTML = msgs[0].headers['message'];
-		resp = msgs[0].headers['response'];
-		if (resp == "Success" || msgs[0].headers['message'] == "Invalid/unknown command" ){
-			_$('statusbar').innerHTML = "<img src='images/tick.gif'><i>Connected!</i>";
-			parent.astmanEngine.pollEvents();
-			loggedOn();
-		}else
-			loggedOff();
-	};
-	
-	demo.pongs  = function(msgs) {
-		resp = msgs[0].headers['response'];
-		if (resp == "Pong") {
-			_$('statusbar').innerHTML = "<i>Already connected...</i>";
-			loggedOn();
-			parent.loadscreen(this);
-		} else {
-			_$('statusbar').innerHTML = "<i>Please login...</i>";
-			loggedOff();
-			parent.loadscreen(this);
-		}
+demo.pongs  = function(msgs) {
+	resp = msgs[0].headers['response'];
+	if (resp == "Pong") {
+		_$('statusbar').innerHTML = "<i>Already connected...</i>";
+		loggedOn();
+		parent.loadscreen(this);
+	} else {
+		_$('statusbar').innerHTML = "<i>Please login...</i>";
+		loggedOff();
+		parent.loadscreen(this);
+	}
+}
+
+function doLogin() {
+	if( _$('username').value == "" ){
+		parent.gui_alert("Please enter a Username");
+		_$('username').focus();
+		return true;			
 	}
 
-	function doLogin() {
-		if( _$('username').value == "" ){
-			parent.gui_alert("Please enter a Username");
-			_$('username').focus();
-			return true;			
-		}
+	if( _$('secret').value == "" ){
+		parent.gui_alert("Please enter a password");
+		_$('secret').focus();
+		return true;			
+	}
+	parent.document.getElementById('login_name').value = _$('username').value ;
+	_$('statusbar').innerHTML = "<i>Logging in...</i>";
+	parent.astmanEngine.sendRequest('action=login&username=' + _$('username').value + "&secret=" + _$('secret').value, demo.logins);
+}
 
-		if( _$('secret').value == "" ){
-			parent.gui_alert("Please enter a password");
-			_$('secret').focus();
-			return true;			
-		}
-		parent.document.getElementById('login_name').value = _$('username').value ;
-		_$('statusbar').innerHTML = "<i>Logging in...</i>";
-		parent.astmanEngine.sendRequest('action=login&username=' + _$('username').value + "&secret=" + _$('secret').value, demo.logins);
-	}
-	
-	function doLogoff() {
-		if(!confirm("Are you sure ?")){ return true; }
-		_$('statusbar').innerHTML = "<i>Logging off...</i>";
-		parent.astmanEngine.sendRequest('action=logoff', demo.logoffs);
-	}
-	function localajaminit() {	
-		parent.astmanEngine.sendRequest('action=ping', demo.pongs);
-	}
-	function localinit() {
-		var un = _$('username') ; var pwd = _$('secret') ; 
-		un.onFocus = function(){this.className = 'input9_hilight';}
-		un.onBlur = function(){this.className = 'input9';}
-		pwd.onFocus = function(){this.className = 'input9_hilight';}
-		pwd.onBlur = function(){this.className = 'input9';}
-		top.document.title = "Asterisk GUI (Beta) -- Home";
-		localajaminit();
-	}
+function doLogoff() {
+	if(!confirm("Are you sure ?")){ return true; }
+	_$('statusbar').innerHTML = "<i>Logging off...</i>";
+	parent.astmanEngine.sendRequest('action=logoff', demo.logoffs);
+}
 
+function localajaminit() {	
+	parent.astmanEngine.sendRequest('action=ping', demo.pongs);
+}
+
+function localinit() {
+	var un = _$('username') ; var pwd = _$('secret') ; 
+	un.onFocus = function(){this.className = 'input9_hilight';}
+	un.onBlur = function(){this.className = 'input9';}
+	pwd.onFocus = function(){this.className = 'input9_hilight';}
+	pwd.onBlur = function(){this.className = 'input9';}
+	top.document.title = "Asterisk GUI (Beta) -- Home";
+	localajaminit();
+}
 
 function submitOnEnter(e){ 
 	if(e.keyCode == 13){ 
@@ -190,6 +190,7 @@ function reloadConfig(){
 	opt.parameters="action=updateconfig&reload=yes&srcfilename=" + encodeURIComponent("extensions.conf") + "&dstfilename=" + encodeURIComponent("extensions.conf") + uri;
 	var tmp = new Ajax.Request("../../rawman", opt);
 }
+
 </script>
 <body id="foo" onload="localinit()" topmargin=0  bgcolor="EFEFEF">
 <div class="mainscreenTitleBar">
@@ -198,27 +199,31 @@ function reloadConfig(){
 <div class="mainscreenContentBox" id="mailboxcontent">
 <table class="mainscreenTable" width="100%">
 	<tr valign="top">
-		<td colspan=2>
-			<table align="center">
-				<tr><td colspan="2"><h2>Asterisk&trade; Configuration Engine</h2></td>
-				<tr><td>Username:</td><td><input disabled=1 id="username"  class="input9" size=12></td></tr>
-				<tr><td>Password:</td><td><input disabled=1 type="password" id="secret" class="input9" size=12 onKeyPress="submitOnEnter(event)"></td></tr>
-				<tr><td colspan=2 align="center">
-				  <div id="statusbar">
-					<span style="margin-left: 4px;font-weight:bold">&nbsp;</span>
-				  </div>
-				</td></tr>
-
-				<tr><td align='center' colspan='2'>
-							<input type="submit" id="reloadconfig" value="Reload Config" disabled=1 onClick="reloadConfig()">
-							&nbsp;&nbsp;&nbsp;&nbsp;
-							<input type="submit" id="login" value="Login" disabled=1 onClick="doLogin()" class="input">
-							&nbsp;&nbsp;&nbsp;&nbsp;
-							<input type="submit" id="logoff" value="Logoff" disabled=1 onClick="doLogoff()" class="input">
-						</td>
-				</tr>
-			</table>
-		</td>
+	<td colspan=2>
+		<table align="center">
+		<tr>	<td colspan="2"><h2>Asterisk&trade; Configuration Engine</h2></td>
+		<tr>	<td>Username:</td>
+			<td><input disabled=1 id="username"  class="input9" size=12></td>
+		</tr>
+		<tr>	<td>Password:</td>
+			<td><input disabled=1 type="password" id="secret" class="input9" size=12 onKeyPress="submitOnEnter(event)"></td>
+		</tr>
+		<tr>	<td colspan=2 align="center">
+			<div id="statusbar">
+				<span style="margin-left: 4px;font-weight:bold">&nbsp;</span>
+			</div>
+			</td>
+		</tr>
+		<tr>	<td align='center' colspan='2'>
+				<input type="submit" id="reloadconfig" value="Reload Config" disabled=1 onClick="reloadConfig()">
+				&nbsp;&nbsp;&nbsp;&nbsp;
+				<input type="submit" id="login" value="Login" disabled=1 onClick="doLogin()" class="input">
+				&nbsp;&nbsp;&nbsp;&nbsp;
+				<input type="submit" id="logoff" value="Logoff" disabled=1 onClick="doLogoff()" class="input">
+			</td>
+		</tr>
+		</table>
+	</td>
 	</tr>
 </table>
 </div>

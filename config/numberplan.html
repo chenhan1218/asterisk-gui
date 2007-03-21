@@ -76,15 +76,18 @@ function checkfields(){
 		_$('rulename').focus();
 		return false;
 	}
+
 	if( _$('trunks').selectedIndex == -1){
 		gui_alert("Please select a service provider to place this call through");
 		return false;
 	}
+
 	if( _$('define_advanced').style.display=="none" && _$('beginswith').value.length==0 ){
 		gui_alert("Please Enter the beginning pattern of the number");
 		_$('beginswith').focus();
 		return false;
 	}
+
 	if( _$('define_usual').style.display=="none" && _$('pattern').value.length == 0 ){
 		gui_alert("Please Enter a custom pattern");
 		_$('pattern').focus();
@@ -623,105 +626,119 @@ function free_mem( ){
 	<center>
 	<fieldset style="width: 500px" id="fieldset1">
 		<legend>&nbsp;List of DialPlans:&nbsp;</legend>
-		<CENTER><select id="extensions" class="input9" style="z-index:2"></select>&nbsp;&nbsp;<a href="#" class="splbutton" onclick="newnumberplan()"  onmouseover="show_tooltip('en', 'callingrules', 0);">new</a>&nbsp;&nbsp;<a href="#" class="splbutton" onclick="delete_numberplan()" onmouseover="show_tooltip('en', 'callingrules', 1);">delete</a>
+		<CENTER><select id="extensions" class="input9" style="z-index:2"></select>&nbsp;&nbsp;
+			<a href="#" class="splbutton" onclick="newnumberplan()"  onmouseover="show_tooltip('en', 'callingrules', 0);">new</a>&nbsp;&nbsp;
+			<a href="#" class="splbutton" onclick="delete_numberplan()" onmouseover="show_tooltip('en', 'callingrules', 1);">delete</a>
 			<input id='new' value='New' type="button"  style="display:none">
 			<input id='delete' value='Delete' type="button"  style="display:none">
-			<div id="npcontent" STYLE="display:none; position: absolute; left: 110; top: 40; width:320; height:110;  background-color:#F4EFE5;   border-width: 1px; border-color: #7E5538; border-style: solid; z-index:6">
-					<table width="100%" cellpadding=0 cellspacing=0  onmousedown="startDrag(event , 'npcontent');">
-					<TR bgcolor="#7E5538"  style="background-image:url('images/title_gradient.gif');">
-							<TD Height="20" align="center" style="cursor: move">
-							<font style="color:#FFFFFF; font-size: 12px; font-weight:bold;">Create new Dial Plan </font>
-							</TD>
-							<TD Height="20" align="right" style="cursor: move">
-								<A href="#" onclick="$('cancel').click();"><font style="color:#FFFFFF; font-size: 12px; font-weight:bold;">X</font></A>
-							</TD>
-							<TD width=4></TD>
-					</TR>
-					</table>
-					<TABLE cellpadding=0 cellspacing=3 border=0 width="100%">
-					<TR><TD colspan=2 height=10></TD></TR>
-					<TR><TD align="right">DialPlan Name:</TD><TD><input id="name" style="display:none"><input id="plancomment" size=15 class="input9"><input id="include" style="display:none"></TD></TR>
-					<TR><TD colspan=2 height=10></TD></TR>
-					<TR>
-						<TD align="center" colspan=2>
-							<input id='save' value='Save' type="button">&nbsp;&nbsp;<input id='cancel' value='Cancel' type="button">
-						</TD>
-					</TR>
-					</TABLE>
-			</div>
+			
 		</CENTER>
 	</fieldset>
 	</center>
-<BR>
+	<BR>
+	<div id="npcontent" STYLE="display:none; position: absolute; left: 110; top: 40; width:320; height:110;  background-color:#F4EFE5;   border-width: 1px; border-color: #7E5538; border-style: solid; z-index:6">
+	<table width="100%" cellpadding=0 cellspacing=0  onmousedown="startDrag(event , 'npcontent');">
+		<TR bgcolor="#7E5538"  style="background-image:url('images/title_gradient.gif');">
+			<TD Height="20" align="center" style="cursor: move">
+				<font style="color:#FFFFFF; font-size: 12px; font-weight:bold;">Create new Dial Plan </font>
+			</TD>
+			<TD Height="20" align="right" style="cursor: move">
+				<A href="#" onclick="$('cancel').click();"><font style="color:#FFFFFF; font-size: 12px; font-weight:bold;">X</font></A>
+			</TD>
+			<TD width=4></TD>
+		</TR>
+	</table>
+	<TABLE cellpadding=0 cellspacing=3 border=0 width="100%">
+		<TR>	<TD colspan=2 height=10></TD>	</TR>
+		<TR>	<TD align="right">DialPlan Name:</TD>
+			<TD><input id="name" style="display:none"><input id="plancomment" size=15 class="input9"><input id="include" style="display:none"></TD>
+		</TR>
+		<TR>	<TD colspan=2 height=10></TD>	</TR>
+		<TR>	<TD align="center" colspan=2>
+				<input id='save' value='Save' type="button">&nbsp;&nbsp;
+				<input id='cancel' value='Cancel' type="button">
+			</TD>
+		</TR>
+	</TABLE>
+	</div>
 	<center>
 	<fieldset  style="height: 390px; "  id="fieldset2">
-			<legend>&nbsp;List of Calling Rules in the selected DialPlan&nbsp;</legend>
-				<table class="table_blacksm" cellpadding=2 cellspacing=2 border=0 align=center width=500 id="table_one">
-					<tr>	<td width=35>S.No</td>
-							<td width=90>RuleName</td>
-							<td>Dial Pattern</td>
-							<td width=85 align=center>Call Using</td>
-							<td width=75 align=center>Options</td>
-					</tr>
-				</table>
-				<div id="callingRulesTable_div" style="height:260px;width=100%; overflow :auto; padding : 0px 0px 0px 0px;">
-					<table id="callingRulesTable" cellpadding=2 cellspacing=1 border=0 align=center width=500></table>
-				</div>
-			<center><div style="height:25px;color: #FF0000;" id='status'  class="field_text9"></div></center>
-			<BR>
-			<div STYLE="position: absolute; left:186; top: 460;"><input type="button" id="addrule" value="Add a Calling Rule" onclick="add_callingrule();"  onmouseover="show_tooltip('en', 'callingrules', 4);"></div>
+		<legend>&nbsp;List of Calling Rules in the selected DialPlan&nbsp;</legend>
+		<table class="table_blacksm" cellpadding=2 cellspacing=2 border=0 align=center width=500 id="table_one">
+		<tr>	<td width=35>S.No</td>
+			<td width=90>RuleName</td>
+			<td>Dial Pattern</td>
+			<td width=85 align=center>Call Using</td>
+			<td width=75 align=center>Options</td>
+		</tr>
+		</table>
+		<div id="callingRulesTable_div" style="height:260px;width=100%; overflow :auto; padding : 0px 0px 0px 0px;">
+			<table id="callingRulesTable" cellpadding=2 cellspacing=1 border=0 align=center width=500></table>
+		</div>
+		<center><div style="height:25px;color: #FF0000;" id='status'  class="field_text9"></div></center>
+		<BR>
+		<div STYLE="position: absolute; left:186; top: 460;">
+			<input type="button" id="addrule" value="Add a Calling Rule" onclick="add_callingrule();"  onmouseover="show_tooltip('en', 'callingrules', 4);">
+		</div>
 	</fieldset>
 	</center>
 
-		<div id="userscontent" STYLE="display:none; position: absolute; left: 20; top: 144; width:500; height:290;  background-color:#F4EFE5;   border-width: 1px; border-color: #7E5538; border-style: solid; z-index:5">
-		<table width="100%" cellpadding=0 cellspacing=0  onmousedown="startDrag(event , 'userscontent');">
-		<TR bgcolor="#7E5538"  style="background-image:url('images/title_gradient.gif');"><TD Height="20" align="right" style="cursor: move">
-					<A href="#" onclick="$('cancel_a').click();"><font style="color:#FFFFFF; font-size: 12px; font-weight:bold;">X</font></A>
-				</TD>
-				<TD width=4></TD>
-		</TR>
-		</table>
-		<TABLE	align=center cellpadding=2 cellspacing=2 border=0 width="480">
-		<TR  onmouseover="show_tooltip('en', 'callingrules', 5);">
-			<TD align="right" width=175>Rule Name:</TD>
-			<TD><input type="text" id="rulename" size="" onChange="enablesave();" onkeyup="enablesave();" class="input9"></TD>
-		</TR>
-		<TR  onmouseover="show_tooltip('en', 'callingrules', 6);">
-			<TD  align="right" height=40> Place this call through :</TD>
-			<TD><select id="trunks"  class="input9" onChange="enablesave();"></select></TD>
-		</TR>
-		<TR id="define_usual" height=100   onmouseover="show_tooltip('en', 'callingrules', 7);">
-			<TD valign="top" align=right>Dialing Rules :</TD>
-			<TD valign="top"> If the number begins with <input id="beginswith"  class="input9" type='text' size=6 onChange="enablesave();" onkeyup="enablesave();"> and 
-					followed by <input id="followedby" type='text'  class="input9" size=1 onChange="enablesave();" onkeyup="enablesave();"> digits <input type="checkbox" id="ormore" onChange="enablesave();"> or more <BR>
-					<A href="#" onclick="ownpattern();">(define a custom pattern)</A>
-			</TD>
-		</TR>
-		
-		<TR id="define_advanced"  height=100   onmouseover="show_tooltip('en', 'callingrules', 8);">
-			<TD valign="top" align=right>
-				Custom Pattern:
-			</TD>
-			<TD valign=top>
-					<input type="text" id="pattern" size="" onChange="enablesave();" onkeyup="enablesave();"  class="input9"><BR>
-					<table align='left' cellpadding=0 cellspacing=0>
-						<tr><td class="field_text"><b>N&nbsp;&nbsp;</b></td><td class="field_text">Any digit from 2 to 9</td></tr>
-						<tr><td class="field_text"><b>X&nbsp;&nbsp;</b></td><td class="field_text">Any digit from 0 to 9</td></tr>
-						<tr><td class="field_text"><b>.&nbsp;&nbsp;</b></td><td class="field_text">Any number of additional digits</td></tr>
-					</table>
-			</TD>
-		</TR>
-		<TR   onmouseover="show_tooltip('en', 'callingrules', 9);">
-			<TD colspan=2 align=center>Strip <input type="text" id="strip"  class="input9" size="1"  onChange="enablesave();" onkeyup="enablesave();"> digits from the front and prepend <input type="text" id="prepend"  class="input9" size="3"  onChange="enablesave();" onkeyup="enablesave();"> before dialing</TD>
-		</TR>
-		<TR>
-			<TD colspan=2 align=center height=50 valign=middle>  
-					<input type="button" id="save_a" value="Save" onclick="saverule();">&nbsp;&nbsp;
-					<input type="button" id="cancel_a" value="Cancel" onclick="$('userscontent').style.display='none'; $('bg_transparent').style.display ='none'; $('addrule').disabled =0;">
-			</TD>
-		</TR>
-		</TABLE>
-		</div>
+	<div id="userscontent" STYLE="display:none; position: absolute; left: 20; top: 144; width:500; height:290;  background-color:#F4EFE5;   border-width: 1px; border-color: #7E5538; border-style: solid; z-index:5">
+	<table width="100%" cellpadding=0 cellspacing=0  onmousedown="startDrag(event , 'userscontent');">
+	<TR bgcolor="#7E5538"  style="background-image:url('images/title_gradient.gif');">
+		<TD Height="20" align="right" style="cursor: move">
+			<A href="#" onclick="$('cancel_a').click();"><font style="color:#FFFFFF; font-size: 12px; font-weight:bold;">X</font></A>
+		</TD>
+		<TD width=4></TD>
+	</TR>
+	</table>
+	<TABLE	align=center cellpadding=2 cellspacing=2 border=0 width="480">
+	<TR  onmouseover="show_tooltip('en', 'callingrules', 5);">
+		<TD align="right" width=175>Rule Name:</TD>
+		<TD><input type="text" id="rulename" size="" onChange="enablesave();" onkeyup="enablesave();" class="input9"></TD>
+	</TR>
+	<TR  onmouseover="show_tooltip('en', 'callingrules', 6);">
+		<TD  align="right" height=40> Place this call through :</TD>
+		<TD><select id="trunks"  class="input9" onChange="enablesave();"></select></TD>
+	</TR>
+	<TR id="define_usual" height=100   onmouseover="show_tooltip('en', 'callingrules', 7);">
+		<TD valign="top" align=right>Dialing Rules :</TD>
+		<TD valign="top"> If the number begins with <input id="beginswith"  class="input9" type='text' size=6 onChange="enablesave();" onkeyup="enablesave();"> and 
+				followed by <input id="followedby" type='text'  class="input9" size=1 onChange="enablesave();" onkeyup="enablesave();"> digits <input type="checkbox" id="ormore" onChange="enablesave();"> or more <BR>
+			<A href="#" onclick="ownpattern();">(define a custom pattern)</A>
+		</TD>
+	</TR>
+	
+	<TR id="define_advanced"  height=100   onmouseover="show_tooltip('en', 'callingrules', 8);">
+		<TD valign="top" align=right> Custom Pattern: </TD>
+		<TD valign=top>
+			<input type="text" id="pattern" size="" onChange="enablesave();" onkeyup="enablesave();"  class="input9"><BR>
+			<table align='left' cellpadding=0 cellspacing=0>
+			<tr>	<td class="field_text"><b>N&nbsp;&nbsp;</b></td>
+				<td class="field_text">Any digit from 2 to 9</td>
+			</tr>
+			<tr>	<td class="field_text"><b>X&nbsp;&nbsp;</b></td>
+				<td class="field_text">Any digit from 0 to 9</td>
+			</tr>
+			<tr>	<td class="field_text"><b>.&nbsp;&nbsp;</b></td>
+				<td class="field_text">Any number of additional digits</td>
+			</tr>
+			</table>
+		</TD>
+	</TR>
+	<TR   onmouseover="show_tooltip('en', 'callingrules', 9);">
+		<TD colspan=2 align=center>
+			Strip <input type="text" id="strip"  class="input9" size="1"  onChange="enablesave();" onkeyup="enablesave();"> 
+			digits from the front and prepend <input type="text" id="prepend"  class="input9" size="3"  onChange="enablesave();" onkeyup="enablesave();"> before dialing
+		</TD>
+	</TR>
+	<TR>	<TD colspan=2 align=center height=50 valign=middle>  
+			<input type="button" id="save_a" value="Save" onclick="saverule();">&nbsp;&nbsp;
+			<input type="button" id="cancel_a" value="Cancel" onclick="$('userscontent').style.display='none'; $('bg_transparent').style.display ='none'; $('addrule').disabled =0;">
+		</TD>
+	</TR>
+	</TABLE>
+	</div>
 </div>
 <div id="bg_transparent" STYLE="display:none; position: absolute; left: 0; top: 24; width:100%; height:100%;  background-color:#EFEFEF; -moz-opacity:.50;opacity:.50; border-width: 1px; border-color: #EFEFEF; border-style: solid; z-index:4">
 </div>

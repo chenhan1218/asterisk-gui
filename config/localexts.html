@@ -53,7 +53,6 @@ usercallbacks.beforeSaving= function(){
 	return true;
 }
 
-
 usercallbacks.loaded = function(){
 	var d = _$('devices') ; 
 	d.selectitem(0);
@@ -91,14 +90,13 @@ function localajaxinit(){
 	}
 
 	add_event( _$('localextenlength') , 'change' , update_spae ) ;
-
 	parent.astmanEngine.config2list("users.conf", _$('devices'),widgets, usercallbacks);
 }
 
 
 function update_spae(){
-	var lel = $('localextenlength');
-	var ub = $('userbase') ;
+	var lel = _$('localextenlength');
+	var ub = _$('userbase') ;
 
 	if( lel.value == "0" ) { return; }
 
@@ -121,80 +119,76 @@ function free_mem( ){
 	} catch(e){ }
 }
 </script>
-<body id="foo" onload="localajaxinit()" bgcolor="EFEFEF"  onunload="free_mem( )">
+<body id="foo" onload="localajaxinit()" bgcolor="EFEFEF"  onunload="free_mem()">
 <div class="mainscreenTitleBar"><span style="margin-left: 4px;font-weight:bold">Admin Options - Local Extension Settings</span></div>
 <div class="mainscreenContentBox" id="userscontent">
 <TABLE align=center width="520" cellpadding=0 cellspacing=0 style="margin: 5px 0 0 0;">
 <TR>
 	<TD valign="bottom" align="center" class="tab"><a href="#" class="tabselected">Local Extension settings</a></TD>
-	<TD><a href="options.html" class="tab">Change Password</a></TD>if( lel == "" ) { return; }
+	<TD><a href="options.html" class="tab">Change Password</a></TD>
 	<TD valign="bottom" align="left"><a href="#" class="tab" onclick="tosetup();">Run Setup Wizard</a></TD> 
 </TR>
 </TABLE>
 <BR>
 <table class="mainscreenTable" align="center">
-	<tr>	<td align="center" valign="top">
-					<select id="devices" style="display:none"></select> 
+<tr>	
+<td align="center" valign="top">
+	<select id="devices" style="display:none"></select> 
 	<fieldset  style="width: 400px">
 		<legend>&nbsp;Local Extension Settings:&nbsp;</legend>
 		<table align='center'  width='390'  cellpadding=2 cellspacing=1>
-				<tr ><td class="field_text" align=left>
-							Local Extensions are 
-							<select id="localextenlength" class="input9">
-								<option value="2">2 digits</option><option value="3">3 digits</option><option value="4">4 digits</option><option value="5">5 digits</option>
-								<option value="0">Varying</option>
-							</select>&nbsp;</td>
-				</tr>
-				<tr ><td class="field_text" align=left>Fist Extension Number : <input type=text id="userbase" size=5  class="input9"></td></tr>
-				<tr ><td class="field_text" align="left"><input type=checkbox id="allow_aliasextns">Allow analog phones to be assigned to multiple extensions</td></tr>
-				<tr ><td class="field_text" align="left"><input type=checkbox id="allow_an_extns">Allow extensions to be AlphaNumeric (SIP/IAX users)</td></tr>
-			</table>
+		<tr ><td class="field_text" align=left>
+			Local Extensions are 
+			<select id="localextenlength" class="input9">
+			<option value="2">2 digits</option>
+			<option value="3">3 digits</option>
+			<option value="4">4 digits</option>
+			<option value="5">5 digits</option>
+			<option value="0">Varying</option>
+			</select>&nbsp;</td>
+		</tr>
+		<tr><td class="field_text" align=left>Fist Extension Number : <input type=text id="userbase" size=5  class="input9"></td></tr>
+		<tr><td class="field_text" align="left"><input type=checkbox id="allow_aliasextns">Allow analog phones to be assigned to multiple extensions</td></tr>
+		<tr><td class="field_text" align="left"><input type=checkbox id="allow_an_extns">Allow extensions to be AlphaNumeric (SIP/IAX users)</td></tr>
+		</table>
 	</fieldset><BR>
 	<fieldset style="width: 400px">
 		<legend>&nbsp;Default Settings for a New User:&nbsp;</legend>
-				<table align='center'  width='390'  cellpadding=2 cellspacing=1>
-
-				<tr>			<td onmouseover="show_tooltip('en', 'users', 15);" class="field_text" align="right"><input type='checkbox' id='hasagent'></td>
-								<td onmouseover="show_tooltip('en', 'users', 15);" class="field_text" >Is Agent</td>
-								<td onmouseover="show_tooltip('en', 'users', 8);" align=right><input type='checkbox' id='hasvoicemail'></td>
-								<td onmouseover="show_tooltip('en', 'users', 8);" class="field_text" align="left">Voicemail</td>
-				</tr>
-				
-				
-				<tr>			<td onmouseover="show_tooltip('en', 'users', 9);" class="field_text" align="right"><input type='checkbox' id='hasdirectory'></td>
-								<td onmouseover="show_tooltip('en', 'users', 9);" class="field_text" >In Directory</td>
-								<td onmouseover="show_tooltip('en', 'users', 12);" align=right><input type='checkbox' id='hasmanager'></td>
-								<td onmouseover="show_tooltip('en', 'users', 12);" class="field_text" align="left">CTI</td>
-				</tr>
-
-				<tr>			<td onmouseover="show_tooltip('en', 'users', 10);" class="field_text" align="right"><input type='checkbox' id='hassip'></td>
-								<td onmouseover="show_tooltip('en', 'users', 10);"  class="field_text" >SIP</td>
-								<td onmouseover="show_tooltip('en', 'users', 11);" align=right><input type='checkbox' id='hasiax'></td>
-								<td onmouseover="show_tooltip('en', 'users', 11);" class="field_text" align="left">IAX</td>
-				</tr>
-
-				<tr>			<td onmouseover="show_tooltip('en', 'users', 13);" class="field_text" align="right"><input type='checkbox' id='callwaiting'></td>
-								<td onmouseover="show_tooltip('en', 'users', 13);" class="field_text" >Call Waiting</td>
-								<td onmouseover="show_tooltip('en', 'users', 14);" align=right><input type='checkbox' id='threewaycalling'></td>
-								<td onmouseover="show_tooltip('en', 'users', 14);" class="field_text" align="left">3-Way&nbsp;Calling</td>
-				</tr>
-
-				<tr>			
-								<td onmouseover="show_tooltip('en', 'users', 16);" align=right><input size='3' id='vmsecret' pattern='^[0-9*]*$'  class="input9">&nbsp;</td>
-								<td onmouseover="show_tooltip('en', 'users', 16);" class="field_text" align="left">VoiceMail Password</td>
-								<td align=right></td>
-								<td  class="field_text" align="left"></td>
-				</tr>
-				</table>
+		<table align='center'  width='390'  cellpadding=2 cellspacing=1>
+		<tr>	<td onmouseover="show_tooltip('en', 'users', 15);" class="field_text" align="right"><input type='checkbox' id='hasagent'></td>
+			<td onmouseover="show_tooltip('en', 'users', 15);" class="field_text" >Is Agent</td>
+			<td onmouseover="show_tooltip('en', 'users', 8);" align=right><input type='checkbox' id='hasvoicemail'></td>
+			<td onmouseover="show_tooltip('en', 'users', 8);" class="field_text" align="left">Voicemail</td>
+		</tr>
+		<tr>	<td onmouseover="show_tooltip('en', 'users', 9);" class="field_text" align="right"><input type='checkbox' id='hasdirectory'></td>
+			<td onmouseover="show_tooltip('en', 'users', 9);" class="field_text" >In Directory</td>
+			<td onmouseover="show_tooltip('en', 'users', 12);" align=right><input type='checkbox' id='hasmanager'></td>
+			<td onmouseover="show_tooltip('en', 'users', 12);" class="field_text" align="left">CTI</td>
+		</tr>
+		<tr>	<td onmouseover="show_tooltip('en', 'users', 10);" class="field_text" align="right"><input type='checkbox' id='hassip'></td>
+			<td onmouseover="show_tooltip('en', 'users', 10);"  class="field_text" >SIP</td>
+			<td onmouseover="show_tooltip('en', 'users', 11);" align=right><input type='checkbox' id='hasiax'></td>
+			<td onmouseover="show_tooltip('en', 'users', 11);" class="field_text" align="left">IAX</td>
+		</tr>
+		<tr>	<td onmouseover="show_tooltip('en', 'users', 13);" class="field_text" align="right"><input type='checkbox' id='callwaiting'></td>
+			<td onmouseover="show_tooltip('en', 'users', 13);" class="field_text" >Call Waiting</td>
+			<td onmouseover="show_tooltip('en', 'users', 14);" align=right><input type='checkbox' id='threewaycalling'></td>
+			<td onmouseover="show_tooltip('en', 'users', 14);" class="field_text" align="left">3-Way&nbsp;Calling</td>
+		</tr>
+		<tr>	<td onmouseover="show_tooltip('en', 'users', 16);" align=right><input size='3' id='vmsecret' pattern='^[0-9*]*$'  class="input9">&nbsp;</td>
+			<td onmouseover="show_tooltip('en', 'users', 16);" class="field_text" align="left">VoiceMail Password</td>
+			<td align=right></td>
+			<td  class="field_text" align="left"></td>
+		</tr>
+		</table>
 	</fieldset>
-					<center>
-							<div style="height:15px" id='status'></div><BR>
-							<input type=button id="save" value="Save">
-							&nbsp;&nbsp;<input type=button id="cancel" value="Cancel">
-					</center>
-			</td>
-	</tr>
-	<tr valign="top" height="18">	<td></td></tr>
+	<center>
+		<div style="height:15px" id='status'></div><BR>
+		<input type=button id="save" value="Save">&nbsp;&nbsp;<input type=button id="cancel" value="Cancel">
+	</center>
+</td>
+</tr>
+<tr valign="top" height="18"><td></td></tr>
 </table>
 </div>
 </body>

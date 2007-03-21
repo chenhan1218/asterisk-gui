@@ -57,8 +57,6 @@ function showremovebkpfile(){
 //	$('message_text').innerHTML =  "<A href=\"#\" onclick=\"removebkpfile()\">I have downloaded the file</A><BR><BR>" + "<A href=\"./bkps/"+ bkpfile  +"\" onclick=\"showremovebkpfile()\">ReDownload</A>";
 }
 
-
-
 function download_bkp(){
 
 	var today=new Date()
@@ -86,14 +84,12 @@ function download_bkp(){
 <div class="mainscreenContentBox" id="userscontent">
 <table class="mainscreenTable" align="center">
 	<tr>	<td align=center height=30><BR><BR><div id="status"></div></td></tr>
-	<tr>
-		<td valign="top" align="center">
+	<tr>	<td valign="top" align="center">
 			<BR><BR>
 			<Input type="button" onclick="removebkpfile()" value="Download a Configuration backup">	
 		</td>
 	</tr>
-	<tr>
-		<td valign="top" align="center">
+	<tr>	<td valign="top" align="center">
 			<BR><BR>
 			<font size="-1">
 			Note: Restoring a configuration backup will be added soon to this section !<BR>

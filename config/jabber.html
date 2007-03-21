@@ -31,11 +31,11 @@ var widgets = new Array;
 var fieldnames = ['buddy', 'cancel', 'delete', 'name', 'new', 'port', 'save', 'secret', 'serverhost', 'status', 'statusmessage', 'timeout', 'type', 'username', 'usesasl', 'usetls'];
 
 phonecallbacks.format = function(t) {
-		tmp = t.name.split('general');
-		if(tmp.length>1)
-			return false;
-		else
-			return t.name;
+	tmp = t.name.split('general');
+	if(tmp.length>1)
+		return false;
+	else
+		return t.name;
 }
 
 
@@ -69,62 +69,78 @@ function localajaxinit() {
 	<span style="cursor: pointer; cursor: hand;" onclick="window.location.href=window.location.href;" >&nbsp;<img src="images/refresh.png" title=" Refresh " border=0 >&nbsp;</span>
 </div>
 <div class="mainscreenContentBox" id="userscontent">
-<table class="mainscreenTable" align="center">
+	<table class="mainscreenTable" align="center">
 	<tr valign="top">
-		<td colspan='2'>
-		Users:
-		</td>
+		<td colspan='2'>Users:</td>
 	</tr>
 	<tr valign="top">
-		<td>
-		<select size="28" id="JabberUsers" style="width:220px; height: 415px">
-		<option>Loading...</option>
-		</select>
-		</td>
+		<td>	<select size="28" id="JabberUsers" style="width:220px; height: 415px"><option>Loading...</option></select></td>
 		<td colspan='3'  style='width:311px; height: 415px'>
-		<div id='adjustments'>
-		<table cellspacing='0' cellpadding='0'>
-			<tr valign="top"><td>
-				<table cellpadding=1 cellspacing=0>
-				<tr><td class="field_text">Extension:</td><td>&nbsp;<input size='24' id='name'  class="input8"></td></tr>
-				<tr><td class="field_text">Username:</td><td>&nbsp;<input size='24' id='username' class="input8"></td></tr>
-				<tr><td class="field_text">Password:</td><td>&nbsp;<input size='24' id='secret' class="input8"></td></tr>
-				<tr><td class="field_text">Server Host:</td><td>&nbsp;<input size='24' id='serverhost' class="input8"></td></tr>
-				<tr><td class="field_text">Buddy:</td><td>&nbsp;<input size='24' id='buddy' class="input8"></td></tr>
-				<tr><td class="field_text">Status Message:</td><td>&nbsp;<input size='24' id='statusmessage' class="input8"></td></tr>
-				<tr><td class="field_text">Type:</td><td>&nbsp;<select id='type' class="input8">
-																			<option value="client">client</option>
-																			<option value="component">component</option>
-																		</select>
-													</td>
-				</tr>
-				<tr><td class="field_text">Port:</td><td>&nbsp;<input size='4' id='port' pattern='^\d*$' class="input8"></td></tr>
-				<tr><td class="field_text">TimeOut:</td><td>&nbsp;<input size='4' id='timeout' pattern='^\d*$' class="input8"></td></tr>
-				<tr><td class="field_text">Use TLS:</td><td><input type="checkbox" id='usetls'></td></tr>
-				<tr><td class="field_text">Use SASL:</td><td><input type="checkbox" id='usesasl'></td></tr>
-				<tr><td colspan='2' align='center'><div style="height:15px" id='status'></div></td></tr>
-				</table>
-			</td>
+			<div id='adjustments'>
+			<table cellspacing='0' cellpadding='0'>
+			<tr valign="top">
+				<td>	<table cellpadding=1 cellspacing=0>
+					<tr>	<td class="field_text">Extension:</td>
+						<td>&nbsp;<input size='24' id='name'  class="input8"></td>
+					</tr>
+					<tr>	<td class="field_text">Username:</td>
+						<td>&nbsp;<input size='24' id='username' class="input8"></td>
+					</tr>
+					<tr>	<td class="field_text">Password:</td>
+						<td>&nbsp;<input size='24' id='secret' class="input8"></td>
+					</tr>
+					<tr>	<td class="field_text">Server Host:</td>
+						<td>&nbsp;<input size='24' id='serverhost' class="input8"></td>
+					</tr>
+					<tr>	<td class="field_text">Buddy:</td>
+						<td>&nbsp;<input size='24' id='buddy' class="input8"></td>
+					</tr>
+					<tr>	<td class="field_text">Status Message:</td>
+						<td>&nbsp;<input size='24' id='statusmessage' class="input8"></td>
+					</tr>
+					<tr>	<td class="field_text">Type:</td>
+						<td>&nbsp;<select id='type' class="input8">
+							<option value="client">client</option>
+							<option value="component">component</option></select>
+						</td>
+					</tr>
+					<tr>	<td class="field_text">Port:</td>
+						<td>&nbsp;<input size='4' id='port' pattern='^\d*$' class="input8"></td>
+					</tr>
+					<tr>	<td class="field_text">TimeOut:</td>
+						<td>&nbsp;<input size='4' id='timeout' pattern='^\d*$' class="input8"></td>
+					</tr>
+					<tr>	<td class="field_text">Use TLS:</td>
+						<td><input type="checkbox" id='usetls'></td>
+					</tr>
+					<tr>	<td class="field_text">Use SASL:</td>
+						<td><input type="checkbox" id='usesasl'></td>
+					</tr>
+					<tr>	<td colspan='2' align='center'><div style="height:15px" id='status'></div></td>	</tr>
+					</table>
+				</td>
 			</tr>
-			<tr><td align="center" class="field_text">
-						<!-- <img src="./images/jabber.gif" border=0> --><BR><BR>
-						<font size=-2>
-						Jabber&trade; is a collection of open, XML-based protocols for instant messaging and presence information.
-						</font><BR><font size=-2>Jabber&reg; is a registered trademark of Jabber, Inc.</font>
-					</td>
+			<tr>	<td align="center" class="field_text">
+				<!-- <img src="./images/jabber.gif" border=0> --><BR><BR>
+				<font size=-2>
+				Jabber&trade; is a collection of open, XML-based protocols for instant messaging and presence information.
+				</font><BR><font size=-2>Jabber&reg; is a registered trademark of Jabber, Inc.</font>
+				</td>
 			</tr>
-		</table>
-		</div>
-		</td></tr>				
-		<tr>
-		<td align='center'>
-			<input type='button' id='new' value='New' class="buttonbold">&nbsp;&nbsp;<input type='button' id='delete' value='Delete' class="buttonbold">
+			</table>
+			</div>
+		</td>
+	</tr>				
+	<tr>	<td align='center'>
+			<input type='button' id='new' value='New' class="buttonbold">&nbsp;&nbsp;
+			<input type='button' id='delete' value='Delete' class="buttonbold">
 		</td>
 		<td colspan='1' align='center'>
-				<input type='button' id='save' value='Save' class="buttonbold">&nbsp;&nbsp;<input type='button' id='cancel' value='Cancel' class="buttonbold">
+			<input type='button' id='save' value='Save' class="buttonbold">&nbsp;&nbsp;
+			<input type='button' id='cancel' value='Cancel' class="buttonbold">
 		</td>
-	</tr><tr>
 	</tr>
-</table>
+	<tr>	</tr>
+	</table>
 </div>
 </body>

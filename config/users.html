@@ -26,280 +26,268 @@
 <link href="stylesheets/rico.css" media="all" rel="Stylesheet" type="text/css" />
 <link href="stylesheets/schwing.css" media="all" rel="Stylesheet" type="text/css" />
 <script>
-	var origwidth;
-	var widgets = new Array;
-	var adstatus;
-	var callbacks = new Object;
-	var phonecallbacks = new Object;
-	var extencallbacks = new Object;
-	var numcallbacks = new Object;
+var origwidth;
+var widgets = new Array;
+var adstatus;
+var callbacks = new Object;
+var phonecallbacks = new Object;
+var extencallbacks = new Object;
+var numcallbacks = new Object;
+var fieldnames = ['callwaiting' ,'cancel' ,'cid_number' ,'context' ,'delete' ,'email' ,'fullname' ,'group' ,'hasagent' ,'hasdirectory' ,'hasiax' ,'hasmanager' ,'hassip' ,'hasvoicemail' ,'host' ,'mailbox' ,'name' ,'new' ,'save' ,'secret' ,'status' ,'threewaycalling' ,'vmsecret' ,'zapchan', 'registeriax', 'registersip'];
+var focus_fields = ['cid_number' ,'context' ,'email' ,'fullname' ,'name' ,'secret' ,'vmsecret' ,'zapchan'] ;
+var localextenlength = 4;
+var allow_aliasextns = "no";
+var allow_an_extns = "no" ;
 
-	var fieldnames = ['callwaiting' ,'cancel' ,'cid_number' ,'context' ,'delete' ,'email' ,'fullname' ,'group' ,'hasagent' ,'hasdirectory' ,'hasiax' ,'hasmanager' ,'hassip' ,'hasvoicemail' ,'host' ,'mailbox' ,'name' ,'new' ,'save' ,'secret' ,'status' ,'threewaycalling' ,'vmsecret' ,'zapchan', 'registeriax', 'registersip'];
+extencallbacks.format = function(t, x) {
+	if ((t.name != specialcontext)){ return null; }
+	return format_extension(_$('extensions'), t, x);
+}
 
-	var focus_fields = ['cid_number' ,'context' ,'email' ,'fullname' ,'name' ,'secret' ,'vmsecret' ,'zapchan'] ;
+extencallbacks.loaded = function() {
+	merge_extensions(_$('devices'), _$('extensions'));
+	parent.loadscreen(this);
+}
 
-	var localextenlength = 4;
-	var allow_aliasextns = "no";
-	var allow_an_extns = "no" ;
+extencallbacks.eachline = true;
 
-	extencallbacks.format = function(t, x) {
-		if ((t.name != specialcontext))
-			return null;
-		return format_extension(_$('extensions'), t, x);
+callbacks.format = function(t) {
+	if ((t.name == 'general')){
+		if (t.fieldbyname['localextenlength'] && t.fieldbyname['localextenlength'].length){
+			localextenlength =  t.fieldbyname['localextenlength'] ;
+		}
+		if ( t.fieldbyname['allow_an_extns'] && t.fieldbyname['allow_an_extns'].length ){
+			allow_an_extns =  t.fieldbyname['allow_an_extns'] ;
+			if(allow_an_extns == "yes"){ $('name').setAttribute("pattern", '^[a-zA-Z0-9]*$'); }
+		}
+		if (t.fieldbyname['allow_aliasextns'] && t.fieldbyname['allow_aliasextns'].length){
+			allow_aliasextns =  t.fieldbyname['allow_aliasextns'] ;
+		}
+		return null;
 	}
 	
-	extencallbacks.loaded = function() {
-		merge_extensions(_$('devices'), _$('extensions'));
-		parent.loadscreen(this);
+	if ( t.fieldbyname['context'] == asterisk_guiTDPrefix + t.name ) {
+		return null;
 	}
 	
-	extencallbacks.eachline = true;
+	if (t.fieldbyname['fullname'] && t.fieldbyname['fullname'].length ) {
+		if( sortbynames ){
+			return t.fieldbyname['fullname'] + "  (" + t.name +")";
+		}else{
+			return t.name + " -- " + t.fieldbyname['fullname'];
+		}
 
-	callbacks.format = function(t) {
-		if ((t.name == 'general')){
-			if (t.fieldbyname['localextenlength'] && t.fieldbyname['localextenlength'].length){
-				localextenlength =  t.fieldbyname['localextenlength'] ;
-			}
-			if ( t.fieldbyname['allow_an_extns'] && t.fieldbyname['allow_an_extns'].length ){
-				allow_an_extns =  t.fieldbyname['allow_an_extns'] ;
-				if(allow_an_extns == "yes"){
-						$('name').setAttribute("pattern", '^[a-zA-Z0-9]*$');
-				}
-			}
-			if (t.fieldbyname['allow_aliasextns'] && t.fieldbyname['allow_aliasextns'].length){
-				allow_aliasextns =  t.fieldbyname['allow_aliasextns'] ;
-			}
-			return null;
+	} else{
+		return t.name;
+	}
+}
+callbacks.loaded = function() {
+	_$('devices').contentEditable = 'true';
+	_$('devices').disabled = 0;
+	parent.astmanEngine.config2list("extensions.conf", _$('extensions'), new Array(), extencallbacks);
+}
+callbacks.sortfunc = function(a,b) {
+	return (a.name < b.name) ? -1 : 1;
+}
+callbacks.checkparams = function(box) {
+	_$('mailbox').value = _$('name').value;
+	_$('group').value = '';
+	return false;
+}
+callbacks.newcategory = function() {
+	var tmp = null;
+	var x;
+	var _devices = _$('devices');
+	gen = _devices.stored_config.catbyname['general'];
+	tmp = objcopy(gen);
+	if (gen){
+		x = gen.fieldbyname['userbase'];
+		for( var f=0; f < _devices.options.length ; f++ ){
+			if( x < _devices.options[f].innerHTML.split(' -- ')[0] ){ break; }
+			x++;
 		}
-		
-		//if (t.name.substring(0,6) == 'trunk_')
-		//	return null;
-		if ( t.fieldbyname['context'] == asterisk_guiTDPrefix + t.name ) {
-			return null;
+	}else{
+		try{
+			x = ( parseInt( _devices.options[ _devices.options.length - 1 ].innerHTML.split(' -- ')[0] ) ) + 1;
+		}catch(err){
+			x = 6000; // a default value if one is not defined in users.conf's general context
 		}
-		
-		if (t.fieldbyname['fullname'] && t.fieldbyname['fullname'].length ) {
-			if(	sortbynames ){
-				return t.fieldbyname['fullname'] + "  (" + t.name +")";
-			}else{
-				return t.name + " -- " + t.fieldbyname['fullname'];
-			}
+	}
+	tmp.name = x
+	return tmp;
+}
+callbacks.identifier = "extension";
 
-		} else{
-			return t.name;
-		}
-	}
-	callbacks.loaded = function() {
-		_$('devices').contentEditable = 'true';
-		_$('devices').disabled = 0;
-		parent.astmanEngine.config2list("extensions.conf", _$('extensions'), new Array(), extencallbacks);
-	}
-	callbacks.sortfunc = function(a,b) {
-		return (a.name < b.name) ? -1 : 1;
-	}
-	callbacks.checkparams = function(box) {
-		_$('mailbox').value = _$('name').value;
-		_$('group').value = '';
+callbacks.beforeSaving = function(){
+	var _devices = _$('devices');
+	var _name = _$('name');
+	var _fullname = _$('fullname');
+
+	if(!_fullname.value.length){
+		gui_alert("Sorry, a User Name must be specified !");
+		_fullname.focus();
 		return false;
 	}
-	callbacks.newcategory = function() {
-		var tmp = null;
-		var x;
-		var _devices = _$('devices');
-		gen = _devices.stored_config.catbyname['general'];
-		tmp = objcopy(gen);
-		if (gen){
-			x = gen.fieldbyname['userbase'];
-			for( var f=0; f < _devices.options.length ; f++ ){
-				if( x < _devices.options[f].innerHTML.split(' -- ')[0] ){ break; }
-				x++;
-			}
-		}else{
-			try{ 
-				x = ( parseInt( _devices.options[ _devices.options.length - 1 ].innerHTML.split(' -- ')[0] ) ) + 1; 
-			}catch(err){
-				x = 6000; // a default value if one is not defined in users.conf's general context
-			}
-		}
-		tmp.name = x
-		return tmp;
+	// check whether the length of extension is valid
+	if( localextenlength !=0 && (allow_an_extns == "no" && localextenlength !=  _name.value.length) ){
+		gui_alert( "Sorry, User Extension must be "+ localextenlength  + " digits !" );
+		return false;
 	}
-	callbacks.identifier = "extension";
+	if (!check_patternonfields( ['name', 'fullname', 'secret','email', 'cid_number'] ) ){
+		return false;
+	}
 
-	callbacks.beforeSaving = function(){
-		var _devices = _$('devices');
-		var _name = _$('name');
-		var _fullname = _$('fullname');
- 
-		if(!_fullname.value.length){
-			gui_alert("Sorry, a User Name must be specified !");
-			_fullname.focus();
-			return false;
-		}
-		// check whether the length of extension is valid
-		if( localextenlength !=0 && (allow_an_extns == "no" && localextenlength !=  _name.value.length) ){
-			gui_alert( "Sorry, User Extension must be "+ localextenlength  + " digits !" );
-			return false;
-		}
-		if (!check_patternonfields( ['name', 'fullname', 'secret','email', 'cid_number'] ) ){
-			return false;
-		}
-
-		if(allow_aliasextns == "no"){	// check whether the selected analog line is assigned to another user extension
-			var tmp_usedanaloglines = [] ;
-			for ( var i=1; i < _devices.stored_config.categories.length ; i++){
-				if ( _devices.stored_config.categories[i] != null ){
-				if ( _devices.stored_config.categories[i].fieldbyname['zapchan'] && _devices.stored_config.categories[i].fieldbyname.zapchan.length && _devices.stored_config.categories[i].name != _devices.value )
-					tmp_usedanaloglines.push( _devices.stored_config.categories[i].fieldbyname.zapchan);
-				}
+	if(allow_aliasextns == "no"){	// check whether the selected analog line is assigned to another user extension
+		var tmp_usedanaloglines = [] ;
+		for ( var i=1; i < _devices.stored_config.categories.length ; i++){
+			if ( _devices.stored_config.categories[i] != null ){
+			if ( _devices.stored_config.categories[i].fieldbyname['zapchan'] && _devices.stored_config.categories[i].fieldbyname.zapchan.length && _devices.stored_config.categories[i].name != _devices.value )
+				tmp_usedanaloglines.push( _devices.stored_config.categories[i].fieldbyname.zapchan);
 			}
-			if ( InArray(tmp_usedanaloglines,_$('zapchan').value)){
-				gui_alert("This Analog Phone has already been assigned to another user extension.\n Please select a different Phone");
+		}
+		if ( InArray(tmp_usedanaloglines,_$('zapchan').value)){
+			gui_alert("This Analog Phone has already been assigned to another user extension.\n Please select a different Phone");
+			return false;
+		}
+	}
+
+	if(_devices.value != _name.value){
+		for(var k=0; k<_devices.length; k++ ){
+			var tmp = _devices.options[k].innerHTML.split(' -- '); 
+			if( tmp[0] ==  _name.value ){
+				gui_alert("Sorry, an entry named " + _name.value + " already exists!");
 				return false;
 			}
 		}
+	}
 
-		if(_devices.value != _name.value){
-			for(var k=0; k<_devices.length; k++ ){
-				var tmp = _devices.options[k].innerHTML.split(' -- '); 
-				if( tmp[0] ==  _name.value ){
-					gui_alert("Sorry, an entry named " + _name.value + " already exists!");
-					return false;
-				}
-			}
-		}
+	return true;
+}
 
+callbacks.postselect = function(box, val) {
+	if (adstatus == "hidden") {
+		adstatus = "shown";
+		togglefeatures() ;
+	}
+	parent._$('tooltip').innerHTML = parent.tooltip_default ; 
+	if( box.selectedIndex == -1)
 		return true;
-	}
-
-	callbacks.postselect = function(box, val) {
-		if (adstatus == "hidden") {
-			adstatus = "shown";
-			togglefeatures() ;
-		}
-		parent._$('tooltip').innerHTML = parent.tooltip_default ; 
-		if( box.selectedIndex == -1)
+	if(val == "reserved" ){
+		if( box.options[box.selectedIndex].text.toLowerCase().match("-- call queue") || box.options[box.selectedIndex].text.toLowerCase().match('call queue ')  ){
+			//parent.$('tooltip').innerHTML = " <font size=\"-2\" color=\"#FF0000\">Click on \'Call Queues\' panel to edit call queues </font>";
+			box.selectedIndex = -1;
+			gui_alert(" You can not edit the selected entry from here.\n Please click on the \'Call Queues\' panel to edit the selected entry");
 			return true;
-		if(val == "reserved" ){
-			if( box.options[box.selectedIndex].text.toLowerCase().match("-- call queue") || box.options[box.selectedIndex].text.toLowerCase().match('call queue ')  ){
-				//parent.$('tooltip').innerHTML = " <font size=\"-2\" color=\"#FF0000\">Click on \'Call Queues\' panel to edit call queues </font>";
-				box.selectedIndex = -1;
-				gui_alert(" You can not edit the selected entry from here.\n Please click on the \'Call Queues\' panel to edit the selected entry");
-				return true;
-			}
-			if( box.options[box.selectedIndex].text.toLowerCase().match("-- conference bridge") || box.options[box.selectedIndex].text.toLowerCase().match('conference bridge ')  ){
-				//parent.$('tooltip').innerHTML = " <font size=\"-2\" color=\"#FF0000\">Click on \'Conferencing\' panel to edit a Conference Bridge</font>";
-				box.selectedIndex = -1;
-				gui_alert(" You can not edit the selected entry from here.\n Please click on the \'Conferencing\' panel to edit the selected entry");
-				return true;
-			}
-			if( box.options[box.selectedIndex].text.toLowerCase().match("-- check voicemail") || box.options[box.selectedIndex].text.toLowerCase().match('check voicemail ') ){
-				box.selectedIndex = -1;
-				//parent.$('tooltip').innerHTML = " <font size=\"-2\" color=\"#FF0000\">Click on \'Voicemail\' panel to edit Voicemail Preferences</font>";
-				gui_alert(" You can not edit the selected entry from here.\n Please click on the \'Voicemail\' panel to edit the selected entry");
-				return true;
-			}
-			if( box.options[box.selectedIndex].text.toLowerCase().match("-- voice menu") || box.options[box.selectedIndex].text.toLowerCase().match('voice menu ')     ){
-				box.selectedIndex = -1;
-				//parent.$('tooltip').innerHTML = " <font size=\"-2\" color=\"#FF0000\">Click on \'Voicemail\' panel to edit Voicemail Preferences</font>";
-				gui_alert(" You can not edit the selected entry from here.\n Please click on the \'Voice Menus\' panel to edit the selected entry");
-				return true;
-			}
+		}
+		if( box.options[box.selectedIndex].text.toLowerCase().match("-- conference bridge") || box.options[box.selectedIndex].text.toLowerCase().match('conference bridge ')  ){
+			//parent.$('tooltip').innerHTML = " <font size=\"-2\" color=\"#FF0000\">Click on \'Conferencing\' panel to edit a Conference Bridge</font>";
+			box.selectedIndex = -1;
+			gui_alert(" You can not edit the selected entry from here.\n Please click on the \'Conferencing\' panel to edit the selected entry");
+			return true;
+		}
+		if( box.options[box.selectedIndex].text.toLowerCase().match("-- check voicemail") || box.options[box.selectedIndex].text.toLowerCase().match('check voicemail ') ){
+			box.selectedIndex = -1;
+			//parent.$('tooltip').innerHTML = " <font size=\"-2\" color=\"#FF0000\">Click on \'Voicemail\' panel to edit Voicemail Preferences</font>";
+			gui_alert(" You can not edit the selected entry from here.\n Please click on the \'Voicemail\' panel to edit the selected entry");
+			return true;
+		}
+		if( box.options[box.selectedIndex].text.toLowerCase().match("-- voice menu") || box.options[box.selectedIndex].text.toLowerCase().match('voice menu ')     ){
+			box.selectedIndex = -1;
+			//parent.$('tooltip').innerHTML = " <font size=\"-2\" color=\"#FF0000\">Click on \'Voicemail\' panel to edit Voicemail Preferences</font>";
+			gui_alert(" You can not edit the selected entry from here.\n Please click on the \'Voice Menus\' panel to edit the selected entry");
+			return true;
 		}
 	}
+}
 
-	callbacks.savechanges = function(){
-		
-	}
-
-	phonecallbacks.format = function(t) {
-		if (t.fieldbyname['port'] == 'fxo')
-			return "Analog Port #" + t.name;
-		return null;
-	}
-
-	phonecallbacks.loaded = function() {
-		var _zapchan = _$('zapchan') ;
-		if( _zapchan.options.length == 0) {
-			_zapchan.style.display="none";
-			_$('noanaloglines').style.display="";
-		}
-		var noneopt = document.createElement("OPTION");
-		_zapchan.options.add(noneopt,0);
-		noneopt.value = "";
-		noneopt.innerText = "None";
-
-		parent.astmanEngine.config2list("extensions.conf", _$('context'), new Array(), numcallbacks);
-	}
+callbacks.savechanges = function(){
 	
-	numcallbacks.format = function(t) {
-		if ((t.name.substr(0,11) != 'numberplan-'))
-			return null;
-		if (t.fieldbyname['plancomment']){
-			return t.fieldbyname['plancomment'];
-		}
-		return t.name;
-	}
+}
 
-	numcallbacks.loaded = function() {
-		parent.astmanEngine.config2list("users.conf", _$('devices'), widgets, callbacks);
-	}
-	
-	function togglefeatures() {
-		if (adstatus == "shown") {
-			adstatus = "hidden";
-			new Rico.Effect.Size('features', null, 1, 120, 8, {complete:function() { _$('features').style.height=1;} } );
-		} else {
-			adstatus = "shown";
-			_$('features').style.visibility = "visible";
-			new Rico.Effect.Size('features', null, 160, 120, 8 );
-		}
-	}
-	function localajaxinit() {
-		/*
-		// Automatically open the related panel - like when this page is called using a back button
-		// This is working .. but is causing the current page to load twice.
-		for( var v=0; v < parent.panels.length ; v++){	
-			if ( parent.panels[v].name == "users"){
-				parent.accordion.showTabByIndex(v,true);			
-				break;
-			}
-		}
-		*/
-		setWindowTitle("Users");
-		if(window.location.href.match("sortbynames") ){
-			sortbynames = true;
-			_$('link_sortby').innerHTML = " <A href=\"users.html\">Sort By Extensions</A> ";
-		}else{
-			_$('link_sortby').innerHTML = " <A href=\"users.html?sortbynames\">Sort By Name</A> ";
-		}
+phonecallbacks.format = function(t) {
+	if (t.fieldbyname['port'] == 'fxo') { return "Analog Port #" + t.name; }
+	return null;
+}
 
-		var _features = _$('features'); 
-		if( navigator.userAgent.indexOf("MSIE") != -1){
-			togglefeatures = function(){ } ;
-			_features.style.display = "";
-			_features.style.height=160;
-		}else{
-			_features.style.overflow = "hidden";
-			_features.style.height = 1;
-			_$('devices').style.height = "415px";
-		}
-		_features.style.width = 302;
+phonecallbacks.loaded = function() {
+	var _zapchan = _$('zapchan') ;
+	if( _zapchan.options.length == 0) {
+		_zapchan.style.display="none";
+		_$('noanaloglines').style.display="";
+	}
+	var noneopt = document.createElement("OPTION");
+	_zapchan.options.add(noneopt,0);
+	noneopt.value = "";
+	noneopt.innerText = "None";
+
+	parent.astmanEngine.config2list("extensions.conf", _$('context'), new Array(), numcallbacks);
+}
+
+numcallbacks.format = function(t) {
+	if (t.name.substr(0,11) != 'numberplan-'){ return null; }
+	if (t.fieldbyname['plancomment']){ return t.fieldbyname['plancomment']; }
+	return t.name;
+}
+
+numcallbacks.loaded = function() {
+	parent.astmanEngine.config2list("users.conf", _$('devices'), widgets, callbacks);
+}
+
+function togglefeatures() {
+	if (adstatus == "shown") {
 		adstatus = "hidden";
-		_$('devices').contentEditable = 'false';
-		for (var x =0; x < fieldnames.length; x++ ) {
-			widgets[fieldnames[x]] = _$(fieldnames[x]);
-			widgets[fieldnames[x]].disabled = true;
-		}
-		for (var x =0; x < focus_fields.length; x++ ) {
-			widgets[focus_fields[x]].onfocus = function(){this.className = 'input8_hilight';}
-			widgets[focus_fields[x]].onblur = function(){this.className = 'input8';}
-		}
-		add_event( _$('hasiax'), 'change' , updateregistersipiax ) ;
-		add_event( _$('hassip'), 'change' , updateregistersipiax ) ;
-
-		parent.astmanEngine.config2list("zapscan.conf", _$('zapchan'), new Array(), phonecallbacks);
+		new Rico.Effect.Size('features', null, 1, 120, 8, {complete:function() { _$('features').style.height=1;} } );
+	} else {
+		adstatus = "shown";
+		_$('features').style.visibility = "visible";
+		new Rico.Effect.Size('features', null, 160, 120, 8 );
 	}
+}
+function localajaxinit() {
+	/*
+	// Automatically open the related panel - like when this page is called using a back button
+	// This is working .. but is causing the current page to load twice.
+	for( var v=0; v < parent.panels.length ; v++){	
+		if ( parent.panels[v].name == "users"){
+			parent.accordion.showTabByIndex(v,true);			
+			break;
+		}
+	}
+	*/
+	setWindowTitle("Users");
+	if(window.location.href.match("sortbynames") ){
+		sortbynames = true;
+		_$('link_sortby').innerHTML = " <A href=\"users.html\">Sort By Extensions</A> ";
+	}else{
+		_$('link_sortby').innerHTML = " <A href=\"users.html?sortbynames\">Sort By Name</A> ";
+	}
+
+	var _features = _$('features'); 
+	if( navigator.userAgent.indexOf("MSIE") != -1){
+		togglefeatures = function(){ } ;
+		_features.style.display = "";
+		_features.style.height=160;
+	}else{
+		_features.style.overflow = "hidden";
+		_features.style.height = 1;
+		_$('devices').style.height = "415px";
+	}
+	_features.style.width = 302;
+	adstatus = "hidden";
+	_$('devices').contentEditable = 'false';
+	for (var x =0; x < fieldnames.length; x++ ) {
+		widgets[fieldnames[x]] = _$(fieldnames[x]);
+		widgets[fieldnames[x]].disabled = true;
+	}
+	for (var x =0; x < focus_fields.length; x++ ) {
+		widgets[focus_fields[x]].onfocus = function(){this.className = 'input8_hilight';}
+		widgets[focus_fields[x]].onblur = function(){this.className = 'input8';}
+	}
+	add_event( _$('hasiax'), 'change' , updateregistersipiax ) ;
+	add_event( _$('hassip'), 'change' , updateregistersipiax ) ;
+
+	parent.astmanEngine.config2list("zapscan.conf", _$('zapchan'), new Array(), phonecallbacks);
+}
 
 function updateregistersipiax(){
 	_$('registeriax').checked =_$('hasiax').checked ;

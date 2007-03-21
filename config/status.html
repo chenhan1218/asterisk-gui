@@ -129,7 +129,6 @@ function localajaxend(){
 
 </script>
 <body id="foo" onload="localajaxinit()"  bgcolor="EFEFEF" onunload="localajaxend()">
-
 <div class="mainscreenTitleBar">
 	<span style="margin-left: 4px;font-weight:bold">Channels Status</span>
 </div>
@@ -142,15 +141,14 @@ function localajaxend(){
 	</tr>
 	<tr height=32 valign="middle">
 		<td align="center">
-				<input type="submit" onClick="refreshChannelsList()" id="refresh" value="Refresh"  onmouseover="show_tooltip('en', 'status', 1);"  class="buttonbold">
-				<input type="submit" onClick="doTransfer()" id="transfer" value="Transfer..."  onmouseover="show_tooltip('en', 'status', 2);"  class="buttonbold">
-				<input type="submit" onClick="doHangup()" id="hangup" value="Hangup"  onmouseover="show_tooltip('en', 'status', 3);"  class="buttonbold">
+		<input type="submit" onClick="refreshChannelsList()" id="refresh" value="Refresh"  onmouseover="show_tooltip('en', 'status', 1);"  class="buttonbold">
+		<input type="submit" onClick="doTransfer()" id="transfer" value="Transfer..."  onmouseover="show_tooltip('en', 'status', 2);"  class="buttonbold">
+		<input type="submit" onClick="doHangup()" id="hangup" value="Hangup"  onmouseover="show_tooltip('en', 'status', 3);"  class="buttonbold">
 		</td>
 	</tr>
-	<tr>
-			<td colspan=3 valign="top">
-			<div id="channellist" class="chanlist" onmouseover="show_tooltip('en', 'status', 0);"></div>
-			</td>
+	<tr>	<td colspan=3 valign="top">
+		<div id="channellist" class="chanlist" onmouseover="show_tooltip('en', 'status', 0);"></div>
+		</td>
 	</tr>
 </table>
 </div>

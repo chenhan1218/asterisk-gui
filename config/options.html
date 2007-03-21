@@ -42,7 +42,7 @@ function cancel_guisettings(){
 	_$('cancel').disabled=true;
 }
 
-function	update_guisettings_manager(){
+function update_guisettings_manager(){
 	var _bindaddr = _$('bindaddr') ;
 	var _bindport = _$('bindport') ;
 	var _httptimeout = _$('httptimeout');
@@ -52,16 +52,19 @@ function	update_guisettings_manager(){
 		_bindaddr.focus();
 		return true;
 	}
+
 	if( _bindport.value==""){
 		gui_alert("Please enter a Port number");
 		_bindport.focus();
 		return true;
 	}
+
 	if(_httptimeout.value==""){
 		gui_alert("Please enter Http TimeOut in seconds");
 		_httptimeout.focus();
 		return true
 	}
+
 	var _sm = $('status_message').style ;
 	_sm.display ="";
 	setTimeout(function(){ _sm.display ='none'; },3000);

@@ -61,15 +61,15 @@ function rename_extension(a,b){
 	// rename extension 'a' in extensions.conf to 'b'
 	// change 'exten => a,1,Queue' in default to 'exten => b,1,Queue'
 	var opt0 = {
-				method: 'get',
-				asynchronous: true,
-				onSuccess: function() { 
-					return true;	
-				},
-				onFailure: function(t) {
-					gui_alert("Config Error: " + t.status + ": " + t.statusText);
-					return false;
-				}
+		method: 'get',
+		asynchronous: true,
+		onSuccess: function() { 
+			return true;	
+		},
+		onFailure: function(t) {
+			gui_alert("Config Error: " + t.status + ": " + t.statusText);
+			return false;
+		}
 	};
 	uri0 = build_action('update', 0, specialcontext ,'exten', b+',1,Queue(${EXTEN})', a+',1,Queue(${EXTEN})' ); 
 	opt0.parameters="action=updateconfig&srcfilename=" + encodeURIComponent("extensions.conf") + "&dstfilename=" + encodeURIComponent("extensions.conf") + uri0;
@@ -80,15 +80,15 @@ function add_extension(a){
 	// add extension 'a' in extensions.conf 
 	// add 'exten => a,1,Queue' to default
 	var opt0 = {
-				method: 'get',
-				asynchronous: true,
-				onSuccess: function() { 
-					return true;	
-				},
-				onFailure: function(t) {
-					gui_alert("Config Error: " + t.status + ": " + t.statusText);
-					return false;
-				}
+		method: 'get',
+		asynchronous: true,
+		onSuccess: function() { 
+			return true;	
+		},
+		onFailure: function(t) {
+			gui_alert("Config Error: " + t.status + ": " + t.statusText);
+			return false;
+		}
 	};
 	uri0 = build_action('append', 0, specialcontext ,'exten', a+',1,Queue(${EXTEN})'); 
 	opt0.parameters="action=updateconfig&srcfilename=" + encodeURIComponent("extensions.conf") + "&dstfilename=" + encodeURIComponent("extensions.conf") + uri0;
@@ -98,15 +98,15 @@ function add_extension(a){
 function delete_extension(a){
 	// delete extension 'a' in extensions.conf 
 	var opt0 = {
-				method: 'get',
-				asynchronous: true,
-				onSuccess: function() { 
-					return true;	
-				},
-				onFailure: function(t) {
-					gui_alert("Config Error: " + t.status + ": " + t.statusText);
-					return false;
-				}
+		method: 'get',
+		asynchronous: true,
+		onSuccess: function() { 
+			return true;	
+		},
+		onFailure: function(t) {
+			gui_alert("Config Error: " + t.status + ": " + t.statusText);
+			return false;
+		}
 	};
 	uri0 = build_action('delete', 0, specialcontext ,'exten', '',a+',1,Queue(${EXTEN})'); 
 	opt0.parameters="action=updateconfig&srcfilename=" + encodeURIComponent("extensions.conf") + "&dstfilename=" + encodeURIComponent("extensions.conf") + uri0;
@@ -114,153 +114,153 @@ function delete_extension(a){
 }
 
 function save_queue(){
-		var p = 0;
-		var q = 0;
-		var r = 0;
-		var fields = new Array('fullname', 'strategy', 'timeout', 'wrapuptime','autofill','autopause','maxlen', 'joinempty',  'leavewhenempty', 'reportholdtime','musicclass');
-		var otherfields_action, tmp;
-		var opt = {
-			method: 'get',
-			asynchronous: true,
-			onSuccess: function() { 
-					$('status_message').style.display='none';
-					$('status').innerHTML = "<i>Updated.</i>";
-					$('new').disabled = false;
-					$('save_q').disabled = true;
-					$('save').disabled = true;
-					$('cancel').disabled = true;
-					var cattmp = new Object;
-					cattmp.catname = $('queues').value;
+	var p = 0;
+	var q = 0;
+	var r = 0;
+	var fields = new Array('fullname', 'strategy', 'timeout', 'wrapuptime','autofill','autopause','maxlen', 'joinempty',  'leavewhenempty', 'reportholdtime','musicclass');
+	var otherfields_action, tmp;
+	var opt = {
+		method: 'get',
+		asynchronous: true,
+		onSuccess: function() { 
+			$('status_message').style.display='none';
+			$('status').innerHTML = "<i>Updated.</i>";
+			$('new').disabled = false;
+			$('save_q').disabled = true;
+			$('save').disabled = true;
+			$('cancel').disabled = true;
+			var cattmp = new Object;
+			cattmp.catname = $('queues').value;
 
-					$('queues').engine.fields2changes($('queues').widgets, $('queues').stored_config, cattmp);
-					$('queues').options[$('queues').selectedIndex].innerHTML = $('name').value + " -- Queue '" + $('fullname').value +"'";
-					$('queues').options[$('queues').selectedIndex].value =$('name').value;
-					$('queues').options[$('queues').selectedIndex].core_name = cattmp.catname;
+			$('queues').engine.fields2changes($('queues').widgets, $('queues').stored_config, cattmp);
+			$('queues').options[$('queues').selectedIndex].innerHTML = $('name').value + " -- Queue '" + $('fullname').value +"'";
+			$('queues').options[$('queues').selectedIndex].value =$('name').value;
+			$('queues').options[$('queues').selectedIndex].core_name = cattmp.catname;
 
-					for (var y = 0; y < $('queues').options.length + 1; y++) {
-						if (!$('queues').options[y] || 
-							do_compare($('queues'), $('queues').options[$('queues').selectedIndex], $('queues').options[y])) {
-								$('queues').options.add($('queues').options[$('queues').selectedIndex], y);
-								break;
-						}
-					}
-			},
-			onFailure: function(t) {
-				$('status_message').style.display='none';
-				gui_alert("Config Error: " + t.status + ": " + t.statusText);
+			for (var y = 0; y < $('queues').options.length + 1; y++) {
+				if (!$('queues').options[y] || 
+					do_compare($('queues'), $('queues').options[$('queues').selectedIndex], $('queues').options[y])) {
+						$('queues').options.add($('queues').options[$('queues').selectedIndex], y);
+						break;
+				}
 			}
-		};
+		},
+		onFailure: function(t) {
+			$('status_message').style.display='none';
+			gui_alert("Config Error: " + t.status + ": " + t.statusText);
+		}
+	};
 
-		// before going any further check whether there is another entry with this name
+	// before going any further check whether there is another entry with this name
+	if( $('name').value != $('queues').value ){
+		if ($('queues').stored_config.catbyname[$('name').value]) {
+			gui_alert("Sorry, an entry named " + $('name').value + " already exists!");
+			return;
+		}
+
+		for(var k=0; k<$('queues').length; k++ ){
+			var tmp = $('queues').options[k].innerHTML.split(' -- '); 
+			if( tmp[0] ==  $('name').value   ){
+				gui_alert("Sorry, an entry named " + $('name').value + " already exists!");
+				return;
+			}
+		}
+
+	}
+
+	if(!$('name').value.length){
+		gui_alert("Sorry, an Extension must be specified for this Queue!");
+		$('name').focus();
+		return;
+	}
+	if(!$('fullname').value.length){
+		gui_alert("Sorry, a Full Name must be specified !");
+		$('fullname').focus();
+		return;
+	}
+	if( localextenlength !=0 && (localextenlength != $('name').value.length) ) {
+		gui_alert("Sorry, An Extension must be "+ localextenlength  + " digits !");
+		$('name').focus();
+		return ;
+	}
+	
+	if (!check_patternonfields( [ 'name', 'fullname','timeout','wrapuptime','maxlen' ] ) ){
+		return false;
+	}
+
+	$('status_message').style.display="block";
+	p = 0;
+	uri = "";
+	if( $('queues').options[$('queues').selectedIndex].innerHTML=='New Entry' ){
+		uri += build_action('newcat', p, $('name').value,"", ""); p = p+1;
+		otherfields_action = 'append'; 			// add other fields
+		add_extension( $('name').value ); // add in extensions.conf
+		//add to stored names & fields 
+		r = queuenames.length;
+		queueagents[r] = new Array;
+		queuenames[r] = $('name').value ;
+		q =0;
+		for (k=0;k< $('agents').length ;k++ ){
+				if( $('agents').options[k].selected ){
+					queueagents [r][q] = $('agents').options[k].innerHTML.split(' -- ')[0] ;
+					q = q+1;
+				}
+		}
+	}else{
 		if( $('name').value != $('queues').value ){
-					if ($('queues').stored_config.catbyname[$('name').value]) {
-						gui_alert("Sorry, an entry named " + $('name').value + " already exists!");
-						return;
-					}
-
-					for(var k=0; k<$('queues').length; k++ ){
-						var tmp = $('queues').options[k].innerHTML.split(' -- '); 
-						if( tmp[0] ==  $('name').value   ){
-							gui_alert("Sorry, an entry named " + $('name').value + " already exists!");
-							return;
-						}
-					}
-
+			uri += build_action('renamecat', p, $('queues').value ,"", $('name').value ); p = p+1;
+			rename_extension($('queues').value,$('name').value ); // rename in extensions.conf
 		}
-		if(!$('name').value.length){
-				gui_alert("Sorry, an Extension must be specified for this Queue!");
-				$('name').focus();
-				return;
-		}
-		if(!$('fullname').value.length){
-				gui_alert("Sorry, a Full Name must be specified !");
-				$('fullname').focus();
-				return;
-		}
-		if( localextenlength !=0 && (localextenlength != $('name').value.length) ) {
-				gui_alert("Sorry, An Extension must be "+ localextenlength  + " digits !");
-				$('name').focus();
-				return ;
-		}
+		// delete existing agents
+		uri += build_action('delete', p, $('name').value,"member", ""); p = p+1;
+		otherfields_action = 'update'; 			// update other fields
 		
-		if (!check_patternonfields( [ 'name', 'fullname','timeout','wrapuptime','maxlen' ] ) ){
-			return false;
-		}
-
-		$('status_message').style.display="block";
-		p = 0;
-		uri = "";
-		if( $('queues').options[$('queues').selectedIndex].innerHTML=='New Entry' ){
-				uri += build_action('newcat', p, $('name').value,"", ""); p = p+1;
-				otherfields_action = 'append'; 			// add other fields
-				add_extension( $('name').value ); // add in extensions.conf
-				//add to stored names & fields 
-				r = queuenames.length;
-				queueagents[r] = new Array;
-				queuenames[r] = $('name').value ;
-				q =0;
-				for (k=0;k< $('agents').length ;k++ ){
-						if( $('agents').options[k].selected ){
-							queueagents [r][q] = $('agents').options[k].innerHTML.split(' -- ')[0] ;
-							q = q+1;
-						}
+		//update the stored names & fields 
+		for( k=0; k<queuenames.length; k++ ){
+				if( queuenames[k] == $('queues').value ){
+					j = k;
+					break;
 				}
+		}
+		// reset the array queueagents [j] to selected elements of $('agents')
+		queueagents [j] = [];
+		q =0;
+		
+		for (k=0;k< $('agents').length ;k++ ){
+				selectedagent = "selectedagent" + k;
+				if( $(selectedagent).checked  ){
+					queueagents [j][q] = $('agents').options[k].innerHTML.split(' -- ')[0] ;
+					$('agents').options[k].selected = true;
+					q = q+1;
+				}else{
+					$('agents').options[k].selected = false;
+				}
+		}
+		// also reset queuenames[j] to $('name').value
+		queuenames[j] = $('name').value;
+	}
+
+	for(k=0; k<fields.length; k++ ){
+		if ( $(fields[k]).type =='checkbox'){
+			tmp=( $(fields[k]).checked)? 'yes': 'no';
 		}else{
-				if( $('name').value != $('queues').value ){
-					uri += build_action('renamecat', p, $('queues').value ,"", $('name').value ); p = p+1;
-					rename_extension($('queues').value,$('name').value ); // rename in extensions.conf
-				}
-				// delete existing agents
-				uri += build_action('delete', p, $('name').value,"member", ""); p = p+1;
-				otherfields_action = 'update'; 			// update other fields
-				
-				//update the stored names & fields 
-				for( k=0; k<queuenames.length; k++ ){
-						if( queuenames[k] == $('queues').value ){
-							j = k;
-							break;
-						}
-				}
-				// reset the array queueagents [j] to selected elements of $('agents')
-				queueagents [j] = [];
-				q =0;
-				
-				for (k=0;k< $('agents').length ;k++ ){
-						selectedagent = "selectedagent" + k;
-						if( $(selectedagent).checked  ){
-							queueagents [j][q] = $('agents').options[k].innerHTML.split(' -- ')[0] ;
-							$('agents').options[k].selected = true;
-							q = q+1;
-						}else{
-							$('agents').options[k].selected = false;
-						}
-				}
-				// also reset queuenames[j] to $('name').value
-				queuenames[j] = $('name').value;
-
+			tmp = $(fields[k]).value;
 		}
+		uri += build_action(otherfields_action, p, $('name').value , fields[k] , tmp);
+		p = p + 1;
+	}
 
-		for(k=0; k<fields.length; k++ ){
-			if ( $(fields[k]).type =='checkbox'){
-				tmp=( $(fields[k]).checked)? 'yes': 'no';
-			}else{
-				tmp = $(fields[k]).value;
-			}
-			uri += build_action(otherfields_action, p, $('name').value , fields[k] , tmp);
-			p = p + 1;
+	//add agents
+	for(k=0; k<$('agents').length; k++){
+		selectedagent = "selectedagent" + k;
+		if( $(selectedagent).checked ){
+			uri += build_action('append', p, $('name').value,"member", "Agent/"+$(selectedagent).value);
+			p = p+1;
 		}
+	}
 
-		//add agents
-		for(k=0; k<$('agents').length; k++){
-			selectedagent = "selectedagent" + k;
-			if( $(selectedagent).checked ){
-				uri += build_action('append', p, $('name').value,"member", "Agent/"+$(selectedagent).value);
-				p = p+1;
-			}
-		}
-
-		opt.parameters="action=updateconfig&srcfilename=" + encodeURIComponent("queues.conf") + "&dstfilename=" + encodeURIComponent("queues.conf") + uri;
-		tmp = new Ajax.Request('../../rawman', opt);
+	opt.parameters="action=updateconfig&srcfilename=" + encodeURIComponent("queues.conf") + "&dstfilename=" + encodeURIComponent("queues.conf") + uri;
+	tmp = new Ajax.Request('../../rawman', opt);
 }
 
 
@@ -273,12 +273,12 @@ usercallbacks.loaded = function (){
 usercallbacks.identifier = "extension";
 usercallbacks.postselect = function (){	 }
 usercallbacks.format = function (t,x){
-		if ((t.name == 'general'))
-			return null;
-		if ( t.fieldbyname['hasagent']=='yes' ) 
-			return t.name + " -- " + t.fieldbyname['fullname'];
-		else
-			return null;
+	if ((t.name == 'general'))
+		return null;
+	if ( t.fieldbyname['hasagent']=='yes' ) 
+		return t.name + " -- " + t.fieldbyname['fullname'];
+	else
+		return null;
 }
 
 // Call Backs
@@ -286,20 +286,20 @@ callbacks.loaded = function (){	parent.astmanEngine.config2list("users.conf", $(
 callbacks.identifier = "extension";
 callbacks.postselect = function (){	 }
 callbacks.format = function (t,x){
-		if ((t.name == 'general')){
-			if ( t.fieldbyname['localextenlength'] && t.fieldbyname['localextenlength'].length){ localextenlength =  parseInt(t.fieldbyname['localextenlength']) ; }
-			if ( t.fieldbyname['userbase'] && t.fieldbyname['userbase'].length){ userbase =  t.fieldbyname['userbase'] ; }
-			return null;
-		}
-		//if (t.name.substring(0,6) == 'trunk_')
-		//	return null;
-		if ( t.fieldbyname['context'] == asterisk_guiTDPrefix + t.name ) {
-			return null;
-		}
-		if (t.fieldbyname['fullname'] && t.fieldbyname['fullname'].length) {
-			return t.name + " -- " + t.fieldbyname['fullname'];
-		} else
-			return t.name;
+	if ((t.name == 'general')){
+		if ( t.fieldbyname['localextenlength'] && t.fieldbyname['localextenlength'].length){ localextenlength =  parseInt(t.fieldbyname['localextenlength']) ; }
+		if ( t.fieldbyname['userbase'] && t.fieldbyname['userbase'].length){ userbase =  t.fieldbyname['userbase'] ; }
+		return null;
+	}
+	//if (t.name.substring(0,6) == 'trunk_')
+	//	return null;
+	if ( t.fieldbyname['context'] == asterisk_guiTDPrefix + t.name ) {
+		return null;
+	}
+	if (t.fieldbyname['fullname'] && t.fieldbyname['fullname'].length) {
+		return t.name + " -- " + t.fieldbyname['fullname'];
+	} else
+		return t.name;
 }
 
 
@@ -311,102 +311,100 @@ queuecallbacks.oncategorydelete = function(value){
 
 
 queuecallbacks.postselect = function(box, val ) {
-		if($('queues').selectedIndex	==-1){ 	$('save_q').disabled=true; 	return true; 	} 
-		// 
-		if(val == "reserved" ){
-				$('testmulti').innerHTML = "";
-				$('save_q').disabled=true;
-				$('cancel').disabled = true;
-				if( box.options[box.selectedIndex].text.toLowerCase().match("-- conference bridge")     ){
-					//parent.$('tooltip').innerHTML = " <font size=\"-2\" color=\"#FF0000\">Click on \'Conferencing\' panel to edit a Conference Bridge</font>";
-					box.selectedIndex = -1;
-					gui_alert(" You can not edit the selected entry from here.\n Please click on the \'Conferencing\' panel to edit the selected entry");
-					return true;
-				}
-				if( box.options[box.selectedIndex].text.toLowerCase().match("-- check voicemail")     ){
-					//parent.$('tooltip').innerHTML = " <font size=\"-2\" color=\"#FF0000\">Click on \'Voicemail\' panel to edit Voicemail Preferences</font>";
-					box.selectedIndex = -1;
-					gui_alert(" You can not edit the selected entry from here.\n Please click on the \'Voicemail\' panel to edit the selected entry");
-					return true;
-				}
-				if( box.options[box.selectedIndex].text.toLowerCase().match("-- voice menu")     ){
-					box.selectedIndex = -1;
-					//parent.$('tooltip').innerHTML = " <font size=\"-2\" color=\"#FF0000\">Click on \'Voicemail\' panel to edit Voicemail Preferences</font>";
-					gui_alert(" You can not edit the selected entry from here.\n Please click on the \'Voice Menus\' panel to edit the selected entry");
-					return true;
-				}
-				box.selectedIndex = -1;
-				gui_alert(" You can not edit the selected entry from here.\n Please click on the \'Users\' panel to edit the selected entry");
-				return true;
+	if($('queues').selectedIndex	==-1){ 	$('save_q').disabled=true; 	return true; 	} 
+	// 
+	if(val == "reserved" ){
+		$('testmulti').innerHTML = "";
+		$('save_q').disabled=true;
+		$('cancel').disabled = true;
+		if( box.options[box.selectedIndex].text.toLowerCase().match("-- conference bridge")     ){
+			//parent.$('tooltip').innerHTML = " <font size=\"-2\" color=\"#FF0000\">Click on \'Conferencing\' panel to edit a Conference Bridge</font>";
+			box.selectedIndex = -1;
+			gui_alert(" You can not edit the selected entry from here.\n Please click on the \'Conferencing\' panel to edit the selected entry");
+			return true;
 		}
-
-
-
-		// show all member entires listed under the queue member - $('queues').value
-		for( k=0; k<queuenames.length; k++ ){
-				if( queuenames[k] == $('queues').value ){		j = k;	break;		}
+		if( box.options[box.selectedIndex].text.toLowerCase().match("-- check voicemail")     ){
+			//parent.$('tooltip').innerHTML = " <font size=\"-2\" color=\"#FF0000\">Click on \'Voicemail\' panel to edit Voicemail Preferences</font>";
+			box.selectedIndex = -1;
+			gui_alert(" You can not edit the selected entry from here.\n Please click on the \'Voicemail\' panel to edit the selected entry");
+			return true;
 		}
-		$('testmulti').innerHTML ="";		
-		for (k=0;k< $('agents').length ;k++ ){
-			selectedagent = "selectedagent" + k;
-			var str_checked = "";
-			$('agents').options[k].selected = false;
-			if( InArray( queueagents [j], $('agents').options[k].innerHTML.split(' -- ')[0] ) ){
-				$('agents').options[k].selected = true;	
-				str_checked = " checked ";
-			}
-			$('testmulti').innerHTML += '<LABEL FOR=' + selectedagent + '><INPUT id="' + selectedagent + '" TYPE="CHECKBOX" VALUE="'+ $('agents').options[k].innerHTML.split(' -- ')[0] + '"'+ str_checked + ' onclick="$(\'save_q\').disabled=false; $(\'cancel\').disabled=false;">&nbsp;' + $('agents').options[k].innerHTML.split(' -- ')[1] +' (' + $('agents').options[k].innerHTML.split(' -- ')[0]+ ')' + '</LABEL><BR>';
+		if( box.options[box.selectedIndex].text.toLowerCase().match("-- voice menu")     ){
+			box.selectedIndex = -1;
+			//parent.$('tooltip').innerHTML = " <font size=\"-2\" color=\"#FF0000\">Click on \'Voicemail\' panel to edit Voicemail Preferences</font>";
+			gui_alert(" You can not edit the selected entry from here.\n Please click on the \'Voice Menus\' panel to edit the selected entry");
+			return true;
 		}
-		$('save_q').disabled = false;
+		box.selectedIndex = -1;
+		gui_alert(" You can not edit the selected entry from here.\n Please click on the \'Users\' panel to edit the selected entry");
+		return true;
+	}
+
+	// show all member entires listed under the queue member - $('queues').value
+	for( k=0; k<queuenames.length; k++ ){
+			if( queuenames[k] == $('queues').value ){		j = k;	break;		}
+	}
+	$('testmulti').innerHTML ="";		
+	for (k=0;k< $('agents').length ;k++ ){
+		selectedagent = "selectedagent" + k;
+		var str_checked = "";
+		$('agents').options[k].selected = false;
+		if( InArray( queueagents [j], $('agents').options[k].innerHTML.split(' -- ')[0] ) ){
+			$('agents').options[k].selected = true;	
+			str_checked = " checked ";
+		}
+		$('testmulti').innerHTML += '<LABEL FOR=' + selectedagent + '><INPUT id="' + selectedagent + '" TYPE="CHECKBOX" VALUE="'+ $('agents').options[k].innerHTML.split(' -- ')[0] + '"'+ str_checked + ' onclick="$(\'save_q\').disabled=false; $(\'cancel\').disabled=false;">&nbsp;' + $('agents').options[k].innerHTML.split(' -- ')[1] +' (' + $('agents').options[k].innerHTML.split(' -- ')[0]+ ')' + '</LABEL><BR>';
+	}
+	$('save_q').disabled = false;
 }
 
 queuecallbacks.loaded = function() { 	parent.astmanEngine.config2list("users.conf", $('devices'), new Array(), callbacks); }
 queuecallbacks.newcategory = function(t) {
-		var tmp = null;
-		$('save_q').disabled=false;
-		if ($('queues').stored_config.catbyname['general']){ 
-				tmp = objcopy($('queues').stored_config.catbyname['general']);	
-				x = userbase ; 
-				for( var f=0; f < $('queues').options.length ; f++ ){
-						if( x < $('queues').options[f].innerHTML.split(' -- ')[0] )
-							break;
-						x++;
-				}				
-				tmp.name = x;
-		}else{
-			tmp.name = 6000 ;	// a default value if one is not defined in users.conf's general context
-		}
+	var tmp = null;
+	$('save_q').disabled=false;
+	if ($('queues').stored_config.catbyname['general']){ 
+		tmp = objcopy($('queues').stored_config.catbyname['general']);	
+		x = userbase ; 
+		for( var f=0; f < $('queues').options.length ; f++ ){
+			if( x < $('queues').options[f].innerHTML.split(' -- ')[0] )
+				break;
+			x++;
+		}				
+		tmp.name = x;
+	}else{
+		tmp.name = 6000 ;	// a default value if one is not defined in users.conf's general context
+	}
 
-		$('testmulti').innerHTML ="";
-		for (k=0;k< $('agents').length ;k++ ){
-				selectedagent = "selectedagent" + k;
-				$('agents').options[k].selected = false;
-				$('testmulti').innerHTML += '<LABEL FOR=' + selectedagent + '><INPUT id="' + selectedagent + '" TYPE="CHECKBOX" VALUE="'+ $('agents').options[k].innerHTML.split(' -- ')[0] + '" onclick="$(\'save_q\').disabled=false; $(\'cancel\').disabled=false;">&nbsp;' + $('agents').options[k].innerHTML.split(' -- ')[1] +' (' + $('agents').options[k].innerHTML.split(' -- ')[0] + ')' +  '</LABEL><BR>';
-		}
-	return tmp;
+	$('testmulti').innerHTML ="";
+	for (k=0;k< $('agents').length ;k++ ){
+		selectedagent = "selectedagent" + k;
+		$('agents').options[k].selected = false;
+		$('testmulti').innerHTML += '<LABEL FOR=' + selectedagent + '><INPUT id="' + selectedagent + '" TYPE="CHECKBOX" VALUE="'+ $('agents').options[k].innerHTML.split(' -- ')[0] + '" onclick="$(\'save_q\').disabled=false; $(\'cancel\').disabled=false;">&nbsp;' + $('agents').options[k].innerHTML.split(' -- ')[1] +' (' + $('agents').options[k].innerHTML.split(' -- ')[0] + ')' +  '</LABEL><BR>';
+	}
+return tmp;
 }
 queuecallbacks.checkparams = function(box) { }
 queuecallbacks.eachline = true;
 queuecallbacks.includecats = true;
 
 queuecallbacks.format = function(t,x) {
-		var tmp = t.name.split('general');
-		if(tmp.length>1)
-				return false;
-		else if ( t.name && x==undefined && InArray(extensions_conf_qs, t.name) ){	 				// if is a category
-				k=0;
-				j = j +1;
-				queueagents[j] = new Array;
-				queuenames[j] = t.name;
-				return t.name + " -- Queue '" + t.fieldbyname['fullname'] + "'";
-		}else if(InArray(extensions_conf_qs, t.name)) {  // if is a subcategory 
-				tmp = t.fields[x].split ('Agent/');
-				if(t.names[x] == 'member' && tmp.length > 1){
-					queueagents [j] [k] = tmp[1];
-					k = k+1;
-				}
-				return false;
+	var tmp = t.name.split('general');
+	if(tmp.length>1)
+			return false;
+	else if ( t.name && x==undefined && InArray(extensions_conf_qs, t.name) ){	 				// if is a category
+		k=0;
+		j = j +1;
+		queueagents[j] = new Array;
+		queuenames[j] = t.name;
+			return t.name + " -- Queue '" + t.fieldbyname['fullname'] + "'";
+	}else if(InArray(extensions_conf_qs, t.name)) {  // if is a subcategory 
+		tmp = t.fields[x].split ('Agent/');
+		if(t.names[x] == 'member' && tmp.length > 1){
+			queueagents [j] [k] = tmp[1];
+			k = k+1;
 		}
+		return false;
+	}
 }
 
 //extencallbacks
@@ -461,13 +459,13 @@ mohcallbacks.loaded = function() {
 
 function free_mem( ){
 	if( navigator.userAgent.indexOf("MSIE") == -1 ){ return true; }
-		try{
-			widgets['save'].hostselectbox = null ;
-			widgets['cancel'].hostselectbox = null ;
-			widgets['new'].hostselectbox = null ;
-			widgets['delete'].hostselectbox = null ;
-			purge( document.body );
-		}catch(e){ }
+	try{
+		widgets['save'].hostselectbox = null ;
+		widgets['cancel'].hostselectbox = null ;
+		widgets['new'].hostselectbox = null ;
+		widgets['delete'].hostselectbox = null ;
+		purge( document.body );
+	}catch(e){ }
 }
 </script>
 <body id="foo" onload="localajaxinit()"  bgcolor="EFEFEF"  onunload="free_mem()">
@@ -477,70 +475,109 @@ function free_mem( ){
 </div>
 <div class="mainscreenContentBox" id="mailboxcontent">
 <table class="mainscreenTable" align="center">
-	<tr valign="top"><td colspan='2'>Extensions:</td></tr>
 	<tr valign="top">
-		<td>	<select size="25" id="queues"  style="width:220px;" class="input10"><option>Loading...</option></select>
-		</td>
-		<td style="width:311px; height: 415px"><div id='adjustments' style='width:310'>
-						<select id='extensions' style='display:none;width:0px;height:0px'></select><select id='devices' style='display:none;width:0px;height:0px'></select><select id='finalextensions'  style='display:none;width:0px;height:0px'></select>
-							<table cellspacing='0' cellpadding='0'>
-								<tr valign="top"><td>
-															<table>
-																	<tr onmouseover="show_tooltip('en', 'queues', 0);" ><td class="field_text">Queue:</td><td>&nbsp;<input size='5' id='name' pattern='^\d*$' class="input8"></td></tr>
-																	<tr onmouseover="show_tooltip('en', 'queues', 1);" ><td class="field_text">Full Name:</td><td>&nbsp;<input size='24' id='fullname' pattern='^[a-zA-Z_0-9 ]*$' class="input8"></td></tr>
-																	<tr onmouseover="show_tooltip('en', 'queues', 2);" ><td class="field_text">Strategy :</td><td>&nbsp;<select id='strategy' class="input8"> 
-																													<option value="ringall">ringall</option> 
-																													<option value="roundrobin">roundrobin</option> 
-																													<option value="leastrecent">leastrecent</option> 
-																													<option value="fewestcalls">fewestcalls</option> 
-																													<option value="random">random</option> 
-																													<option value="rrmemory">rrmemory</option> 
-																													</select>
-																			</td>
-																	</tr>
-																	<tr onmouseover="show_tooltip('en', 'queues', 3);" >
-																			<td valign='top' class="field_text">Agents:</td>
-																			<td><select multiple='true' id='agents' style='display:none;'></select>
-																				<div id="testmulti" style='border:1px solid; font-size: 8pt; height:75px; width: 200px;overflow :auto;'></div>
-																			</td>
-																	</tr>
-																	<tr><td colspan='2' align='center'><div style="height:15px" id='status'></div></td></tr>
-																	<tr><td colspan='2'></td></tr>
-															</table>
-																</td>
-								</tr>
-								<tr onmouseover="show_tooltip('en', 'queues', 4);"><td style="cursor: pointer; cursor: hand;"><img id="split" onClick="togglefeatures()" src="images/split-v.gif"></td></tr>
-								<tr><td><div style="background-image:url(images/slice-v.gif)" id='advancedw'>
-																<table id='advancedi' align='center'>
-																		<tr onmouseover="show_tooltip('en', 'queues', 5);" ><td class="field_text">TimeOut:</td><td>&nbsp;<input size='2' id='timeout'  pattern='^\d*$' class="input8"></td></tr>
-																		<tr onmouseover="show_tooltip('en', 'queues', 6);" ><td class="field_text">Wrapup Time:</td><td>&nbsp;<input size='2' id='wrapuptime' pattern='^\d*$' class="input8"></td></tr>
-																		<tr>
-																				<td colspan=2>
-																					<span  class="field_text" onmouseover="show_tooltip('en', 'queues', 7);" ><input type=checkbox id='autofill'> Auto Fill</span>
-																					<span  class="field_text" onmouseover="show_tooltip('en', 'queues', 8);">&nbsp;&nbsp;<input type=checkbox id='autopause'>Auto Pause</span>
-																				</td>
-																		</tr>
-
-																		<tr onmouseover="show_tooltip('en', 'queues', 9);" ><td class="field_text">Max Len:</td><td>&nbsp;<input size='2' id='maxlen' pattern='^\d*$' class="input8"></td></tr>
-																		<tr onmouseover="show_tooltip('en', 'queues', 10);" ><td class="field_text">JoinEmpty:</td><td><input type=checkbox id='joinempty'></td></tr>
-																		<tr onmouseover="show_tooltip('en', 'queues', 11);" ><td class="field_text">LeaveWhenEmpty:</td><td><input type=checkbox id='leavewhenempty'></td></tr>
-																		<tr onmouseover="show_tooltip('en', 'queues', 12);" ><td class="field_text">Report Hold Time:</td><td><input type=checkbox id='reportholdtime'></td></tr>
-																		<tr  onmouseover="show_tooltip('en', 'queues', 13);" >
-																				<td colspan=2  class="field_text">
-																					Music On Hold: <select id="musicclass" class="input8"></select>
-																				</td>
-																		</tr>
-																</table>
-													</div>
-										</td>
-								</tr>
-								<tr onmouseover="show_tooltip('en', 'queues', 4);"><td style="cursor: pointer; cursor: hand;"><img onClick="togglefeatures()" src="images/adv-v.gif"></td></tr>
-							</table>
-					</div>
-			</td>
+		<td colspan='2'>Extensions:</td>
 	</tr>
-	<tr>	<td align='center'><input type='button' id='new' value='New' class="buttonbold">&nbsp;<input type='button' id='delete' value='Delete' class="buttonbold"></td>
-			<td align='center' colspan='2'><input type=hidden id='save' value="Save"><input type='button' id='save_q' onclick="save_queue()" value='Save' class="buttonbold">&nbsp;<input type='button' id='cancel' value='Cancel'  class="buttonbold"></td>
+	<tr valign="top">
+	<td>
+		<select size="25" id="queues"  style="width:220px;" class="input10"><option>Loading...</option></select>
+	</td>
+	<td style="width:311px; height: 415px">
+		<div id='adjustments' style='width:310'>
+			<select id='extensions' style='display:none;width:0px;height:0px'></select>
+			<select id='devices' style='display:none;width:0px;height:0px'></select>
+			<select id='finalextensions'  style='display:none;width:0px;height:0px'></select>
+
+			<table cellspacing='0' cellpadding='0'>
+			<tr valign="top">
+			<td>
+				<table>
+					<tr onmouseover="show_tooltip('en', 'queues', 0);" >
+						<td class="field_text">Queue:</td>
+						<td>&nbsp;<input size='5' id='name' pattern='^\d*$' class="input8"></td>
+					</tr>
+					<tr onmouseover="show_tooltip('en', 'queues', 1);" >
+						<td class="field_text">Full Name:</td>
+						<td>&nbsp;<input size='24' id='fullname' pattern='^[a-zA-Z_0-9 ]*$' class="input8"></td>
+					</tr>
+					<tr onmouseover="show_tooltip('en', 'queues', 2);" >
+						<td class="field_text">Strategy :</td><td>&nbsp;<select id='strategy' class="input8"> 
+							<option value="ringall">ringall</option> 
+							<option value="roundrobin">roundrobin</option> 
+							<option value="leastrecent">leastrecent</option> 
+							<option value="fewestcalls">fewestcalls</option> 
+							<option value="random">random</option> 
+							<option value="rrmemory">rrmemory</option> 
+							</select>
+						</td>
+					</tr>
+					<tr onmouseover="show_tooltip('en', 'queues', 3);" >
+						<td valign='top' class="field_text">Agents:</td>
+						<td><select multiple='true' id='agents' style='display:none;'></select>
+							<div id="testmulti" style='border:1px solid; font-size: 8pt; height:75px; width: 200px;overflow :auto;'></div>
+						</td>
+					</tr>
+					<tr><td colspan='2' align='center'><div style="height:15px" id='status'></div></td></tr>
+					<tr><td colspan='2'></td></tr>
+				</table>
+			</td>
+			</tr>
+			<tr onmouseover="show_tooltip('en', 'queues', 4);">
+				<td style="cursor: pointer; cursor: hand;"><img id="split" onClick="togglefeatures()" src="images/split-v.gif"></td>
+			</tr>
+			<tr>	<td>	<div style="background-image:url(images/slice-v.gif)" id='advancedw'>
+					<table id='advancedi' align='center'>
+						<tr onmouseover="show_tooltip('en', 'queues', 5);" >
+							<td class="field_text">TimeOut:</td>
+							<td>&nbsp;<input size='2' id='timeout'  pattern='^\d*$' class="input8"></td>
+						</tr>
+						<tr onmouseover="show_tooltip('en', 'queues', 6);" >
+							<td class="field_text">Wrapup Time:</td>
+							<td>&nbsp;<input size='2' id='wrapuptime' pattern='^\d*$' class="input8"></td>
+						</tr>
+						<tr>	<td colspan=2>
+								<span  class="field_text" onmouseover="show_tooltip('en', 'queues', 7);" ><input type=checkbox id='autofill'> Auto Fill</span>
+								<span  class="field_text" onmouseover="show_tooltip('en', 'queues', 8);">&nbsp;&nbsp;<input type=checkbox id='autopause'>Auto Pause</span>
+							</td>
+						</tr>
+						<tr onmouseover="show_tooltip('en', 'queues', 9);" >
+							<td class="field_text">Max Len:</td>
+							<td>&nbsp;<input size='2' id='maxlen' pattern='^\d*$' class="input8"></td>
+						</tr>
+						<tr onmouseover="show_tooltip('en', 'queues', 10);" >
+							<td class="field_text">JoinEmpty:</td>
+							<td><input type=checkbox id='joinempty'></td></tr>
+						<tr onmouseover="show_tooltip('en', 'queues', 11);" >
+							<td class="field_text">LeaveWhenEmpty:</td>
+							<td><input type=checkbox id='leavewhenempty'></td>
+						</tr>
+						<tr onmouseover="show_tooltip('en', 'queues', 12);" >
+							<td class="field_text">Report Hold Time:</td>
+							<td><input type=checkbox id='reportholdtime'></td>
+						</tr>
+						<tr  onmouseover="show_tooltip('en', 'queues', 13);" >
+							<td colspan=2  class="field_text">Music On Hold: <select id="musicclass" class="input8"></select></td>
+						</tr>
+					</table>
+					</div>
+				</td>
+			</tr>
+			<tr onmouseover="show_tooltip('en', 'queues', 4);">
+				<td style="cursor: pointer; cursor: hand;">	<img onClick="togglefeatures()" src="images/adv-v.gif">		</td>
+			</tr>
+			</table>
+		</div>
+	</td>
+	</tr>
+	<tr>	<td align='center'>
+			<input type='button' id='new' value='New' class="buttonbold">&nbsp;
+			<input type='button' id='delete' value='Delete' class="buttonbold">
+		</td>
+		<td align='center' colspan='2'>
+			<input type=hidden id='save' value="Save">
+			<input type='button' id='save_q' onclick="save_queue()" value='Save' class="buttonbold">&nbsp;
+			<input type='button' id='cancel' value='Cancel'  class="buttonbold">
+		</td>
 	</tr>
 </table>
 </div>

@@ -30,13 +30,9 @@ var phonecallbacks = new Object;
 var widgets = new Array;
 var fieldnames = ['allow' ,'allowexternaldomains' ,'allowexternalinvites' ,'allowguest' ,'allowoverlap' ,'allowsubscribe' ,'allowtransfer' ,'alwaysauthreject' ,'autodomain' ,'bindaddr' ,'bindport' ,'callevents' ,'cancel' ,'canreinvite' ,'checkmwi' ,'compactheaders' ,'context' ,'defaultexpiry' ,'disallow' ,'domain' ,'domain' ,'dtmfmode' ,'dumphistory' ,'externhost' ,'externip' ,'externrefresh' ,'fromdomain' ,'g726nonstandard' ,'ignoreregexpire' ,'jbenable' ,'jbforce' ,'jbimpl' ,'jblog' ,'jbmaxsize' ,'jbresyncthreshold' ,'language' ,'localnet' ,'maxcallbitrate' ,'maxexpiry' ,'minexpiry' ,'mohinterpret' ,'mohsuggest' ,'nat' ,'notifymimetype' ,'notifyringing' ,'pedantic' ,'progressinband' ,'promiscredir' ,'realm' ,'recordhistory' ,'register' ,'registerattempts' ,'registertimeout' ,'relaxdtmf' ,'rtautoclear' ,'rtcachefriends' ,'rtpholdtimeout' ,'rtptimeout' ,'rtsavesysname' ,'rtupdate' ,'save' ,'sendrpid' ,'sipdebug' ,'srvlookup' ,'status' ,'subscribecontext' ,'t1min' ,'t38pt_udptl' ,'tos_audio' ,'tos_sip' ,'tos_video' ,'trustrpid' ,'useragent' ,'usereqphone' ,'videosupport'] ;
 
-phonecallbacks.format = function(t) {
-		//	t.name, t.fieldbyname['context'] 
-		tmp = t.name.split('general');
-		if(tmp.length>1)
-			return t.name;
-		else
-			return false;
+phonecallbacks.format = function(t) { 
+	tmp = t.name.split('general');
+	if(tmp.length>1){  return t.name; } else { return false; }
 }
 
 phonecallbacks.postselect = function(box, val) {
@@ -44,45 +40,47 @@ phonecallbacks.postselect = function(box, val) {
 }
 
 phonecallbacks.loaded = function() {
-		$('hiddenfield').selectitem(0);
-		parent.loadscreen(this);
+	$('hiddenfield').selectitem(0);
+	parent.loadscreen(this);
 }
 
 function localajaxinit(){
-		setWindowTitle("SIP");
-		for (var x =0; x < fieldnames.length; x++ ) {
-			widgets[fieldnames[x]] = $(fieldnames[x]);
-			widgets[fieldnames[x]].disabled = true;
-		}
-	parent.astmanEngine.config2list("sip.conf", $('hiddenfield'), widgets, phonecallbacks);
+	setWindowTitle("SIP");
+	for (var x =0; x < fieldnames.length; x++ ) {
+		widgets[fieldnames[x]] = _$(fieldnames[x]);
+		widgets[fieldnames[x]].disabled = true;
+	}
+	parent.astmanEngine.config2list("sip.conf", _$('hiddenfield'), widgets, phonecallbacks);
 }
 
 // Allowed/Disallowed codescs related functions
 function enable_selectedcodec(){
 	// add to allowed
-	selectbox_add("allowed" ,  $('disallowed').value );
+	selectbox_add("allowed" ,  _$('disallowed').value );
 	// remove selected from disallowed
-	selectbox_remove("disallowed", $('disallowed').value );
+	selectbox_remove("disallowed", -$('disallowed').value );
 }
+
 function disable_selectedcodec(){
 	// add to disallowed
-	selectbox_add("disallowed" ,  $('allowed').value );
+	selectbox_add("disallowed" , _$('allowed').value );
 	// remove selected from allowed
-	selectbox_remove("allowed", $('allowed').value );
+	selectbox_remove("allowed", _$('allowed').value );
 }
+
 function selectbox_add(selectbox_id, codec){
-		switch(codec) {
-		  case 'ulaw': addtosel("u-law","ulaw",selectbox_id) ; break;
-		  case 'alaw': addtosel("a-law","alaw",selectbox_id) ; break;
-		  case 'gsm': addtosel("GSM","gsm",selectbox_id) ; break ;
-		  case 'ilbc': addtosel("ILBC","ilbc",selectbox_id) ; break ;
-		  case 'speex': addtosel("SPEEX","speex",selectbox_id) ; break ;
-		  case 'g726':  addtosel("G.726","g726",selectbox_id) ; break ;
-		  case 'adpcm': addtosel("ADPCM","adpcm",selectbox_id) ; break ;
-		  case 'lpc10': addtosel("LPC10","lpc10",selectbox_id) ; break ;
-		  case 'g729': addtosel("G.729","g729",selectbox_id) ; break ;
-		  default: break
-	   }
+	switch(codec) {
+		case 'ulaw': addtosel("u-law","ulaw",selectbox_id) ; break;
+		case 'alaw': addtosel("a-law","alaw",selectbox_id) ; break;
+		case 'gsm': addtosel("GSM","gsm",selectbox_id) ; break ;
+		case 'ilbc': addtosel("ILBC","ilbc",selectbox_id) ; break ;
+		case 'speex': addtosel("SPEEX","speex",selectbox_id) ; break ;
+		case 'g726':  addtosel("G.726","g726",selectbox_id) ; break ;
+		case 'adpcm': addtosel("ADPCM","adpcm",selectbox_id) ; break ;
+		case 'lpc10': addtosel("LPC10","lpc10",selectbox_id) ; break ;
+		case 'g729': addtosel("G.729","g729",selectbox_id) ; break ;
+		default: break
+	}
 
 	function addtosel(a,b,c){ // a is text, b is value, c is the select box id
 	  var newoption = document.createElement('option');
@@ -99,64 +97,64 @@ function selectbox_add(selectbox_id, codec){
 
 function 	selectbox_remove(selectbox_id,codec){
 	for (var x=0; x < $(selectbox_id).length; x++){
-		if( $(selectbox_id).options[x].value==codec ){	$(selectbox_id).remove(x);		return true;		}
+		if( $(selectbox_id).options[x].value==codec ){	$(selectbox_id).remove(x); return true; }
 	}
 }
 function update_ordercodecs(){
-		$('disallow').value = "";
-		$('allow').value = "";
-		if($('disallow_all').checked){
-				$('disallow').value = "all";
-		}else{
-			for (var x=0; x < $('disallowed').length ; x++){
-				if(x==0){
-					$('disallow').value = $('disallowed').options[x].value ;
-				}else{
-					$('disallow').value = $('disallow').value + "," + $('disallowed').options[x].value ;
-				}
-			}
-		}
-
-		for (var x=0; x < $('allowed').length ; x++){
-			if(x==0){ 	
-					$('allow').value = $('allowed').options[x].value ; 
+	$('disallow').value = "";
+	$('allow').value = "";
+	if($('disallow_all').checked){
+		$('disallow').value = "all";
+	}else{
+		for (var x=0; x < $('disallowed').length ; x++){
+			if(x==0){
+				$('disallow').value = $('disallowed').options[x].value ;
 			}else{
-					$('allow').value = $('allow').value + "," +  $('allowed').options[x].value ; 
+				$('disallow').value = $('disallow').value + "," + $('disallowed').options[x].value ;
 			}
 		}
-		$('bg_transparent').style.display='none';
-		$('div_setordercodecs').style.display = "none";
-		$('save').disabled = false;
-		$('cancel').disabled = false;
+	}
+
+	for (var x=0; x < $('allowed').length ; x++){
+		if(x==0){ 	
+			$('allow').value = $('allowed').options[x].value ; 
+		}else{
+			$('allow').value = $('allow').value + "," +  $('allowed').options[x].value ; 
+		}
+	}
+	$('bg_transparent').style.display='none';
+	$('div_setordercodecs').style.display = "none";
+	$('save').disabled = false;
+	$('cancel').disabled = false;
 }
 function cancel_ordercodecs(){
 	$('bg_transparent').style.display='none';
 	$('div_setordercodecs').style.display = "none";
 }
 function update_div_setordercodecs(){
-		$('disallowed').innerHTML=""; 	$('allowed').innerHTML="";
-		if( $('disallow').value == "all" || $('disallow').value == ""){
-			$('disallow_all').checked = true;
-			selectbox_add("disallowed", "ulaw");
-			selectbox_add("disallowed", "alaw");
-			selectbox_add("disallowed", "gsm");
-			selectbox_add("disallowed", "ilbc");
-			selectbox_add("disallowed", "speex");
-			selectbox_add("disallowed", "g726");
-			selectbox_add("disallowed", "adpcm");
-			selectbox_add("disallowed", "lpc10");
-			selectbox_add("disallowed", "g729");
-		}else{
-			var tmp = $('disallow').value.split(",");
-			for(var x=0; x < tmp.length; x++){
-				selectbox_add("disallowed", tmp[x]);
-			}
-		}
-		var tmp = $('allow').value.split(",");
+	$('disallowed').innerHTML=""; 	$('allowed').innerHTML="";
+	if( $('disallow').value == "all" || $('disallow').value == ""){
+		$('disallow_all').checked = true;
+		selectbox_add("disallowed", "ulaw");
+		selectbox_add("disallowed", "alaw");
+		selectbox_add("disallowed", "gsm");
+		selectbox_add("disallowed", "ilbc");
+		selectbox_add("disallowed", "speex");
+		selectbox_add("disallowed", "g726");
+		selectbox_add("disallowed", "adpcm");
+		selectbox_add("disallowed", "lpc10");
+		selectbox_add("disallowed", "g729");
+	}else{
+		var tmp = $('disallow').value.split(",");
 		for(var x=0; x < tmp.length; x++){
-			selectbox_add("allowed", tmp[x]);
-			selectbox_remove("disallowed",tmp[x]);
+			selectbox_add("disallowed", tmp[x]);
 		}
+	}
+	var tmp = $('allow').value.split(",");
+	for(var x=0; x < tmp.length; x++){
+		selectbox_add("allowed", tmp[x]);
+		selectbox_remove("disallowed",tmp[x]);
+	}
 
 	$('bg_transparent').style.display='';
 	$('div_setordercodecs').style.display='';
@@ -180,407 +178,483 @@ function disallow_all_refresh(){
 </div>
 <div class="mainscreenContentBox" id="userscontent">
 <div  style="height :425px;width : 530px ; overflow :auto;">
-<table class="field_text" align="center" width="100%" cellpadding=3 cellspacing=0 border=0>
-<tr><td align=right colspan=2>&nbsp;</td></tr>
-<tr onmouseover="show_tooltip('en', 'sip_general', 0);"><td align=right>Context:</td>
+	<table class="field_text" align="center" width="100%" cellpadding=3 cellspacing=0 border=0>
+	<tr><td align=right colspan=2>&nbsp;</td></tr>
+	<tr onmouseover="show_tooltip('en', 'sip_general', 0);">
+		<td align=right>Context:</td>
 		<td>&nbsp;<input type='text' size=10 id='context' class="input8"></td>
-</tr>
-<tr onmouseover="show_tooltip('en', 'sip_general', 1);"><td align=right>Realm for digest authentication:</td>
+	</tr>
+	<tr onmouseover="show_tooltip('en', 'sip_general', 1);">
+		<td align=right>Realm for digest authentication:</td>
 		<td>&nbsp;<input type='text' id='realm' class="input8"></td>
-</tr>
-<tr onmouseover="show_tooltip('en', 'sip_general', 2);"><td align=right>UDP Port to bind to:</td>
+	</tr>
+	<tr onmouseover="show_tooltip('en', 'sip_general', 2);">
+		<td align=right>UDP Port to bind to:</td>
 		<td>&nbsp;<input type='text' size=4 id='bindport' class="input8"></td>
-</tr>
-<tr onmouseover="show_tooltip('en', 'sip_general', 3);"><td align=right>IP address to bind to:</td>
+	</tr>
+	<tr onmouseover="show_tooltip('en', 'sip_general', 3);">
+		<td align=right>IP address to bind to:</td>
 		<td>&nbsp;<input type='text' size=16 id='bindaddr' class="input8"></td>
-</tr>
-<tr onmouseover="show_tooltip('en', 'sip_general', 4);"><td align=right>Domain:</td>
+	</tr>
+	<tr onmouseover="show_tooltip('en', 'sip_general', 4);">
+		<td align=right>Domain:</td>
 		<td>&nbsp;<input type='text' size=18 id='domain' class="input8"></td>
-</tr>
-<tr onmouseover="show_tooltip('en', 'sip_general', 5);"><td align=right>Allow guest calls:</td>
+	</tr>
+	<tr onmouseover="show_tooltip('en', 'sip_general', 5);">
+		<td align=right>Allow guest calls:</td>
 		<td><input type='checkbox' dfalt='y' id='allowguest' ></td>
-</tr>
-<tr onmouseover="show_tooltip('en', 'sip_general', 6);"><td align=right>Overlap dialing support:</td>
+	</tr>
+	<tr onmouseover="show_tooltip('en', 'sip_general', 6);">
+		<td align=right>Overlap dialing support:</td>
 		<td><input type='checkbox' dfalt='y' id='allowoverlap'></td>
-</tr>
-<tr onmouseover="show_tooltip('en', 'sip_general', 7);"><td align=right>Allow Transfers:</td>
+	</tr>
+	<tr onmouseover="show_tooltip('en', 'sip_general', 7);">
+		<td align=right>Allow Transfers:</td>
 		<td><input type='checkbox' dfalt='y' id='allowtransfer'></td>
-</tr>
-<tr onmouseover="show_tooltip('en', 'sip_general', 8);"><td align=right>Enable DNS SRV lookups (on outbound calls):</td>
+	</tr>
+	<tr onmouseover="show_tooltip('en', 'sip_general', 8);">
+		<td align=right>Enable DNS SRV lookups (on outbound calls):</td>
 		<td><input type='checkbox' dfalt='y' id='srvlookup'></td>
-</tr>
-<tr onmouseover="show_tooltip('en', 'sip_general', 9);"><td align=right>Pedantic:</td><td>
+	</tr>
+	<tr onmouseover="show_tooltip('en', 'sip_general', 9);">
+		<td align=right>Pedantic:</td><td>
 		<input type='checkbox' dfalt='no' id='pedantic'></td>
-</tr>
-<tr bgcolor="#FFFFFF"  onmouseover="show_tooltip('en', 'sip_general', 10);"><td colspan=2><B>&nbsp;Type of Service</B></td></tr>
-<tr onmouseover="show_tooltip('en', 'sip_general', 11);"><td align=right>TOS for Signalling packets:</td>
+	</tr>
+	<tr bgcolor="#FFFFFF"  onmouseover="show_tooltip('en', 'sip_general', 10);">
+		<td colspan=2><B>&nbsp;Type of Service</B></td>
+	</tr>
+	<tr onmouseover="show_tooltip('en', 'sip_general', 11);"><td align=right>TOS for Signalling packets:</td>
 		<td>&nbsp;<select size=1 id="tos_sip" class="input8">
-							<option value='ef'>ef</option>
-							<option value='CS0'>CS0</option>
-							<option value='CS1'>CS1</option>
-							<option value='CS2'>CS2</option>
-							<option value='CS3'>CS3</option>
-							<option value='CS4'>CS4</option>
-							<option value='CS5'>CS5</option>
-							<option value='CS6'>CS6</option>
-							<option value='CS7'>CS7</option>
-							<option value='AF11'>AF11</option>
-							<option value='AF12'>AF12</option>
-							<option value='AF13'>AF13</option>
-							<option value='AF21'>AF21</option>
-							<option value='AF22'>AF22</option>
-							<option value='AF23'>AF23</option>
-							<option value='AF31'>AF31</option>
-							<option value='AF32'>AF32</option>
-							<option value='AF33'>AF33</option>
-							<option value='AF41'>AF41</option>
-							<option value='AF42'>AF42</option>
-							<option value='AF43'>AF43</option>
-						</select>		
-</tr>
-<tr onmouseover="show_tooltip('en', 'sip_general', 12);"><td align=right>TOS for RTP audio packets:</td>
+			<option value='ef'>ef</option>
+			<option value='CS0'>CS0</option>
+			<option value='CS1'>CS1</option>
+			<option value='CS2'>CS2</option>
+			<option value='CS3'>CS3</option>
+			<option value='CS4'>CS4</option>
+			<option value='CS5'>CS5</option>
+			<option value='CS6'>CS6</option>
+			<option value='CS7'>CS7</option>
+			<option value='AF11'>AF11</option>
+			<option value='AF12'>AF12</option>
+			<option value='AF13'>AF13</option>
+			<option value='AF21'>AF21</option>
+			<option value='AF22'>AF22</option>
+			<option value='AF23'>AF23</option>
+			<option value='AF31'>AF31</option>
+			<option value='AF32'>AF32</option>
+			<option value='AF33'>AF33</option>
+			<option value='AF41'>AF41</option>
+			<option value='AF42'>AF42</option>
+			<option value='AF43'>AF43</option>
+			</select>
+		</td>		
+	</tr>
+	<tr onmouseover="show_tooltip('en', 'sip_general', 12);">
+		<td align=right>TOS for RTP audio packets:</td>
 		<td>&nbsp;<select size=1 id="tos_audio" class="input8">
-							<option value='ef'>ef</option>
-							<option value='CS0'>CS0</option>
-							<option value='CS1'>CS1</option>
-							<option value='CS2'>CS2</option>
-							<option value='CS3'>CS3</option>
-							<option value='CS4'>CS4</option>
-							<option value='CS5'>CS5</option>
-							<option value='CS6'>CS6</option>
-							<option value='CS7'>CS7</option>
-							<option value='AF11'>AF11</option>
-							<option value='AF12'>AF12</option>
-							<option value='AF13'>AF13</option>
-							<option value='AF21'>AF21</option>
-							<option value='AF22'>AF22</option>
-							<option value='AF23'>AF23</option>
-							<option value='AF31'>AF31</option>
-							<option value='AF32'>AF32</option>
-							<option value='AF33'>AF33</option>
-							<option value='AF41'>AF41</option>
-							<option value='AF42'>AF42</option>
-							<option value='AF43'>AF43</option>
-						</select></td>
-</tr>
-<tr onmouseover="show_tooltip('en', 'sip_general', 13);"><td align=right>TOS for RTP video packets:</td>
+			<option value='ef'>ef</option>
+			<option value='CS0'>CS0</option>
+			<option value='CS1'>CS1</option>
+			<option value='CS2'>CS2</option>
+			<option value='CS3'>CS3</option>
+			<option value='CS4'>CS4</option>
+			<option value='CS5'>CS5</option>
+			<option value='CS6'>CS6</option>
+			<option value='CS7'>CS7</option>
+			<option value='AF11'>AF11</option>
+			<option value='AF12'>AF12</option>
+			<option value='AF13'>AF13</option>
+			<option value='AF21'>AF21</option>
+			<option value='AF22'>AF22</option>
+			<option value='AF23'>AF23</option>
+			<option value='AF31'>AF31</option>
+			<option value='AF32'>AF32</option>
+			<option value='AF33'>AF33</option>
+			<option value='AF41'>AF41</option>
+			<option value='AF42'>AF42</option>
+			<option value='AF43'>AF43</option>
+			</select>
+		</td>
+	</tr>
+	<tr onmouseover="show_tooltip('en', 'sip_general', 13);">
+		<td align=right>TOS for RTP video packets:</td>
 		<td>&nbsp;<select size=1 id="tos_video" class="input8">
-							<option value='ef'>ef</option>
-							<option value='CS0'>CS0</option>
-							<option value='CS1'>CS1</option>
-							<option value='CS2'>CS2</option>
-							<option value='CS3'>CS3</option>
-							<option value='CS4'>CS4</option>
-							<option value='CS5'>CS5</option>
-							<option value='CS6'>CS6</option>
-							<option value='CS7'>CS7</option>
-							<option value='AF11'>AF11</option>
-							<option value='AF12'>AF12</option>
-							<option value='AF13'>AF13</option>
-							<option value='AF21'>AF21</option>
-							<option value='AF22'>AF22</option>
-							<option value='AF23'>AF23</option>
-							<option value='AF31'>AF31</option>
-							<option value='AF32'>AF32</option>
-							<option value='AF33'>AF33</option>
-							<option value='AF41'>AF41</option>
-							<option value='AF42'>AF42</option>
-							<option value='AF43'>AF43</option>
-						</select></td>
-</tr>
-
-
-<tr onmouseover="show_tooltip('en', 'sip_general', 14);"><td align=right>Max Registration/Subscription Time:</td>
+			<option value='ef'>ef</option>
+			<option value='CS0'>CS0</option>
+			<option value='CS1'>CS1</option>
+			<option value='CS2'>CS2</option>
+			<option value='CS3'>CS3</option>
+			<option value='CS4'>CS4</option>
+			<option value='CS5'>CS5</option>
+			<option value='CS6'>CS6</option>
+			<option value='CS7'>CS7</option>
+			<option value='AF11'>AF11</option>
+			<option value='AF12'>AF12</option>
+			<option value='AF13'>AF13</option>
+			<option value='AF21'>AF21</option>
+			<option value='AF22'>AF22</option>
+			<option value='AF23'>AF23</option>
+			<option value='AF31'>AF31</option>
+			<option value='AF32'>AF32</option>
+			<option value='AF33'>AF33</option>
+			<option value='AF41'>AF41</option>
+			<option value='AF42'>AF42</option>
+			<option value='AF43'>AF43</option>
+			</select>
+		</td>
+	</tr>
+	<tr onmouseover="show_tooltip('en', 'sip_general', 14);">
+		<td align=right>Max Registration/Subscription Time:</td>
 		<td>&nbsp;<input type='text' size=4 id='maxexpiry' dfalt="3600" pattern='^\d*$' class="input8"></td>
-</tr>
-<tr onmouseover="show_tooltip('en', 'sip_general', 15);"><td align=right>Min Registration/Subscription Time:</td>
+	</tr>
+	<tr onmouseover="show_tooltip('en', 'sip_general', 15);">
+		<td align=right>Min Registration/Subscription Time:</td>
 		<td>&nbsp;<input type='text' dfalt='60'  size=4 id='minexpiry' pattern='^\d*$' class="input8"></td>
-</tr>
-<tr onmouseover="show_tooltip('en', 'sip_general', 16);"><td align=right> Default Incoming/Outgoing Registration Time:</td>
+	</tr>
+	<tr onmouseover="show_tooltip('en', 'sip_general', 16);">
+		<td align=right> Default Incoming/Outgoing Registration Time:</td>
 		<td>&nbsp;<input type='text'  size=4 id='defaultexpiry' pattern='^\d*$' class="input8"></td>
-</tr>
-<tr onmouseover="show_tooltip('en', 'sip_general', 17);"><td align=right>Min RoundtripTime (T1 Time):</td>
+	</tr>
+	<tr onmouseover="show_tooltip('en', 'sip_general', 17);">
+		<td align=right>Min RoundtripTime (T1 Time):</td>
 		<td>&nbsp;<input type='text' dfalt='100'  size=4 id='t1min' pattern='^\d*$' class="input8"></td>
-</tr>
-<tr onmouseover="show_tooltip('en', 'sip_general', 18);"><td align=right>Override Notify MIME Type:</td>
+	</tr>
+	<tr onmouseover="show_tooltip('en', 'sip_general', 18);">
+		<td align=right>Override Notify MIME Type:</td>
 		<td>&nbsp;<input type='text'  size=16 id='notifymimetype' class="input8"></td>
-</tr>
-<tr onmouseover="show_tooltip('en', 'sip_general', 19);"><td align=right>Time between MWI Checks:</td>
+	</tr>
+	<tr onmouseover="show_tooltip('en', 'sip_general', 19);">
+		<td align=right>Time between MWI Checks:</td>
 		<td>&nbsp;<input type='text'  size=4 id='checkmwi' class="input8"></td>
-</tr>
-
-<tr onmouseover="show_tooltip('en', 'sip_general', 20);"><td align=right>Music On Hold Interpret:</td>
+	</tr>
+	<tr onmouseover="show_tooltip('en', 'sip_general', 20);">
+		<td align=right>Music On Hold Interpret:</td>
 		<td>&nbsp;<input type='text'  size=12 id='mohinterpret' class="input8"></td>
-</tr>
-<tr onmouseover="show_tooltip('en', 'sip_general', 21);"><td align=right>Music On Hold Suggest:</td>
+	</tr>
+	<tr onmouseover="show_tooltip('en', 'sip_general', 21);">
+		<td align=right>Music On Hold Suggest:</td>
 		<td>&nbsp;<input type='text'  size=12 id='mohsuggest' class="input8"></td>
-</tr>
-<tr onmouseover="show_tooltip('en', 'sip_general', 22);"><td align=right>Language:</td>
+	</tr>
+	<tr onmouseover="show_tooltip('en', 'sip_general', 22);">
+		<td align=right>Language:</td>
 		<td>&nbsp;<input type='text' size=3 id='language' class="input8"></td>
-</tr>
-<tr onmouseover="show_tooltip('en', 'sip_general', 23);"><td align=right>Enable Relaxed DTMF:</td>
+	</tr>
+	<tr onmouseover="show_tooltip('en', 'sip_general', 23);">
+		<td align=right>Enable Relaxed DTMF:</td>
 		<td><input type='checkbox' id='relaxdtmf'></td>
-</tr>
-
-
-
-<tr onmouseover="show_tooltip('en', 'sip_general', 24);"><td align=right>RTP TimeOut:</td>
+	</tr>
+	<tr onmouseover="show_tooltip('en', 'sip_general', 24);">
+		<td align=right>RTP TimeOut:</td>
 		<td>&nbsp;<input type='text' size=4 id='rtptimeout' pattern='^\d*$' class="input8"></td>
-</tr>
-<tr onmouseover="show_tooltip('en', 'sip_general', 25);"><td align=right>RTP HoldTimeOut:</td>
+	</tr>
+	<tr onmouseover="show_tooltip('en', 'sip_general', 25);">
+		<td align=right>RTP HoldTimeOut:</td>
 		<td>&nbsp;<input type='text' size=4 id='rtpholdtimeout' pattern='^\d*$' class="input8"></td>
-</tr>
-
-
-
-<tr onmouseover="show_tooltip('en', 'sip_general', 26);"><td align=right>Trust Remote Party ID:</td>
+	</tr>
+	<tr onmouseover="show_tooltip('en', 'sip_general', 26);">
+		<td align=right>Trust Remote Party ID:</td>
 		<td><input type='checkbox' id='trustrpid'></td>
-</tr>
-<tr onmouseover="show_tooltip('en', 'sip_general', 27);"><td align=right>Send Remote Party ID:</td>
+	</tr>
+	<tr onmouseover="show_tooltip('en', 'sip_general', 27);">
+		<td align=right>Send Remote Party ID:</td>
 		<td><input type='checkbox' id='sendrpid'></td>
-</tr>
-<tr onmouseover="show_tooltip('en', 'sip_general', 28);"><td align=right>Generate In-Band Ringing:</td>
+	</tr>
+	<tr onmouseover="show_tooltip('en', 'sip_general', 28);">
+		<td align=right>Generate In-Band Ringing:</td>
 		<td>&nbsp;<select id='progressinband' class="input8">
-					<option value='never'>never</option>
-					<option value='no'>no</option>
-					<option value='yes'>yes</option>
-				</select>
+			<option value='never'>never</option>
+			<option value='no'>no</option>
+			<option value='yes'>yes</option>
+			</select>
 		</td>
-</tr>
-<tr onmouseover="show_tooltip('en', 'sip_general', 29);"><td align=right>Server UserAgent:</td>
+	</tr>
+	<tr onmouseover="show_tooltip('en', 'sip_general', 29);">
+		<td align=right>Server UserAgent:</td>
 		<td>&nbsp;<input type='text' size=12 id='useragent' class="input8"></td>
-</tr>
-<tr onmouseover="show_tooltip('en', 'sip_general', 30);"><td align=right>Allow Nonlocal Redirect:</td>
+	</tr>
+	<tr onmouseover="show_tooltip('en', 'sip_general', 30);">
+		<td align=right>Allow Nonlocal Redirect:</td>
 		<td><input type='checkbox' id='promiscredir'></td>
-</tr>
-<tr onmouseover="show_tooltip('en', 'sip_general', 31);"><td align=right>Add 'user=phone' to URI:</td>
+	</tr>
+	<tr onmouseover="show_tooltip('en', 'sip_general', 31);">
+		<td align=right>Add 'user=phone' to URI:</td>
 		<td><input type='checkbox' id='usereqphone'></td>
-</tr>
-<tr onmouseover="show_tooltip('en', 'sip_general', 32);"><td align=right>DTMF Mode:</td>
+	</tr>
+	<tr onmouseover="show_tooltip('en', 'sip_general', 32);">
+		<td align=right>DTMF Mode:</td>
 		<td>&nbsp;<select id='dtmfmode' class="input8">
-					<option value='rfc2833'>rfc2833</option>
-					<option value='info'>info</option>
-					<option value='inband'>inband</option>
-					<option value='auto'>auto</option>
-				</select>
+			<option value='rfc2833'>rfc2833</option>
+			<option value='info'>info</option>
+			<option value='inband'>inband</option>
+			<option value='auto'>auto</option>
+			</select>
 		</td>
-</tr>
-<tr onmouseover="show_tooltip('en', 'sip_general', 33);"><td align=right>Send Compact SIP Headers:</td>
+	</tr>
+	<tr onmouseover="show_tooltip('en', 'sip_general', 33);">
+		<td align=right>Send Compact SIP Headers:</td>
 		<td><input type='checkbox' id='compactheaders'></td>
-</tr>
-
-<tr bgcolor="#FFFFFF"  onmouseover="show_tooltip('en', 'sip_general', 34);"><td colspan=2><B>&nbsp;SIP Video Related</B></td></tr>
-<tr onmouseover="show_tooltip('en', 'sip_general', 35);"><td align=right>Max Bitrate (kb/s):</td>
+	</tr>
+	
+	<tr bgcolor="#FFFFFF"  onmouseover="show_tooltip('en', 'sip_general', 34);">
+		<td colspan=2><B>&nbsp;SIP Video Related</B></td>
+	</tr>
+	<tr onmouseover="show_tooltip('en', 'sip_general', 35);">
+		<td align=right>Max Bitrate (kb/s):</td>
 		<td>&nbsp;<input type='text' size=4  dfalt=384 id='maxcallbitrate' class="input8"></td>
-</tr>
-<tr onmouseover="show_tooltip('en', 'sip_general', 36);"><td align=right>Support for SIP Video:</td>
+	</tr>
+	<tr onmouseover="show_tooltip('en', 'sip_general', 36);">
+		<td align=right>Support for SIP Video:</td>
 		<td><input type='checkbox' id='videosupport'></td>
-</tr>
-<tr onmouseover="show_tooltip('en', 'sip_general', 37);"><td align=right>Generate Manager Events:</td>
+	</tr>
+	<tr onmouseover="show_tooltip('en', 'sip_general', 37);">
+		<td align=right>Generate Manager Events:</td>
 		<td><input type='checkbox' id='callevents'></td>
-</tr>
-<tr onmouseover="show_tooltip('en', 'sip_general', 38);"><td align=right>Reject NonMatching Invites:</td>
+	</tr>
+	<tr onmouseover="show_tooltip('en', 'sip_general', 38);">
+		<td align=right>Reject NonMatching Invites:</td>
 		<td><input type='checkbox' id='alwaysauthreject'></td>
-</tr>
-<tr onmouseover="show_tooltip('en', 'sip_general', 39);"><td align=right>NonStandard G.726 Support:</td>
+	</tr>
+	<tr onmouseover="show_tooltip('en', 'sip_general', 39);">
+		<td align=right>NonStandard G.726 Support:</td>
 		<td><input type='checkbox' id='g726nonstandard'></td>
-</tr>
-
-<tr bgcolor="#FFFFFF" height=15><td colspan=2></td></tr>
-<tr  onmouseover="show_tooltip('en', 'sip_general', 40);" bgcolor="#FFFFFF" ><td colspan=2><B>&nbsp;T.38 FAX Passthrough Support</B></td></tr>
-<tr  onmouseover="show_tooltip('en', 'sip_general', 41);" bgcolor="#FFFFFF"><td align=right>T.38 fax (UDPTL) Passthrough:</td>
-										<td><input type='checkbox' id='t38pt_udptl'></td>
-</tr>
-
-
-<tr bgcolor="#FFFFFF" height=15><td colspan=2></td></tr>
-<tr onmouseover="show_tooltip('en', 'sip_general', 42);"><td colspan=2><B>&nbsp;Sip Debugging</B></td></tr>
-<tr onmouseover="show_tooltip('en', 'sip_general', 43);"><td align=right>Enable SIP debugging:</td>
+	</tr>
+	
+	<tr bgcolor="#FFFFFF" height=15><td colspan=2></td></tr>
+	<tr  onmouseover="show_tooltip('en', 'sip_general', 40);" bgcolor="#FFFFFF" ><td colspan=2><B>&nbsp;T.38 FAX Passthrough Support</B></td></tr>
+	<tr  onmouseover="show_tooltip('en', 'sip_general', 41);" bgcolor="#FFFFFF">
+		<td align=right>T.38 fax (UDPTL) Passthrough:</td>
+		<td><input type='checkbox' id='t38pt_udptl'></td>
+	</tr>
+	<tr bgcolor="#FFFFFF" height=15><td colspan=2></td></tr>
+	<tr onmouseover="show_tooltip('en', 'sip_general', 42);">
+		<td colspan=2><B>&nbsp;Sip Debugging</B></td>
+	</tr>
+	<tr onmouseover="show_tooltip('en', 'sip_general', 43);">
+		<td align=right>Enable SIP debugging:</td>
 		<td><input type='checkbox' id='sipdebug'></td>
-</tr>
-<tr onmouseover="show_tooltip('en', 'sip_general', 44);"><td align=right> Record SIP History:</td>
+	</tr>
+	<tr onmouseover="show_tooltip('en', 'sip_general', 44);">
+		<td align=right> Record SIP History:</td>
 		<td><input type='checkbox' id='recordhistory'></td>
-</tr>
-<tr onmouseover="show_tooltip('en', 'sip_general', 45);"><td align=right>Dump SIP History:</td>
+	</tr>
+	<tr onmouseover="show_tooltip('en', 'sip_general', 45);">
+		<td align=right>Dump SIP History:</td>
 		<td><input type='checkbox' id='dumphistory'></td>
-</tr>
-
-<tr   height=15><td colspan=2></td></tr>
-<tr bgcolor="#FFFFFF" height=15><td colspan=2></td></tr>
-<tr  onmouseover="show_tooltip('en', 'sip_general', 46);" bgcolor="#FFFFFF"><td colspan=2><B>&nbsp;Status Notifications (Subscriptions) </B></td></tr>
-<tr  onmouseover="show_tooltip('en', 'sip_general', 47);" bgcolor="#FFFFFF"><td align=right>Subscribe Context:</td>
-										<td>&nbsp;<input size=8 type='text' id='subscribecontext' class="input8"></td>
-</tr>
-<tr  onmouseover="show_tooltip('en', 'sip_general', 48);" bgcolor="#FFFFFF"><td align=right>Allow Subscribe:</td>
-										<td><input type='checkbox' id='allowsubscribe'></td>
-</tr>
-<tr  onmouseover="show_tooltip('en', 'sip_general', 49);" bgcolor="#FFFFFF"><td align=right>Notify on Ringing:</td>
-										<td><input type='checkbox' id='notifyringing'></td>
-</tr>
-
-
-
-<tr bgcolor="#FFFFFF" height=15><td colspan=2></td></tr>
-<tr onmouseover="show_tooltip('en', 'sip_general', 50);"><td colspan=2><B>&nbsp;Outbound SIP Registrations</B></td></tr>
-<tr onmouseover="show_tooltip('en', 'sip_general', 51);"><td align=right>Register:</td>
+	</tr>
+	
+	<tr   height=15><td colspan=2></td></tr>
+	<tr bgcolor="#FFFFFF" height=15><td colspan=2></td></tr>
+	<tr onmouseover="show_tooltip('en', 'sip_general', 46);" bgcolor="#FFFFFF">
+		<td colspan=2><B>&nbsp;Status Notifications (Subscriptions) </B></td>
+	</tr>
+	<tr onmouseover="show_tooltip('en', 'sip_general', 47);" bgcolor="#FFFFFF">
+		<td align=right>Subscribe Context:</td>
+		<td>&nbsp;<input size=8 type='text' id='subscribecontext' class="input8"></td>
+	</tr>
+	<tr  onmouseover="show_tooltip('en', 'sip_general', 48);" bgcolor="#FFFFFF">
+		<td align=right>Allow Subscribe:</td>
+		<td><input type='checkbox' id='allowsubscribe'></td>
+	</tr>
+	<tr  onmouseover="show_tooltip('en', 'sip_general', 49);" bgcolor="#FFFFFF">
+		<td align=right>Notify on Ringing:</td>
+		<td><input type='checkbox' id='notifyringing'></td>
+	</tr>
+	
+	
+	<tr bgcolor="#FFFFFF" height=15><td colspan=2></td></tr>
+	<tr onmouseover="show_tooltip('en', 'sip_general', 50);">
+		<td colspan=2><B>&nbsp;Outbound SIP Registrations</B></td>
+	</tr>
+	<tr onmouseover="show_tooltip('en', 'sip_general', 51);">
+		<td align=right>Register:</td>
 		<td>&nbsp;<input size=18 type='text' id='register' class="input8"></td>
-</tr>
-<tr onmouseover="show_tooltip('en', 'sip_general', 52);"><td align=right>Register TimeOut:</td>
+	</tr>
+	<tr onmouseover="show_tooltip('en', 'sip_general', 52);">
+		<td align=right>Register TimeOut:</td>
 		<td>&nbsp;<input size=4 type='text' id='registertimeout' pattern='^\d*$' class="input8"></td>
-</tr>
-<tr onmouseover="show_tooltip('en', 'sip_general', 53);"><td align=right>Register Attempts:</td>
+	</tr>
+	<tr onmouseover="show_tooltip('en', 'sip_general', 53);">
+		<td align=right>Register Attempts:</td>
 		<td>&nbsp;<input size=4 type='text' id='registerattempts' pattern='^\d*$' class="input8"></td>
-</tr>
-<tr height=15><td colspan=2></td></tr>
-
-
-
-<tr bgcolor="#FFFFFF" height=15><td colspan=2></td></tr>
-<tr  onmouseover="show_tooltip('en', 'sip_general', 54);" bgcolor="#FFFFFF"><td colspan=2><B>&nbsp;NAT Support</B></td></tr>
-<tr  onmouseover="show_tooltip('en', 'sip_general', 55);" bgcolor="#FFFFFF"><td align=right>Extern ip:</td>
-										<td>&nbsp;<input size=16 type='text' id='externip' class="input8"></td>
-</tr>
-<tr  onmouseover="show_tooltip('en', 'sip_general', 56);" bgcolor="#FFFFFF"><td align=right>Extern Host:</td>
-										<td>&nbsp;<input size=16 type='text' id='externhost' class="input8"></td>
-</tr>
-<tr  onmouseover="show_tooltip('en', 'sip_general', 57);" bgcolor="#FFFFFF"><td align=right>Extern Refresh:</td>
-										<td>&nbsp;<input size=4 type='text' id='externrefresh' class="input8"></td>
-</tr>
-<tr  onmouseover="show_tooltip('en', 'sip_general', 58);" bgcolor="#FFFFFF"><td align=right>Local Network Address:</td>
-										<td>&nbsp;<input size=16 type='text' id='localnet' class="input8"></td>
-</tr>
-<tr  onmouseover="show_tooltip('en', 'sip_general', 59);" bgcolor="#FFFFFF"><td align=right>NAT mode:</td>
+	</tr>
+	<tr height=15><td colspan=2></td></tr>
+	
+	
+	
+	<tr bgcolor="#FFFFFF" height=15><td colspan=2></td></tr>
+	<tr  onmouseover="show_tooltip('en', 'sip_general', 54);" bgcolor="#FFFFFF">
+		<td colspan=2><B>&nbsp;NAT Support</B></td>
+	</tr>
+	<tr  onmouseover="show_tooltip('en', 'sip_general', 55);" bgcolor="#FFFFFF">
+		<td align=right>Extern ip:</td>
+		<td>&nbsp;<input size=16 type='text' id='externip' class="input8"></td>
+	</tr>
+	<tr  onmouseover="show_tooltip('en', 'sip_general', 56);" bgcolor="#FFFFFF">
+		<td align=right>Extern Host:</td>
+		<td>&nbsp;<input size=16 type='text' id='externhost' class="input8"></td>
+	</tr>
+	<tr  onmouseover="show_tooltip('en', 'sip_general', 57);" bgcolor="#FFFFFF">
+		<td align=right>Extern Refresh:</td>
+		<td>&nbsp;<input size=4 type='text' id='externrefresh' class="input8"></td>
+	</tr>
+	<tr  onmouseover="show_tooltip('en', 'sip_general', 58);" bgcolor="#FFFFFF">
+		<td align=right>Local Network Address:</td>
+		<td>&nbsp;<input size=16 type='text' id='localnet' class="input8"></td>
+	</tr>
+	<tr  onmouseover="show_tooltip('en', 'sip_general', 59);" bgcolor="#FFFFFF"><td align=right>NAT mode:</td>
 		<td>&nbsp;<select id='nat' class="input8">
-					<option value='yes'>yes</option>
-					<option value='no'>no</option>
-					<option value='never'>never</option>
-					<option value='route'>route</option>
-				</select>
+			<option value='yes'>yes</option>
+			<option value='no'>no</option>
+			<option value='never'>never</option>
+			<option value='route'>route</option>
+			</select>
 		</td>
-</tr>
-<tr  onmouseover="show_tooltip('en', 'sip_general', 60);" bgcolor="#FFFFFF"><td align=right>Allow RTP Reinvite:</td>
+	</tr>
+	<tr  onmouseover="show_tooltip('en', 'sip_general', 60);" bgcolor="#FFFFFF"><td align=right>Allow RTP Reinvite:</td>
 		<td>&nbsp;<select id='canreinvite' class="input8">
-					<option value='yes'>yes</option>
-					<option value='nonat'>nonat</option>
-					<option value='update'>update</option>
-				</select>
+				<option value='yes'>yes</option>
+				<option value='nonat'>nonat</option>
+				<option value='update'>update</option>
+			</select>
 		</td>
-</tr>
-<tr bgcolor="#FFFFFF" height=15><td colspan=2></td></tr>
-
-<tr   height=15><td colspan=2></td></tr>
-<tr onmouseover="show_tooltip('en', 'sip_general', 61);"><td colspan=2><B>&nbsp;Realtime Support</B></td></tr>
-<tr onmouseover="show_tooltip('en', 'sip_general', 62);"><td align=right>Auto-Expire Friends:</td>
+	</tr>
+	<tr bgcolor="#FFFFFF" height=15><td colspan=2></td></tr>
+	
+	<tr   height=15><td colspan=2></td></tr>
+	<tr onmouseover="show_tooltip('en', 'sip_general', 61);">
+		<td colspan=2><B>&nbsp;Realtime Support</B></td>
+	</tr>
+	<tr onmouseover="show_tooltip('en', 'sip_general', 62);">
+		<td align=right>Auto-Expire Friends:</td>
 		<td><input type='text' size=4 id='rtautoclear' class="input8"></td>
-</tr>
-<tr onmouseover="show_tooltip('en', 'sip_general', 63);"><td align=right>Cache Friends:</td>
+	</tr>
+	<tr onmouseover="show_tooltip('en', 'sip_general', 63);">
+		<td align=right>Cache Friends:</td>
 		<td><input type='checkbox' id='rtcachefriends'></td>
-</tr>
-<tr onmouseover="show_tooltip('en', 'sip_general', 64);"><td align=right>Save SysName:</td>
+	</tr>
+	<tr onmouseover="show_tooltip('en', 'sip_general', 64);">
+		<td align=right>Save SysName:</td>
 		<td><input type='checkbox' id='rtsavesysname'></td>
-</tr>
-<tr onmouseover="show_tooltip('en', 'sip_general', 65);"><td align=right>Send Registry Updates:</td>
+	</tr>
+	<tr onmouseover="show_tooltip('en', 'sip_general', 65);">
+		<td align=right>Send Registry Updates:</td>
 		<td><input type='checkbox' id='rtupdate'></td>
-</tr>
-<tr onmouseover="show_tooltip('en', 'sip_general', 66);"><td align=right>Ignore Expired Peers:</td>
+	</tr>
+	<tr onmouseover="show_tooltip('en', 'sip_general', 66);">
+		<td align=right>Ignore Expired Peers:</td>
 		<td><input type='checkbox' id='ignoreregexpire'></td>
-</tr>
-
-<tr bgcolor="#FFFFFF" height=15><td colspan=2></td></tr>
-<tr  onmouseover="show_tooltip('en', 'sip_general', 67);" bgcolor="#FFFFFF"><td colspan=2><B>&nbsp;SIP Domain Support</B></td></tr>
-<tr  onmouseover="show_tooltip('en', 'sip_general', 68);" bgcolor="#FFFFFF"><td align=right>Domain:</td>
-										<td>&nbsp;<input type='text' id='domain' class="input8"></td>
-</tr>
-<tr  onmouseover="show_tooltip('en', 'sip_general', 69);" bgcolor="#FFFFFF"><td align=right>From Domain:</td>
-										<td>&nbsp;<input type='text' size=18 id='fromdomain' class="input8"></td>
-</tr>
-<tr  onmouseover="show_tooltip('en', 'sip_general', 70);" bgcolor="#FFFFFF"><td align=right>Auto Domain:</td>
-										<td><input type='checkbox' id='autodomain'></td>
-</tr>
-<tr  onmouseover="show_tooltip('en', 'sip_general', 71);" bgcolor="#FFFFFF"><td align=right>Allow External Domains:</td>
-										<td><input type='checkbox' id='allowexternaldomains'></td>
-</tr>
-<tr  onmouseover="show_tooltip('en', 'sip_general', 72);" bgcolor="#FFFFFF"><td align=right>Allow External Invites:</td>
-										<td><input type='checkbox' id='allowexternalinvites'></td>
-</tr>
-<tr bgcolor="#FFFFFF" height=15><td colspan=2></td></tr>
-
-<tr   height=15><td colspan=2></td></tr>
-<tr onmouseover="show_tooltip('en', 'sip_general', 73);"><td colspan=2><B>&nbsp;Jitter Buffer Configuration</B></td></tr>
-<tr onmouseover="show_tooltip('en', 'sip_general', 74);"><td align=right>Enable Jitter Buffer:</td>
+	</tr>
+	
+	<tr bgcolor="#FFFFFF" height=15><td colspan=2></td></tr>
+	<tr  onmouseover="show_tooltip('en', 'sip_general', 67);" bgcolor="#FFFFFF">
+		<td colspan=2><B>&nbsp;SIP Domain Support</B></td>
+	</tr>
+	<tr  onmouseover="show_tooltip('en', 'sip_general', 68);" bgcolor="#FFFFFF">
+		<td align=right>Domain:</td>
+		<td>&nbsp;<input type='text' id='domain' class="input8"></td>
+	</tr>
+	<tr  onmouseover="show_tooltip('en', 'sip_general', 69);" bgcolor="#FFFFFF">
+		<td align=right>From Domain:</td>
+		<td>&nbsp;<input type='text' size=18 id='fromdomain' class="input8"></td>
+	</tr>
+	<tr  onmouseover="show_tooltip('en', 'sip_general', 70);" bgcolor="#FFFFFF">
+		<td align=right>Auto Domain:</td>
+		<td><input type='checkbox' id='autodomain'></td>
+	</tr>
+	<tr  onmouseover="show_tooltip('en', 'sip_general', 71);" bgcolor="#FFFFFF">
+		<td align=right>Allow External Domains:</td>
+		<td><input type='checkbox' id='allowexternaldomains'></td>
+	</tr>
+	<tr  onmouseover="show_tooltip('en', 'sip_general', 72);" bgcolor="#FFFFFF">
+		<td align=right>Allow External Invites:</td>
+		<td><input type='checkbox' id='allowexternalinvites'></td>
+	</tr>
+	<tr bgcolor="#FFFFFF" height=15><td colspan=2></td></tr>
+	
+	<tr   height=15><td colspan=2></td></tr>
+	<tr onmouseover="show_tooltip('en', 'sip_general', 73);">
+		<td colspan=2><B>&nbsp;Jitter Buffer Configuration</B></td>
+	</tr>
+	<tr onmouseover="show_tooltip('en', 'sip_general', 74);">
+		<td align=right>Enable Jitter Buffer:</td>
 		<td><input type='checkbox' id='jbenable'></td>
-</tr>
-<tr onmouseover="show_tooltip('en', 'sip_general', 75);"><td align=right>Force Jitter Buffer:</td>
+	</tr>
+	<tr onmouseover="show_tooltip('en', 'sip_general', 75);">
+		<td align=right>Force Jitter Buffer:</td>
 		<td><input type='checkbox' id='jbforce'></td>
-</tr>
-<tr onmouseover="show_tooltip('en', 'sip_general', 76);"><td align=right>Log Frames:</td>
+	</tr>
+	<tr onmouseover="show_tooltip('en', 'sip_general', 76);">
+		<td align=right>Log Frames:</td>
 		<td><input type='checkbox' id='jblog'></td>
-</tr>
-<tr onmouseover="show_tooltip('en', 'sip_general', 77);"><td align=right>Max Jitter Buffer:</td>
+	</tr>
+	<tr onmouseover="show_tooltip('en', 'sip_general', 77);">
+		<td align=right>Max Jitter Buffer:</td>
 		<td>&nbsp;<input type='text' size=4 id='jbmaxsize' pattern='^\d*$' class="input8"></td>
-</tr>
-<tr onmouseover="show_tooltip('en', 'sip_general', 78);"><td align=right>Resync Threshold:</td>
+	</tr>
+	<tr onmouseover="show_tooltip('en', 'sip_general', 78);">
+		<td align=right>Resync Threshold:</td>
 		<td>&nbsp;<input type='text' size=4 id='jbresyncthreshold' pattern='^\d*$' class="input8"></td>
-</tr>
-<tr onmouseover="show_tooltip('en', 'sip_general', 79);"><td align=right>Implementation:</td>
+	</tr>
+	<tr onmouseover="show_tooltip('en', 'sip_general', 79);">
+		<td align=right>Implementation:</td>
 		<td>&nbsp;<select id='jbimpl' class="input8">
-					<option value='fixed'>fixed</option>
-					<option value='adaptive'>adaptive</option>
-				</select>
+			<option value='fixed'>fixed</option>
+			<option value='adaptive'>adaptive</option>
+			</select>
 		</td>
-</tr>
-
-
-
-
-<tr bgcolor="#FFFFFF" height=15><td colspan=2></td></tr>
-<tr bgcolor="#FFFFFF" ><td colspan=2><B>&nbsp;Codecs</B></td></tr>
-<tr bgcolor="#FFFFFF" ><td align=right>Disallowed Codecs:</td>
+	</tr>
+	
+	<tr bgcolor="#FFFFFF" height=15><td colspan=2></td></tr>
+	<tr bgcolor="#FFFFFF" >
+		<td colspan=2><B>&nbsp;Codecs</B></td>
+	</tr>
+	<tr bgcolor="#FFFFFF" >
+		<td align=right>Disallowed Codecs:</td>
 		<td>&nbsp;<input type='text' id='disallow' class="input8" size=9></td>
-</tr>
-<tr bgcolor="#FFFFFF" ><td align=right>Allowed Codecs:</td>
-		<td>&nbsp;<input type='text' id='allow' class="input8" size=9><input type=button id="sd" value="Edit" onclick="update_div_setordercodecs()">		
-		</td>
-</tr>
-
-</table>
+	</tr>
+	<tr bgcolor="#FFFFFF" >
+		<td align=right>Allowed Codecs:</td>
+		<td>&nbsp;<input type='text' id='allow' class="input8" size=9><input type=button id="sd" value="Edit" onclick="update_div_setordercodecs()"></td>
+	</tr>
+	
+	</table>
 </div>
 <HR>
-		<table align="center" cellpadding=0 cellspacing=0>
-		<tr><td colspan=2 align=center height=20><div  id='status'></div></td></tr>
-		<tr><td colspan=2 align=center><input type='button' id='save' value='Save' class="buttonbold">&nbsp;<input type='button' id='cancel' value='Cancel' class="buttonbold"></td></tr>
-		</table>
+	<table align="center" cellpadding=0 cellspacing=0>
+	<tr><td colspan=2 align=center height=20><div  id='status'></div></td></tr>
+	<tr><td colspan=2 align=center><input type='button' id='save' value='Save' class="buttonbold">&nbsp;<input type='button' id='cancel' value='Cancel' class="buttonbold"></td></tr>
+	</table>
 </div>
 <div style="position:absolute; display:none; left: 120; top: 70; width:350; background-color:#F4EFE5; border-width: 1px; border-color: #7E5538; border-style: solid;z-index:5" id="div_setordercodecs">
 	<table width="100%" cellpadding=0 cellspacing=0 onmousedown="startDrag(event , 'div_setordercodecs');">
 	<TR bgcolor="#7E5538"  style="background-image:url('images/title_gradient.gif');">
-			<TD Height="20" align="center" style="cursor: move"><font style="color:#FFFFFF; font-size: 12px; font-weight:bold;">Codec Preferences</font></TD>
-		   <TD Height="20" align="right" style="cursor: move"><A href="#" onclick="cancel_ordercodecs();"><font style="color:#FFFFFF; font-size: 12px; font-weight:bold;">X</font></A></TD>
-			<TD width=4></TD>
+		<TD Height="20" align="center" style="cursor: move"><font style="color:#FFFFFF; font-size: 12px; font-weight:bold;">Codec Preferences</font></TD>
+		<TD Height="20" align="right" style="cursor: move"><A href="#" onclick="cancel_ordercodecs();"><font style="color:#FFFFFF; font-size: 12px; font-weight:bold;">X</font></A></TD>
+		<TD width=4></TD>
 	</TR>
 	</table>
 	<table align=center>
 		<tr><td><BR></td></tr>
 		<tr><td class="field_text">Allowed</td>
-				<td></td>
-				<td class="field_text">Disallowed</td>
+			<td></td>
+			<td class="field_text">Disallowed</td>
 		</tr>
 		<tr><td><select id="allowed" size=9 class="input8"></select></td>
-				<td><input type="button" id="select_codec" value="<" onclick="enable_selectedcodec()"><BR><input type="button" id="deselect_codec" value=">" onclick="disable_selectedcodec()"></td>
-				<td><select id="disallowed" size=9 class="input8">
-						</select>
-				</td>
+			<td><input type="button" id="select_codec" value="<" onclick="enable_selectedcodec()"><BR>
+				<input type="button" id="deselect_codec" value=">" onclick="disable_selectedcodec()">
+			</td>
+			<td><select id="disallowed" size=9 class="input8"></select></td>
 		</tr>
-		<tr><td></td>
-				<td></td>
-				<td class="field_text"><input type=checkbox id="disallow_all" onclick="disallow_all_refresh();">Disallow All</td>
+		<tr>	<td></td>
+			<td></td>
+			<td class="field_text"><input type=checkbox id="disallow_all" onclick="disallow_all_refresh();">Disallow All</td>
 		</tr>
-		<tr><td colspan=3 align=Center>
+		<tr>	<td colspan=3 align=Center>
 				<input type="button" class="buttonbold" id="setordercodecs" value="update" onclick="update_ordercodecs()">&nbsp;&nbsp;
 				<input type="button" class="buttonbold" id="cancel_setorder" value="Cancel" onclick="cancel_ordercodecs()">
-				</td>
+			</td>
 		</tr>
-		<tr><td><BR></td></tr>
+		<tr>	<td><BR></td>	</tr>
 	</table>
 </div>
 <div style='visibility:hidden;overflow:hidden;width:0px;height:0px'><select  size="5" id="hiddenfield" style="width:220px"></select></div>
