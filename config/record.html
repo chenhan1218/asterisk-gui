@@ -111,13 +111,12 @@ function save_recordedvmenuname( filename_torecord ){
 }
 
 function originate_recordrequest(should_save, newvmenu_ext, filename_torecord){
-	var _sm = _$('status_message').style ; 
-	_sm.display="";
+	_$('status_message').style.display="";
 	var opt = {
 		method: 'get',
 		asynchronous: true,
 		onSuccess: function(t) { 
-			setTimeout( function(){ _sm.display='none'; },sc_displaytime);
+			setTimeout( function(){ _$('status_message').style.display='none'; },sc_displaytime);
 			if ( t.responseText.indexOf("Originate successfully queued") == -1 ){
 					// Request Failed
 			}else{
@@ -132,7 +131,7 @@ function originate_recordrequest(should_save, newvmenu_ext, filename_torecord){
 			}				
 		},
 		onFailure: function(t) {
-			_sm.display='none';
+			_$('status_message').style.display='none';
 			gui_alert("Config Error: " + t.status + ": " + t.statusText);
 		}
 	};

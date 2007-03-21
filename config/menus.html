@@ -272,17 +272,14 @@ function add_newstep(){
 		_nsv.focus();
 		return;
 	}
-
-	var _sm = _$('status_message').style;
-	_sm.display = "";
-
+	_$('status_message').style.display = "";
 	// prepare a request to add the new step to the voicemenu
 	// make a request to append
 	var opt = {
 		method: 'get',
 		asynchronous: true,
 		onSuccess: function() { 
-			setTimeout(function(){ _sm.display = 'none'; },sc_displaytime);
+			setTimeout(function(){ _$('status_message').style.display = 'none'; },sc_displaytime);
 			// if request successfull then add this to the steps select box
 			var newoption = document.createElement("option"); 
 			newoption.text = format_step(action_string ); 
@@ -312,7 +309,7 @@ function add_newstep(){
 			_nsvd.style.display= "none" ;
 		},
 		onFailure: function(t) {
-			_sm.display = 'none';
+			_$('status_message').style.display = 'none';
 			gui_alert("Config Error: " + t.status + ": " + t.statusText);
 		}
 	};
@@ -395,16 +392,14 @@ function save_vmenu(){
 	if (!check_patternonfields( [ 'comment', 'newstep_var_digit' ] ) ){
 		return false;
 	}
-
-	var _sm = _$('status_message').style ; 
-	_sm.display ="" ;
+	_$('status_message').style.display ="" ;
 	var _cmv = _$('comment').value ;
 
 	var opt = {
 		method: 'get',
 		asynchronous: true,
 		onSuccess: function() { 
-			setTimeout( function(){ _sm.display="none"; },sc_displaytime );
+			setTimeout( function(){_$('status_message').style.display="none"; },sc_displaytime );
 			_$('status').innerHTML = "<i>Updated.</i>";
 			_$('savevmenu').disabled = true;
 			_$('save').disabled = true;
@@ -446,7 +441,7 @@ function save_vmenu(){
 
 		},
 		onFailure: function(t) {
-			_sm.display='none';
+			_$('status_message').style.display='none';
 			gui_alert("Config Error: " + t.status + ": " + t.statusText);
 		}
 	};
@@ -640,8 +635,7 @@ function swap_step(a,b){
 
 function delete_step(){
 	// delete the selected step and update voicemenusdata and update 'select' object - steps
-	var _sm = _$('status_message').style; 
-	_sm.display="";
+	_$('status_message').style.display="";
 	var _vmenus = _$('vmenus');
 	var _steps = _$('steps');
 
@@ -649,21 +643,19 @@ function delete_step(){
 		method: 'get',
 		asynchronous: true,
 		onSuccess: function() { 
-			setTimeout(function(){ _sm.display='none';} ,sc_displaytime);
+			setTimeout(function(){ _$('status_message').style.display='none';} ,sc_displaytime);
 			// Update voicemenusdata
 			for(var p=0; p< voicemenusdata[_vmenus.value].extensions['s'].length; p++){
 				if( voicemenusdata[_vmenus.value].extensions['s'][p] == _steps.value ){ 
 					voicemenusdata[_vmenus.value].extensions['s'].splice(p,1); 
 				}
 			}
-
 			_steps.remove( _steps.selectedIndex);
 			_$('status').innerHTML = "<i>Step Deleted !</i>";
 			_$('deletestep').disabled = true;
-
 		},
 		onFailure: function(t) {
-			_sm.display='none';
+			_$('status_message').style.display='none';
 			gui_alert("Config Error: " + t.status + ": " + t.statusText);
 		}
 	};	
@@ -766,7 +758,7 @@ function select_vmenu(){
 		current_key_exts='keypress_'+ keys[y] + '_exts';
 		current_key_menus='keypress_'+ keys[y] + '_menus';
 
-		_$(current_key_action).options.selectedIndex = -1;
+		_$(current_key_action).options.selectedIndex = 0;
 		_$(current_key_menus).style.display = "none";
 		_$(current_key_text).style.display = "none";
 		_$(current_key_exts).style.display = "none";

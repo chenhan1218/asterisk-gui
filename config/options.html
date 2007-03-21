@@ -65,9 +65,8 @@ function update_guisettings_manager(){
 		return true
 	}
 
-	var _sm = $('status_message').style ;
-	_sm.display ="";
-	setTimeout(function(){ _sm.display ='none'; },3000);
+	_$('status_message').style.display ="";
+	setTimeout(function(){ _$('status_message').style.display ='none'; },3000);
 	var opt = {
 		method: 'get',
 		asynchronous: true,
@@ -75,7 +74,7 @@ function update_guisettings_manager(){
 			update_guisettings_http();
 		},
 		onFailure: function(t) {
-			_sm.display ='none';
+			_$('status_message').style.display ='none';
 			gui_alert("Config Error: " + t.status + ": " + t.statusText);
 		}
 	};

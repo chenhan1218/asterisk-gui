@@ -465,9 +465,7 @@ numplan_callbacks.format = function(t, x) {
 
 numplan_callbacks.loaded = function() {
 	var _extns = _$('extensions') ;
-
 	add_event( _extns , 'change', select_differentplan );
-
 	if( _extns.options.length ==0 ){
 		parent.loadscreen(this);
 		addthe_default_callingplan();

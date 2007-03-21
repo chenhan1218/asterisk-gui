@@ -41,19 +41,18 @@ function thisday_log(){
 }
 
 function 	load_todayslog(){
-	var _sm = _$('status_message').style ;
-	_sm.display = "" ;	
+	_$('status_message').style.display= "" ;	
 	
 	var opt = {
 		method: 'get',
 		asynchronous: true,
 		onComplete: function(originalRequest){
-			_sm.display = 'none' ;
+			_$('status_message').style.display = 'none' ;
 			_$('todaylog').innerHTML = (originalRequest.responseText) ? "<PRE>"+originalRequest.responseText.escapeHTML() +"</PRE>" : "No log messages found on this Day" ;
 			
 		},
 		onFailure: function(t) {
-			_sm.display = 'none' ;
+			_$('status_message').style.display = 'none' ;
 			gui_alert("Config Error: " + t.status + ": " + t.statusText);
 		}
 	};
