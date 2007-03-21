@@ -118,13 +118,13 @@ demo.pongs  = function(msgs) {
 
 function doLogin() {
 	if( _$('username').value == "" ){
-		parent.gui_alert("Please enter a Username");
+		parent.gui_feedback("Please enter a Username");
 		_$('username').focus();
 		return true;			
 	}
 
 	if( _$('secret').value == "" ){
-		parent.gui_alert("Please enter a password");
+		parent.gui_feedback("Please enter a password");
 		_$('secret').focus();
 		return true;			
 	}

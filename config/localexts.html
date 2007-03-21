@@ -45,8 +45,8 @@ usercallbacks.savechanges = function(){
 }
 
 usercallbacks.beforeSaving= function(){
-	if(	_$('localextenlength').value !=0 && _$('localextenlength').value != _$('userbase').value.length ){
-		gui_alert("'length of Local Extensions' does not match \n the 'length of the Starting point of Allocation'");
+	if( _$('localextenlength').value != "0" && _$('localextenlength').value != _$('userbase').value.length ){
+		gui_feedback("'length of Local Extensions' does not match <BR> the length of 'First Extension number'");
 		return false;
 	}
 
@@ -146,7 +146,7 @@ function free_mem( ){
 			<option value="0">Varying</option>
 			</select>&nbsp;</td>
 		</tr>
-		<tr><td class="field_text" align=left>Fist Extension Number : <input type=text id="userbase" size=5  class="input9"></td></tr>
+		<tr><td class="field_text" align=left>First Extension Number : <input type=text id="userbase" size=5  class="input9"></td></tr>
 		<tr><td class="field_text" align="left"><input type=checkbox id="allow_aliasextns">Allow analog phones to be assigned to multiple extensions</td></tr>
 		<tr><td class="field_text" align="left"><input type=checkbox id="allow_an_extns">Allow extensions to be AlphaNumeric (SIP/IAX users)</td></tr>
 		</table>

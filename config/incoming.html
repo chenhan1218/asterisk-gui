@@ -255,18 +255,18 @@ function save_new_incomingrule(){
 	var te = _$('toextension') ;
 
 	if( ir == "frompattern" && fp.value == "" ){
-		gui_alert("Please define an incoming call pattern !");
+		gui_feedback("Please define an incoming call pattern !");
 		fp.focus();
 		fp.select();
 		return false;
 	}
 	if( fpv.selectedIndex == -1 ){
-		gui_alert("Please select a service provider !");
+		gui_feedback("Please select a service provider !");
 		fpv.focus();
 		return false;
 	}
 	if( te.selectedIndex == -1 ){
-		gui_alert("Please select an extension to which an incoming call should be routed to !");
+		gui_feedback("Please select an extension to which<BR> an incoming call should be routed to !");
 		te.focus();
 		return false;
 	}
@@ -295,7 +295,7 @@ function save_new_incomingrule(){
 
 	// check whether there is an existing entry with this pattern 
 	if( typeof didtrunks[temp_provider][newpattern] != "undefined" ){
-		gui_alert("An incoming call rule is already defined \n on this trunk for the selcted pattern !! ");
+		gui_feedback("An incoming call rule is already defined <BR> on this trunk for the selcted pattern !! ");
 		return false;
 	}
 	
@@ -330,13 +330,13 @@ function update_incomingrule(){
 	var te = _$('toextension') ;
  
 	if( ir == "frompattern" && fp.value == "" ){
-		gui_alert("Please define an incoming call pattern !");
+		gui_feedback("Please define an incoming call pattern !");
 		fp.focus();
 		fp.select();
 		return false;
 	}
 	if( te.selectedIndex == -1 ){
-		gui_alert("Please select an extension to which an incoming call should be routed to !");
+		gui_feedback("Please select an extension to which<BR> an incoming call should be routed to !");
 		te.focus();
 		return false;
 	}
@@ -369,7 +369,7 @@ function update_incomingrule(){
 	}
 
 	if( typeof didtrunks[temp_provider][newpattern] != "undefined" && ( temp_provider != edit_DIDtrunk || newpattern != edit_pattern ) ){
-		gui_alert("An incoming call rule is already defined \n on this trunk for the selcted pattern !! ");
+		gui_feedback("An incoming call rule is already defined <BR> on this trunk for the selcted pattern !! ");
 		return false;
 	}
 

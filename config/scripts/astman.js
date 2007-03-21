@@ -19,14 +19,35 @@
  *
  */
 
- var sc_displaytime = 1000;
- var asterisk_guiappname =  "Asterisk GUI (Beta)";
- var asterisk_guitools = "asterisk_guitools";
- var asterisk_guitoolsversion = "0.7";
- var asterisk_guiversion = "$Revision$";
+var sc_displaytime = 1000;
+var asterisk_guiappname =  "Asterisk GUI (Beta)";
+var asterisk_guitools = "asterisk_guitools";
+var asterisk_guitoolsversion = "0.7";
+var asterisk_guiversion = "$Revision$";
+var asterisk_guifbt = 3000; // Feedback msg time
 var sortbynames = false;
 var dragdata = new Object;
 var asterisk_guiTDPrefix = "DID_";
+
+function gui_feedback(a,b){
+	var d = "#DA2804"; // dark reddish brown
+	if(b=='blue'){ 
+		d = "#303BCA"; // dark blue
+	}else if(b=='green'){
+		d = "#448156"; // dark green
+	}
+	gui_feedbackmsg(a,d);
+}
+
+function gui_feedbackmsg(a,b,c){ // a is message, b is color, c is timeout
+	if(!c){c = asterisk_guifbt;}
+	var _f = top._$('feedback_round');
+	var _g = top._$('feedback');
+	_g.style.color = b;
+	_g.innerHTML = a ;
+	_f.style.display = '';
+	window.setTimeout( function(){top._$('feedback_round').style.display = "none"; }, c );
+}
 
 
 function  gui_alert(msg){

@@ -88,17 +88,17 @@ panels.push(
 	new PanelDef("record", "Record a Menu", "accordion-icon.gif",
 		"Allows you to record custom voicemenus over a phone"),
 
-	new PanelDef("moh", "Music On Hold", "accordion-icon.gif", " Music on hold sometimes keeps people less angry while they wait for an answer"),
+//	new PanelDef("moh", "Music On Hold", "accordion-icon.gif", " Music on hold sometimes keeps people less angry while they wait for an answer"),
 
-	new PanelDef("sip", "SIP", "accordion-icon.gif", "SIP (Session Initiation Protocol) Configuration"),
+//	new PanelDef("sip", "SIP", "accordion-icon.gif", "SIP (Session Initiation Protocol) Configuration"),
 
-	new PanelDef("iax", "IAX", "accordion-icon.gif", "IAX (Inter-Asterisk eXchange Protocol) Configuration"),
+//	new PanelDef("iax", "IAX", "accordion-icon.gif", "IAX (Inter-Asterisk eXchange Protocol) Configuration"),
 
-	new PanelDef("jabber", "Jabber", "accordion-icon.gif", "Jabber users configuration"),
+//	new PanelDef("jabber", "Jabber", "accordion-icon.gif", "Jabber users configuration"),
 
-	new PanelDef("jingle", "Jingle", "accordion-icon.gif", "Jingle configuration lets users connect to google talk networks"),
+//	new PanelDef("jingle", "Jingle", "accordion-icon.gif", "Jingle configuration lets users connect to google talk networks"),
 
-	new PanelDef("zapata", "Zap Channel", "accordion-icon.gif", "Zapata telephony interface configuration"),
+//	new PanelDef("zapata", "Zap Channel", "accordion-icon.gif", "Zapata telephony interface configuration"),
 	
 	new PanelDef("status", "Active Channels", "accordion-icon.gif", "Monitor active channels."),
 
@@ -148,8 +148,6 @@ function showmainscreen(page) {
 	}
 }
 
-
-
 function fademainscreen(page, newpage) {
 	// Confirm Discard Changes goes here 
 	_$('tooltip').innerHTML = tooltip_default;
@@ -164,6 +162,10 @@ function show_Acctooltip(name, tip){
 
 function registerajax() {
 	Rico.Corner.round('tooltip_round', {compact:true});
+		// if you want google style feedback boxes :-)
+		// _$('feedback_round').style.backgroundColor = "#EFEFEF";		 
+		// Rico.Corner.round('feedback_round', {compact:true}); 
+		 
 	if( navigator.userAgent.indexOf("MSIE") != -1 || navigator.userAgent.indexOf("Konqueror") != -1 || navigator.userAgent.indexOf("Safari") != -1 ){
 		gui_alert(browser_alert);
 	}
@@ -212,10 +214,12 @@ function system_link(){
 }
 
 function reloadConfig(){
+	_$('reloadconfig').style.display = 'none'; 
+	window.setTimeout( function(){ _$('reloadconfig').style.display=""; }, asterisk_guifbt );
 	var opt = { 
 		method: 'get', 
 		asynchronous: true, 
-		onSuccess: function(t) { gui_alert("Reloaded"); } ,
+		onSuccess: function(t) { gui_feedback("Restarted Asterisk !!",'blue'); } ,
 		onFailure: function(t) { gui_alert("Config Error: " + t.status + ": " + t.statusText); }
 	};
 	var uri = parent.build_action('renamecat', 0, "","", "", ""); 
@@ -231,7 +235,13 @@ function reloadConfig(){
 <table border="0" align="center" cellspacing="0" cellpadding="0" bgcolor="#dddddd" width=950 height=570>
 <tr height=47>
 	<td valign="bottom" align='right' bgcolor='white' height=47><img align='left' src="images/digiumlogo.gif" align="left"></td>
-	<td valign='bottom' align='right' bgcolor='white' colspan=2>
+	<td valign='middle' align='center' bgcolor='white'>
+		<div id="feedback_round" style="display:none;background-color: #FFFFFF; width:400px">
+			<div id='feedback' style="font-family: Arial, sans-serif, Helvetica, Trebuchet MS ;font-size: 13px;font-weight : bold;"></div>
+		</div>
+
+	</td>
+	<td valign='bottom' align='right' bgcolor='white'>
 		<!-- <a href="#" onclick=" system_link()">System Configuration</a>&nbsp;|&nbsp; -->
 		<a target='_extern' href="http://www.digium.com/en/company/profile/">About Digium</a>&nbsp;|&nbsp;
 		<a target='_extern' href="http://www.asterisknow.org/bugs">Report a Bug</a>&nbsp;|&nbsp;
