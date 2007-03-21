@@ -32,7 +32,6 @@ function updateButtons(){
 	_$('username').disabled = (f)?1:0;
 	_$('secret').disabled = (f)?1:0;
 	_$('logoff').disabled = (f)?0:1;
-	_$('reloadconfig').disabled = (f)?0:1;
 	_$('login').disabled = (f)?1:0;
 	if(!f){ try{ _$('username').focus();}catch(err){ } }
 }
@@ -64,8 +63,11 @@ function loggedOn() {
 	_$('secret').className  = "input9_disabled";
 	updateButtons();
 	_$('statusbar').innerHTML = "<img src='images/tick.gif'><i>Connected!</i>";
+	parent.document.getElementById('reloadconfig').innerHTML = "ApplySettings";
+	parent.document.getElementById('reloadconfig').onclick = parent.reloadConfig ;
 	parent.document.getElementById('logoutlink').innerHTML = "Logout";
 	parent.document.getElementById('logoutlink').onclick = parent.Logoff ;
+
 }
 
 function loggedOff() {
@@ -179,18 +181,6 @@ function checkExtconfig(originalRequest){
 
 }
 
-function reloadConfig(){
-	var opt = { 
-		method: 'get', 
-		asynchronous: true, 
-		onSuccess: function(t) { parent.gui_alert("Reloaded"); } ,
-		onFailure: function(t) { parent.gui_alert("Config Error: " + t.status + ": " + t.statusText); }
-	};
-	var uri = parent.build_action('renamecat', 0, "","", "", ""); 
-	opt.parameters="action=updateconfig&reload=yes&srcfilename=" + encodeURIComponent("extensions.conf") + "&dstfilename=" + encodeURIComponent("extensions.conf") + uri;
-	var tmp = new Ajax.Request("../../rawman", opt);
-}
-
 </script>
 <body id="foo" onload="localinit()" topmargin=0  bgcolor="EFEFEF">
 <div class="mainscreenTitleBar">
@@ -215,8 +205,6 @@ function reloadConfig(){
 			</td>
 		</tr>
 		<tr>	<td align='center' colspan='2'>
-				<input type="submit" id="reloadconfig" value="Reload Config" disabled=1 onClick="reloadConfig()">
-				&nbsp;&nbsp;&nbsp;&nbsp;
 				<input type="submit" id="login" value="Login" disabled=1 onClick="doLogin()" class="input">
 				&nbsp;&nbsp;&nbsp;&nbsp;
 				<input type="submit" id="logoff" value="Logoff" disabled=1 onClick="doLogoff()" class="input">
