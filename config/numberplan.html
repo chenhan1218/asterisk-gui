@@ -577,10 +577,10 @@ function newnumberplan(){
 
 function delete_numberplan(){	_$('delete').click();	}
 
-function addthe_default_callingplan(){
-	if(!confirm("A default Dial Plan is not found. \n Do you want to create a default Dial Plan ") ){ 
+function addthe_default_callingplan(a){
+	if(!a){
 		_$('message_text').innerHTML = "A default DialPlan is not found !! "
-		+ "<BR><BR> <A href=\"#\" class=\"splbutton\" onclick=\"addthe_default_callingplan()\">click here</A> to create a default DialPlan";
+		+ "<BR><BR> <A href=\"#\" class=\"splbutton\" onclick=\"addthe_default_callingplan(1)\">click here</A> to create a default DialPlan";
 		var _bg_s = _$('bg_transparent').style ;
 		var _sm_s = _$('status_message').style ;
 		_sm_s.left = 120 ;
