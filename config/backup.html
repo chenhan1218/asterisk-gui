@@ -128,9 +128,9 @@ function restore_bkp(filename){
 
 function restore_bkp_step2(filename){
 	parent.astmanEngine.run_tool("tar -xf " + bkp_path + filename +" -C /" , callback=function(){
-		alert("Configuration restored to "+ filename +" \n Click OK to reload asterisk with the restored configuration");
-		// What ever to happen after restoring
-		parent.reloadConfig();
+		gui_alert("Configuration restored !!");
+		// give two seconds for extracting tar file before restarting asterisk 
+		window.setTimeout( function(){ parent.reloadConfig();}, 1500);
 	});
 }
 
