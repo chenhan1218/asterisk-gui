@@ -30,3 +30,11 @@ THIS_DAY=`/bin/date +%_d`
 /bin/grep /var/log/asterisk/messages -e "$THISMONTH\( $THISDAY\| $THIS_DAY\)" > /var/lib/asterisk/static-http/config/bkps/today_log.html
 
 
+/bin/echo "<div id=bkp_files>" >> /var/lib/asterisk/static-http/config/bkps/sysinfo_output.html
+/bin/mkdir -p /var/lib/asterisk/gui_configbackups
+BKPFILES=`ls /var/lib/asterisk/gui_configbackups/`
+for i in $BKPFILES
+do
+/bin/echo "$i<BR>" >> /var/lib/asterisk/static-http/config/bkps/sysinfo_output.html
+done
+/bin/echo "</div>" >> /var/lib/asterisk/static-http/config/bkps/sysinfo_output.html
