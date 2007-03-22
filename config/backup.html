@@ -25,78 +25,214 @@
 <link href="stylesheets/rico.css" media="all" rel="Stylesheet" type="text/css" />
 <link href="stylesheets/schwing.css" media="all" rel="Stylesheet" type="text/css" />
 <script>
-var bkp_path = "/var/lib/asterisk/static-http/config/bkps/";
-var bkpfile ;
+var bkp_path = "/var/lib/asterisk/gui_configbackups/";
 
 function localajaxinit() {
-	showdiv_statusmessage();
 	setWindowTitle("Backup");
-	parent.loadscreen(this);
-	var d = _$('status_message'); 
-	d.style.top = 100;
-	d.style.left = 100;
+	$('newbkp_name').onfocus = function(){this.className = 'input9_hilight';}
+	$('newbkp_name').onblur = function(){this.className = 'input9';}
+
+	parent.astmanEngine.run_tool("sh /etc/asterisk/gui_sysinfo", callback = function() { 
+		var opt = { method: 'get', asynchronous: true,
+			onComplete: function(originalRequest){
+				$('sysinfohtml').innerHTML = originalRequest.responseText;
+				showlist_of_files();
+			},
+			onFailure: function(t) { alert("Config Error: " + t.status + ": " + t.statusText); }
+		};
+		opt.parameters="";
+		var tmp = new Ajax.Request("./bkps/sysinfo_output.html", opt);
+		return true;
+	});
 }
 
+
+function showlist_of_files(){
+	var k = $('bkp_files').innerHTML ;
+	var bkpfiles = k.split("<br>") ;
+	
+	clear_table();
+
+//	if( typeof bkpfiles[0] == "undefined"  || bkpfiles[0] == "" ){
+//		$('table_one').style.display="none";
+//		var newRow = $('bkpfilesTable').insertRow(-1);
+//		var newCell0 = newRow.insertCell(0);
+//		newCell0 .align = "center";
+//		newCell0 .innerHTML = "<BR><I>No Previous Backup Files !!</I><BR><BR> Please click on the 'Take a BackUp' button<BR> to  take a backup of the current system configuration<BR><BR>" ;
+//		return true;
+//	}
+
+	for( var i =0 ; i < bkpfiles.length ; i++){
+		if( typeof bkpfiles[i] == "undefined"  || bkpfiles[i] == "" ){
+			continue;
+		}
+		bkpfiles[i] = bkpfiles[i].replace(/^\s*|\s*$/g,'') ;
+		if( bkpfiles[i] == "" ){continue;	}
+
+		addrow_totable( bkpfiles[i], i );
+	}
+	parent.loadscreen(this);
+}
+
+function clear_table(){
+	for( var i=0; i <  $('bkpfilesTable').rows.length; ){
+		 $('bkpfilesTable').deleteRow(i);
+	}
+}
+
+
+function addrow_totable(filename, i ){
+	var fname = filename.split("__") ;
+	// var fname[1] = 2007mar12.tar
+	var filedate = fname[1].split(".tar");
+	var day = filedate[0].substr(7);
+	var month = filedate[0].substr(4,3);
+	var year = filedate[0].substr(0,4);
+	
+	var newRow = $('bkpfilesTable').insertRow(-1);
+	
+	var newCell0 = newRow.insertCell(0);
+	newCell0 .innerHTML = i+1 ;
+	newCell0 .width = 35;
+	newCell0.align = "center";
+	
+	var newCell1 = newRow.insertCell(1);
+	newCell1 .innerHTML = fname[0] ;
+	newCell1.width = 180;
+	
+	var newCell2 = newRow.insertCell(2);
+	newCell2 .innerHTML = month.capitalize()  + " " + day + ", "+year ;
+	newCell2.width = 95;
+	
+	var newCell3 = newRow.insertCell(3);
+	newCell3 .innerHTML = "<input type=\"button\" onclick='restore_bkp(\""+ filename + "\")'  value=\"Restore\" class=\"splbutton\">&nbsp;"  +
+	"<input type=\"button\" onclick='delete_bkp(\""+ filename + "\")'  value=\"Delete\"  class=\"splbutton\">" ;
+	newCell3.align = "center";
+}
+
+
+function restore_bkp(filename){
+	parent.astmanEngine.run_tool("rm /etc/asterick/* -rf ", callback=function(){ restore_bkp_step2(filename);} );
+}
+
+
+function restore_bkp_step2(filename){
+	parent.astmanEngine.run_tool("tar -xf " + bkp_path + filename +" -C /" , callback=function(){
+		alert("Configuration restored to "+ filename +" \n Click OK to reload asterisk with the restored configuration");
+		// What ever to happen after restoring
+		parent.reloadConfig();
+	});
+}
+
+function delete_bkp( filename ){
+	if(!confirm("Delete Backup file "+ filename +" ?")){ return ; }
+	parent.astmanEngine.run_tool("/bin/rm -f "+ bkp_path + filename , callback=function(){
+		$('status').innerHTML = " <I> Delete Request Successfull ! </I>";
+		window.location.href = window.location.href ;
+	});
+}
+
+function take_bkp(){
+	$('bg_transparent').style.display="" ;
+	$('newbkp_content').style.display="" ;
+	$('newbkp_name').focus();
+}
+
+function cancel_newbackup(){
+	$('bg_transparent').style.display="none" ;
+	$('newbkp_content').style.display="none" ;
+}
 
 function addzero(x){
-if ( x < 10)
-	return "0" + x;
-return x;
+	if ( x < 10){	return "0" + x;}
+	return x;
 }
 
-function removebkpfile(){
-	_$('message_text').innerHTML = "Please wait while the system <BR> Generates a Backup ... ";
-	_$('status_message').style.display="block";
-	//remove bkpfile on server 
-	parent.astmanEngine.run_tool("/bin/rm " + bkp_path+ "conf_* -f", download_bkp );
-}
-
-
-function showremovebkpfile(){
-	_$('status_message').style.display='none';
-//	$('message_text').innerHTML =  "<A href=\"#\" onclick=\"removebkpfile()\">I have downloaded the file</A><BR><BR>" + "<A href=\"./bkps/"+ bkpfile  +"\" onclick=\"showremovebkpfile()\">ReDownload</A>";
-}
-
-function download_bkp(){
-
+function backup_new(){
+	if( $('newbkp_name').value == "" ){
+		alert("Please Enter a name for the backup");
+		$('newbkp_name').focus();
+		return true;
+	}
+	var months = ["jan", "feb","mar","apr","may","jun","jul","aug","sep","oct","nov","dec"];
 	var today=new Date()
 	var year = today.getFullYear();
-	var month = addzero(today.getMonth() + 1);
+	var month = months[ today.getMonth() ];
 	var day = addzero(today.getDate());
-	var hour =addzero(today.getHours());
-	var minute =addzero(today.getMinutes());
-	var seconds =addzero(today.getSeconds());
-	bkpfile =  "conf_" + year + month + day + hour  + minute +seconds  +".tar";
+	//var hour =addzero(today.getHours());
+	//var minute =addzero(today.getMinutes());
+	//var seconds =addzero(today.getSeconds());
+	var bkpfile =  $('newbkp_name').value +"__" + year + month + day +".tar";
+
 	parent.astmanEngine.run_tool("/bin/tar -cf "+ bkp_path + bkpfile +" /etc/asterisk/", callback=function(){
-		_$('status').innerHTML = " <I> Finished generating Backup ! </I>";
-		_$('status_message').style.display="none";
-		window.location.href = "./bkps/"+ bkpfile ;
-		//$('message_text').innerHTML = "<A href=\"./bkps/"+ bkpfile  +"\" onclick=\"showremovebkpfile()\">Click Here to Download</A>";
-	} );
+			window.location.href = window.location.href ;
+		}
+	);
 }
 
 </script>
 <body id="foo" onload="localajaxinit()"  bgcolor="EFEFEF">
 <div class="mainscreenTitleBar">
-	<span style="margin-left: 4px;font-weight:bold;">Download Configuration Backup</span>
+	<span style="margin-left: 4px;font-weight:bold;">Backup / Restore Configurations</span>
 	<span style="cursor: pointer; cursor: hand;" onclick="window.location.href=window.location.href;" >&nbsp;<img src="images/refresh.png" title=" Refresh " border=0 >&nbsp;</span>
 </div>
 <div class="mainscreenContentBox" id="userscontent">
 <table class="mainscreenTable" align="center">
-	<tr>	<td align=center height=30><BR><BR><div id="status"></div></td></tr>
-	<tr>	<td valign="top" align="center">
-			<BR><BR>
-			<Input type="button" onclick="removebkpfile()" value="Download a Configuration backup">	
-		</td>
-	</tr>
-	<tr>	<td valign="top" align="center">
-			<BR><BR>
-			<font size="-1">
-			Note: Restoring a configuration backup will be added soon to this section !<BR>
-			Work in Progress
-			</font>
-		</td>
+	<tr>
+	<td valign="top" align="center">
+	<BR>
+	<fieldset  style="height: 390px; "  id="fieldset2">
+		<legend>&nbsp;List of Previous Configuration Backups&nbsp;</legend>
+		<table class="table_blacksm" cellpadding=2 cellspacing=2 border=0 align=center width=500 id="table_one">
+			<tr>	<td width=35>S.No</td>
+				<td width="180">Name</td>
+				<td width="95">Date</td>
+				<td align="center">Options</td>
+			</tr>
+		</table>
+		<div id="bkpfilesTable_div" style="height:260px;width=100%; overflow :auto; padding : 0px 0px 0px 0px;">
+			<table id="bkpfilesTable" cellpadding=2 cellspacing=1 border=0 align=center width=500></table>
+		</div>
+		<center><div style="height:25px;color: #FF0000;" id='status'  class="field_text9"></div></center>
+		<BR>
+		<div STYLE="position: absolute; left:186; top: 460;">
+			<input type="button" id="takebkp" value="Take a Backup" onclick="take_bkp();" >
+		</div>
+	</fieldset>
+	</td>
 	</tr>
 </table>
+</div>
+<div id="newbkp_content" STYLE="display:none; position: absolute; left: 120; top: 144; width:350; height:125;  background-color:#F4EFE5;   border-width: 1px; border-color: #7E5538; border-style: solid; z-index:5">
+	<table width="100%" cellpadding=0 cellspacing=0  onmousedown="startDrag(event , 'newbkp_content');">
+	<TR bgcolor="#7E5538"  style="background-image:url('images/title_gradient.gif');">
+		<TD><font color="#FFFFFF">&nbsp;&nbsp;<B>Create New Backup</B></FONT></TD>
+		<TD Height="20" align="right" style="cursor: move">
+			<A href="#" onclick="$('cancel_a').click();" style="color:#FFFFFF; font-size: 12px; font-weight:bold;">X</A>
+		</TD>
+		<TD width=4></TD>
+	</TR>
+	</table>
+	<table cellpadding=2 cellspacing=2 border=0 width="100%" align="center">
+		<tr>	<td colspan=2 height=20 valign=middle align=center class="field_text"></td>	</tr>
+		<tr>	<td class="field_text" align="right">File Name:&nbsp;</td>
+			<td><input id='newbkp_name' size=25 class="input9"></td>
+		</tr>
+		<tr>	<td colspan=2 align=center height=6></td>	</tr>
+		<tr>	<td colspan=2 align=center height=6>(do not enter any extension )</td></tr>
+		<tr>	<td colspan=2 align=center>
+			<input type="button" id='getbackup' Value="Backup" onclick="backup_new()" class="buttonbold">&nbsp;
+			<input type="button" id='cancel_a' Value="Cancel" onclick="cancel_newbackup()" class="buttonbold">
+			</td>
+		</tr>
+	</table>
+</div>
+<div id="sysinfohtml" style="display:none"></div>
+<SCRIPT LANGUAGE="JavaScript">
+<!--
+showdiv_statusmessage();
+//-->
+</SCRIPT>
+<div id="bg_transparent" STYLE="display:none; position: absolute; left: 0; top: 24; width:100%; height:100%;  background-color:#EFEFEF; -moz-opacity:.50;opacity:.50; border-width: 1px; border-color: #EFEFEF; border-style: solid; z-index:4">
 </div>
 </body>
