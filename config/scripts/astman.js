@@ -29,17 +29,17 @@ var sortbynames = false;
 var dragdata = new Object;
 var asterisk_guiTDPrefix = "DID_";
 
-function gui_feedback(a,b){
-	var d = "#DA2804"; // dark reddish brown
-	if(b=='blue'){ 
-		d = "#303BCA"; // dark blue
-	}else if(b=='green'){
-		d = "#448156"; // dark green
+function gui_feedback(a,b,c){ 
+// a is msg, b is color (optional ), c is display time in milliseconds(optional, default to asterisk_guifbt)
+	if(!b){
+		var b = "#DA2804"; // dark reddish brown
 	}
-	gui_feedbackmsg(a,d);
-}
+	if(b=='blue'){ 
+		b = "#303BCA"; // dark blue
+	}else if(b=='green'){
+		b = "#448156"; // dark green
+	}
 
-function gui_feedbackmsg(a,b,c){ // a is message, b is color, c is timeout
 	if(!c){c = asterisk_guifbt;}
 	var _f = top._$('feedback_round');
 	var _g = top._$('feedback');
