@@ -52,17 +52,8 @@ function localajaxinit() {
 function showlist_of_files(){
 	var k = _$('bkp_files').innerHTML ;
 	var bkpfiles = k.split("<br>") ;
-	
-	clear_table();
 
-//	if( typeof bkpfiles[0] == "undefined"  || bkpfiles[0] == "" ){
-//		$('table_one').style.display="none";
-//		var newRow = $('bkpfilesTable').insertRow(-1);
-//		var newCell0 = newRow.insertCell(0);
-//		newCell0 .align = "center";
-//		newCell0 .innerHTML = "<BR><I>No Previous Backup Files !!</I><BR><BR> Please click on the 'Take a BackUp' button<BR> to  take a backup of the current system configuration<BR><BR>" ;
-//		return true;
-//	}
+	clear_table();
 
 	for( var i =0 ; i < bkpfiles.length ; i++){
 		if( typeof bkpfiles[i] == "undefined"  || bkpfiles[i] == "" ){
@@ -73,6 +64,19 @@ function showlist_of_files(){
 
 		addrow_totable( bkpfiles[i], i );
 	}
+
+
+	var _bft = _$('bkpfilesTable') ;
+	
+	if( _bft.rows.length == 0 ){
+		_$('table_one').style.display="none";
+		var newRow = _bft.insertRow(-1);
+		var newCell0 = newRow.insertCell(0);
+		newCell0 .align = "center";
+		newCell0 .innerHTML = "<BR><I> No Previous Backup configurations found !!</I> <BR><BR>" +
+			"Please click on the 'Take a BackUp' button<BR> to  take a backup of the current system configuration<BR><BR>" ;
+	}
+
 	parent.loadscreen(this);
 }
 
@@ -93,6 +97,9 @@ function addrow_totable(filename, i ){
 	var year = filedate[0].substr(0,4);
 	
 	var newRow = _$('bkpfilesTable').insertRow(-1);
+	newRow.style.backgroundColor='#FFFFFF';
+	newRow.onmouseover= function(){ this.style.backgroundColor='#F9F0D1'; };
+	newRow.onmouseout=function(){ this.style.backgroundColor='#FFFFFF'; };
 	
 	var newCell0 = newRow.insertCell(0);
 	newCell0 .innerHTML = i+1 ;
