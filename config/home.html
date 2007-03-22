@@ -50,10 +50,6 @@ function loggedOn() {
 		return;
 	}
 
-	//if(!asterisk_guitools  || !correct version || !hasSetup ){
-			// redirect to setup
-	//}
-
 	if( parent.asterisk_guitools_inextconf == 0){
 		checkessentials();
 	}
@@ -134,9 +130,7 @@ function doLogin() {
 }
 
 function doLogoff() {
-	if(!confirm("Are you sure ?")){ return true; }
-	_$('statusbar').innerHTML = "<i>Logging off...</i>";
-	parent.astmanEngine.sendRequest('action=logoff', demo.logoffs);
+	parent.Logoff();
 }
 
 function localajaminit() {	
