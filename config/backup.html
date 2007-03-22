@@ -29,13 +29,15 @@ var bkp_path = "/var/lib/asterisk/gui_configbackups/";
 
 function localajaxinit() {
 	setWindowTitle("Backup");
-	$('newbkp_name').onfocus = function(){this.className = 'input9_hilight';}
-	$('newbkp_name').onblur = function(){this.className = 'input9';}
+	showdiv_statusmessage();
+	var _nn = _$('newbkp_name') ; 
+	_nn.onfocus = function(){this.className = 'input9_hilight';}
+	_nn.onblur = function(){this.className = 'input9';}
 
 	parent.astmanEngine.run_tool("sh /etc/asterisk/gui_sysinfo", callback = function() { 
 		var opt = { method: 'get', asynchronous: true,
 			onComplete: function(originalRequest){
-				$('sysinfohtml').innerHTML = originalRequest.responseText;
+				_$('sysinfohtml').innerHTML = originalRequest.responseText;
 				showlist_of_files();
 			},
 			onFailure: function(t) { alert("Config Error: " + t.status + ": " + t.statusText); }
@@ -48,7 +50,7 @@ function localajaxinit() {
 
 
 function showlist_of_files(){
-	var k = $('bkp_files').innerHTML ;
+	var k = _$('bkp_files').innerHTML ;
 	var bkpfiles = k.split("<br>") ;
 	
 	clear_table();
@@ -75,8 +77,9 @@ function showlist_of_files(){
 }
 
 function clear_table(){
-	for( var i=0; i <  $('bkpfilesTable').rows.length; ){
-		 $('bkpfilesTable').deleteRow(i);
+	var _bft = _$('bkpfilesTable') ;
+	for( var i=0; i <  _bft.rows.length; ){
+		 _bft.deleteRow(i);
 	}
 }
 
@@ -89,7 +92,7 @@ function addrow_totable(filename, i ){
 	var month = filedate[0].substr(4,3);
 	var year = filedate[0].substr(0,4);
 	
-	var newRow = $('bkpfilesTable').insertRow(-1);
+	var newRow = _$('bkpfilesTable').insertRow(-1);
 	
 	var newCell0 = newRow.insertCell(0);
 	newCell0 .innerHTML = i+1 ;
@@ -127,20 +130,20 @@ function restore_bkp_step2(filename){
 function delete_bkp( filename ){
 	if(!confirm("Delete Backup file "+ filename +" ?")){ return ; }
 	parent.astmanEngine.run_tool("/bin/rm -f "+ bkp_path + filename , callback=function(){
-		$('status').innerHTML = " <I> Delete Request Successfull ! </I>";
+		_$('status').innerHTML = " <I> Delete Request Successfull ! </I>";
 		window.location.href = window.location.href ;
 	});
 }
 
 function take_bkp(){
-	$('bg_transparent').style.display="" ;
-	$('newbkp_content').style.display="" ;
-	$('newbkp_name').focus();
+	_$('bg_transparent').style.display="" ;
+	_$('newbkp_content').style.display="" ;
+	_$('newbkp_name').focus();
 }
 
 function cancel_newbackup(){
-	$('bg_transparent').style.display="none" ;
-	$('newbkp_content').style.display="none" ;
+	_$('bg_transparent').style.display="none" ;
+	_$('newbkp_content').style.display="none" ;
 }
 
 function addzero(x){
@@ -149,9 +152,10 @@ function addzero(x){
 }
 
 function backup_new(){
-	if( $('newbkp_name').value == "" ){
+	var _nn = _$('newbkp_name');
+	if( _nn.value == "" ){
 		alert("Please Enter a name for the backup");
-		$('newbkp_name').focus();
+		_nn.focus();
 		return true;
 	}
 	var months = ["jan", "feb","mar","apr","may","jun","jul","aug","sep","oct","nov","dec"];
@@ -162,7 +166,7 @@ function backup_new(){
 	//var hour =addzero(today.getHours());
 	//var minute =addzero(today.getMinutes());
 	//var seconds =addzero(today.getSeconds());
-	var bkpfile =  $('newbkp_name').value +"__" + year + month + day +".tar";
+	var bkpfile =  _nn.value +"__" + year + month + day +".tar";
 
 	parent.astmanEngine.run_tool("/bin/tar -cf "+ bkp_path + bkpfile +" /etc/asterisk/", callback=function(){
 			window.location.href = window.location.href ;
@@ -228,11 +232,6 @@ function backup_new(){
 	</table>
 </div>
 <div id="sysinfohtml" style="display:none"></div>
-<SCRIPT LANGUAGE="JavaScript">
-<!--
-showdiv_statusmessage();
-//-->
-</SCRIPT>
 <div id="bg_transparent" STYLE="display:none; position: absolute; left: 0; top: 24; width:100%; height:100%;  background-color:#EFEFEF; -moz-opacity:.50;opacity:.50; border-width: 1px; border-color: #EFEFEF; border-style: solid; z-index:4">
 </div>
 </body>
