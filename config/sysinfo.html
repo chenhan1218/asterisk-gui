@@ -107,7 +107,7 @@ function getsysinfohtml(){
 		onComplete: function(originalRequest){
 			_$('sysinfohtml').innerHTML = originalRequest.responseText;
 			_$('osversion').innerHTML = _$('si_uname').innerHTML;
-			_$('uptime').innerHTML = _$('si_uptime').innerHTML;
+			_$('uptime').innerHTML = _$('si_uptime').innerHTML.replace(/load average/, "<BR>Load Average");
 			_$('asterisk').innerHTML =_$('si_astver').innerHTML + "<BR>" + "Asterisk GUI-version " + asterisk_guiversion.substr(1) ;
 			_$('today').innerHTML = _$('si_date').innerHTML;
 			_$('hostname').innerHTML =_$('si_hostname').innerHTML;
