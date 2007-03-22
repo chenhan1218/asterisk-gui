@@ -160,7 +160,8 @@ callbacks.beforeSaving = function(){
 			}
 		}
 	}
-
+	_$('registeriax').checked =_$('hasiax').checked ;
+	_$('registersip').checked =_$('hassip').checked ;
 	return true;
 }
 
@@ -283,16 +284,9 @@ function localajaxinit() {
 		widgets[focus_fields[x]].onfocus = function(){this.className = 'input8_hilight';}
 		widgets[focus_fields[x]].onblur = function(){this.className = 'input8';}
 	}
-	add_event( _$('hasiax'), 'change' , updateregistersipiax ) ;
-	add_event( _$('hassip'), 'change' , updateregistersipiax ) ;
-
 	parent.astmanEngine.config2list("zapscan.conf", _$('zapchan'), new Array(), phonecallbacks);
 }
 
-function updateregistersipiax(){
-	_$('registeriax').checked =_$('hasiax').checked ;
-	_$('registersip').checked =_$('hassip').checked ;
-}
 
 function free_mem(){
 	if( navigator.userAgent.indexOf("MSIE") == -1 ){ return true; }
@@ -333,7 +327,7 @@ function free_mem(){
 				<span id="noanaloglines" style="display:none"><I>&nbsp;No Analog lines detected.</I></span></td></tr>
 				<tr onmouseover="show_tooltip('en', 'users', 6);"><td class="field_text">Dial Plan:</td><td><select size='1' id='context' style='width:120px' class="input8"></select></td></tr>
 				<tr><td colspan='2' align='center'><div style="height:15px" id='status'></div></td></tr>
-				<tr><td colspan='2' align='center'><input type='hidden' id='mailbox'><input type='hidden' id='group'><input type='hidden' id='registersip'><input type='hidden' id='registeriax'></td></tr>
+				<tr><td colspan='2' align='center'><input type='hidden' id='mailbox'><input type='hidden' id='group'><input type='checkbox' id='registersip' style="display:none"><input type='checkbox' id='registeriax' style="display:none"></td></tr>
 				</table>
 			</td>
 			</tr>
