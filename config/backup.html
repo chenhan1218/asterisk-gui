@@ -61,8 +61,7 @@ function showlist_of_files(){
 		}
 		bkpfiles[i] = bkpfiles[i].replace(/^\s*|\s*$/g,'') ;
 		if( bkpfiles[i] == "" ){continue;	}
-
-		addrow_totable( bkpfiles[i], i );
+		addrow_totable( bkpfiles[i].stripTags(), i );
 	}
 
 
@@ -135,7 +134,7 @@ function restore_bkp_step2(filename){
 }
 
 function delete_bkp( filename ){
-	if(!confirm("Delete Backup file "+ filename +" ?")){ return ; }
+	if(!confirm("Delete selected Backup Configuration ?")){ return ; }
 	parent.astmanEngine.run_tool("/bin/rm -f "+ bkp_path + filename , callback=function(){
 		_$('status').innerHTML = " <I> Delete Request Successfull ! </I>";
 		window.location.href = window.location.href ;
