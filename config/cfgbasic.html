@@ -121,8 +121,8 @@ function setLoggedOn(onoff) {
 	for (var i = 0; i < panels.length; i++) {
 		if (panels[i].name == 'home'){continue;}
 		var w = _$(panels[i].name); 
-		w.onclick = (loggedon == 1)?$(panels[i].name).realonclick: false;
-		w.onmouseover = (loggedon == 1)?$(panels[i].name).realonmouseover:false;
+		w.onClick = (loggedon == 1)?w.realonclick: false;
+		w.onMouseOver = (loggedon == 1)?w.realonmouseover:false;
 		w.style.visibility = (loggedon == 1)?'inherit':'hidden';
 	}
 }
@@ -186,8 +186,8 @@ function registerajax() {
 			w.style.height =  "19px";
 			continue;
 		}
-		w.realonclick = w.onclick;
-		w.realonmouseover = w.onmouseover;
+		w.realonclick = w.onClick;
+		w.realonmouseover = w.onMouseOver;
 	}
 	started = 1;
 }
