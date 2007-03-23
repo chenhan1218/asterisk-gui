@@ -64,16 +64,17 @@ function gui_alertmsg( msgtype, msg ){
 		var h= top.document.createElement("IFRAME");
 		h.setAttribute("id", top.alertframename );
 		h.setAttribute("ALLOWTRANSPARENCY", "true");
-		h.style.position="absolute";
-		h.style.left= 0;
-		h.style.top= 0;
-		h.style.width= '100%';
-		h.style.height= '100%';
-		h.style.zIndex = 9999 ;
+		var _hs = h.style ;
+		_hs.position="absolute";
+		_hs.left= 0;
+		_hs.top= 0;
+		_hs.width= '100%';
+		_hs.height= '100%';
+		_hs.zIndex = 9999 ;
 		h.src = "guialert.html" ;
 		h.frameBorder="0";
 		h.scrolling="no";
-		h.style.filter='progid:DXImageTransform.Microsoft.Alpha(style=0,opacity=90)';
+		_hs.filter='progid:DXImageTransform.Microsoft.Alpha(style=0,opacity=90)';
 		//h.style.MozOpacity = .90;
 		top.document.body.appendChild(h);
 	}else{
@@ -197,7 +198,6 @@ function toJSON(z, p){
 					}
 				} 
 			}
-				//if( json_data.substr(-1) =="," ){  json_data = json_data.substring( 0 , (json_data.length - 1) ); } // if last character is a comma remove it - But this does not work in IE - substr( ) is broken in IE
 			if( s < a.length - 1 ){ json_data += ' },' ; }else{ json_data += ' }}' ; }
 		}
 	}
@@ -267,84 +267,85 @@ function check_patternonfields(fields){
 function showdiv_statusmessage(){
         var h= document.createElement("div");
 	h.setAttribute("id","status_message");
-	h.style.display="none";
-	h.style.position="absolute";
-	h.style.left= 170;
-	h.style.top= 190;
-	h.style.width= 350;
-	h.style.height= 115;
-	h.style.backgroundColor= "#F4EFE5";
-	h.style.borderWidth= "1px";
-	h.style.borderColor= "#7E5538";
-	h.style.borderStyle= "solid";
+	var _hs = h.style;
+	_hs.display="none";
+	_hs.position="absolute";
+	_hs.left= 170;
+	_hs.top= 190;
+	_hs.width= 350;
+	_hs.height= 115;
+	_hs.backgroundColor= "#F4EFE5";
+	_hs.borderWidth= "1px";
+	_hs.borderColor= "#7E5538";
+	_hs.borderStyle= "solid";
 	h.innerHTML = "<BR><BR><TABLE border=0 cellpadding=0 cellspacing=3 align=\"center\"> <TR>	<TD><img src=\"images/loading.gif\"></TD> <TD valign=\"middle\" align=\"center\">&nbsp;&nbsp;<div id=\"message_text\"></div></TD> </TR> </TABLE> ";
 	document.body.appendChild(h);
 }
 
 function combo_box(a, b, c ){	
-		var combo_text = document.getElementById(a);
-		var combo_selectdiv = document.getElementById(b);
-		var combo_selectbox = document.getElementById(c);
-		var TAB = 9;
-		var ENTER = 13;
-		var ESC = 27;
-		var KEYUP = 38;
-		var KEYDN = 40;
-		var BKSPACE = 8;
+	var combo_text = document.getElementById(a);
+	var combo_selectdiv = document.getElementById(b);
+	var combo_selectbox = document.getElementById(c);
+	var TAB = 9;
+	var ENTER = 13;
+	var ESC = 27;
+	var KEYUP = 38;
+	var KEYDN = 40;
+	var BKSPACE = 8;
 
-		function xyz(event){
-			if( event.keyCode == ENTER || event.keyCode == ESC || event.keyCode == TAB){
-				combo_selectdiv.style.display = "none";
-				return false;
-			}else if( event.keyCode == KEYDN ||  event.keyCode == KEYUP ){
-				combo_selectbox.focus();
-				return false;
-			}else if( event.keyCode == BKSPACE && combo_text.value.length ==0 ){
-				combo_selectdiv.style.display = "none";
-				return false;
-			}else{
-				combo_selectdiv.style.display = "";
-				return true;
-			}
-		}
-		
-		function	abcd(event){
-			if( event.keyCode == ENTER || event.keyCode == ESC || event.keyCode == TAB){
+	function xyz(event){
+		if( event.keyCode == ENTER || event.keyCode == ESC || event.keyCode == TAB){
+			combo_selectdiv.style.display = "none";
 			return false;
-			}
-			for (var i=0; i < combo_selectbox.options.length; i++){
-				if(combo_selectbox.options[i].value.toLowerCase().match(combo_text.value.toLowerCase()) ){
-					combo_selectbox.selectedIndex = i;
-					return true;
-				}
-			}
-			combo_selectdiv.style.display = "none";				
+		}else if( event.keyCode == KEYDN ||  event.keyCode == KEYUP ){
+			combo_selectbox.focus();
+			return false;
+		}else if( event.keyCode == BKSPACE && combo_text.value.length ==0 ){
+			combo_selectdiv.style.display = "none";
+			return false;
+		}else{
+			combo_selectdiv.style.display = "";
+			return true;
 		}
-
-		function	efgh(event) {
-			if( event.keyCode == ENTER ){
-				combo_text.value = combo_selectbox.value;
-				combo_text.focus();
-				combo_selectdiv.style.display = "none";
-				return false;
-			}else if( event.keyCode == ESC ){
-				combo_text.focus();
-				combo_selectdiv.style.display = "none";
-			}else{
+	}
+	
+	function abcd(event){
+		if( event.keyCode == ENTER || event.keyCode == ESC || event.keyCode == TAB){
+		return false;
+		}
+		for (var i=0; i < combo_selectbox.options.length; i++){
+			if(combo_selectbox.options[i].value.toLowerCase().match(combo_text.value.toLowerCase()) ){
+				combo_selectbox.selectedIndex = i;
 				return true;
 			}
 		}
-		function	ijkl(event) {
+		combo_selectdiv.style.display = "none";				
+	}
+
+	function efgh(event) {
+		if( event.keyCode == ENTER ){
 			combo_text.value = combo_selectbox.value;
 			combo_text.focus();
 			combo_selectdiv.style.display = "none";
+			return false;
+		}else if( event.keyCode == ESC ){
+			combo_text.focus();
+			combo_selectdiv.style.display = "none";
+		}else{
+			return true;
 		}
-
-		combo_selectdiv.style.position ="absolute";
-		combo_selectdiv.style.top = "0px";
-		combo_selectdiv.style.left = "0px";
-//		combo_selectdiv.style.z-index = 10000;
+	}
+	function ijkl(event) {
+		combo_text.value = combo_selectbox.value;
+		combo_text.focus();
 		combo_selectdiv.style.display = "none";
+	}
+
+	combo_selectdiv.style.position ="absolute";
+	combo_selectdiv.style.top = "0px";
+	combo_selectdiv.style.left = "0px";
+//	combo_selectdiv.style.z-index = 10000;
+	combo_selectdiv.style.display = "none";
 
 	add_event( combo_text , 'keychange' , combobox_activate ) ;
 	add_event( combo_text , 'focus' , combobox_activate ) ;
@@ -354,20 +355,20 @@ function combo_box(a, b, c ){
 	add_event( combo_selectbox, 'keypress' , efgh ) ;
 	add_event( combo_selectbox, 'click' , ijkl ) ;
 
-		function combobox_activate(){
-			var tmp_left = combo_text.offsetLeft;
-			var tmp_top = combo_text.offsetTop + combo_text.offsetHeight;
-			var tmp_parent = combo_text;
-			while(tmp_parent.offsetParent != document.body){
-				tmp_parent = tmp_parent.offsetParent;
-				tmp_left += tmp_parent.offsetLeft;
-				tmp_top += tmp_parent.offsetTop;
-			}
-			combo_selectdiv.style.left = tmp_left;
-			combo_selectdiv.style.top = tmp_top ;
-			combo_selectdiv.style.width = combo_text.offsetWidth;
-			combo_selectdiv.style.display = "";
+	function combobox_activate(){
+		var tmp_left = combo_text.offsetLeft;
+		var tmp_top = combo_text.offsetTop + combo_text.offsetHeight;
+		var tmp_parent = combo_text;
+		while(tmp_parent.offsetParent != document.body){
+			tmp_parent = tmp_parent.offsetParent;
+			tmp_left += tmp_parent.offsetLeft;
+			tmp_top += tmp_parent.offsetTop;
 		}
+		combo_selectdiv.style.left = tmp_left;
+		combo_selectdiv.style.top = tmp_top ;
+		combo_selectdiv.style.width = combo_text.offsetWidth;
+		combo_selectdiv.style.display = "";
+	}
 }
 
 function  InArray(search_array, searchstring ){
@@ -560,16 +561,16 @@ function cancel_item(box) {
 	} else {
 		if (box.options[box.selectedIndex].value == "") {
 			if (select_item(box,"Discard new entry?") && box.widgets['status']){
-					box.widgets['status'].innerHTML = "<i>New entry cancelled!</i>";
-					//box.selectedIndex = -1;
-					if (box.callbacks.cancelnewcategory) 
-							box.callbacks.cancelnewcategory();
+				box.widgets['status'].innerHTML = "<i>New entry cancelled!</i>";
+				//box.selectedIndex = -1;
+				if (box.callbacks.cancelnewcategory) 
+					box.callbacks.cancelnewcategory();
 			}
 		} else {
 			if (select_item(box) && box.widgets['status']){
 				box.widgets['status'].innerHTML = "<i>Changes cancelled!</i>";
 				if (box.callbacks.cancelchanges) 
-							box.callbacks.cancelchanges();
+					box.callbacks.cancelchanges();
 			}
 		}
 	}
@@ -592,9 +593,9 @@ function first_free_exten(box, start) {
 
 function action_issuccess(responseText) {
 	if ( responseText.indexOf("Response: Success") == -1 ){
-			return false;
+		return false;
 	}else{
-			return true;
+		return true;
 	}
 }
 
@@ -610,7 +611,7 @@ function delete_item(box, value, noconfirm) {
 		onSuccess: function(t) { 
 //			if(action_issuccess(t.responseText) ){
 				if (box.callbacks.oncategorydelete) 
-						box.callbacks.oncategorydelete(value);
+					box.callbacks.oncategorydelete(value);
 				if (box.widgets['status']) 
 					box.widgets['status'].innerHTML = "<i>Deleted.</i>";
 				if (box.callbacks.delchanges)
@@ -717,10 +718,10 @@ function new_item(box) {
 	var name = null;
 
 	if (box.widgets['save'] && box.widgets['save'].disabled == false){
-			if (!confirm( "Discard changes?")) {
-				box.selectedIndex = box.oldselect;
-				return false;
-			}
+		if (!confirm( "Discard changes?")) {
+			box.selectedIndex = box.oldselect;
+			return false;
+		}
 	}
 	if (box.callbacks.newcategory) {
 		category = box.callbacks.newcategory();
@@ -841,7 +842,7 @@ function apply_uri(box, uri){
 	var tmp;
 	
 	opt.parameters="action=updateconfig&srcfilename=" + encodeURIComponent(box.config_file) + "&dstfilename=" +
-				encodeURIComponent(box.config_file) + uri;
+		encodeURIComponent(box.config_file) + uri;
 	tmp = new Ajax.Request(box.engine.url, opt);
 }
 
@@ -912,7 +913,7 @@ function save_item(box) {
 					if (!box.options[y] || 
 						do_compare(box, box.options[box.selectedIndex], box.options[y])) {
 						try{
-						box.options.add(box.options[box.selectedIndex], y);
+							box.options.add(box.options[box.selectedIndex], y);
 						}catch(e){
 							box.remove(box.selectedIndex);
 							box.add(tmp_newopt, y); 
@@ -1007,9 +1008,9 @@ function build_action(action, count, cat, name, value, match){
 function check_pattern(pattern, text){
 	if(typeof text != "undefined"){
 		if (text.search(pattern) == -1)
-				return false;
+			return false;
 		else
-				return true;
+			return true;
 	}
 	return true;
 }
@@ -1079,7 +1080,7 @@ function Astman() {
 			else
 				target.className = "chanlisteven";
 		} else
-				target.className = "chanlistodd";
+			target.className = "chanlistodd";
 	};
 	this.channelUpdate = function(msg, channame) {
 		var fields = new Array("callerid", "calleridname", "context", "extension", "priority", "account", "state", "link", "uniqueid" );
@@ -1271,7 +1272,7 @@ function Astman() {
 			}
 		}
 		
-		for (var x in widgets) {
+		for (var x in widgets) {  if( widgets.hasOwnProperty(x) ){
 			var src;
 			if ((x == 'save') || (x == 'cancel') || (x == 'name') || (x == 'new') || (x == 'newitem') || (x == 'status') || (x == 'delete'))
 				continue;
@@ -1334,7 +1335,7 @@ function Astman() {
 						cat[src] = widgets[src].value;
 				}
 			}
-		}
+		}}
 		return changes;
 	};
 	
@@ -1358,7 +1359,7 @@ function Astman() {
 				cancelwidget.disabled = true;
 			}
 		}
-		for (var x in widgets) {
+		for (var x in widgets) { if( widgets.hasOwnProperty(x) ){
 			var src;
 			if ((x == 'save') || (x == 'cancel') || (x == 'new') || (x == 'newitem') || (x == 'status') || (x == 'delete'))
 				continue;
@@ -1446,9 +1447,9 @@ function Astman() {
 				} else{
 					dfalt = widgets[x].getAttribute('dfalt');
 					if( dfalt && thevalue=='' )
-							widgets[x].value = dfalt;
+						widgets[x].value = dfalt;
 					else 
-							widgets[x].value = thevalue;
+						widgets[x].value = thevalue;
 				}
 
 				if (cat)
@@ -1476,12 +1477,12 @@ function Astman() {
 							if (this.oldvalue == this.value){return true;}
 							pattern = this.getAttribute('pattern');
 							if (pattern && check_pattern(pattern, this.oldvalue) && !check_pattern(pattern, this.value)) {
-									this.value = this.oldvalue;
-									if (widgets['status']) 
-										widgets['status'].innerHTML = "<font size='-1' color=red>Invalid Character !</font>";
+								this.value = this.oldvalue;
+								if (widgets['status']) 
+									widgets['status'].innerHTML = "<font size='-1' color=red>Invalid Character !</font>";
 							} else{
-									if (widgets['status']) 
-										widgets['status'].innerHTML = "";
+								if (widgets['status']) 
+									widgets['status'].innerHTML = "";
 								this.savewidget.activateSave();
 							}
 							return true;
@@ -1523,20 +1524,20 @@ function Astman() {
 					thevalue = '';
 				widgets[x].innerHTML = thevalue;
 			}
-		}
+		}}
 		if (widgets['status']) 
 			widgets['status'].innerHTML = "";
 	};
 	this.doConfig = function(t, box) {
 		if( t[0].headers['message'] && t[0].headers['message'] == "Config file not found" ){
-					if( box.config_file == "zapscan.conf" || box.config_file == "contactinfo.conf" || box.config_file == "jingle.conf" || box.config_file == "providers.conf" ){
-						parent.astmanEngine.run_tool("/bin/touch /etc/asterisk/"+box.config_file,	function(){	  window.location.href = window.location.href ; } );
-						return ;
-					} else {
-						alert( "Asterisk says it cannot find a required config file (" + box.config_file + ") \n You will be now redirected to the main page !" );
-						parent.window.location.href = parent.window.location.href ;
-						return ;
-					}
+			if( box.config_file == "zapscan.conf" || box.config_file == "contactinfo.conf" || box.config_file == "jingle.conf" || box.config_file == "providers.conf" ){
+				parent.astmanEngine.run_tool("/bin/touch /etc/asterisk/"+box.config_file, function(){ window.location.href = window.location.href ; } );
+				return ;
+			} else {
+				alert( "Asterisk says it cannot find a required config file (" + box.config_file + ") \n You will be now redirected to the main page !" );
+				parent.window.location.href = parent.window.location.href ;
+				return ;
+			}
 		}
 		var x,y=0;
 		var cfg = new Object;
@@ -1598,7 +1599,8 @@ function Astman() {
 		if( t.responseText.match("Message: Authentication Required") ){		
 				parent.window.location.href = parent.window.location.href ;
 		}
-		if( navigator.userAgent.indexOf("MSIE") != -1 || navigator.userAgent.indexOf("Konqueror") != -1 || navigator.userAgent.indexOf("Safari") != -1 || navigator.userAgent.indexOf("Opera") != -1){
+		var _nu = navigator.userAgent; 
+		if( _nu.indexOf("MSIE") != -1 || _nu.indexOf("Konqueror") != -1 || _nu.indexOf("Safari") != -1 || _nu.indexOf("Opera") != -1){
 			// Donot Poll events for non mozilla Browsers			
 		}else{ 
 			me.parseResponse(t, me.doEvents);
@@ -1758,7 +1760,6 @@ function Astman() {
 
 		// if it is a Voicemenu alias .. return "extension -- Voicemenu"
 		if ( tmp[2].match("Goto") && tmp[2].match("voicemenu-custom-" )  ){
-
 			t.subfields[x]['context'] = t.name;
 			t.subfields[x]['name'] = tmp[0];
 			t.subfields[x]['app'] = "Goto";
@@ -1766,14 +1767,14 @@ function Astman() {
 			t.subfields[x]['args'] = "";
 			t.subfields[x]['priority'] = priority;
 
-				box.calcname = tmp[0];
-				box.calccontext = t.name;
-				box.calcpriority = priority;
-				if( sortbynames ){
-					return " Voice Menu ("  + tmp[0] + ")" ;
-				}else{
-					return tmp[0] + " -- Voice Menu"  ;
-				}
+			box.calcname = tmp[0];
+			box.calccontext = t.name;
+			box.calcpriority = priority;
+			if( sortbynames ){
+				return " Voice Menu ("  + tmp[0] + ")" ;
+			}else{
+				return tmp[0] + " -- Voice Menu"  ;
+			}
 		}
 		//
 
@@ -1786,9 +1787,7 @@ function Astman() {
 		if (!tmp[0])
 			return null;
 		app = tmp[0];
-		
 		label = app2label(app);
-		
 		tmp.splice(0,1);
 		args = tmp.join('(');
 		
@@ -1803,8 +1802,7 @@ function Astman() {
 		t.subfields[x]['label'] = label;
 		t.subfields[x]['args'] = args;
 		t.subfields[x]['priority'] = priority;
-		//alert( "t.name = " + t.name + "\n exten: " + exten + " \n app: " + app + " \n label:" + label + " \n args:" + args + " \n priority: " + priority );
-
+		
 		if (priority == 'n') {
 			if ((box.calcname == exten) && (box.calccontext == t.name))
 				box.calcpriority++;
@@ -1823,11 +1821,11 @@ function Astman() {
 		}
 	}	
 
-function merge_users(e, u) { 			// read u and add into e according to sort order
+function merge_users(e, u) { // read u and add into e according to sort order
 	merge_extensions(e, u);
 }
 
-function merge_extensions(u, e) {			// read e and add into u according to sort order
+function merge_extensions(u, e) { // read e and add into u according to sort order
 	var t = e.options.length ;
 	for( var f =0 ; f < t ; f++ ){
 		// take each element in e
