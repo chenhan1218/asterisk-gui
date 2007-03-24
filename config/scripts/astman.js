@@ -156,7 +156,10 @@ function toJSON(z, p){
 			catname = catname.replace(/^\s*|\s*$/g,'') ; // trim 
 			a[ catno ] = { };
 			a[ catno ].categoryname = catname  ;
-			a[ catno ].subfields = [ ] ;
+			if(!p)
+				a[ catno ].subfields = [] ;
+			else
+				a[ catno ].subfields = {} ;
 		}else if ( h == "line" ){
 			var j = t[r].indexOf(":") ;
 			var subfield = t[r].substr(j+1) ; // subfield
