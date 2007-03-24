@@ -30,9 +30,7 @@ var origwidth;
 var widgets = new Object;
 var adstatus;
 var callbacks = new Object;
-var phonecallbacks = new Object;
 var extencallbacks = new Object;
-var numcallbacks = new Object;
 var fieldnames = ['callwaiting' ,'cancel' ,'cid_number' ,'context' ,'delete' ,'email' ,'fullname' ,'group' ,'hasagent' ,'hasdirectory' ,'hasiax' ,'hasmanager' ,'hassip' ,'hasvoicemail' ,'host' ,'mailbox' ,'name' ,'new' ,'save' ,'secret' ,'status' ,'threewaycalling' ,'vmsecret' ,'zapchan', 'registeriax', 'registersip'];
 var focus_fields = ['cid_number' ,'context' ,'email' ,'fullname' ,'name' ,'secret' ,'vmsecret' ,'zapchan'] ;
 var localextenlength = 4;
@@ -205,13 +203,23 @@ callbacks.savechanges = function(){
 	
 }
 
-phonecallbacks.format = function(t) {
-	if (t.fieldbyname['port'] == 'fxo') { return "Analog Port #" + t.name; }
-	return null;
-}
-
-phonecallbacks.loaded = function() {
+function analoglines_loaded(b){
+	var c = eval('(' + b + ')');
 	var _zapchan = _$('zapchan') ;
+
+	for( var d in c ){
+		if ( c.hasOwnProperty(d) && c[d]['port'] && (c[d]['port'] == 'fxo' ) ) {
+			var New_OPTION = document.createElement('option');
+			New_OPTION.text =  "Analog Port #" + d ;
+			New_OPTION.value = d ;
+			try {
+				_zapchan.add(New_OPTION, null); // W3C way
+			}catch(ex) {
+				_zapchan.add(New_OPTION); // IE way
+			}
+		}
+	}
+	
 	if( _zapchan.options.length == 0) {
 		_zapchan.style.display="none";
 		_$('noanaloglines').style.display="";
@@ -221,16 +229,30 @@ phonecallbacks.loaded = function() {
 	noneopt.value = "";
 	noneopt.innerText = "None";
 
-	parent.astmanEngine.config2list("extensions.conf", _$('context'), new Array(), numcallbacks);
+	config2json('extensions.conf', 1, dialplans_loaded ) ;
+	//parent.astmanEngine.config2list("extensions.conf", _$('context'), new Array(), numcallbacks);
 }
 
-numcallbacks.format = function(t) {
-	if (t.name.substr(0,11) != 'numberplan-'){ return null; }
-	if (t.fieldbyname['plancomment']){ return t.fieldbyname['plancomment']; }
-	return t.name;
-}
+function dialplans_loaded(b){
+	var c = eval('(' + b + ')');
+	var _context = _$('context') ;
 
-numcallbacks.loaded = function() {
+	for( var d in c ){
+		if ( c.hasOwnProperty(d) && d.substr(0,11) == 'numberplan-'  ) {
+			var New_OPTION = document.createElement('option');
+			if(c[d]['plancomment'])
+				New_OPTION.text =  c[d]['plancomment'] ;
+			else
+				New_OPTION.text =  d ;
+			New_OPTION.value = d ;
+			try {
+				_context.add(New_OPTION, null); // W3C way
+			}catch(ex) {
+				_context.add(New_OPTION); // IE way
+			}
+		}
+	}
+
 	parent.astmanEngine.config2list("users.conf", _$('devices'), widgets, callbacks);
 }
 
@@ -284,7 +306,8 @@ function localajaxinit() {
 		widgets[focus_fields[x]].onfocus = function(){this.className = 'input8_hilight';}
 		widgets[focus_fields[x]].onblur = function(){this.className = 'input8';}
 	}
-	parent.astmanEngine.config2list("zapscan.conf", _$('zapchan'), new Array(), phonecallbacks);
+	config2json('zapscan.conf', 1, analoglines_loaded ) ;
+	//parent.astmanEngine.config2list("zapscan.conf", _$('zapchan'), new Array(), phonecallbacks);
 }
 
 
