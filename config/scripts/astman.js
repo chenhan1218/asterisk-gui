@@ -201,6 +201,7 @@ function toJSON(z, p){
 			if( s < a.length - 1 ){ json_data += ' },' ; }else{ json_data += ' }}' ; }
 		}
 	}
+	if(json_data == "{"){ return '{}';}
 	// done building the json string
 	return json_data ;
 }
