@@ -38,3 +38,15 @@ do
 /bin/echo "$i<BR>" >> /var/lib/asterisk/static-http/config/bkps/sysinfo_output.html
 done
 /bin/echo "</div>" >> /var/lib/asterisk/static-http/config/bkps/sysinfo_output.html
+
+
+
+/bin/echo "<div id=rec_files>" >> /var/lib/asterisk/static-http/config/bkps/sysinfo_output.html
+/bin/mkdir -p /var/lib/asterisk/sounds/record
+RECFILES=`ls /var/lib/asterisk/sounds/record/`
+for i in $RECFILES
+do
+/bin/echo "$i<BR>" >> /var/lib/asterisk/static-http/config/bkps/sysinfo_output.html
+done
+/bin/echo "</div>" >> /var/lib/asterisk/static-http/config/bkps/sysinfo_output.html
+
