@@ -50,3 +50,16 @@ do
 done
 /bin/echo "</div>" >> /var/lib/asterisk/static-http/config/bkps/sysinfo_output.html
 
+
+
+/bin/echo "<div id=sound_files>" >> /var/lib/asterisk/static-http/config/bkps/sysinfo_output.html
+/bin/mkdir -p /var/lib/asterisk/sounds
+SNDFILES=`ls /var/lib/asterisk/sounds/`
+for i in $SNDFILES
+do
+/bin/echo "$i<BR>" >> /var/lib/asterisk/static-http/config/bkps/sysinfo_output.html
+done
+/bin/echo "</div>" >> /var/lib/asterisk/static-http/config/bkps/sysinfo_output.html
+
+
+
