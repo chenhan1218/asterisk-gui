@@ -505,26 +505,24 @@ function save_vmenu(){
 
 	// Build exten strings for enabled keys and append/update the 
 	for (var k=0; k< keys.length; k++){
-		switch ( _$('keypress_'+ keys[k] + '_action').value ){
-		case 'disabled':
-			break;
-		case 'gotomenu':
-			buildstring[keys[k]] = keys[k] + ",1,Goto("+ _$('keypress_'+ keys[k] + '_menus').value + "|s|1)" ;
-			break;
-		case 'gotoextension':
-			buildstring[keys[k]] = keys[k] + ",1,Goto(default|"+ _$('keypress_'+ keys[k] + '_exts').value + "|1)" ;
-			break;
-		case 'Custom':
-			buildstring[keys[k]] = keys[k] + ",1,"+ _$('keypress_'+ keys[k] + '_text').value ;
-			break;
-		case 'Hangup':
-			buildstring[keys[k]] = keys[k] + ",1,"+ "Hangup" ;
-			break;
-		case 'PlayInvalid':
-			buildstring[keys[k]] = keys[k] + ",1,"+ "Playback(invalid)" ;
-			break;
-		default :
-		}
+		var current_key_action='keypress_'+ keys[k] + '_action';
+		var current_key_text='keypress_'+ keys[k] + '_text';
+		var current_key_exts='keypress_'+ keys[k] + '_exts';
+		var current_key_menus='keypress_'+ keys[k] + '_menus';
+	
+		if( $(current_key_action).value == "disabled")
+			continue;
+		else if( $(current_key_action).value == "gotomenu" )
+				buildstring[keys[k]] = keys[k] + ",1,Goto("+ $(current_key_menus).value + "|s|1)" ;					
+		else if( $(current_key_action).value == "gotoextension" )
+				buildstring[keys[k]] = keys[k] + ",1,Goto(default|"+ $(current_key_exts).value + "|1)" ;					
+		else if( $(current_key_action).value == "Custom" ) 
+				buildstring[keys[k]] = keys[k] + ",1,"+ $(current_key_text).value ;
+		else if( $(current_key_action).value == "Hangup" )
+				buildstring[keys[k]] = keys[k] + ",1,"+ "Hangup" ;					
+		else if( $(current_key_action).value == "PlayInvalid" ) 
+				buildstring[keys[k]] = keys[k] + ",1,"+ "Playback(invalid)" ;
+					
 		uri += build_action('append', p, current_vmenu,"exten", buildstring[keys[k]]); p = p+1;
 	}
 
@@ -960,47 +958,46 @@ extencallbacks.format = function(t, x) {
 }
 
 extencallbacks.loaded = function() {
-		parent.astmanEngine.run_tool("sh /etc/asterisk/gui_sysinfo", callback = function() { 
-		var opt = { method: 'get', asynchronous: true,
-			onComplete: function(originalRequest){
-				_$('sysinfohtml').innerHTML = originalRequest.responseText;
-				var k = _$('rec_files').innerHTML ;
-				var recfiles = k.split("<br>") ;
-				var New_OPTION = document.createElement('option');
-				New_OPTION.text = "Recorded Voicemenus"  ;
-				New_OPTION.value = ""  ;
-				New_OPTION.style.fontWeight = "bold";
+	parent.astmanEngine.run_tool("sh /etc/asterisk/gui_sysinfo", callback = function() { 
+	var opt = { method: 'get', asynchronous: true,
+		onComplete: function(originalRequest){
+			_$('sysinfohtml').innerHTML = originalRequest.responseText;
+			var k = _$('rec_files').innerHTML ;
+			var recfiles = k.split("<br>") ;
+			var New_OPTION = document.createElement('option');
+			New_OPTION.text = "Recorded Voicemenus"  ;
+			New_OPTION.value = ""  ;
+			New_OPTION.style.fontWeight = "bold";
+			try {
+				_$('combosel_sounds').add(New_OPTION, null); // W3C way
+			}catch(ex) {
+				_$('combosel_sounds').add(New_OPTION); // IE way
+			}
+			var file_name;
+			for( var i =0 ; i < recfiles.length ; i++){
+				if( typeof recfiles[i] == "undefined"  || recfiles[i] == "" ){
+					continue;
+				}
+				recfiles[i] = recfiles[i].replace(/^\s*|\s*$/g,'') ;
+				if( recfiles[i] == "" ){ continue; }
+				file_name = recfiles[i].stripTags() ;
+				file_name = file_name.substr(0,(file_name.length - 4) ) ;
+				New_OPTION = document.createElement('option');
+				New_OPTION.text =  file_name  ;
+				New_OPTION.value = file_name ;
 				try {
 					_$('combosel_sounds').add(New_OPTION, null); // W3C way
 				}catch(ex) {
 					_$('combosel_sounds').add(New_OPTION); // IE way
 				}
-				for( var i =0 ; i < recfiles.length ; i++){
-					if( typeof recfiles[i] == "undefined"  || recfiles[i] == "" ){
-						continue;
-					}
-					recfiles[i] = recfiles[i].replace(/^\s*|\s*$/g,'') ;
-					if( recfiles[i] == "" ){ continue; }
-					var file_name = recfiles[i].stripTags() ;
-
-					var New_OPTION = document.createElement('option');
-					New_OPTION.text =  file_name.substr(0,(file_name.length - 4) )  ;
-					New_OPTION.value = file_name.substr(0,(file_name.length - 4) )  ;
-					try {
-						_$('combosel_sounds').add(New_OPTION, null); // W3C way
-					}catch(ex) {
-						_$('combosel_sounds').add(New_OPTION); // IE way
-					}
-				}
-
-				parent.astmanEngine.config2list("users.conf", _$('users'), new Array(), usercallbacks);
-			},
-			onFailure: function(t) { alert("Config Error: " + t.status + ": " + t.statusText); }
-		};
-		opt.parameters="";
-		var tmp = new Ajax.Request("./bkps/sysinfo_output.html", opt);
+			}
+			parent.astmanEngine.config2list("users.conf", _$('users'), new Array(), usercallbacks);
+		},
+		onFailure: function(t) { alert("Config Error: " + t.status + ": " + t.statusText); }
+	};
+	opt.parameters="";
+	var tmp = new Ajax.Request("./bkps/sysinfo_output.html", opt);
 	});
-
 }
 
 extencallbacks.eachline = true;
