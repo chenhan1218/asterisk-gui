@@ -417,7 +417,7 @@ function do_compare(box, a, b){
 function insert_option(box, res, value, core_name){
 	var z;
 	if (res) {
-		var opt_new = document.createElement('option');
+		var opt_new = box.ownerDocument.createElement('option');
 		opt_new.text = res  ;
 		opt_new.value = value ;
 		opt_new.core_name = core_name;
@@ -742,7 +742,7 @@ function new_item(box) {
 		category.fields = new Array;
 	}
 
-	var newoption = document.createElement("option");
+	var newoption = box.ownerDocument.createElement("option");
 	newoption.text = "New Entry";
 	newoption.value = "";
 	box.options.add(newoption);
@@ -777,7 +777,7 @@ function new_subitem(box) {
 	var pos;
 	var subname, subitem, subcat;
 	var category;
-	var newoption = document.createElement("option");
+	var newoption = box.ownerDocument.createElement("option");
 	newoption.text = "New Entry";
 
 	if (box.callbacks.newsubitem) {
@@ -915,7 +915,7 @@ function save_item(box) {
 			tmp = box.callbacks.format(box.stored_config.catbyname[tmp[0]], tmp[1]);
 			if (tmp) {
 				box.options[box.selectedIndex].innerHTML = tmp;
-    			var tmp_newopt = document.createElement('option');
+    			var tmp_newopt = box.ownerDocument.createElement('option');
 				tmp_newopt.text = box.options[box.selectedIndex].innerHTML ;
 				tmp_newopt.value = box.options[box.selectedIndex].value;
 
@@ -965,7 +965,7 @@ function save_item(box) {
 							try{
 								box.options.add(box.options[box.selectedIndex], y);
 							}catch(err){
-								var new_option = document.createElement('option') ;
+								var new_option = box.ownerDocument.createElement('option') ;
 								new_option.text = box.options[box.selectedIndex].text  ;
 								new_option.value = box.options[box.selectedIndex].value ;
 								new_option.core_name = box.options[box.selectedIndex].core_name ;
@@ -1220,7 +1220,7 @@ function Astman() {
 				var fields = allheaders[x].split(': ');
 				if (!inmsg) {
 					msgs[msgnum] = new Object();
-					msgs[msgnum].headers = new Array();
+					msgs[msgnum].headers = {};
 					msgs[msgnum].names = new Array();
 					y=0;
 				}
@@ -1839,7 +1839,7 @@ function merge_extensions(u, e) { // read e and add into u according to sort ord
 	var t = e.options.length ;
 	for( var f =0 ; f < t ; f++ ){
 		// take each element in e
-		var opt_new = document.createElement('option');
+		var opt_new = e.ownerDocument.createElement('option');
 		opt_new.text = e.options[f].text ;
 		opt_new.value = 'reserved';
 		//if( navigator.userAgent.indexOf("Firefox") != -1 ){ opt_new.disabled = true; }
