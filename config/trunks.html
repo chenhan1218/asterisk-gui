@@ -57,7 +57,7 @@ function add_didcontext(trunk){
 		}
 	};
 	opt.parameters= "action=updateconfig&srcfilename=" + encodeURIComponent("extensions.conf") + "&dstfilename=" + encodeURIComponent("extensions.conf") + uri;
-	var tmp = new Ajax.Request("../../rawman", opt);
+	var tmp = new Ajax.Request(asterisk_rawmanPath, opt);
 }
 
 function update_didcontext(old_trunk, new_trunk){
@@ -74,7 +74,7 @@ function update_didcontext(old_trunk, new_trunk){
 		}
 	};
 	opt.parameters= "action=updateconfig&srcfilename=" + encodeURIComponent("extensions.conf") + "&dstfilename=" + encodeURIComponent("extensions.conf") + uri;
-	var tmp = new Ajax.Request("../../rawman", opt);
+	var tmp = new Ajax.Request(asterisk_rawmanPath, opt);
 }
 
 
@@ -90,7 +90,7 @@ function delete_didcontext(trunk){
 		}
 	};
 	opt.parameters= "action=updateconfig&srcfilename=" + encodeURIComponent("extensions.conf") + "&dstfilename=" + encodeURIComponent("extensions.conf") + uri;
-	var tmp = new Ajax.Request("../../rawman", opt);
+	var tmp = new Ajax.Request(asterisk_rawmanPath, opt);
 }
 
 providercallbacks.postselect = function() {

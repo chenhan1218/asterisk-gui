@@ -26,6 +26,7 @@
 var demo = new Object;
 var localloggedon = -1;
 var asterisk_guitools = parent.asterisk_guitools;
+var asterisk_rawmanPath = parent.asterisk_rawmanPath;
 
 function updateButtons(){
 	var f = parent.loggedon;
@@ -159,7 +160,7 @@ function checkessentials(){
 	//if everything ok set  asterisk_guitools_inextconf = 1;
 	var opt = { method: 'get', asynchronous: true, onComplete: checkExtconfig };
 	opt.parameters="action=getconfig&filename=extensions.conf" ;
-	var tmp = new Ajax.Request("../../rawman", opt);
+	var tmp = new Ajax.Request(asterisk_rawmanPath , opt);
 }
 
 

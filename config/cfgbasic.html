@@ -144,12 +144,12 @@ function showmainscreen(page) {
 					return ;
 				}
 				if ( originalRequest.responseText.match("Pong") ) {
-						_$('mainscreen').src = page.titleBar.id + ".html";
+					_$('mainscreen').src = page.titleBar.id + ".html";
 				}
 			}
 		};
 		opt.parameters="action=ping" ;
-		var tmp = new Ajax.Request("../../rawman" , opt);
+		var tmp = new Ajax.Request(asterisk_rawmanPath , opt);
 		//$('mainscreen').src = page.titleBar.id + ".html";
 	}
 }
@@ -192,7 +192,7 @@ function registerajax() {
 	started = 1;
 }
 
-astmanEngine.setURL('../../rawman');
+astmanEngine.setURL(asterisk_rawmanPath );
 astmanEngine.setEventCallback(eventeater.eventcb);
 
 function Logoff() {
@@ -211,12 +211,12 @@ function Logoff() {
 		}
 	};
 	opt2.parameters ="action=logoff";
-	var tmp2 = new Ajax.Request("../../rawman", opt2);
+	var tmp2 = new Ajax.Request(asterisk_rawmanPath , opt2);
 }
 
 function system_link(){
 	var newwindow_href = location.protocol + '//' + location.hostname + ':8003';
-	window.open(newwindow_href ,'mainwindow','width=1024,height=768,resizable=no, scrollbars=no, toolbar=no, location=no,status=yes, menubar=no')
+	window.open(newwindow_href ,'mainwindow','width=1024,height=768,resizable=yes, scrollbars=no, toolbar=no, location=no,status=yes, menubar=no')
 }
 
 function reloadConfig(){
@@ -230,7 +230,7 @@ function reloadConfig(){
 	};
 	var uri = parent.build_action('renamecat', 0, "","", "", ""); 
 	opt.parameters="action=updateconfig&reload=yes&srcfilename=" + encodeURIComponent("extensions.conf") + "&dstfilename=" + encodeURIComponent("extensions.conf") + uri;
-	var tmp = new Ajax.Request("../../rawman", opt);
+	var tmp = new Ajax.Request(asterisk_rawmanPath , opt);
 }
 </script>
 <head>

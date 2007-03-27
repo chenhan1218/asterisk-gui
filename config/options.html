@@ -79,7 +79,7 @@ function update_guisettings_manager(){
 		}
 	};
 	opt.parameters ="action=updateconfig&srcfilename=manager.conf&dstfilename=manager.conf&Action-000000=update&Cat-000000=general&Var-000000=httptimeout&Value-000000="+ encodeURIComponent(_httptimeout.value);
-	var tmp = new Ajax.Request("../../rawman", opt);
+	var tmp = new Ajax.Request(asterisk_rawmanPath, opt);
 	return;
 }
 
@@ -109,7 +109,7 @@ function update_guisettings_http(){
 		}
 	};
 	opt.parameters ="action=updateconfig&srcfilename=http.conf&dstfilename=http.conf&Action-000000=update&Cat-000000=general&Var-000000=bindport&Value-000000="+ encodeURIComponent(_bindport.value) + "&Action-000001=update&Cat-000001=general&Var-000001=bindaddr&Value-000001=" + encodeURIComponent( _bindaddr.value );
-	var tmp = new Ajax.Request("../../rawman", opt);
+	var tmp = new Ajax.Request(asterisk_rawmanPath, opt);
 }
 
 
@@ -133,7 +133,7 @@ function askforRelogin(){
 		onFailure: function(t) { gui_alert("Config Error: " + t.status + ": " + t.statusText); }
 	};
 	opt2.parameters ="action=logoff";
-	var tmp2 = new Ajax.Request("../../rawman", opt2);
+	var tmp2 = new Ajax.Request(asterisk_rawmanPath, opt2);
 }
 
 function changepassword(){
@@ -157,7 +157,7 @@ function changepassword(){
 		onFailure: function(t) { gui_alert("Config Error: " + t.status + ": " + t.statusText); }
 	};
 	opt.parameters ="action=updateconfig&srcfilename=manager.conf&dstfilename=manager.conf&Action-000000=update&Cat-000000=" + current_username + "&Var-000000=secret&Value-000000="+ encodeURIComponent( _newpass.value );
-	var tmp = new Ajax.Request("../../rawman", opt);
+	var tmp = new Ajax.Request(asterisk_rawmanPath, opt);
 	return;
 }
 

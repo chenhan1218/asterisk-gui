@@ -35,7 +35,7 @@ function thisday_log(){
 	var _ld = _$('log_day').value; 
 	if(  _ld < 10 ){ var space = "  "; }else{ var space = " ";  }
 	var tmp_command = "/bin/grep /var/log/asterisk/messages -e '" + _$('log_month').value + space + _ld 
-						+ " ' > /var/lib/asterisk/static-http/config/bkps/today_log.html" ;
+						+ " ' > /var/lib/asterisk/static-http/config/today_log.html" ;
 	parent.astmanEngine.run_tool( tmp_command , onSuccess = function() { _$('status_message').style.display='none'; load_todayslog(); } );
 }
 
@@ -56,7 +56,7 @@ function 	load_todayslog(){
 		}
 	};
 	opt.parameters="";
-	var tmp = new Ajax.Request("./bkps/today_log.html", opt);
+	var tmp = new Ajax.Request("./today_log.html", opt);
 	return true;
 }
 
@@ -92,7 +92,7 @@ function show_window(x){
 }
 
 function update_sysinfo(){
-	parent.astmanEngine.run_tool("sh /etc/asterisk/gui_sysinfo", onSuccess = function() {
+	parent.astmanEngine.run_tool(asterisk_guiSysInfo , onSuccess = function() {
 			_$('status_message').style.display='none';
 			getsysinfohtml();
 		}
@@ -127,7 +127,7 @@ function getsysinfohtml(){
 		}
 	};
 	opt.parameters="";
-	var tmp = new Ajax.Request("./bkps/sysinfo_output.html", opt);
+	var tmp = new Ajax.Request(asterisk_guiSysInfo_output , opt);
 	return true;
 }
 

@@ -146,7 +146,7 @@ function add_rule_fromeditform( this_priority, oncomplete ){
 	_$('userscontent').style.display = "none";
 	_$('bg_transparent').style.display = "none";
 	_$('status_message').style.display = "";
-	var tmp = new Ajax.Request("../../rawman", opt);
+	var tmp = new Ajax.Request(asterisk_rawmanPath, opt);
 }
 
 function saverule(){
@@ -383,7 +383,7 @@ function delete_callingrule(a,b,oncomplete){ // a is pattern, b is priority
 	_$('userscontent').style.display = "none";
 	_$('bg_transparent').style.display = "none";
 	_$('status_message').style.display = "";
-	var tmp = new Ajax.Request("../../rawman", opt);
+	var tmp = new Ajax.Request(asterisk_rawmanPath, opt);
 }
 
 
@@ -600,7 +600,7 @@ function addthe_default_callingplan(a){
 		onFailure: function(t) { gui_alert("Config Error: " + t.status + ": " + t.statusText); }
 	};
 	opt.parameters= "action=updateconfig&srcfilename=" + encodeURIComponent("extensions.conf") + "&dstfilename=" + encodeURIComponent("extensions.conf") + uri;
-	var tmp = new Ajax.Request("../../rawman", opt);
+	var tmp = new Ajax.Request(asterisk_rawmanPath, opt);
 }
 
 

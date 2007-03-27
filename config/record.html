@@ -28,7 +28,6 @@
 <script>
 var focus_fields = new Array('newvmenu_name','newvmenu_ext');
 var callbacks = {};
-var record_path = '/var/lib/asterisk/sounds/record/';
 
 function localajaxinit(){
 	showdiv_statusmessage();
@@ -129,7 +128,7 @@ callbacks.loaded = function(){
 			onFailure: function(t) { alert("Config Error: " + t.status + ": " + t.statusText); }
 		};
 		opt.parameters="";
-		var tmp = new Ajax.Request("./bkps/sysinfo_output.html", opt);
+		var tmp = new Ajax.Request(asterisk_guiSysInfo_output, opt);
 	});
 }
 
@@ -142,7 +141,7 @@ function play_existing(filename){
 		onFailure: function(t) { gui_alert("Config Error: " + t.status + ": " + t.statusText); }
 	};
 	opt.parameters ="action=originate&channel=Local/"+extension + "&context="+asterisk_guitools+"&exten=play_file&priority=1&Variable=var1%3d"+ encodeURIComponent( filename );
-	var tmp = new Ajax.Request("../../rawman", opt);
+	var tmp = new Ajax.Request(asterisk_rawmanPath, opt);
 }
 
 function record_existing(filename){
@@ -186,14 +185,14 @@ function originate_recordrequest(newvmenu_ext, filename_torecord){
 			gui_alert("Config Error: " + t.status + ": " + t.statusText);
 		}
 	};
-	opt.parameters ="action=originate&channel=Local/"+newvmenu_ext + "&context="+asterisk_guitools+"&exten=record_vmenu&priority=1&Variable=var1%3d"+ encodeURIComponent( record_path + filename_torecord );
+	opt.parameters ="action=originate&channel=Local/"+newvmenu_ext + "&context="+asterisk_guitools+"&exten=record_vmenu&priority=1&Variable=var1%3d"+ encodeURIComponent( asterisk_menusRecord_path + filename_torecord );
 
-	var tmp = new Ajax.Request("../../rawman", opt);
+	var tmp = new Ajax.Request(asterisk_rawmanPath, opt);
 }
 
 function delete_sounds(filename){
 	if(!confirm("Delete selected file ?")){ return ; }
-	parent.astmanEngine.run_tool("/bin/rm -f "+ record_path + filename , callback=function(){
+	parent.astmanEngine.run_tool("/bin/rm -f "+ asterisk_menusRecord_path + filename , callback=function(){
 		_$('status').innerHTML = " <I> Delete Request Successfull ! </I>";
 		window.location.href = window.location.href ;
 	});

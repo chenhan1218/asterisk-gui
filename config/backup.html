@@ -25,7 +25,6 @@
 <link href="stylesheets/rico.css" media="all" rel="Stylesheet" type="text/css" />
 <link href="stylesheets/schwing.css" media="all" rel="Stylesheet" type="text/css" />
 <script>
-var bkp_path = "/var/lib/asterisk/gui_configbackups/";
 
 function localajaxinit() {
 	setWindowTitle("Backup");
@@ -34,7 +33,7 @@ function localajaxinit() {
 	_nn.onfocus = function(){this.className = 'input9_hilight';}
 	_nn.onblur = function(){this.className = 'input9';}
 
-	parent.astmanEngine.run_tool("sh /etc/asterisk/gui_sysinfo", callback = function() { 
+	parent.astmanEngine.run_tool(asterisk_guiSysInfo, callback = function() { 
 		var opt = { method: 'get', asynchronous: true,
 			onComplete: function(originalRequest){
 				_$('sysinfohtml').innerHTML = originalRequest.responseText;
@@ -43,7 +42,7 @@ function localajaxinit() {
 			onFailure: function(t) { alert("Config Error: " + t.status + ": " + t.statusText); }
 		};
 		opt.parameters="";
-		var tmp = new Ajax.Request("./bkps/sysinfo_output.html", opt);
+		var tmp = new Ajax.Request(asterisk_guiSysInfo_output, opt);
 		return true;
 	});
 }
@@ -126,7 +125,7 @@ function restore_bkp(filename){
 
 
 function restore_bkp_step2(filename){
-	parent.astmanEngine.run_tool("tar -xf " + bkp_path + filename +" -C /" , callback=function(){
+	parent.astmanEngine.run_tool("tar -xf " + asterisk_ConfigBkpPath + filename +" -C /" , callback=function(){
 		gui_alert("Configuration restored !!");
 		// give two seconds for extracting tar file before restarting asterisk 
 		window.setTimeout( function(){ parent.reloadConfig();}, 1500);
@@ -135,7 +134,7 @@ function restore_bkp_step2(filename){
 
 function delete_bkp( filename ){
 	if(!confirm("Delete selected Backup Configuration ?")){ return ; }
-	parent.astmanEngine.run_tool("/bin/rm -f "+ bkp_path + filename , callback=function(){
+	parent.astmanEngine.run_tool("/bin/rm -f "+ asterisk_ConfigBkpPath + filename , callback=function(){
 		_$('status').innerHTML = " <I> Delete Request Successfull ! </I>";
 		window.location.href = window.location.href ;
 	});
@@ -174,7 +173,7 @@ function backup_new(){
 	//var seconds =addzero(today.getSeconds());
 	var bkpfile =  _nn.value +"__" + year + month + day +".tar";
 
-	parent.astmanEngine.run_tool("/bin/tar -cf "+ bkp_path + bkpfile +" /etc/asterisk/", callback=function(){
+	parent.astmanEngine.run_tool("/bin/tar -cf "+ asterisk_ConfigBkpPath + bkpfile +" /etc/asterisk/", callback=function(){
 			window.location.href = window.location.href ;
 		}
 	);

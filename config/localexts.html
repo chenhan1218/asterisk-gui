@@ -70,7 +70,7 @@ usercallbacks.loaded = function(){
 			}
 		};
 		opt.parameters="action=updateconfig&srcfilename=" + encodeURIComponent("users.conf") + "&dstfilename=" + encodeURIComponent("users.conf") + "&Action-000000=update&Cat-000000=general&Var-000000=localextenlength&Value-000000=4"; ;
-		var tmp = new Ajax.Request("../../rawman", opt);
+		var tmp = new Ajax.Request(asterisk_rawmanPath , opt);
 		return;
 	}
 	parent.loadscreen(this);

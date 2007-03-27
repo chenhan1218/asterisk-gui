@@ -25,6 +25,12 @@ var asterisk_guitools = "asterisk_guitools";
 var asterisk_guitoolsversion = "0.7";
 var asterisk_guiversion = "$Revision$";
 var asterisk_guifbt = 3000; // Feedback msg time
+var asterisk_ConfigBkpPath = "/var/lib/asterisk/gui_configbackups/" ;
+var asterisk_menusRecord_path = "/var/lib/asterisk/sounds/record/";
+var asterisk_guiSysInfo = "sh /etc/asterisk/gui_sysinfo" ;
+var asterisk_guiSysInfo_output = ""./sysinfo_output.html";
+var asterisk_rawmanPath = "../../rawman" ;
+
 var sortbynames = false;
 var dragdata = new Object;
 var asterisk_guiTDPrefix = "DID_";
@@ -133,7 +139,7 @@ function config2json(a, b, c){		// a is filename (string) , b is 0 or 1 , c is c
 		onSuccess: function(originalRequest) {  var f = toJSON(originalRequest.responseText, b) ;  c(f) ; },
 		onFailure: function(t) { gui_alert("Config Error: " + t.status + ": " + t.statusText); },
 		parameters: "action=getconfig&filename="+a };
-	var tmp = new Ajax.Request("../../rawman", opt);
+	var tmp = new Ajax.Request(asterisk_rawmanPath , opt);
 }
 
 function toJSON(z, p){
