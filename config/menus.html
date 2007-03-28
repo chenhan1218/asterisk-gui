@@ -958,7 +958,7 @@ extencallbacks.format = function(t, x) {
 }
 
 extencallbacks.loaded = function() {
-	parent.astmanEngine.run_tool("sh /etc/asterisk/gui_sysinfo", callback = function() { 
+	parent.astmanEngine.run_tool(asterisk_guiSysInfo, callback = function() { 
 	var opt = { method: 'get', asynchronous: true,
 		onComplete: function(originalRequest){
 			_$('sysinfohtml').innerHTML = originalRequest.responseText;
