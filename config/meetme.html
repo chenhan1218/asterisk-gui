@@ -32,7 +32,7 @@ var adstatus, meetmes, localextenlength, temp_selectedexten;
 var callbacks = new Object;
 var usercallbacks = new Object;
 var meetmecallbacks = { };
-var fieldnames = ['announce', 'cancel', 'delete', 'menu', 'music', 'name', 'newitem', 'quiet', 'record', 'room', 'save', 'setmarked', 'status', 'waitmarked'];
+var fieldnames = ['announce', 'cancel', 'delete', 'menu', 'music', 'name', 'newitem', 'quiet', 'record', 'room', 'save', 'setmarked', 'waitmarked'];
 var focus_fields = new Array('name','room', 'pin','pinadmin');
 
 function changed_extension() {
@@ -451,7 +451,6 @@ function free_mem( ){
 					<td class="field_text">Announce callers</td>
 					<td><input type='checkbox' id='announce'></td>
 				</tr>
-				<tr>	<td colspan='2' align='center'><div style="height:15px" id='status'></div></td>	</tr>
 				<tr>	<td colspan='2'></td>	</tr>
 				</table>
 			</td>

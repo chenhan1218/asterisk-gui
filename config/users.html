@@ -31,7 +31,7 @@ var widgets = new Object;
 var adstatus;
 var callbacks = new Object;
 var extencallbacks = new Object;
-var fieldnames = ['callwaiting' ,'cancel' ,'cid_number' ,'context' ,'delete' ,'email' ,'fullname' ,'group' ,'hasagent' ,'hasdirectory' ,'hasiax' ,'hasmanager' ,'hassip' ,'hasvoicemail' ,'host' ,'mailbox' ,'name' ,'new' ,'save' ,'secret' ,'status' ,'threewaycalling' ,'vmsecret' ,'zapchan', 'registeriax', 'registersip'];
+var fieldnames = ['callwaiting' ,'cancel' ,'cid_number' ,'context' ,'delete' ,'email' ,'fullname' ,'group' ,'hasagent' ,'hasdirectory' ,'hasiax' ,'hasmanager' ,'hassip' ,'hasvoicemail' ,'host' ,'mailbox' ,'name' ,'new' ,'save' ,'secret' ,'threewaycalling' ,'vmsecret' ,'zapchan', 'registeriax', 'registersip'];
 var focus_fields = ['cid_number' ,'context' ,'email' ,'fullname' ,'name' ,'secret' ,'vmsecret' ,'zapchan'] ;
 var localextenlength = 4;
 var allow_aliasextns = "no";
@@ -349,7 +349,6 @@ function free_mem(){
 				<tr onmouseover="show_tooltip('en', 'users', 5);"><td class="field_text">Analog Phone:</td><td><select size="1" id='zapchan' style='width:120px' class="input8"></select>
 				<span id="noanaloglines" style="display:none"><I>&nbsp;No Analog lines detected.</I></span></td></tr>
 				<tr onmouseover="show_tooltip('en', 'users', 6);"><td class="field_text">Dial Plan:</td><td><select size='1' id='context' style='width:120px' class="input8"></select></td></tr>
-				<tr><td colspan='2' align='center'><div style="height:15px" id='status'></div></td></tr>
 				<tr><td colspan='2' align='center'><input type='hidden' id='mailbox'><input type='hidden' id='group'><input type='checkbox' id='registersip' style="display:none"><input type='checkbox' id='registeriax' style="display:none"></td></tr>
 				</table>
 			</td>

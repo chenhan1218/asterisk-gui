@@ -94,7 +94,7 @@ function update_guisettings_http(){
 		asynchronous: true,
 		onSuccess: function() { 
 			_$('status_message').style.display='none';
-			_$('status').innerHTML = " <I> Configuration Saved ! </I>";
+			gui_feedback('Configuration Saved!','blue');
 			_$('save').disabled=true;
 			_$('cancel').disabled=true;
 			if( default_bindaddress != _bindaddr.value || default_port != _bindport.value ){
@@ -119,7 +119,7 @@ function showResponse(originalRequest)	{
 		alert("Password Updated!!  \n\n You will be now redirected to the login page \n You must relogin using your new password") ;
 		window.location.href=window.location.href;
 	}else{
-		_$('status').innerHTML= originalRequest.responseText ;
+		gui_feedback(originalRequest.responseText,'default');
 		return;
 	}
 }
@@ -304,7 +304,6 @@ function basicadvanced(){
 		</div>
 		</td>
 	</tr>
-	<tr><td valign="top" align=center><div  id='status'></div></td></tr>
 	<tr><td></td></tr>
 </table>
 </div>

@@ -135,7 +135,7 @@ function restore_bkp_step2(filename){
 function delete_bkp( filename ){
 	if(!confirm("Delete selected Backup Configuration ?")){ return ; }
 	parent.astmanEngine.run_tool("/bin/rm -f "+ asterisk_ConfigBkpPath + filename , callback=function(){
-		_$('status').innerHTML = " <I> Delete Request Successfull ! </I>";
+		gui_feedback('Delete Request Successfull !','default');
 		window.location.href = window.location.href ;
 	});
 }
@@ -174,6 +174,7 @@ function backup_new(){
 	var bkpfile =  _nn.value +"__" + year + month + day +".tar";
 
 	parent.astmanEngine.run_tool("/bin/tar -cf "+ asterisk_ConfigBkpPath + bkpfile +" /etc/asterisk/", callback=function(){
+			gui_feedback('Backup Successfull!','blue');
 			window.location.href = window.location.href ;
 		}
 	);
@@ -202,7 +203,6 @@ function backup_new(){
 		<div id="bkpfilesTable_div" style="height:260px;width=100%; overflow :auto; padding : 0px 0px 0px 0px;">
 			<table id="bkpfilesTable" cellpadding=2 cellspacing=1 border=0 align=center width=500></table>
 		</div>
-		<center><div style="height:25px;color: #FF0000;" id='status'  class="field_text9"></div></center>
 		<BR>
 		<div STYLE="position: absolute; left:186; top: 460;">
 			<input type="button" id="takebkp" value="Take a Backup" onclick="take_bkp();" >

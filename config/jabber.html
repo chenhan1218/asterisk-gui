@@ -28,7 +28,7 @@
 <script>
 var phonecallbacks = new Object;
 var widgets = {};
-var fieldnames = ['buddy', 'cancel', 'delete', 'name', 'new', 'port', 'save', 'secret', 'serverhost', 'status', 'statusmessage', 'timeout', 'type', 'username', 'usesasl', 'usetls'];
+var fieldnames = ['buddy', 'cancel', 'delete', 'name', 'new', 'port', 'save', 'secret', 'serverhost', 'statusmessage', 'timeout', 'type', 'username', 'usesasl', 'usetls'];
 
 phonecallbacks.format = function(t) {
 	tmp = t.name.split('general');
@@ -116,7 +116,6 @@ function localajaxinit() {
 					<tr>	<td class="field_text">Use SASL:</td>
 						<td><input type="checkbox" id='usesasl'></td>
 					</tr>
-					<tr>	<td colspan='2' align='center'><div style="height:15px" id='status'></div></td>	</tr>
 					</table>
 				</td>
 			</tr>

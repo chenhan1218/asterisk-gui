@@ -36,7 +36,7 @@ var callbacks = new Object;
 var widgets = {};
 var queueagents = new  Array;
 var queuenames = new Array;
-var fieldnames = ['agents', 'autofill', 'autopause', 'cancel', 'delete', 'fullname', 'joinempty', 'leavewhenempty', 'maxlen', 'musicclass', 'name', 'new', 'reportholdtime', 'save', 'status', 'strategy', 'timeout', 'wrapuptime'];
+var fieldnames = ['agents', 'autofill', 'autopause', 'cancel', 'delete', 'fullname', 'joinempty', 'leavewhenempty', 'maxlen', 'musicclass', 'name', 'new', 'reportholdtime', 'save', 'strategy', 'timeout', 'wrapuptime'];
 var focus_fields = ['fullname', 'maxlen', 'musicclass', 'name', 'strategy', 'timeout', 'wrapuptime'];
 var k =0;
 var j = -1; 
@@ -124,7 +124,7 @@ function save_queue(){
 		asynchronous: true,
 		onSuccess: function() { 
 			$('status_message').style.display='none';
-			$('status').innerHTML = "<i>Updated.</i>";
+			gui_feedback('Updated','blue');
 			$('new').disabled = false;
 			$('save_q').disabled = true;
 			$('save').disabled = true;
@@ -517,7 +517,6 @@ function free_mem( ){
 							<div id="testmulti" style='border:1px solid; font-size: 8pt; height:75px; width: 200px;overflow :auto;'></div>
 						</td>
 					</tr>
-					<tr><td colspan='2' align='center'><div style="height:15px" id='status'></div></td></tr>
 					<tr><td colspan='2'></td></tr>
 				</table>
 			</td>

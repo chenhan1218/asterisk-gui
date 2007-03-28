@@ -31,7 +31,7 @@ var trunkcallbacks = { };
 var trunks_desc = { };
 var numplan_callbacks = { };
 var numberplansdata = { };
-var fieldnames = ['cancel', 'delete', 'include', 'name', 'new', 'plancomment', 'save', 'status'];
+var fieldnames = ['cancel', 'delete', 'include', 'name', 'new', 'plancomment', 'save'];
 var focus_fields = ['beginswith', 'followedby', 'pattern', 'plancomment', 'prepend', 'rulename', 'strip', 'trunks'];
 //var default_numberplan = 0;
 var isnewrule ;
@@ -253,7 +253,7 @@ function show_npdata_table(a){
 	}}
 
 	if(rules_nosp.length > 0 ){
-		_$('status').innerHTML = "Note: A Service Provider is not defined for the Rule(s) <BR>" + rules_nosp ;
+		gui_feedback("A Service Provider is not defined for the Rule(s)<BR>" + rules_nosp,'default');
 		_trunks.selectedIndex = -1;
 	}
 
@@ -673,7 +673,6 @@ function free_mem( ){
 		<div id="callingRulesTable_div" style="height:260px;width=100%; overflow :auto; padding : 0px 0px 0px 0px;">
 			<table id="callingRulesTable" cellpadding=2 cellspacing=1 border=0 align=center width=500></table>
 		</div>
-		<center><div style="height:25px;color: #FF0000;" id='status'  class="field_text9"></div></center>
 		<BR>
 		<div STYLE="position: absolute; left:186; top: 460;">
 			<input type="button" id="addrule" value="Add a Calling Rule" onclick="add_callingrule();"  onmouseover="show_tooltip('en', 'callingrules', 4);">

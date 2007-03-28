@@ -28,7 +28,7 @@
 <script>
 var phonecallbacks = new Object;
 var widgets = {};
-var fieldnames = ['accountcode', 'adsi', 'allow', 'amaflags', 'authdebug', 'autokill', 'bandwidth', 'bindaddr', 'bindport', 'cancel', 'codecpriority', 'delayreject', 'disallow', 'dropcount', 'forcejitterbuffer', 'iaxcompat', 'iaxmaxthreadcount', 'iaxthreadcount', 'jitterbuffer', 'jittershrinkrate', 'language', 'maxexcessbuffer', 'maxjitterbuffer', 'maxjitterinterps', 'maxregexpire', 'minexcessbuffer', 'minregexpire', 'mohinterpret', 'mohsuggest', 'nochecksums', 'regcontext', 'register', 'resyncthreshold', 'rtautoclear', 'rtcachefriends', 'rtignoreexpire', 'rtupdate', 'save', 'status', 'tos', 'trunkfreq', 'trunktimestamps'];
+var fieldnames = ['accountcode', 'adsi', 'allow', 'amaflags', 'authdebug', 'autokill', 'bandwidth', 'bindaddr', 'bindport', 'cancel', 'codecpriority', 'delayreject', 'disallow', 'dropcount', 'forcejitterbuffer', 'iaxcompat', 'iaxmaxthreadcount', 'iaxthreadcount', 'jitterbuffer', 'jittershrinkrate', 'language', 'maxexcessbuffer', 'maxjitterbuffer', 'maxjitterinterps', 'maxregexpire', 'minexcessbuffer', 'minregexpire', 'mohinterpret', 'mohsuggest', 'nochecksums', 'regcontext', 'register', 'resyncthreshold', 'rtautoclear', 'rtcachefriends', 'rtignoreexpire', 'rtupdate', 'save', 'tos', 'trunkfreq', 'trunktimestamps'];
 
 phonecallbacks.format = function(t) {
 	if(t.name.match('general'))
@@ -348,7 +348,6 @@ function disallow_all_refresh(){
 </div>
 <HR>
 	<table align="center" cellpadding=0 cellspacing=0 border=0>
-		<tr><td colspan=2 align=center height=20><div  id='status'></div></td></tr>
 		<tr><td colspan=2 align=center>
 			<input type='button' id='save' value='Save' class="buttonbold">&nbsp;
 			<input type='button' id='cancel' value='Cancel' class="buttonbold">

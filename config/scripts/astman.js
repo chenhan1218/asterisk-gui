@@ -37,7 +37,7 @@ var asterisk_guiTDPrefix = "DID_";
 
 function gui_feedback(a,b,c){ 
 // a is msg, b is color (optional ), c is display time in milliseconds(optional, default to asterisk_guifbt)
-	if(!b){
+	if(!b || b=='default'){
 		var b = "#DA2804"; // dark reddish brown
 	}
 	if(b=='blue'){ 
@@ -52,7 +52,7 @@ function gui_feedback(a,b,c){
 	_g.style.color = b;
 	_g.innerHTML = a ;
 	_f.style.display = '';
-	window.setTimeout( function(){top._$('feedback_round').style.display = "none"; }, c );
+	top.window.setTimeout( function(){top._$('feedback_round').style.display = "none"; }, c );
 }
 
 
@@ -560,25 +560,25 @@ function cancel_item(box) {
 	var tmp = box.options[box.selectedIndex].value.split(']');
 	if (tmp.length > 1) {
 		if (box.stored_config.catbyname[tmp[0]].subfields[tmp[1]].name.length < 1) {
-			if (select_item(box,"Discard new entry?") && box.widgets['status']){
-				box.widgets['status'].innerHTML = "<i>New entry cancelled!</i>";
+			if (select_item(box,"Discard new entry?")){
+				gui_feedback("New Entry cancelled!",'default') ;
 				box.selectedIndex = -1;
 			}
 		} else {
-			if (select_item(box) && box.widgets['status'])
-				box.widgets['status'].innerHTML = "<i>Changes cancelled!</i>";
+			if (select_item(box))
+				gui_feedback("Changes cancelled!",'default') ;
 		}
 	} else {
 		if (box.options[box.selectedIndex].value == "") {
-			if (select_item(box,"Discard new entry?") && box.widgets['status']){
-				box.widgets['status'].innerHTML = "<i>New entry cancelled!</i>";
+			if (select_item(box,"Discard new entry?")){
+				gui_feedback("New Entry cancelled!",'default') ;
 				//box.selectedIndex = -1;
 				if (box.callbacks.cancelnewcategory) 
 					box.callbacks.cancelnewcategory();
 			}
 		} else {
-			if (select_item(box) && box.widgets['status']){
-				box.widgets['status'].innerHTML = "<i>Changes cancelled!</i>";
+			if (select_item(box)) {
+				gui_feedback("Changes cancelled!",'default') ; 
 				if (box.callbacks.cancelchanges) 
 					box.callbacks.cancelchanges();
 			}
@@ -622,8 +622,7 @@ function delete_item(box, value, noconfirm) {
 //			if(action_issuccess(t.responseText) ){
 				if (box.callbacks.oncategorydelete) 
 					box.callbacks.oncategorydelete(value);
-				if (box.widgets['status']) 
-					box.widgets['status'].innerHTML = "<i>Deleted.</i>";
+				gui_feedback('Deleted','default');
 				if (box.callbacks.delchanges)
 					box.callbacks.delchanges(box, box.delvalue, box.delcat);
 //			}else{
@@ -673,8 +672,7 @@ function delete_item(box, value, noconfirm) {
 			}
 		}
 		if (updatebox && oldname == "") {
-			if (box.widgets['status']) 
-				box.widgets['status'].innerHTML = "<i>Deleted.</i>";
+				gui_feedback('Deleted','default');
 		} else {
 			uri = build_action('delete', 0, tmp[0], subname, "", suborig);
 			opt.parameters="action=updateconfig&srcfilename=" + encodeURIComponent(box.config_file) + "&dstfilename=" +
@@ -694,8 +692,7 @@ function delete_item(box, value, noconfirm) {
 		delete box.stored_config.catbyname[value];
 		--box.stored_config.catcnt;
 		if (updatebox && box.options[box.selectedIndex].value == "") {
-			if (box.widgets['status']) 
-				box.widgets['status'].innerHTML = "<i>Deleted.</i>";
+				gui_feedback('Deleted','default');
 		} else {
 			uri = build_action('delcat', 0, value, "", "");
 			opt.parameters="action=updateconfig&srcfilename=" + encodeURIComponent(box.config_file) + "&dstfilename=" +
@@ -763,8 +760,7 @@ function new_item(box) {
 		box.widgets['delete'].disabled = false;
 	if (box.widgets['cancel'])
 		box.widgets['cancel'].disabled = false;
-	if (box.widgets['status']) 
-		box.widgets['status'].innerHTML = "<i>Creating new entry!</i>";
+	gui_feedback('Creating new entry!','green');
 	if (box.widgets['name']){
 		box.widgets['name'].value = name;
 		//box.widgets['name'].focus();
@@ -821,8 +817,7 @@ function new_subitem(box) {
 		box.widgets['delete'].disabled = false;
 	if (box.widgets['cancel'])
 		box.widgets['cancel'].disabled = false;
-	if (box.widgets['status']) 
-		box.widgets['status'].innerHTML = "<i>Creating new entry!</i>";
+	gui_feedback('Creating new entry!','green');
 	if (box.widgets['name'])
 		box.widgets['name'].value = name;
 }
@@ -840,8 +835,7 @@ function apply_uri(box, uri){
 				box.widgets['newitem'].disabled = false;
 			if (box.widgets['cancel'])
 				box.widgets['cancel'].disabled = true;
-			if (box.widgets['status']) 
-				box.widgets['status'].innerHTML = "<i>Configuration saved!</i>";
+			gui_feedback('Configuration saved!','blue');
 			if (box.callbacks.savechanges)
 				box.callbacks.savechanges();
 		},
@@ -875,8 +869,7 @@ function save_item(box) {
 				box.widgets['newitem'].disabled = false;
 			if (box.widgets['cancel'])
 				box.widgets['cancel'].disabled = true;
-			if (box.widgets['status']) 
-				box.widgets['status'].innerHTML = "<i>Configuration saved!</i>";
+			gui_feedback('Configuration saved!','blue');
 			if (box.callbacks.savechanges)
 				box.callbacks.savechanges();
 		},
@@ -985,7 +978,7 @@ function save_item(box) {
 	}
 	if (!uri.length) {
 		if (!box.callbacks.savechanges || !box.callbacks.savechanges()) {
-			if (box.widgets['status']){  box.widgets['status'].innerHTML = "<i>No changes made!</i>"; }
+			 gui_feedback('No changes made!','green');
 		}
 		if (box.widgets['save']){  box.widgets['save'].disabled = true; }
 		if (box.widgets['cancel']) { box.widgets['cancel'].disabled = true; }
@@ -1284,7 +1277,7 @@ function Astman() {
 		
 		for (var x in widgets) {  if( widgets.hasOwnProperty(x) ){
 			var src;
-			if ((x == 'save') || (x == 'cancel') || (x == 'name') || (x == 'new') || (x == 'newitem') || (x == 'status') || (x == 'delete'))
+			if ((x == 'save') || (x == 'cancel') || (x == 'name') || (x == 'new') || (x == 'newitem') || (x == 'delete'))
 				continue;
 			if (widgets[x].name)
 				src = widgets[x].name;
@@ -1353,11 +1346,8 @@ function Astman() {
 		var thevalue;
 		var savewidget = widgets['save'];
 		var cancelwidget = widgets['cancel'];
-		var statuswidget = widgets['status'];
 		if (savewidget) {
 			savewidget.activateSave = function(t) {
-				if (this.statuswidget)
-					this.statuswidget.innerHTML = '';
 				savewidget.disabled = false;
 				if (savewidget.cancelwidget) {
 					savewidget.cancelwidget.disabled = false;
@@ -1371,7 +1361,7 @@ function Astman() {
 		}
 		for (var x in widgets) { if( widgets.hasOwnProperty(x) ){
 			var src;
-			if ((x == 'save') || (x == 'cancel') || (x == 'new') || (x == 'newitem') || (x == 'status') || (x == 'delete'))
+			if ((x == 'save') || (x == 'cancel') || (x == 'new') || (x == 'newitem') || (x == 'delete'))
 				continue;
 			if (widgets[x].name)
 				src = widgets[x].name;
@@ -1415,7 +1405,6 @@ function Astman() {
 
 				if (savewidget) {
 					widgets[x].savewidget = savewidget;
-					widgets[x].statuswidget = statuswidget;
 					widgets[x].onclick = function() {
 						this.oldvalue = this.value;
 						return true;
@@ -1469,7 +1458,6 @@ function Astman() {
 
 				if (savewidget) {
 					widgets[x].savewidget = savewidget;
-					widgets[x].statuswidget = statuswidget;
 					if ((widgets[x].type == 'checkbox') || (widgets[x].type == 'radio')) {
 						widgets[x].onclick = function() {
 							this.savewidget.activateSave();
@@ -1488,11 +1476,9 @@ function Astman() {
 							pattern = this.getAttribute('pattern');
 							if (pattern && check_pattern(pattern, this.oldvalue) && !check_pattern(pattern, this.value)) {
 								this.value = this.oldvalue;
-								if (widgets['status']) 
-									widgets['status'].innerHTML = "<font size='-1' color=red>Invalid Character !</font>";
+								gui_feedback('Invalid Character !','red');
 							} else{
-								if (widgets['status']) 
-									widgets['status'].innerHTML = "";
+								gui_feedback('','default',10);
 								this.savewidget.activateSave();
 							}
 							return true;
@@ -1535,8 +1521,6 @@ function Astman() {
 				widgets[x].innerHTML = thevalue;
 			}
 		}}
-		if (widgets['status']) 
-			widgets['status'].innerHTML = "";
 	};
 	this.doConfig = function(t, box) {
 		if( t[0].headers['message'] && t[0].headers['message'] == "Config file not found" ){
@@ -1707,10 +1691,6 @@ function Astman() {
 				delete_item(this.hostselectbox);
 			}
 		}
-		if (widgets['status']) {
-			widgets['status'].disabled = false;
-		}
-		
 		tmp = new Ajax.Request(this.url, opt);
 	};
 

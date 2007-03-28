@@ -32,7 +32,7 @@ var rawman_url ;
 var vmexten='';
 var voicemailcallbacks = new Object;
 var callbacks = new Object;
-var vmfields = ['attach', 'cancel', 'maxgreet', 'maxmessage', 'maxmsg', 'save', 'status'];
+var vmfields = ['attach', 'cancel', 'maxgreet', 'maxmessage', 'maxmsg', 'save'];
 var fields = new Array('name');
 var vmwidgets = new Array;
 var widgets = new Array;
@@ -296,7 +296,6 @@ callbacks.postselect = function(box, val) {
 							</td>
 					</tr>
 					<tr><td>Max&nbsp;greeting&nbsp;(seconds)</td><td>&nbsp;<input size=4 id='maxgreet' pattern='^\d*$' class="input8" dfalt=60></td></tr>
-					<tr><td colspan='2' align='center'><div style="height:15px" id='status'></div></td></tr>
 			</table>					
 			<div style="display:none"><input type='button' id='save' value='Save'>&nbsp;<input type='button' id='cancel' value='Cancel'></div>
 			<!--  this page -->

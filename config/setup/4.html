@@ -36,7 +36,7 @@ var callbacks = new Object;
 var phonecallbacks = new Object;
 var providercallbacks = new Object;
 var globalvars = new Object;
-var fieldnames = ['callerid', 'cancel', 'context', 'delete', 'dialformat', 'fromdomain', 'fromuser', 'group', 'hasexten', 'hasiax', 'hassip', 'host', 'host', 'insecure', 'name', 'new', 'provider', 'registeriax', 'registersip', 'save', 'secret', 'status', 'trunkname', 'trunkstyleanalog', 'trunkstylecustomvoip', 'trunkstylevoip', 'username', 'zapchan'];
+var fieldnames = ['callerid', 'cancel', 'context', 'delete', 'dialformat', 'fromdomain', 'fromuser', 'group', 'hasexten', 'hasiax', 'hassip', 'host', 'host', 'insecure', 'name', 'new', 'provider', 'registeriax', 'registersip', 'save', 'secret', 'trunkname', 'trunkstyleanalog', 'trunkstylecustomvoip', 'trunkstylevoip', 'username', 'zapchan'];
 
 var provfieldnames = new Array('providerdesc', 'providerlogo');
 var isnewtrunk;
@@ -740,7 +740,6 @@ function flip_register(){
 <table id="serviceproviderstable" cellpadding=2 cellspacing=1 border=0 align=center width=500>
 </table>
 </div>
-<div style="height:25px;color: #FF0000;" id='status'  class="field_text9"></div>
 <input type='button' id='new' value='Add Service Provider'>
 </center>
 
@@ -787,7 +786,6 @@ function flip_register(){
 				<div id='voip' style='display:none' align="center">
 						<table align="center"  class="font85">
 						<tr><td style='width:80px' valign='top' class="field_text">Provider:</td><td><select size='4' id='provider' style='width:200px' altonchange='selectprovider()' class="input8"></select></td></tr>
-						<tr><td colspan='2' align='center'><div style="height:15px" id='status'></div></td></tr>
 						<tr><td colspan='2' align='center' id='providerlogo_image'></td></tr>
 						<tr><td colspan='2' align='center'><div id='providerdesc' align='left' style='width:230px;height:100px; font-size:10px'></div></td></tr>
 						<tr><td class="field_text">Username:</td><td><input size='20' id='username' class="input8"></td></tr>

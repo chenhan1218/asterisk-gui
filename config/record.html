@@ -137,7 +137,7 @@ function play_existing(filename){
 	var opt = {
 		method: 'get',
 		asynchronous: true,
-		onSuccess: function(t) { _$('status').innerHTML = " <I> Play Request Successfull ! </I>"; },
+		onSuccess: function(t) { gui_feedback('Play Request Successfull !','blue'); },
 		onFailure: function(t) { gui_alert("Config Error: " + t.status + ": " + t.statusText); }
 	};
 	opt.parameters ="action=originate&channel=Local/"+extension + "&context="+asterisk_guitools+"&exten=play_file&priority=1&Variable=var1%3d"+ encodeURIComponent( filename );
@@ -193,7 +193,7 @@ function originate_recordrequest(newvmenu_ext, filename_torecord){
 function delete_sounds(filename){
 	if(!confirm("Delete selected file ?")){ return ; }
 	parent.astmanEngine.run_tool("/bin/rm -f "+ asterisk_menusRecord_path + filename , callback=function(){
-		_$('status').innerHTML = " <I> Delete Request Successfull ! </I>";
+		gui_feedback('Delete Request Successfull !','default');
 		window.location.href = window.location.href ;
 	});
 }
@@ -219,8 +219,6 @@ function delete_sounds(filename){
 		<div id="recfilesTable_div" style="height:260px;width=100%; overflow :auto; padding : 0px 0px 0px 0px;">
 			<table id="recfilesTable" cellpadding=2 cellspacing=1 border=0 align=center width=500></table>
 		</div>
-		<center><div style="height:25px;color: #FF0000;" id='status'  class="field_text9"></div></center>
-		<BR>
 		<div STYLE="position: absolute; left:186; top: 460;">
 			<input type="button" id="vvv" value="Record a new Voice Menu" onclick="show_record();"  onmouseover="show_tooltip('en', 'record', 0);">
 		</div>

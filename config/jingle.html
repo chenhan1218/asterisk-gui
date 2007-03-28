@@ -28,7 +28,7 @@
 <script>
 var phonecallbacks = new Object;
 var widgets = {};
-var fieldnames = ['allow', 'cancel', 'connection', 'context', 'delete', 'disallow', 'name', 'new', 'save', 'status', 'username'];
+var fieldnames = ['allow', 'cancel', 'connection', 'context', 'delete', 'disallow', 'name', 'new', 'save', 'username'];
 
 phonecallbacks.format = function(t) {
 	var tmp = t.name.split('general');
@@ -223,10 +223,6 @@ function localajaxinit() {
 					</tr>
 					<tr>	<td>Connection:</td>
 						<td><input size='12' id='connection'  class="input8"></td>
-					</tr>
-					<tr>	<td colspan='2' align='center'>
-							<div style="height:15px" id='status'></div>
-						</td>
 					</tr>
 					</table>
 				</td>

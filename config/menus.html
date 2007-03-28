@@ -32,7 +32,7 @@ var menuscallbacks = new Object;
 var extencallbacks = new Object;
 var usercallbacks = new Object;
 var numcallbacks = new Object;
-var fieldnames = new Array('delete', 'status', 'new','save','cancel');
+var fieldnames = new Array('delete', 'new','save','cancel');
 var voicemenusdata = new Object;
 var current_context;
 var keys = new Array('0','1','2','3','4','5','6','7','8','9','*','#','t','i');
@@ -296,7 +296,7 @@ function add_newstep(){
 			_nsa.selectedIndex = 0;
 			_$('deletestep').disabled = false;
 			_steps.selectedIndex = _steps.length - 1 ;
-			_$('status').innerHTML = "<i>New step added !</i>";
+			gui_feedback('New step added !','blue');
 			update_updown();
 			_nsv.value = "";
 			_nsv.style.display = "none" ;
@@ -399,7 +399,7 @@ function save_vmenu(){
 		asynchronous: true,
 		onSuccess: function() { 
 			setTimeout( function(){_$('status_message').style.display="none"; },sc_displaytime );
-			_$('status').innerHTML = "<i>Updated.</i>";
+			gui_feedback('Updated.','blue');
 			_$('savevmenu').disabled = true;
 			_$('save').disabled = true;
 			_$('cancel').disabled = true;
@@ -612,7 +612,7 @@ function swap_step(a,b){
 			_steps.options[a].text = _steps.options[b].text;
 			_steps.options[b].text = buffer;
 			_steps.selectedIndex = b;
-			_$('status').innerHTML = "<i>Step Priority Updated!</i>";
+			gui_feedback('Step Priority Updated!','blue');
 			update_updown();
 
 		},
@@ -648,7 +648,7 @@ function delete_step(){
 				}
 			}
 			_steps.remove( _steps.selectedIndex);
-			_$('status').innerHTML = "<i>Step Deleted !</i>";
+			gui_feedback('Step Deleted !','default');
 			_$('deletestep').disabled = true;
 		},
 		onFailure: function(t) {
@@ -1181,10 +1181,6 @@ function free_mem(){
 					</script>
 					</table>
 				</div>
-				</td>
-			</tr>
-			<tr>	<td colspan=2 align="center">
-				<div style="height:15px" id='status'></div>
 				</td>
 			</tr>
 			</table>

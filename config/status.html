@@ -38,7 +38,7 @@ function doHangup() {
 
 function afterHangup(){
 	refreshChannelsList();
-	_$('status').innerHTML = "Hungup " + hungupchan;
+	gui_feedback("Hungup " + hungupchan,'default');
 }
 
 
@@ -63,14 +63,14 @@ function doTransfer() {
 
 function afterTransfer(){
 	refreshChannelsList();
-	_$('status').innerHTML = "Transferred " + transferredchan;
+	gui_feedback("Transferred " + transferredchan,'default');
 }
 
 function refreshChannelsList() {
 	selectedchan = null;
 	_$('transfer').disabled = 1;
 	_$('hangup').disabled = 1;
-	_$('status').innerHTML = "<i>Updating channel status...</i>";
+	gui_feedback('Updating channel status...','green',1500);
 	parent.astmanEngine.channelClear();
 	parent.astmanEngine.sendRequest('action=status', onStatusCheck);
 	updateButtons();
@@ -84,7 +84,7 @@ onStatusCheck = function(msgs) {
 	for (i=1;i<msgs.length - 1;i++) 
 		parent.astmanEngine.channelUpdate(msgs[i]);
 	_$('channellist').innerHTML = parent.astmanEngine.channelTable(channelsCallback);
-	_$('status').innerHTML = "Ready";
+	gui_feedback('Ready','blue',4000);
 }
 
 
@@ -135,9 +135,7 @@ function localajaxend(){
 <div class="mainscreenContentBox" id="userscontent">
 <table class="mainscreenTable" align="center">
 	<tr valign="top" height="18">
-		<td>
-		Active Channels: <div  id='status'></div>
-		</td>
+		<td> Active Channels: </td>
 	</tr>
 	<tr height=32 valign="middle">
 		<td align="center">

@@ -27,7 +27,7 @@
 <script>
 var phonecallbacks = new Object;
 var widgets = { };
-var fieldnames = ['accountcode' ,'adsi' ,'amaflags' ,'answeronpolarityswitch' ,'busycount' ,'busydetect' ,'busypattern' ,'cadence' ,'callerid' ,'callgroup' ,'callprogress' ,'callreturn' ,'callwaiting' ,'callwaitingcallerid' ,'cancallforward' ,'cancel' ,'canpark' ,'cidsignalling' ,'cidstart' ,'context' ,'debounce' ,'defaultcic' ,'defaultozz' ,'distinctiveringaftercid' ,'echocancel' ,'echocancelwhenbridged' ,'echotraining' ,'facilityenable' ,'faxdetect' ,'flash' ,'group' ,'hanguponpolarityswitch' ,'hidecallerid' ,'idledial' ,'idleext' ,'immediate' ,'internationalprefix' ,'jbenable' ,'jbimpl' ,'jblog' ,'jbmaxsize' ,'jbresyncthreshold' ,'jitterbuffers' ,'language' ,'localprefix' ,'minidle' ,'minunused' ,'mohinterpret' ,'mohsuggest' ,'nationalprefix' ,'nsf' ,'outsignalling' ,'overlapdial' ,'pickupgroup' ,'preflash' ,'prewink' ,'pridialplan' ,'priexclusive' ,'priindication' ,'prilocaldialplan' ,'pritimer' ,'privateprefix' ,'progzone' ,'pulsedial' ,'relaxdtmf' ,'resetinterval' ,'restrictcid' ,'ringtimeout' ,'rxflash' ,'rxgain' ,'rxwink' ,'save' ,'sendcalleridafter' ,'signalling' ,'smdiport' ,'start' ,'status' ,'switchtype' ,'threewaycalling' ,'toneduration' ,'transfer' ,'transfertobusy' ,'txgain' ,'unknownprefix' ,'usecallerid' ,'usecallingpres' ,'usedistinctiveringdetection' ,'usesmdi' ,'wink'] ;
+var fieldnames = ['accountcode' ,'adsi' ,'amaflags' ,'answeronpolarityswitch' ,'busycount' ,'busydetect' ,'busypattern' ,'cadence' ,'callerid' ,'callgroup' ,'callprogress' ,'callreturn' ,'callwaiting' ,'callwaitingcallerid' ,'cancallforward' ,'cancel' ,'canpark' ,'cidsignalling' ,'cidstart' ,'context' ,'debounce' ,'defaultcic' ,'defaultozz' ,'distinctiveringaftercid' ,'echocancel' ,'echocancelwhenbridged' ,'echotraining' ,'facilityenable' ,'faxdetect' ,'flash' ,'group' ,'hanguponpolarityswitch' ,'hidecallerid' ,'idledial' ,'idleext' ,'immediate' ,'internationalprefix' ,'jbenable' ,'jbimpl' ,'jblog' ,'jbmaxsize' ,'jbresyncthreshold' ,'jitterbuffers' ,'language' ,'localprefix' ,'minidle' ,'minunused' ,'mohinterpret' ,'mohsuggest' ,'nationalprefix' ,'nsf' ,'outsignalling' ,'overlapdial' ,'pickupgroup' ,'preflash' ,'prewink' ,'pridialplan' ,'priexclusive' ,'priindication' ,'prilocaldialplan' ,'pritimer' ,'privateprefix' ,'progzone' ,'pulsedial' ,'relaxdtmf' ,'resetinterval' ,'restrictcid' ,'ringtimeout' ,'rxflash' ,'rxgain' ,'rxwink' ,'save' ,'sendcalleridafter' ,'signalling' ,'smdiport' ,'start' ,'switchtype' ,'threewaycalling' ,'toneduration' ,'transfer' ,'transfertobusy' ,'txgain' ,'unknownprefix' ,'usecallerid' ,'usecallingpres' ,'usedistinctiveringdetection' ,'usesmdi' ,'wink'] ;
 
 phonecallbacks.format = function(t) {
 	tmp = t.name.split('channels');
@@ -479,7 +479,6 @@ function localajaxinit(){
 	</div>
 
 	<table align="center">
-	<tr><td colspan=2 align=center><div  id='status'></div></td></tr>
 	<tr><td colspan=2 align=center>
 		<input style='width:80' type='button' id='save' value='Save'>&nbsp;<input style='width:80' type='button' id='cancel' value='Cancel'>
 		</td>

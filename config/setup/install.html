@@ -28,8 +28,7 @@
 <script src="../scripts/prototype.js"></script>
 <script src="../scripts/astman.js"></script>
 <script>
-var rawman_url = "../../../rawman";
-var asterisk_guitools = "asterisk_guitools";
+var rawman_url = "../" + asterisk_rawmanPath;
 var fxoports = new Array();
 var fxsports = new Array();
 var numberofsteps = 7;
@@ -47,7 +46,7 @@ eventeater.eventcb = function(msgs) {
 	}
 }
 
-astmanEngine.setURL('../../rawman');
+astmanEngine.setURL(rawman_url);
 astmanEngine.setEventCallback(eventeater.eventcb);
 </script>
 <body onload="localinit()" topmargin=0  bgcolor="FFFFFF">
@@ -55,7 +54,11 @@ astmanEngine.setEventCallback(eventeater.eventcb);
 	<TR><TD height=70 bgcolor="#EFEFEF" align="center">
 		<TABLE cellpadding=0 cellspacing=0 border=0 width=780 align="center" >
 		<TR><TD><IMG src="digiumlogo.gif" border=0></TD>
-		    <TD><FONT SIZE="+1" COLOR="#666666">Welcome to Asterisk GUI setup wizard</FONT></TD>
+			<TD align="center">	<FONT SIZE="+1" COLOR="#666666">Welcome to Asterisk GUI setup wizard</FONT>
+				<div id="feedback_round" style="display:none;background-color: #EFEFEF; width:400px" align="center">
+					<div align="center" id='feedback' style="font-family: Arial, sans-serif, Helvetica, Trebuchet MS ;font-size: 13px;font-weight : bold;"></div>
+				</div>
+			</TD>
 		</TR>
 		</TABLE>
 	     </TD>
