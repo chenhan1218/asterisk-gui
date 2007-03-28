@@ -964,7 +964,7 @@ extencallbacks.loaded = function() {
 			_$('sysinfohtml').innerHTML = originalRequest.responseText;
 			// Add Default sound files to the list of sound files
 			var j = _$('sound_files').innerHTML ;
-			var sndfiles = j.split("<br>") ;
+			var sndfiles = j.split("\n") ;
 			var New_OPTION = document.createElement('option');
 			New_OPTION.text = "Default Sounds"  ;
 			New_OPTION.value = ""  ;
@@ -994,7 +994,7 @@ extencallbacks.loaded = function() {
 			}
 			// Add Recorded Voiemenus to the list of sound files
 			var k = _$('rec_files').innerHTML ;
-			var recfiles = k.split("<br>") ;
+			var recfiles = k.split("\n") ;
 			New_OPTION = document.createElement('option');
 			New_OPTION.text = "Recorded Voicemenus"  ;
 			New_OPTION.value = ""  ;
