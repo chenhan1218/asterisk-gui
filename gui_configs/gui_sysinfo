@@ -34,33 +34,17 @@ THIS_DAY=`/bin/date +%_d`
 
 /bin/echo "<div id=bkp_files>" >> $SYSINFO_OUTPUT 
 /bin/mkdir -p /var/lib/asterisk/gui_configbackups
-BKPFILES=`ls /var/lib/asterisk/gui_configbackups/`
-for i in $BKPFILES
-do
-/bin/echo "$i<BR>" >> $SYSINFO_OUTPUT 
-done
+/bin/ls /var/lib/asterisk/gui_configbackups/ >> $SYSINFO_OUTPUT
 /bin/echo "</div>" >> $SYSINFO_OUTPUT 
-
-
 
 /bin/echo "<div id=rec_files>" >> $SYSINFO_OUTPUT 
 /bin/mkdir -p /var/lib/asterisk/sounds/record
-RECFILES=`ls /var/lib/asterisk/sounds/record/`
-for i in $RECFILES
-do
-/bin/echo "$i<BR>" >> $SYSINFO_OUTPUT 
-done
+/bin/ls /var/lib/asterisk/sounds/record/ >> $SYSINFO_OUTPUT
 /bin/echo "</div>" >> $SYSINFO_OUTPUT 
-
-
 
 /bin/echo "<div id=sound_files>" >> $SYSINFO_OUTPUT 
 /bin/mkdir -p /var/lib/asterisk/sounds
-SNDFILES=`ls /var/lib/asterisk/sounds/`
-for i in $SNDFILES
-do
-/bin/echo "$i<BR>" >> $SYSINFO_OUTPUT 
-done
+/bin/ls /var/lib/asterisk/sounds/ >> $SYSINFO_OUTPUT
 /bin/echo "</div>" >> $SYSINFO_OUTPUT 
 
 
