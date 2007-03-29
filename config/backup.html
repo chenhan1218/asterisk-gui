@@ -100,7 +100,7 @@ function addrow_totable(filename, i ){
 	newRow.onmouseout=function(){ this.style.backgroundColor='#FFFFFF'; };
 	
 	var newCell0 = newRow.insertCell(0);
-	newCell0 .innerHTML = i+1 ;
+	newCell0 .innerHTML =_$('bkpfilesTable').rows.length  ;
 	newCell0 .width = 35;
 	newCell0.align = "center";
 	
