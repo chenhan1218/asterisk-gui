@@ -20,20 +20,20 @@
  *
 -->
 <HTML>
-<HEAD>
-	<TITLE> Asterisk GUI Setup Wizard</TITLE>
+<HEAD>	<TITLE> Asterisk GUI Setup Wizard</TITLE>
 	<link href="setup.css" media="all" rel="Stylesheet" type="text/css" />
 </HEAD>
 <script src="../scripts/prototype.js"></script>
 <script src="../scripts/astman.js"></script>
-<SCRIPT LANGUAGE="JavaScript">
+<SCRIPT>
+
 var rawman_url;
 var numplan_callbacks = new Object;
 var user_callbacks = new Object;
 var didtrunks = new Object;
 var editstatus ;
 var old_incomingrule, old_fromprovider ;
-var  edit_pattern, edit_DIDtrunk, edit_action, edit_priority ;
+var edit_pattern, edit_DIDtrunk, edit_action, edit_priority ;
 var listOfExtensions = [] ;	// to store all the list of extensions to be displayed in the select menu
 var focus_fields = new Array('incomingrule','frompattern','fromprovider','toextension');
 
@@ -47,21 +47,11 @@ user_callbacks.format = function(t, x) {
 	if (t.fieldbyname['fullname'] && t.fieldbyname['fullname'].length && x == undefined && t.name != "general" ) {
 		listOfExtensions.push( t.name + " -- " + t.fieldbyname['fullname'] );
 	}
-	/*
-	var tmp = 'DID_' + t.name;
-	if ( t.name.substring(0,6) == 'trunk_' && x == undefined){
-		didtrunks[tmp] = new Object();
-		return t.name;
-	}
-	if ( t.name.substring(0,6) == 'trunk_'  && t.names[x]=='trunkname' ){
-		didtrunks[tmp].trunkname = t.fields[x];
-	}
-	*/
 	return false;
 }
 
 user_callbacks.loaded = function(){
-	parent.astmanEngine.config2list("extensions.conf", $('extensions'), new Array(), numplan_callbacks);
+	parent.astmanEngine.config2list("extensions.conf", _$('extensions'), new Object(), numplan_callbacks);
 }
 user_callbacks.eachline = true;
 user_callbacks.includecats = true;
@@ -70,10 +60,10 @@ user_callbacks.includecats = true;
 // and show each entry in the table
 numplan_callbacks.format = function(t, x) {
 	if ((t.name == specialcontext && x != undefined )){
-		var p = format_extension( $('extensions'), t, x)  ;
+		var p = format_extension( _$('extensions'), t, x)  ;
 		if ( p != null ){ listOfExtensions.push(p); }
 	}
-	if (		( t.name.substring(0,asterisk_guiTDPrefix.length) == asterisk_guiTDPrefix ) && x == undefined){
+	if ( ( t.name.substring(0,asterisk_guiTDPrefix.length) == asterisk_guiTDPrefix ) && x == undefined){
 		if(typeof didtrunks[t.name] == "undefined"){
 			didtrunks[t.name] = new Object();
 			didtrunks[t.name].trunkname = t.name;
@@ -95,33 +85,29 @@ numplan_callbacks.loaded = function() {
 	listOfExtensions.sort();
 	for(var a =0; a < listOfExtensions.length ; a++ ){
 		var b = listOfExtensions[a].split(' -- ');
-		//$('toextension').innerHTML = $('toextension').innerHTML + "<option value='" + b[0] + "'>" + listOfExtensions[a] + "</option>";
-		  var New_OPTION = document.createElement('option');
-		  New_OPTION.text = listOfExtensions[a] ;
-		  New_OPTION.value = b[0] ;
-		  try {
-			$('toextension').add(New_OPTION, null); // W3C way
-		  }catch(ex) {
-			$('toextension').add(New_OPTION); // IE way
-		  }
+		var New_OPTION = document.createElement('option');
+		New_OPTION.text = listOfExtensions[a] ;
+		New_OPTION.value = b[0] ;
+		try {
+			_$('toextension').add(New_OPTION, null); // W3C way
+		}catch(ex) {
+			_$('toextension').add(New_OPTION); // IE way
+		}
 	}
 
 	// load list of trunks to 'fromprovider'
 	var t ;
-	for ( t in didtrunks){
-	if(  didtrunks.hasOwnProperty(t) ){
-		  var a = document.createElement('option');
-		  a.text = didtrunks[t].trunkname ;
-		  a.value = t ;
-		  var b = document.getElementById('fromprovider');
-		  try {
+	for ( t in didtrunks){	if(  didtrunks.hasOwnProperty(t) ){
+		var a = document.createElement('option');
+		a.text = didtrunks[t].trunkname ;
+		a.value = t ;
+		var b = document.getElementById('fromprovider');
+		try {
 			b.add(a, null); 
-		  }
-		  catch(ex) {
+		}catch(ex) {
 			b.add(a); 
-		  }
-	  }
-	}
+		}
+	}}
 	// load the object didtrunks into the table callingRulesTable
 	refreshtable();
 }
@@ -130,8 +116,8 @@ numplan_callbacks.eachline = true;
 numplan_callbacks.includecats = true;
 
 function refreshtable(){
-	for( var i=0; i <  $('callingRulesTable').rows.length; ){
-			 $('callingRulesTable').deleteRow(i);
+	for( var i=0; i <  _$('callingRulesTable').rows.length; ){
+		_$('callingRulesTable').deleteRow(i);
 	}
 	
 	for ( var i in didtrunks ){ // for each trunk
@@ -145,9 +131,9 @@ function refreshtable(){
 		}
 	}
 
-	if( $('callingRulesTable').rows.length == 0){
-		$('table_one').style.display="none";
-		var newRow = $('callingRulesTable').insertRow(-1);
+	if( _$('callingRulesTable').rows.length == 0){
+		_$('table_one').style.display="none";
+		var newRow = _$('callingRulesTable').insertRow(-1);
 		var newCell0 = newRow.insertCell(0);
 		newCell0 .align = "center";
 		newCell0 .innerHTML = "<BR>An <I>incoming Calling Rule</I> is not defined<BR><BR> Please click on 'Add a Incoming Rule' button<BR> to add a new incoming call rule.<BR><BR>" ;
@@ -157,23 +143,23 @@ function refreshtable(){
 }
 
 function addrowtotable(a,b,c,d){	// a is pattern, b is DID_trunk, c is action, d is priority
-		var sno = $('callingRulesTable').rows.length + 1;
-		var newRow = $('callingRulesTable').insertRow(-1);
-		newRow.id = "row" + sno; 
-		
-		var newCell0 = newRow.insertCell(0);
-		newCell0.innerHTML = sno ;
-		newCell0.align="center";
-		newCell0.width=35;
+	var sno = _$('callingRulesTable').rows.length + 1;
+	var newRow = _$('callingRulesTable').insertRow(-1);
+	newRow.id = "row" + sno; 
+	
+	var newCell0 = newRow.insertCell(0);
+	newCell0.innerHTML = sno ;
+	newCell0.align="center";
+	newCell0.width=35;
 
-		var newCell1 = newRow.insertCell(1);
-		newCell1.innerHTML =  convert_tohuman(a,b,c) ; 
+	var newCell1 = newRow.insertCell(1);
+	newCell1.innerHTML =  convert_tohuman(a,b,c) ; 
 
-		var newCell2 = newRow.insertCell(2);
-		newCell2.innerHTML = "<A href=\"#\" onclick=\"edit_incomingrule('"+ a +"', '"+ b +"', '" + c + "','" + d+"')\">Edit</A>&nbsp;&nbsp;<A href=\"#\" onclick=\"delete_incomingrule('"+ a +"', '"+ b +"', '" + c + "','" + d+"')\">Delete</A>";
-		newCell2.width=75;
-		newCell2.align="center";
-		return true;
+	var newCell2 = newRow.insertCell(2);
+	newCell2.innerHTML = "<A href=\"#\" onclick=\"edit_incomingrule('"+ a +"', '"+ b +"', '" + c + "','" + d+"')\">Edit</A>&nbsp;&nbsp;<A href=\"#\" onclick=\"delete_incomingrule('"+ a +"', '"+ b +"', '" + c + "','" + d+"')\">Delete</A>";
+	newCell2.width=75;
+	newCell2.align="center";
+	return true;
 }
 
 
@@ -193,16 +179,16 @@ function convert_tohuman(a,b,c) { // a is pattern, b is DID_trunk, c is action,
 
 function add_incomingrule(){
 	editstatus = "NEW";
-	$('incomingrule').selectedIndex = 0;
-	$('fromprovider').selectedIndex = -1;
+	_$('incomingrule').selectedIndex = 0;
+	_$('fromprovider').selectedIndex = -1;
 	old_incomingrule = "allunmatched";
 	old_fromprovider = "";
-	$('toextension').selectedIndex = -1;
-	$('frompattern').value = "";
-	$('save_a').disabled = true;
-	$('thatmatch').style.display = "none" ;
-	$('userscontent').style.display = "";
-	$('bg_transparent').style.display = "";
+	_$('toextension').selectedIndex = -1;
+	_$('frompattern').value = "";
+	_$('save_a').disabled = true;
+	_$('thatmatch').style.display = "none" ;
+	_$('userscontent').style.display = "";
+	_$('bg_transparent').style.display = "";
 }
 
 function edit_incomingrule(a,b,c,d){// a is pattern, b is DID_trunk, c is action, d is priority
@@ -213,19 +199,19 @@ function edit_incomingrule(a,b,c,d){// a is pattern, b is DID_trunk, c is action
 
 	editstatus = "EDIT";
 	if(a == "_X."){
-		$('incomingrule').selectedIndex = 0;
-		$('thatmatch').style.display = "none" ;
+		_$('incomingrule').selectedIndex = 0;
+		_$('thatmatch').style.display = "none" ;
 		old_incomingrule = "allunmatched";
 	}else{
-		$('frompattern').value = a ;
-		$('incomingrule').selectedIndex = 1;
-		$('thatmatch').style.display = "" ;
+		_$('frompattern').value = a ;
+		_$('incomingrule').selectedIndex = 1;
+		_$('thatmatch').style.display = "" ;
 		old_incomingrule = "frompattern";
 	}
 
-	for(var i=0; i < $('fromprovider').length ; i++){
-		if($('fromprovider').options[i].value == b){
-			$('fromprovider').selectedIndex = i;		
+	for(var i=0; i < _$('fromprovider').length ; i++){
+		if( _$('fromprovider').options[i].value == b){
+			_$('fromprovider').selectedIndex = i;		
 			old_fromprovider = b;
 			break;
 		}
@@ -234,17 +220,17 @@ function edit_incomingrule(a,b,c,d){// a is pattern, b is DID_trunk, c is action
 	if( c.match("Goto") && !c.match("voicemenu-")  ){ 
 		var tmp = c.split('(');
 		var exten = tmp[1].split('|'); // extension is exten[1]
-		$('toextension').selectedIndex = -1 ;
-		for(var t=0; t < $('toextension').length ; t++ ){
-			if( $('toextension').options[t].value == exten[1] ){
-				$('toextension').selectedIndex = t;
+		_$('toextension').selectedIndex = -1 ;
+		for(var t=0; t < _$('toextension').length ; t++ ){
+			if( _$('toextension').options[t].value == exten[1] ){
+				_$('toextension').selectedIndex = t;
 				break;
 			}
 		}
 	}
 
-	$('userscontent').style.display = "";
-	$('bg_transparent').style.display ='';
+	_$('userscontent').style.display = "";
+	_$('bg_transparent').style.display ='';
 }
 
 
@@ -259,45 +245,45 @@ function save_incomingrule(){
 
 function save_new_incomingrule(){
 	// field validation 
-	if($('incomingrule').value == "frompattern" && $('frompattern').value == "" ){
+	if(_$('incomingrule').value == "frompattern" && _$('frompattern').value == "" ){
 		alert("Please define an incoming call pattern !");
-		$('frompattern').focus();
-		$('frompattern').select();
+		_$('frompattern').focus();
+		_$('frompattern').select();
 		return false;
 	}
-	if( $('fromprovider').selectedIndex == -1 ){
+	if( _$('fromprovider').selectedIndex == -1 ){
 		alert("Please select a service provider !");
-		$('fromprovider').focus();
+		_$('fromprovider').focus();
 		return false;
 	}
-	if( $('toextension').selectedIndex == -1 ){
+	if( _$('toextension').selectedIndex == -1 ){
 		alert("Please select an extension to which an incoming call should be routed to !");
-		$('toextension').focus();
+		_$('toextension').focus();
 		return false;
 	}
 
-	if($('incomingrule').value == "frompattern" && $('frompattern').value.substr(0,1) != "_" ){
-				$('frompattern').value = "_" + $('frompattern').value ;
+	if(_$('incomingrule').value == "frompattern" && _$('frompattern').value.substr(0,1) != "_" ){
+				$('frompattern').value = "_" + _$('frompattern').value ;
 	}
 
 	// create an entry under the selected trunk
 	// $('incomingrule') == "allunmatched" or "frompattern" , $('frompattern'), $('fromprovider'), $('toextension')
-	if ($('incomingrule').value == "allunmatched" ){
-			var newpattern = "_X." ;
-			var temp_provider = $('fromprovider').value;
-			var temp_priority = "1";
-			var temp_action = "Goto(default|" + $('toextension').value + "|1)";
-			var new_exten = newpattern  + "," + temp_priority + "," + temp_action;
-			var new_exten2 = "s,1," + temp_action;
-			var uri = build_action('append', 0, temp_provider ,"exten", new_exten);
-			uri += build_action('append', 1, temp_provider ,"exten", new_exten2);
+	if (_$('incomingrule').value == "allunmatched" ){
+		var newpattern = "_X." ;
+		var temp_provider = _$('fromprovider').value;
+		var temp_priority = "1";
+		var temp_action = "Goto(default|" + _$('toextension').value + "|1)";
+		var new_exten = newpattern  + "," + temp_priority + "," + temp_action;
+		var new_exten2 = "s,1," + temp_action;
+		var uri = build_action('append', 0, temp_provider ,"exten", new_exten);
+		uri += build_action('append', 1, temp_provider ,"exten", new_exten2);
 	}else{
-			var newpattern = $('frompattern').value ;
-			var temp_provider = $('fromprovider').value ;
-			var temp_action = "Goto(default|" + $('toextension').value + "|1)";
-			var temp_priority = "1";
-			var new_exten = newpattern  + "," + temp_priority + "," + temp_action;
-			var uri = build_action('append', 0, temp_provider ,"exten", new_exten ); 
+		var newpattern = _$('frompattern').value ;
+		var temp_provider = _$('fromprovider').value ;
+		var temp_action = "Goto(default|" + _$('toextension').value + "|1)";
+		var temp_priority = "1";
+		var new_exten = newpattern  + "," + temp_priority + "," + temp_action;
+		var uri = build_action('append', 0, temp_provider ,"exten", new_exten ); 
 	}
 
 	// check whether there is an existing entry with this pattern 
@@ -306,53 +292,53 @@ function save_new_incomingrule(){
 		return false;
 	}
 	
-		var opt = {
-			method: 'get',
-			asynchronous: true,
-			onSuccess: function(t) { 									
-				// add this to the global object
-				didtrunks[temp_provider][newpattern] = new Object();
-				didtrunks[temp_provider][newpattern].priority = temp_priority;
-				didtrunks[temp_provider][newpattern].action = temp_action ;
-				//addrowtotable(newpattern,temp_provider,temp_action,temp_priority) ; // a is pattern, b is DID_trunk, c is action, d is priority
-				refreshtable();
-				$('userscontent').style.display = "none";
-				$('bg_transparent').style.display ='none';
-			},
-			onFailure: function(t) {
-				alert("Config Error: " + t.status + ": " + t.statusText);
-			}
-		};
+	var opt = {
+		method: 'get',
+		asynchronous: true,
+		onSuccess: function(t) { 									
+			// add this to the global object
+			didtrunks[temp_provider][newpattern] = new Object();
+			didtrunks[temp_provider][newpattern].priority = temp_priority;
+			didtrunks[temp_provider][newpattern].action = temp_action ;
+			//addrowtotable(newpattern,temp_provider,temp_action,temp_priority) ; // a is pattern, b is DID_trunk, c is action, d is priority
+			refreshtable();
+			_$('userscontent').style.display = "none";
+			_$('bg_transparent').style.display ='none';
+		},
+		onFailure: function(t) {
+			alert("Config Error: " + t.status + ": " + t.statusText);
+		}
+	};
 
-		opt.parameters="action=updateconfig&srcfilename=" + encodeURIComponent("extensions.conf") + "&dstfilename=" + encodeURIComponent("extensions.conf") + uri;
-		var tmp = new Ajax.Request(rawman_url, opt);
+	opt.parameters="action=updateconfig&srcfilename=" + encodeURIComponent("extensions.conf") + "&dstfilename=" + encodeURIComponent("extensions.conf") + uri;
+	var tmp = new Ajax.Request(rawman_url, opt);
 	// 
 }
 
 
 function update_incomingrule(){
 	// field validation 
-	if($('incomingrule').value == "frompattern" && $('frompattern').value == "" ){
+	if(_$('incomingrule').value == "frompattern" && _$('frompattern').value == "" ){
 		alert("Please define an incoming call pattern !");
-		$('frompattern').focus();
-		$('frompattern').select();
+		_$('frompattern').focus();
+		_$('frompattern').select();
 		return false;
 	}
-	if( $('toextension').selectedIndex == -1 ){
+	if( _$('toextension').selectedIndex == -1 ){
 		alert("Please select an extension to which an incoming call should be routed to !");
-		$('toextension').focus();
+		_$('toextension').focus();
 		return false;
 	}
 
-	if($('incomingrule').value == "frompattern" && $('frompattern').value.substr(0,1) != "_" ){
-				$('frompattern').value = "_" + $('frompattern').value ;
+	if( _$('incomingrule').value == "frompattern" && _$('frompattern').value.substr(0,1) != "_" ){
+		_$('frompattern').value = "_" + _$('frompattern').value ;
 	}
 	// old values before editing are - edit_pattern, edit_DIDtrunk, edit_action, edit_priority
 	// check for duplicate other than old
 	var p = 0 ;
 	var uri = "" ;
-	var temp_provider = $('fromprovider').value ;
-	var temp_action = "Goto(default|" + $('toextension').value + "|1)";
+	var temp_provider = _$('fromprovider').value ;
+	var temp_action = "Goto(default|" + _$('toextension').value + "|1)";
 	var temp_priority = "1";
 	var tmp_old_string = edit_pattern  + "," + edit_priority + "," + edit_action;
 	uri += build_action('delete', p, edit_DIDtrunk ,"exten", "", tmp_old_string); p++;
@@ -361,14 +347,14 @@ function update_incomingrule(){
 		uri += build_action('delete', p, edit_DIDtrunk ,"exten", "", tmp2_old_string); p++;
 	}
 
-	if ($('incomingrule').value == "allunmatched" ){
+	if ( _$('incomingrule').value == "allunmatched" ){
 		var newpattern = "_X." ;
 		var new_exten = newpattern  + "," + temp_priority + "," + temp_action;
 		var new_exten2 = "s," + temp_priority + "," + temp_action;
 		uri += build_action('append', p , temp_provider ,"exten", new_exten ); p++ ;
 		uri += build_action('append', p , temp_provider ,"exten", new_exten2 ); p++ ;
 	}else{
-		var newpattern = $('frompattern').value ;
+		var newpattern = _$('frompattern').value ;
 		var new_exten = newpattern  + "," + temp_priority + "," + temp_action;
 		uri += build_action('append', p , temp_provider ,"exten", new_exten ); p++ ;
 	}
@@ -387,8 +373,8 @@ function update_incomingrule(){
 			didtrunks[temp_provider][newpattern] = new Object();
 			didtrunks[temp_provider][newpattern].priority = temp_priority;
 			didtrunks[temp_provider][newpattern].action = temp_action ;
-			$('userscontent').style.display = "none";
-			$('bg_transparent').style.display ='none';
+			_$('userscontent').style.display = "none";
+			_$('bg_transparent').style.display ='none';
 			refreshtable();
 		},
 		onFailure: function(t) {
@@ -400,171 +386,173 @@ function update_incomingrule(){
 
 }
 
-
-
 function checksave(k){
-	if( old_incomingrule == $('incomingrule').value && old_fromprovider == $('fromprovider').value ){
+	if( old_incomingrule == _$('incomingrule').value && old_fromprovider == _$('fromprovider').value ){
 		return true;
 	}
 
-	if($('incomingrule').value == "frompattern" ){
-		$('thatmatch').style.display = "" ;
+	if(_$('incomingrule').value == "frompattern" ){
+		_$('thatmatch').style.display = "" ;
 		if(k.id=="incomingrule"){
-			$('frompattern').focus();
-			$('frompattern').select();
+			_$('frompattern').focus();
+			_$('frompattern').select();
 		}
 	}else{
-		$('thatmatch').style.display = "none" ;
+		_$('thatmatch').style.display = "none" ;
 	}
 
-	$('save_a').disabled = false;
-	old_incomingrule = $('incomingrule').value ;
-	old_fromprovider = $('fromprovider').value ;
+	_$('save_a').disabled = false;
+	old_incomingrule = _$('incomingrule').value ;
+	old_fromprovider = _$('fromprovider').value ;
 }
 
 
 function enablesave(){
-	$('save_a').disabled = false;
+	_$('save_a').disabled = false;
 }
-
-
-
 
 function delete_incomingrule(a,b,c,d){ // a is pattern, b is DID_trunk, c is action, d is priority
 	t=confirm("Are you sure you want to delete this Incoming Calling Rule?");
 	if(t == false){ 
-		return true; 				
+		return true;
 	}
 
 	var tmp_match = a+","+d+","+c ;
-		var opt = {
-			method: 'get',
-			asynchronous: true,
-			onSuccess: function(t) { 									
-				// add this to the global object
-				delete didtrunks[b][a];
-				refreshtable();
-			},
-			onFailure: function(t) {
-				alert("Config Error: " + t.status + ": " + t.statusText);
-			}
-		};
-		var uri = build_action('delete',0, b, "exten" ,"", tmp_match);
-		if( a == "_X." ){
-			var tmp2_match = "s," + d + "," + c ;
-			uri += build_action('delete',1,b,"exten","", tmp2_match);
+	var opt = {
+		method: 'get',
+		asynchronous: true,
+		onSuccess: function(t) {
+			// add this to the global object
+			delete didtrunks[b][a];
+			refreshtable();
+		},
+		onFailure: function(t) {
+			alert("Config Error: " + t.status + ": " + t.statusText);
 		}
-		opt.parameters="action=updateconfig&srcfilename=" + encodeURIComponent("extensions.conf") + "&dstfilename=" + encodeURIComponent("extensions.conf") + uri;
-		var tmp = new Ajax.Request(rawman_url, opt);
+	};
+	var uri = build_action('delete',0, b, "exten" ,"", tmp_match);
+	if( a == "_X." ){
+		var tmp2_match = "s," + d + "," + c ;
+		uri += build_action('delete',1,b,"exten","", tmp2_match);
+	}
+	opt.parameters="action=updateconfig&srcfilename=" + encodeURIComponent("extensions.conf") + "&dstfilename=" + encodeURIComponent("extensions.conf") + uri;
+	var tmp = new Ajax.Request(rawman_url, opt);
 }
 
 
 
 function localinit(){
-	parent.$('next').onclick = function(){	 window.location.href="10.html"; };
-	parent.$('back').onclick  = function(){	 window.location.href="7.html"; };
+	parent._$('next').onclick = function(){	 window.location.href="10.html"; };
+	parent._$('back').onclick  = function(){ window.location.href="7.html"; };
 	rawman_url = parent.rawman_url ;
 	parent.astmanEngine.setURL(rawman_url);
 	ping();
 }
 
 function ping(){
-		var opt = { method: 'get', asynchronous: true, onComplete: isloggedin };
-		opt.parameters="action=ping" ;
-		var tmp = new Ajax.Request(rawman_url , opt);
+	var opt = { method: 'get', asynchronous: true, onComplete: isloggedin };
+	opt.parameters="action=ping" ;
+	var tmp = new Ajax.Request(rawman_url , opt);
 }
 
 function isloggedin(originalRequest){
-		if ( originalRequest.responseText.match("Error") ) {
-			// User is not logged in , show him the login screen
-			parent.window.location.href = parent.window.location.href ; 
-		}
+	if ( originalRequest.responseText.match("Error") ) {
+		// User is not logged in , show him the login screen
+		parent.window.location.href = parent.window.location.href ; 
+	}
 
-		if ( originalRequest.responseText.match("Pong") ) {
-			showdiv_statusmessage();
-			setWindowTitle("Incoming Calls");
-			for (var x =0; x < focus_fields.length; x++ ) {
-				$(focus_fields[x]).onfocus = function(){this.className = 'input9_hilight';}
-				$(focus_fields[x]).onblur = function(){this.className = 'input9';}
-			}
-			parent.astmanEngine.config2list("users.conf", $('users'), new Array(), user_callbacks);
+	if ( originalRequest.responseText.match("Pong") ) {
+		showdiv_statusmessage();
+		setWindowTitle("Incoming Calls");
+		for (var x =0; x < focus_fields.length; x++ ) {
+			$(focus_fields[x]).onfocus = function(){this.className = 'input9_hilight';}
+			$(focus_fields[x]).onblur = function(){this.className = 'input9';}
 		}
+		parent.astmanEngine.config2list("users.conf", _$('users'), new Array(), user_callbacks);
+	}
 }
 
 </SCRIPT>
 <BODY bgcolor="#FFFFFF" onload="localinit()" topmargin=0 leftmargin=0>
 <table width="100%" height="100%" border=0 cellpadding=0 cellspacing=0>
-	<tr><td width="170" valign=top align=left>
-					<div id="menu">
-					<table cellpadding=3 cellspacing=2 border=0 id="sidelist">
-						<tr><td width=3></td><td>Start</td></tr>
-						<tr><td></td><td>Verify Analog Ports</td></tr>
-						<!-- <tr><td></td><td>Date & Time</td></tr> -->
-						<tr><td></td><td>Local Extension Settings</td></tr>
-						<tr><td></td><td>Service Providers</td></tr>
-						<tr><td></td><td>Calling Rules</td></tr>
-						<tr><td></td><td>VoiceMail Settings</td></tr>
-						<tr><td></td><td>User Extensions</td></tr>
-						<tr><td></td><td class="slselected">Incoming Calls</td></tr>
-						<!-- <tr><td></td><td>VoiceMenus</td></tr> -->
-						<tr><td></td><td>Finish</td></tr>
-					</table>
-					</div>
-			</td>
-			<td valign=top align=center>
-			<!--  this page -->
-		<select id="extensions" style="display:none"></select>
-		<select id="users" style="display:none"></select>
-		<div class="heading">Step 7 of <script>document.write(parent.numberofsteps);</script>&nbsp;&nbsp;-  Incoming Calls</div>
-		<div class="subheading">List of incoming call rules</div>
-			<table class="table_blacksm" cellpadding=2 cellspacing=2 border=0 align=center width=500 id="table_one">
-				<tr>	<td width=35>S.No</td>
-						<td> Incoming Rule </td>
-						<td width=75 align=center>Options</td>
-				</tr>
-			</table>
-			<div id="callingRulesTable_div" style="height:200px;width=100%; overflow :auto; padding : 0px 0px 0px 0px;">
-			<table id="callingRulesTable" cellpadding=2 cellspacing=1 border=0 align=center width=500></table>
-			</div>
-		</font>
-
-		<BR>
-		<center><input type="button" id="adddid" value="Add a Incoming Rule" onclick="add_incomingrule();"></center>
-		<div id="userscontent" STYLE="display:none; position: absolute; left: 227; top: 70; width:475; height:190;  background-color:#F4EFE5;   border-width: 1px; border-color: #7E5538; border-style: solid;z-index:5">
-			<table width="100%" cellpadding=0 cellspacing=0 onmousedown="startDrag(event , 'userscontent');">
-			<TR bgcolor="#7E5538"  style="background-image:url('../images/title_gradient.gif');"><TD Height="20" align="right" style="cursor: move">
-						<A href="#" onclick="$('cancel_a').click();"><font style="color:#FFFFFF; font-size: 12px; font-weight:bold;">X</font></A>
-					</TD>
-					<TD width=4></TD>
-			</TR>
-			</table>
-			<TABLE align=center cellpadding=2 cellspacing=2 border=0 width="100%">
-			<TR><TD height=10></TD></TR>
-			<TR><TD align=center><NOBR>Route <select id="incomingrule"  onclick="checksave(this)" class="input9">
-											<option value="allunmatched">All Unmatched incoming calls</option>
-											<option value="frompattern">incoming calls that match </option>
-										</select>
-										<span id="thatmatch">pattern <input type="text" id="frompattern" size=12  onchange="enablesave();"  onkeyup="enablesave();"  class="input9"></span>
-										</NOBR>
-					</TD>
-			</TR>
-			<TR><TD align=center>from provider <select id="fromprovider" onclick="checksave(this)"  class="input9"></select></TD></TR>
-			<TR>
-				<TD align=center>to extension <select id="toextension" onchange="enablesave();"  onkeyup="enablesave();"  class="input9"></select></TD>
-			</TR>
-			<TR>
-				<TD align=center height=50 valign=middle>  
-						<input type="button" id="save_a" value="Save" onclick="save_incomingrule();">&nbsp;&nbsp;
-						<input type="button" id="cancel_a" value="Cancel" onclick="$('userscontent').style.display='none'; $('bg_transparent').style.display ='none';" >
-				</TD>
-			</TR>
-			</TABLE>
-		</div>
-<div id="bg_transparent" STYLE="display:none; position: absolute; left: 0; top: 0; width:100%; height:100%;  background-color:#EFEFEF; -moz-opacity:.50;opacity:.50; border-width: 1px; border-color: #EFEFEF; border-style: solid; z-index:4">
+<tr>	
+<td width="170" valign=top align=left>
+<div id="menu">
+<table cellpadding=3 cellspacing=2 border=0 id="sidelist">
+	<tr><td width=3></td><td>Start</td></tr>
+	<tr><td></td><td>Verify Analog Ports</td></tr>
+	<!-- <tr><td></td><td>Date & Time</td></tr> -->
+	<tr><td></td><td>Local Extension Settings</td></tr>
+	<tr><td></td><td>Service Providers</td></tr>
+	<tr><td></td><td>Calling Rules</td></tr>
+	<tr><td></td><td>VoiceMail Settings</td></tr>
+	<tr><td></td><td>User Extensions</td></tr>
+	<tr><td></td><td class="slselected">Incoming Calls</td></tr>
+	<!-- <tr><td></td><td>VoiceMenus</td></tr> -->
+	<tr><td></td><td>Finish</td></tr>
+</table>
 </div>
-			<!--  this page -->
-			</td>
-		</tr>
+</td>
+<td valign=top align=center>
+<!--  this page -->
+	<select id="extensions" style="display:none"></select>
+	<select id="users" style="display:none"></select>
+
+	<div class="heading">
+		Step 7 of <script>document.write(parent.numberofsteps);</script>&nbsp;&nbsp;-  Incoming Calls
+	</div>
+
+	<div class="subheading">List of incoming call rules</div>
+
+	<table class="table_blacksm" cellpadding=2 cellspacing=2 border=0 align=center width=500 id="table_one">
+	<tr>	<td width=35>S.No</td>
+		<td> Incoming Rule </td>
+		<td width=75 align=center>Options</td>
+	</tr>
+	</table>
+
+	<div id="callingRulesTable_div" style="height:200px;width=100%; overflow :auto; padding : 0px 0px 0px 0px;">
+		<table id="callingRulesTable" cellpadding=2 cellspacing=1 border=0 align=center width=500></table>
+	</div>
+
+	<BR>
+	<center><input type="button" id="adddid" value="Add a Incoming Rule" onclick="add_incomingrule();"></center>
+	<div id="userscontent" STYLE="display:none; position: absolute; left: 227; top: 70; width:475; height:190;  background-color:#F4EFE5;   border-width: 1px; border-color: #7E5538; border-style: solid;z-index:5">
+		<table width="100%" cellpadding=0 cellspacing=0 onmousedown="startDrag(event , 'userscontent');">
+		<TR bgcolor="#7E5538"  style="background-image:url('../images/title_gradient.gif');">
+			<TD Height="20" align="right" style="cursor: move">
+				<A href="#" onclick="$('cancel_a').click();"><font style="color:#FFFFFF; font-size: 12px; font-weight:bold;">X</font></A>
+			</TD>
+			<TD width=4></TD>
+		</TR>
+		</table>
+	
+		<TABLE align=center cellpadding=2 cellspacing=2 border=0 width="100%">
+		<TR>	<TD height=10></TD></TR>
+		<TR>	<TD align=center>
+			<NOBR>Route <select id="incomingrule"  onclick="checksave(this)" class="input9">
+				<option value="allunmatched">All Unmatched incoming calls</option>
+				<option value="frompattern">incoming calls that match </option>
+				</select>
+				<span id="thatmatch">pattern <input type="text" id="frompattern" size=12  onchange="enablesave();"  onkeyup="enablesave();"  class="input9"></span>
+			</NOBR>
+			</TD>
+		</TR>
+		<TR>	<TD align=center>from provider <select id="fromprovider" onclick="checksave(this)"  class="input9"></select>	</TD></TR>
+		<TR>	<TD align=center>to extension <select id="toextension" onchange="enablesave();"  onkeyup="enablesave();"  class="input9"></select></TD>
+		</TR>
+		<TR>	<TD align=center height=50 valign=middle>  
+				<input type="button" id="save_a" value="Save" onclick="save_incomingrule();">&nbsp;&nbsp;
+				<input type="button" id="cancel_a" value="Cancel" onclick="$('userscontent').style.display='none'; $('bg_transparent').style.display ='none';" >
+			</TD>
+		</TR>
+		</TABLE>
+	</div>
+	<div id="bg_transparent" STYLE="display:none; position: absolute; left: 0; top: 0; width:100%; height:100%;  background-color:#EFEFEF; -moz-opacity:.50;opacity:.50; border-width: 1px; border-color: #EFEFEF; border-style: solid; z-index:4">
+	</div>
+<!--  this page -->
+</td>
+</tr>
 </table>
 </div>
 </BODY>
