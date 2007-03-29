@@ -57,8 +57,8 @@ function format_step(this_step){
 		temp[2] = temp[2].replace(/\)/, "");
 		return "Wait '"+ temp[2] +"' sec for KeyPress";
 	}
-	if( temp[2].match("ResponseTimeout") ){
-		temp[2] = temp[2].replace(/ResponseTimeout\(/, "");
+	if( temp[2].match("TIMEOUT") ){
+		temp[2] = temp[2].replace(/Set\(TIMEOUT\(response\)\=/, "");
 		temp[2] = temp[2].replace(/\)/, "");
 		return "Response Timeout to '" + temp[2] + "' sec";
 	}
@@ -339,7 +339,7 @@ function add_newstep(){
 		action_string = "s,"+ newpriority+ ",DigitTimeout(" + _nsv.value + ")";
 		break;
 	case 'ResponseTimeout':
-		action_string = "s,"+ newpriority+ ",ResponseTimeout(" + _nsv.value + ")";
+		action_string = "s,"+ newpriority+ ",Set(TIMEOUT(response)=" + _nsv.value + ")";
 		break;
 	case 'Playback':
 		action_string = "s,"+ newpriority+ ",Playback(" + _nsv.value + ")";
