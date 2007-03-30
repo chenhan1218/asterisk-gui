@@ -96,18 +96,23 @@ function checkfields(){
 return true;
 }
 
-function	buildpatternstring(){
+function buildpatternstring(){
 	var pattern = $('beginswith').value;
 	// Add an underscore
 	pattern = "_" + pattern;
 	// append 'followedby' number of X's
  	var s = _$('followedby').value ;
-	for (var r=0; r < s ; r++){
-		pattern = pattern + "X" ;
-	}
+	
 	// append a '.' if 'ormore' is checked
 	if( _$('ormore').checked ){
+		for (var r=0; r < s-1 ; r++){
+			pattern = pattern + "X" ;
+		}
 		pattern = pattern + "." ;
+	}else{
+		for (var r=0; r < s ; r++){
+			pattern = pattern + "X" ;
+		}
 	}
 	// assign this to the field 'pattern'
 	_$('pattern').value = pattern;
@@ -292,7 +297,7 @@ function parsepattern(a,e){
 	//		and followedby = length of string from somewhere till end
 	if(posofx == -1){ 	
 		if(returnstring == "or more"){
-			returnstring = "Begins with " + temp + " and followed by 0 or more digits" ;
+			returnstring = "Begins with " + temp + " and followed by 1 or more digits" ;
 		}else{
 			returnstring = "Exactly macthes " + temp  ;
 		}
@@ -302,16 +307,20 @@ function parsepattern(a,e){
 		}
 	}else{
 		if(returnstring == "or more"){
-			returnstring = "Begins with " + temp.substr(0,posofx) + " and followed by "+(temp.length - posofx)+" or more digits" ;
+			if(e == 1){
+				_$('beginswith').value = temp.substr(0,posofx);
+				_$('followedby').value = (temp.length - posofx + 1);
+			}
+			returnstring = "Begins with " + temp.substr(0,posofx) + " and followed by "+(temp.length - posofx + 1)+" or more digits" ;
 		}else{
+			if(e == 1){
+				_$('beginswith').value = temp.substr(0,posofx);
+				_$('followedby').value = (temp.length - posofx );
+			}
 			returnstring = "Begins with " + temp.substr(0,posofx) + " and followed by "+(temp.length - posofx) + " digits";
 		}
-		if(e == 1){
-			_$('beginswith').value = temp.substr(0,posofx);
-			_$('followedby').value = (temp.length - posofx);
-		}
 	}
-
+	disable_ormore();
 return returnstring;
 }
 
@@ -539,6 +548,18 @@ function localajaxinit(){
 
 	config2json('users.conf', 1, trunks_loaded ) ;
 	//parent.astmanEngine.config2list("users.conf", $('trunks'), new Array(), trunkcallbacks);
+
+	add_event( _$('followedby'), 'change', disable_ormore );
+	add_event( _$('followedby'), 'keyup', disable_ormore );
+}
+
+function disable_ormore(){
+	if( !parseInt(_$('followedby').value ,10)){ 
+		_$('ormore').checked = false;
+		_$('ormore').disabled = true; 
+	}else{
+		_$('ormore').disabled = false;
+	}
 }
 
 function trunks_loaded(b){
