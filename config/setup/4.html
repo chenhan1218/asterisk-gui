@@ -226,6 +226,10 @@ callbacks.delchanges = function(box, value) {
 }
 
 callbacks.beforeSaving = function(){
+	if (_$('trunkstylevoip').checked && !_$('provider').value) {
+		alert("Please select a service provider!");
+		return false;
+	}
 	if (_$('trunkstylevoip').checked && !_$('username').value.length ) {
 		alert("When using VoIP, the username must not be empty!");
 		return false;
