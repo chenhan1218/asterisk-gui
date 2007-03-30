@@ -214,6 +214,13 @@ callbacks.beforeSaving = function(){
 		if ( !_cv_un.value ) { gui_alert("Please enter a Username"); _cv_un.focus(); return false; }
 	}
 	if( !_tsv.checked && !_tsa.checked && !_tscv.checked ){ gui_alert("A trunk must be Analog or VoIP or Custom VOIP"); return false; }
+
+	if(_dvcs_v.length ==0 ){
+		ifnewtrunk();
+	}else{
+		ifedit_existing();
+	}
+
 	if(isnewtrunk ==1){
 		try{
 			var _pvdr = _$('provider');
@@ -290,8 +297,12 @@ function callbacks_savechanges_step2(){
 	}
 }
 
+function ifedit_existing(){
 
-callbacks.checkparams = function(box) {
+}
+
+
+function ifnewtrunk(){
 	var needcomma = 0;
 	var provider;
 	var count = 0;
@@ -349,15 +360,15 @@ callbacks.checkparams = function(box) {
 			_registeriax.value = 'no'; 
 			_registersip.value = 'no';
 		}else{
-			_registeriax.value = ( _cv_p.value == "iax") ?'yes' : 'no';
-			_registersip.value =  ( _cv_p.value == "sip") ?'yes' : 'no';
+			_registeriax.value = ( _cv_p == "iax") ?'yes' : 'no';
+			_registersip.value =  ( _cv_p == "sip") ?'yes' : 'no';
 		}
 
 		_$('host').value = _$('customvoip_host').value ;
 		_$('dialformat').value = '${EXTEN:1}';
 		_$('callerid').value = '';
 		_$('insecure').value = '';
-		_$('port').value = '';
+		_$('port').value = ( _cv_p == "iax" ) ? "4569" : "5060";
 		//$('context').value = 'default';
 		_$('fromuser').value = '';
 		_$('fromdomain').value = '';
@@ -365,10 +376,11 @@ callbacks.checkparams = function(box) {
 			_zapchan.options[x].selected = false;
 		_zapchan.value = '';
 		_$('group').value = '';
+		_$('disallow').value= "";
+		_$('allow').value = "all";
 	}
-
-	return false;
 }
+
 callbacks.newcategory = function() {
 	var tmp = null;
 	var x;
@@ -782,7 +794,7 @@ function update_ordercodecs(){
 
 function update_div_setordercodecs(){
 	_$('disallowed').innerHTML=""; 	_$('allowed').innerHTML="";
-	if( _$('disallow').value == "all" || _$('disallow').value == ""){
+	if( _$('disallow').value == "all" ){
 		_$('disallow_all').checked = true;
 		selectbox_add("disallowed", "ulaw");
 		selectbox_add("disallowed", "alaw");
@@ -799,10 +811,22 @@ function update_div_setordercodecs(){
 			selectbox_add("disallowed", tmp[x]);
 		}
 	}
-	var tmp = _$('allow').value.split(",");
-	for(var x=0; x < tmp.length; x++){
-		selectbox_add("allowed", tmp[x]);
-		selectbox_remove("disallowed",tmp[x]);
+	if(_$('allow').value =="all"){
+		selectbox_add("allowed", "ulaw");
+		selectbox_add("allowed", "alaw");
+		selectbox_add("allowed", "gsm");
+		selectbox_add("allowed", "ilbc");
+		selectbox_add("allowed", "speex");
+		selectbox_add("allowed", "g726");
+		selectbox_add("allowed", "adpcm");
+		selectbox_add("allowed", "lpc10");
+		selectbox_add("allowed", "g729");
+	}else{
+		var tmp = _$('allow').value.split(",");
+		for(var x=0; x < tmp.length; x++){
+			selectbox_add("allowed", tmp[x]);
+			selectbox_remove("disallowed",tmp[x]);
+		}
 	}
 }
 
