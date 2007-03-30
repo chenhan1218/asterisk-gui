@@ -109,3 +109,16 @@ body {
 .field_text{
 	font-size: 9pt;
 }
+
+.input9 {
+	font-size: 9pt;
+	border:1px solid; 
+	padding : 0px 0px 0px 3px;
+}
+
+.input9_hilight {
+	background-color:#FFC58A;
+	font-size: 9pt;
+	border:1px solid; 
+	padding : 0px 0px 0px 3px;
+}

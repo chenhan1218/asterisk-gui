@@ -36,6 +36,12 @@ var nextpage = "4.html";
 var prevpage = "1.html";
 
 function localinit(){
+	var focus_fields = [ 'localextenlength','userbase' ];
+	for( var  r =0; r < focus_fields.length ; r++ ){
+		var d = _$(focus_fields[r]);
+		d.onfocus = function(){ this.className = 'input9_hilight'; }
+		d.onblur = function(){ this.className = 'input9'; }
+	}
 	parent._$('next').disabled = true;
 	parent._$('next').onclick = function(){	 
 		if( !_$('save').disabled ){
@@ -173,7 +179,7 @@ function update_spae(){
 		
 		<div class="heading">Step 2 of <script>document.write(parent.numberofsteps);</script>&nbsp;&nbsp;- Local Extension Settings</div>
 		<p class="subheading">	Local Extensions are 
-			<select id="localextenlength">
+			<select id="localextenlength" class="input9">
 				<option value="2">2</option>
 				<option value="3">3</option>
 				<option value="4" selected>4</option>
@@ -181,7 +187,7 @@ function update_spae(){
 			</select> digits long&nbsp;
 		</p>
 
-		<p class="subheading">First Extension Number : <input type=text id="userbase" size=5 dfalt="6000">	</p>
+		<p class="subheading">First Extension Number : <input type=text id="userbase" size=5 dfalt="6000" class="input9"> </p>
 
 		<p class="subheading"><input type=checkbox id="allow_aliasextns"> Allow analog phones to be assigned to multiple extensions</p>
 

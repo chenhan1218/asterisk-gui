@@ -184,6 +184,12 @@ extencallbacks.loaded = function() {
 extencallbacks.eachline = true;
 
 function localinit(){
+	var focus_fields = [ 'name','fullname','secret','email','cid_number','context','zapchan'];
+	for( var  r =0; r < focus_fields.length ; r++ ){
+		var d = _$(focus_fields[r]);
+		d.onfocus = function(){ this.className = 'input9_hilight'; }
+		d.onblur = function(){ this.className = 'input9'; }
+	}
 	//parent.$('next').disabled = true;
 	parent._$('next').onclick = function(){	 window.location.href="8.html"; };
 	parent._$('back').disabled = false;
@@ -355,24 +361,24 @@ function loadusersintotable(){
 
 		<TABLE cellpadding=0 cellspacing=2 border=0 class="userdetails">
 		<TR>	<TD>User Extension</TD>
-			<TD><input size='5' id='name' pattern='^\d*$' class="input8"></TD>
+			<TD><input size='5' id='name' pattern='^\d*$' class="input9"></TD>
 			<TD>Full Name:</TD>
-			<TD><input size='20' id='fullname' pattern='^[a-zA-Z_0-9 ]*$' class="input8"></TD>
+			<TD><input size='20' id='fullname' pattern='^[a-zA-Z_0-9 ]*$' class="input9"></TD>
 		</TR>
 		<TR>	<TD>Password:</TD>
-			<TD><input size='5' id='secret' pattern='^[a-zA-Z_0-9 ]*$'  class="input8"></TD>
+			<TD><input size='5' id='secret' pattern='^[a-zA-Z_0-9 ]*$'  class="input9"></TD>
 			<TD>Email:</TD>
-			<TD><input size='20' id='email' pattern='^[0-9a-zA-Z\.\-\_\@]*$' class="input8"></TD>
+			<TD><input size='20' id='email' pattern='^[0-9a-zA-Z\.\-\_\@]*$' class="input9"></TD>
 		</TR>
 		<TR>	<TD>Caller id:</TD>
-			<TD><input size='12' id='cid_number'  pattern='^[\d\-]*$' class="input8"></TD>
+			<TD><input size='12' id='cid_number'  pattern='^[\d\-]*$' class="input9"></TD>
 			<TD>Analog Phone:</TD>
-			<TD><select size="1" id='zapchan' style='width:120px' class="input8"></select>
+			<TD><select size="1" id='zapchan' style='width:120px' class="input9"></select>
 				<span id="noanaloglines" style="display:none"><I>&nbsp;No Analog lines installed.</I></span>
 			</TD>
 		</TR>
 		<TR>	<TD>Calling Rule:</TD>
-			<TD><select size='1' id='context' style='width:120px' class="input8"></select>
+			<TD><select size='1' id='context' style='width:120px' class="input9"></select>
 				<input type='hidden' id='mailbox'><input type='hidden' id='group'>
 			</TD>
 			<TD>VoiceMail:</TD>

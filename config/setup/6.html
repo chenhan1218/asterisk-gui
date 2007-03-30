@@ -45,6 +45,13 @@ callbacks.savechanges = function() {
 }
 
 function localinit(){
+	var focus_fields = [ 'name','maxmsg','maxmessage','maxgreet'];
+	for( var  r =0; r < focus_fields.length ; r++ ){
+		var d = _$(focus_fields[r]);
+		d.onfocus = function(){ this.className = 'input9_hilight'; }
+		d.onblur = function(){ this.className = 'input9'; }
+	}
+
 	//parent.$('next').disabled = true;
 	parent._$('next').onclick = function(){	 
 		if ( _$('name').value.length==0 ){
@@ -266,13 +273,13 @@ function newexten() {
 	</div>
 	<table cellpadding=2 cellspacing=2 border=0 align=center  class="subheading">
 	<tr>	<td>Extension for checking messages:</td>
-		<td>&nbsp;<input size='5' id='name' pattern='^\d*$' onKeyUp="$('cancel').disabled=false;"  class="input8" ></td>
+		<td>&nbsp;<input size='5' id='name' pattern='^\d*$' onKeyUp="$('cancel').disabled=false;"  class="input9" ></td>
 	</tr>
 	<tr>	<td>Attach recordings to e-mail:</td>
 		<td><input type='checkbox' id='attach'></td>
 	</tr>
 	<tr>	<td>Maximum messages per folder:</td>
-		<td>&nbsp;<select id='maxmsg' class="input8">
+		<td>&nbsp;<select id='maxmsg' class="input9">
 			<option value='10'>10</option>
 			<option value='25'>25</option>
 			<option value='100'>100</option>
@@ -283,7 +290,7 @@ function newexten() {
 		</td>
 	</tr>
 	<tr>	<td>Maximum message time</td>
-		<td>&nbsp;<select id='maxmessage' class="input8">
+		<td>&nbsp;<select id='maxmessage' class="input9">
 			<option value='60'>1 minute</option>
 			<option value='120'>2 minutes</option>
 			<option value='300'>5 minutes</option>
@@ -294,7 +301,7 @@ function newexten() {
 		</td>
 	</tr>
 	<tr>	<td>Max&nbsp;greeting&nbsp;(seconds)</td>
-		<td>&nbsp;<input size=4 id='maxgreet' pattern='^\d*$' class="input8" dfalt=60></td>
+		<td>&nbsp;<input size=4 id='maxgreet' pattern='^\d*$' class="input9" dfalt=60></td>
 	</tr>
 	</table>					
 	<div style="display:none"><input type='button' id='save' value='Save'>&nbsp;<input type='button' id='cancel' value='Cancel'></div>

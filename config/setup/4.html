@@ -94,6 +94,13 @@ function delete_didcontext(trunk){
 }
 
 function localinit(){
+	var focus_fields = [ 'username','secret','provider','customvoip_name','customvoip_protocol','customvoip_host','customvoip_username','customvoip_secret' ];
+	for( var  r =0; r < focus_fields.length ; r++ ){
+		var d = _$(focus_fields[r]);
+		d.onfocus = function(){ this.className = 'input9_hilight'; }
+		d.onblur = function(){ this.className = 'input9'; }
+	}
+
 	parent._$('back').onclick  = function(){ window.location.href="3.html"; };
 	parent._$('next').onclick = function(){ window.location.href="5.html"; };
 	//parent.$('next').disabled = true;
@@ -762,7 +769,7 @@ function flip_register(){
 			<div id='analog' style='display:none' align="center">
 				<table align="center" class="font85">
 				<tr>	<td style='width:80px' valign='top' class="field_text">Lines:</td>
-					<td>	<select size="12" multiple='true' id='zapchan' style='width:200px' class="input8"></select>
+					<td>	<select size="12" multiple='true' id='zapchan' style='width:200px' class="input9"></select>
 						<div id="zapchan_analoglines" style='height:110px; width: 200px; overflow :auto; display:none'></div>
 					</td>
 				</tr>
@@ -772,16 +779,16 @@ function flip_register(){
 			<div id='voip' style='display:none' align="center">
 				<table align="center"  class="font85">
 					<tr>	<td style='width:80px' valign='top' class="field_text">Provider:</td>
-						<td>	<select size='4' id='provider' style='width:200px' altonchange='selectprovider()' class="input8"></select>	</td>
+						<td>	<select size='4' id='provider' style='width:200px' altonchange='selectprovider()' class="input9"></select>	</td>
 					</tr>
 					<tr>	<td colspan='2' align='center' id='providerlogo_image'></td>	</tr>
 					<tr>	<td colspan='2' align='center'>	<div id='providerdesc' align='left' style='width:230px;height:100px; font-size:10px'></div></td>
 					</tr>
 					<tr>	<td class="field_text">Username:</td>
-						<td><input size='20' id='username' class="input8"></td>
+						<td><input size='20' id='username' class="input9"></td>
 					</tr>
 					<tr>	<td class="field_text">Password:</td>
-						<td><input size='20' type="password" id='secret' class="input8"></td>
+						<td><input size='20' type="password" id='secret' class="input9"></td>
 					</tr>
 				</table>
 			</div>
@@ -801,10 +808,10 @@ function flip_register(){
 				</tr>
 				<tr>	<td colspan=2>Please enter your Service Provider information:</td>	</tr>
 				<tr>	<td class="field_text">Comment:</td>
-					<td><input type="text" id="customvoip_name" size=14 onkeyup=" $('cancel').disabled= false;$('save').disabled= false;"  class="input8"></td>
+					<td><input type="text" id="customvoip_name" size=14 onkeyup=" $('cancel').disabled= false;$('save').disabled= false;"  class="input9"></td>
 				</tr>
 				<tr>	<td class="field_text">Protocol:</td>
-					<td>	<select id="customvoip_protocol" onchange=" $('cancel').disabled= false;$('save').disabled= false;"  class="input8">
+					<td>	<select id="customvoip_protocol" onchange=" $('cancel').disabled= false;$('save').disabled= false;"  class="input9">
 						<option value="iax">IAX</option>
 						<option value="sip">SIP</option>
 						</select>
@@ -814,14 +821,14 @@ function flip_register(){
 					<td><input type="checkbox" id="customvoip_register" onchange="flip_register();"  class="input8"></td>
 				</tr>
 				<tr>	<td class="field_text">Host:</td>
-					<td><input type="text" id="customvoip_host" size=14 onkeyup=" $('cancel').disabled= false;$('save').disabled= false;"  class="input8"></td>
+					<td><input type="text" id="customvoip_host" size=14 onkeyup=" $('cancel').disabled= false;$('save').disabled= false;"  class="input9"></td>
 				</tr>
 	
 				<tr>	<td class="field_text">Username:</td>
-					<td><input type="text" id="customvoip_username" size=14 onkeyup=" $('cancel').disabled= false;$('save').disabled= false;"  class="input8"></td>
+					<td><input type="text" id="customvoip_username" size=14 onkeyup=" $('cancel').disabled= false;$('save').disabled= false;"  class="input9"></td>
 				</tr>
 				<tr>	<td class="field_text">Password:</td>
-					<td><input type="password" id="customvoip_secret" size=14 onkeyup=" $('cancel').disabled= false;$('save').disabled= false;"  class="input8"></td>
+					<td><input type="password" id="customvoip_secret" size=14 onkeyup=" $('cancel').disabled= false;$('save').disabled= false;"  class="input9"></td>
 				</tr>
 				</table>
 			</div>

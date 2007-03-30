@@ -34,6 +34,12 @@ var asterisk_guitools = "asterisk_guitools";
 var cats = new Array();
 
 function localinit(){
+	var un = _$('username') ; var pwd = _$('secret') ; 
+	un.onfocus = function(){this.className = 'input9_hilight';}
+	un.onblur = function(){this.className = 'input9';}
+	pwd.onfocus = function(){this.className = 'input9_hilight';}
+	pwd.onblur = function(){this.className = 'input9';}
+
 	parent.fxoports = [];
 	parent.fxsports = [];
 	parent.$('next').disabled = true;
@@ -240,10 +246,10 @@ function submitOnEnter(e){
 		<div class="heading">Pleae enter your admin Username and Password </div>
 		<table align="center">
 			<tr>	<td>Username:</td>
-				<td><input id="username"  size=12></td>
+				<td><input id="username"  size=12 class="input9"></td>
 			</tr>
 			<tr>	<td>Password:</td>
-				<td><input type="password" id="secret" size=12 onKeyPress="submitOnEnter(event)"></td>
+				<td><input type="password" id="secret" size=12 onKeyPress="submitOnEnter(event)" class="input9"></td>
 			</tr>
 			<tr>	<td align='center' colspan='2' height=40 valign=bottom>
 					<input type="button" id="login" value="Login" onClick="login()" >
