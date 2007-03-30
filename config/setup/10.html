@@ -25,8 +25,8 @@
 	<link href="setup.css" media="all" rel="Stylesheet" type="text/css" />
 </HEAD>
 <script src="../scripts/prototype.js"></script>
-<SCRIPT LANGUAGE="JavaScript">
-<!--
+<SCRIPT>
+
 var rawman_url;
 var usercallbacks = new Object;
 var fieldnames = new Array( 'save','userbase','localextenlength');
@@ -36,67 +36,63 @@ function localinit(){
 	//parent.$('next').disabled = true;
 	parent.$('next').onclick = function(){	 parent.window.location.href ="../cfgbasic.html"; };
 	parent.$('back').disabled = false;
-	parent.$('back').onclick  = function(){	 window.location.href="8.html"; };
+	parent.$('back').onclick  = function(){ window.location.href="8.html"; };
 	rawman_url = parent.rawman_url ;
 	parent.astmanEngine.setURL(rawman_url);
 	ping();
 }
 
 function ping(){
-			var opt = {
-				method: 'get',
-				asynchronous: true,
-				onComplete: isloggedin
-			};
-			opt.parameters="action=ping" ;
-			var tmp = new Ajax.Request(rawman_url , opt);
+	var opt = {
+		method: 'get',
+		asynchronous: true,
+		onComplete: isloggedin
+	};
+	opt.parameters="action=ping" ;
+	var tmp = new Ajax.Request(rawman_url , opt);
 }
 
 function isloggedin(originalRequest){
-			if ( originalRequest.responseText.match("Error") ) {
-				// User is not logged in , show him the login screen
-				parent.window.location.href = parent.window.location.href ; 
-			}
+	if ( originalRequest.responseText.match("Error") ) {
+		parent.window.location.href = parent.window.location.href ;
+	}
 
-			if ( originalRequest.responseText.match("Pong") ) {
-					// load default numbnerplan settings
-				parent.astmanEngine.pollEvents();
-			}
+	if ( originalRequest.responseText.match("Pong") ) {
+		parent.astmanEngine.pollEvents();
+	}
 }
 
-//-->
 </SCRIPT>
 <BODY bgcolor="#FFFFFF" onload="localinit()" topmargin=0 leftmargin=0>
 <table width="100%" height="100%" border=0 cellpadding=0 cellspacing=0>
-	<tr><td width="170" valign=top align=left>
-					<div id="menu">
-					<table cellpadding=3 cellspacing=2 border=0 id="sidelist">
-						<tr><td width=3></td><td>Start</td></tr>
-						<tr><td></td><td>Verify Analog Ports</td></tr>
-						<!-- <tr><td></td><td>Date & Time</td></tr> -->
-						<tr><td></td><td>Local Extension Settings</td></tr>
-						<tr><td></td><td>Service Providers</td></tr>
-						<tr><td></td><td>Calling Rules</td></tr>
-						<tr><td></td><td>VoiceMail Settings</td></tr>
-						<tr><td></td><td>User Extensions</td></tr>
-						<tr><td></td><td>Incoming Calls</td></tr>
-						<!-- <tr><td></td><td>VoiceMenus</td></tr>
-						<tr><td></td><td>Step 9 </td></tr> -->
-						<tr><td></td><td class="slselected">Finish</td></tr>
-					</table>
-					</div>
-			</td>
-			<td valign=top align=center>
-			<!--  this page -->
-			
-				<div class="heading"> Finish</div>
-				<div class="subheading">
-				Congratulations You have sucessfully configured your Asterisk installation<BR>
-				Click Next to proceed to the User Interface</div>
-
-			<!--  this page -->
-			</td>
-		</tr>
+	<tr>	
+	<td width="170" valign=top align=left>
+		<div id="menu">
+		<table cellpadding=3 cellspacing=2 border=0 id="sidelist">
+			<tr><td width=3></td><td>Start</td></tr>
+			<tr><td></td><td>Verify Analog Ports</td></tr>
+			<!-- <tr><td></td><td>Date & Time</td></tr> -->
+			<tr><td></td><td>Local Extension Settings</td></tr>
+			<tr><td></td><td>Service Providers</td></tr>
+			<tr><td></td><td>Calling Rules</td></tr>
+			<tr><td></td><td>VoiceMail Settings</td></tr>
+			<tr><td></td><td>User Extensions</td></tr>
+			<tr><td></td><td>Incoming Calls</td></tr>
+			<!-- <tr><td></td><td>VoiceMenus</td></tr>
+			<tr><td></td><td>Step 9 </td></tr> -->
+			<tr><td></td><td class="slselected">Finish</td></tr>
+		</table>
+		</div>
+	</td>
+	<td valign=top align=center>
+	<!--  this page -->
+		<div class="heading"> Finish</div>
+		<div class="subheading">
+		Congratulations You have sucessfully configured your Asterisk installation<BR>
+		Click Next to proceed to the User Interface</div>
+	<!--  this page -->
+	</td>
+	</tr>
 </table>
 </BODY>
 </HTML>
