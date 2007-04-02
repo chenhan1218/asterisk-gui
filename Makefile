@@ -96,6 +96,7 @@ ifeq ($(HTTPPREFIXBASE),)
 endif
 HTTPURL:=http://$(HTTPHOST):$(HTTPBINDPORT)/$(HTTPPREFIX)/static/config/cfgbasic.html
 HTTPSETUPURL:=http://$(HTTPHOST):$(HTTPBINDPORT)/$(HTTPPREFIX)/static/config/setup/install.html
+HTTPSETUPURL:=http://localhost:$(HTTPBINDPORT)/$(HTTPPREFIX)/static/config/setup/install.html
 
 SUBDIRS:=tools
 SUBDIRS_CLEAN:=$(SUBDIRS:%=%-clean)
@@ -176,6 +177,11 @@ checkconfig:
 	@echo " * GUI should be available at $(HTTPURL) "
 	@echo " * Before using the GUI, Please visit the install page at $(HTTPSETUPURL) "
 	@echo "" 
+	@echo " * Note: If you have bindaddr=127.0.0.1 in $(ASTETCDIR)/http.conf "
+	@echo "   you will only be able to visit it from the local machine. "
+	@echo ""
+	@echo "   Example: $(HTTPLOCALURL)"
+	@echo ""
 	@echo " * The login and password should be an entry from $(ASTETCDIR)/manager.conf"
 	@echo "   which has 'config' permission in read and write.  For example:"
 	@echo ""
