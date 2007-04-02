@@ -527,10 +527,8 @@ function addrow_totable(sp_text, sp_value){
 	var _spt = _$('serviceproviderstable') ;
 	var sno = _spt.rows.length + 1;
 	var newRow = _spt.insertRow(-1);
-	newRow.id = "row" + sp_value; 
+	newRow.id ="row" + sp_value ;
 	newRow["sp_value"] = sp_value ;
-	newRow.onmouseover= function(){ this.style.backgroundColor='#F9F0D1'; };
-	newRow.onmouseout=function(){ this.style.backgroundColor='#FFFFFF'; };
 
 	var newCell0 = newRow.insertCell(0);
 	newCell0 .innerHTML = sno ;
@@ -556,50 +554,35 @@ function addrow_totable(sp_text, sp_value){
 	}
 
 	var newCell3 = newRow.insertCell(3);
-	newCell3 .innerHTML = "<A href=\"#\" onclick=\"editSP('"+ sp_value +"');\" class=\"field_text9\">Edit</A>&nbsp;&nbsp;&nbsp;&nbsp;<A href=\"#\" onclick=\"deleteSP('"+ sp_value +"');\"  class=\"field_text9\">Delete</A>" ;
-	newCell3 .style.width = 120;
+	var _span_menu = "span" + sp_value;
+	newCell3 .innerHTML = "<span class=\"downmenubutton\" id='" + "span_" + sp_value  + "' onclick=\"show_downmenu( '"+ sp_value + "');\">Options&nbsp;&nbsp;<img src=images/1.gif></span>" ;
+	newCell3 .style.width = 90;
 	newCell3 .align = "center";
+}
 
-	/* create menu and its actions */
-	newRow.oncontextmenu = show_mymenu ;
-	newRow.onclick = hide_mymenu ; 
-	/*  End of creating menu */
+
+function show_downmenu( a ) {
+	var menu = document.getElementById('mymenu');
+	menu.sp_value = "";
+	menu.sp_value = a ;
+	
+	var tmp_left = _$("span_"+a).offsetLeft;
+	var tmp_top = _$("span_"+a).offsetTop + _$("span_"+a).offsetHeight;
+	var tmp_parent = _$("span_"+a);
+	while(tmp_parent.offsetParent != document.body){
+		tmp_parent = tmp_parent.offsetParent;
+		tmp_left += tmp_parent.offsetLeft;
+		tmp_top += tmp_parent.offsetTop;
+	}
+
+	menu.style.top =tmp_top ;
+	menu.style.left = tmp_left ;
+	setTimeout( function(){ _$('mymenu').style.display=""; } , 100 );
 }
 
 function hide_mymenu( ) {
 	document.getElementById('mymenu').style.display="none"; 
 }
-
-function show_mymenu(event) {
-	var menu = document.getElementById('mymenu');
-	menu.sp_value = "";
-
-	if(typeof window.scrollX != "undefined"){ //FF
-		var menu_top = event.clientY ;
-		var menu_left = event.clientX;
-		var f = event.target ; 
-	}else{ // IE
-		var menu_top = window.event.clientY ;
-		var menu_left = window.event.clientX;
-		try{ 
-			var f = window.event.srcElement; 
-		}catch(e){
-			menu.style.display = "none";
-			return false;			
-		}
-	}
-
-	if(f.parentNode.sp_value){
-		menu.sp_value = f.parentNode.sp_value ; 
-	}else if( f.parentNode.parentNode.sp_value ){
-		menu.sp_value = f.parentNode.parentNode.sp_value ; 
-	}
-	menu.style.top = menu_top;
-	menu.style.left = menu_left;
-	menu.style.display = "";
-	return false;
-}
-
 
 function preparemenus(){
 	var menu_div = document.getElementById('mymenu') ;
@@ -944,7 +927,7 @@ function advanced_cancel(){
 	<tr>	<td width=40>S.No</td>
 		<td width="200">Service Provider</td>
 		<td>Type</td>
-		<td width="120" align="center">Options</td>
+		<td width="90" align="center"></td>
 	</tr>
 </table>
 <div style="width:500;height:250; overflow :auto;">
