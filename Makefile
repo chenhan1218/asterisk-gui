@@ -81,7 +81,11 @@ ifeq ($(ASTSBINDIR),)
   endif
 endif
 
-HTTPDIR:=$(ASTVARLIBDIR)/static-http
+ifeq ($(ASTDATADIR),)
+  ASTDATADIR:=$(ASTVARLIBDIR)
+endif
+
+HTTPDIR:=$(ASTDATADIR)/static-http
 CONFIGDIR:=$(HTTPDIR)/config
 
 HTTPHOST?=$(shell hostname)
