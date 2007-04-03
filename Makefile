@@ -208,9 +208,14 @@ _install: _all $(SUBDIRS_INSTALL)
 	mkdir -p $(CONFIGDIR)/stylesheets
 	mkdir -p $(CONFIGDIR)/bkps
 	mkdir -p $(CONFIGDIR)/setup
+	mkdir -p $(ASTETCDIR)/scripts
 	@for x in gui_configs/*; do \
 		echo "$$x  -->  $(ASTETCDIR)" ; \
 		cp $$x $(ASTETCDIR)/ ; \
+	done
+	@for x in scripts/*; do \
+		echo "$$x  -->  $(ASTETCDIR)/scripts" ; \
+		cp $$x $(ASTETCDIR)/scripts ; \
 	done
 	@for x in config/images/*; do \
 		echo "$$x  -->  $(CONFIGDIR)/images/" ; \
