@@ -1,0 +1,98 @@
+<!--
+ * Asterisk-GUI	-	an Asterisk configuration interface
+ *
+ * "Backup / Restore" management
+ *
+ * Copyright (C) 2006-2007, Digium, Inc.
+ *
+ * Mark Spencer <markster@digium.com>
+ * Pari Nannapaneni <pari@digium.com>
+ *
+ * See http://www.asterisk.org for more information about
+ * the Asterisk project. Please do not directly contact
+ * any of the maintainers of this project for assistance;
+ * the project provides a web site, mailing lists and IRC
+ * channels for your use.
+ *
+ * This program is free software, distributed under the terms of
+ * the GNU General Public License Version 2. See the LICENSE file
+ * at the top of the source tree.
+ *
+-->
+<script src="scripts/prototype.js"></script>
+<script src="scripts/rico.js"></script>
+<script src="scripts/astman.js"></script>
+<link href="stylesheets/rico.css" media="all" rel="Stylesheet" type="text/css" />
+<link href="stylesheets/schwing.css" media="all" rel="Stylesheet" type="text/css" />
+<script>
+
+function resetmainscreen(){
+	top._$('mainscreen').width= 540;
+}
+
+function localajaxinit() {
+	top._$('mainscreen').width= 800;
+	setWindowTitle("File Editor");
+	parent.loadscreen(this);
+
+}
+
+
+function loadfile(){
+	var fname = _$('filename').value ;
+	config2json( fname, 0, fileparsed ) ;
+}
+
+function fileparsed(b){
+	//alert(b);
+	var zz = _$('file_output');
+	var c = eval('(' + b + ')');
+
+
+	while(zz.firstChild){
+		zz.removeChild(zz.firstChild);
+	}
+
+	for( var d in c ){
+		if ( c.hasOwnProperty(d) ) {
+			var h = document.createElement("div");
+			h.setAttribute("id","context_" + d );
+			h.align="left";
+			h.style.backgroundColor = '#4D5423';
+			h.style.color = '#FFFFFF';
+			h.style.marginTop = '15px' ;
+			h.style.width = '95%';
+			h.style.fontFamily = "'trebuchet ms',helvetica,sans-serif";
+			h.style.fontSize = '10pt' ;
+			h.innerHTML = "&nbsp;&nbsp;[" + d + "]";
+			zz.appendChild(h);
+			Rico.Corner.round("context_" + d, {compact:true});
+
+			var i = document.createElement("div");
+			i.setAttribute("id","contextContent_" + d );
+			i.align= "left";
+			i.style.backgroundColor = '#E0E6C4';
+			i.style.marginTop = '5px' ;
+			i.style.width = '95%';
+			i.style.fontSize = '9pt' ;
+			i.style.fontFamily = 'courier' ;
+
+			for(var r=0; r < c[d].length ; r++ ){
+				i.innerHTML += "&nbsp;&nbsp;" + unescape( c[d][r] ) + "<BR>" ;
+			}
+			zz.appendChild(i);
+
+			Rico.Corner.round("contextContent_" + d, {compact:true});
+		}
+	}
+
+}
+</script>
+<body id="foo" onload="localajaxinit()"  bgcolor="FFFFFF" onunload="resetmainscreen();">
+<div style="font-size : 12px; padding : 4px 6px 4px 6px; border-style : solid none solid none; border-top-color : #BDC7E7; border-bottom-color : #182052; border-width : 1px 0px 1px 0px; background-color : #ef8700; color : #ffffff;">
+	<span style="margin-left: 4px;font-weight:bold;">File Editor</span>
+	<span style="cursor: pointer; cursor: hand;" onclick="window.location.href=window.location.href;" >&nbsp;<img src="images/refresh.png" title=" Refresh " border=0 >&nbsp;</span>
+	<span><input id="filename" size=15 style="font-size: 8pt; border:1px solid; padding : 0px 0px 0px 0px;">&nbsp;<input type="button" value="Go" style="font-size: 8pt; border:1px solid; padding : 0px 0px 0px 0px;" onclick="loadfile();"></span>
+</div>
+<div id="file_output" style="height:475px;width= 770px; overflow :auto;" align="center"></div>
+</body>

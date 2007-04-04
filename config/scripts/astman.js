@@ -190,7 +190,7 @@ function toJSON(z, p){
 			var b = a[s].subfields ;
 			json_data += '"' + a[s].categoryname + '" : [ ' ;
 			for ( var y = 0 ;  y < b.length ;  y++ ){
-				json_data += '"' + b[y] + '"' ;
+				json_data += '"' + escape(b[y]) + '"' ;
 				if( y < b.length - 1 ){	json_data += ',' ;	}
 			}
 			if( s < a.length - 1 ){ json_data += ' ],' ; }else{ json_data += ' ]}' ; }
