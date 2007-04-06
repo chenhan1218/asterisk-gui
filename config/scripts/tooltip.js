@@ -29,6 +29,7 @@ function show_tooltip(lang, file,tip){
 	tooltips['users'] .en[14] = "<B>3-Way Calling:</B>Check this option if the User or Phone should have 3-Way Calling capability."; //3-Way Calling:
 	tooltips['users'] .en[15] = "<B>Is Agent:</B> Check this option if this User or Phone is an Call Queue Member (Agent)"; //Is Agent:
 	tooltips['users'] .en[16] = "<B>VM Password:</B> Voicemail Password for this user, Ex: \"1234\"."; //Voicemail Password
+	tooltips['users'] .en[17] = "<B>Hints:</B> If checked the phone being called will be sent a \"hint\" to light up status lamps on SIP phones."; // Hint phone before being dialed.
 
 // Tooltips for Conferencing (meetme)
 	tooltips['meetme']= new Object;
@@ -247,3 +248,7 @@ function show_tooltip(lang, file,tip){
 	tooltips['sysinfo'].en[1] = "<B>ifconfig:</B> Network devices information (ifconfig)";
 	tooltips['sysinfo'].en[2] = "<B>Resources:</B> Disk and Memory usage information";
 	tooltips['sysinfo'].en[3] = "<B>Logs:</B> Asterisk Log files";
+
+	tooltips['graph']= new Object;
+	tooltips['graph'].en = new Array;
+	tooltips['graph'].en[0] = "<B>CPU Usage:</B> Real-Time Updating Graph For CPU Usage";

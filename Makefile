@@ -208,6 +208,7 @@ _install: _all $(SUBDIRS_INSTALL)
 	mkdir -p $(CONFIGDIR)/stylesheets
 	mkdir -p $(CONFIGDIR)/bkps
 	mkdir -p $(CONFIGDIR)/setup
+	mkdir -p $(CONFIGDIR)/graphs
 	mkdir -p $(ASTETCDIR)/scripts
 	@for x in gui_configs/*; do \
 		echo "$$x  -->  $(ASTETCDIR)" ; \
@@ -236,6 +237,10 @@ _install: _all $(SUBDIRS_INSTALL)
 	@for x in config/*.html; do \
 		echo "$$x  -->  $(CONFIGDIR)" ; \
 		$(INSTALL) -m 644 $$x $(CONFIGDIR)/ ; \
+	done
+	@for x in config/graphs/*; do \
+		echo "$$x  -->  $(CONFIGDIR)/graphs" ; \
+		$(INSTALL) -m 644 $$x $(CONFIGDIR)/graphs ; \
 	done
 	@if [ -x /usr/sbin/asterisk-gui-post-install ]; then \
 		/usr/sbin/asterisk-gui-post-install $(DESTDIR) . ; \
