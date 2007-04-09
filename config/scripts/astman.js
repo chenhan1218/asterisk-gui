@@ -1609,7 +1609,12 @@ function Astman() {
 			asynchronous: true,
 			onSuccess: this.managerResponse,
 			onFailure: function(t) {
+				if( request == 'action=ping' && String(t.status) == '404' ){
+				 gui_alert("Error: " +" Make sure <I>enabled=yes</I> and <I>webenabled=yes</I> are set in manager.conf");
+				 setLoggedOn(0);
+				}else{
 				gui_alert("Error: " + t.status + ": " + t.statusText);
+				}
 			}
 		};
 		me.callback = callback;
