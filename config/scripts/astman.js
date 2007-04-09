@@ -1408,15 +1408,11 @@ function Astman() {
 
 				if (savewidget) {
 					widgets[x].savewidget = savewidget;
-					widgets[x].onclick = function() {
-						this.oldvalue = this.value;
-						return true;
-					}
-					widgets[x].onchange = function() {
-						this.savewidget.activateSave();
-						if (this.altonchange)
-							this.altonchange();
-					}
+					add_event( widgets[x] , 'click', function() { this.oldvalue = this.value; return true; });
+					add_event( widgets[x] , 'change', function() { 
+						this.savewidget.activateSave(); 
+						if (this.altonchange){ this.altonchange();} 
+					});
 				}
 				if (widgets[x].altonchange)
 					widgets[x].altonchange();
@@ -1470,11 +1466,10 @@ function Astman() {
 						if (widgets[x].altonclick)
 							widgets[x].altonclick();
 					} else {
-						widgets[x].onkeydown = function() {
-							this.oldvalue = this.value;
-							return true;
-						}
-						widgets[x].onkeyup = function(event) {
+
+						add_event( widgets[x] , 'keydown', function() { this.oldvalue = this.value; return true; });
+
+						add_event( widgets[x] , 'keyup', function() { 
 							if (this.oldvalue == this.value){return true;}
 							pattern = this.getAttribute('pattern');
 							if (pattern && check_pattern(pattern, this.oldvalue) && !check_pattern(pattern, this.value)) {
@@ -1485,7 +1480,8 @@ function Astman() {
 								this.savewidget.activateSave();
 							}
 							return true;
-						}
+						});
+
 					}
 				}
 			} else if (widgets[x].src != null) {
@@ -1663,36 +1659,31 @@ function Astman() {
 		};
 		if (widgets['save']) {
 			widgets['save'].hostselectbox = box;
-			widgets['save'].onclick = function() {
-				save_item(this.hostselectbox);
-			}
+
+			add_event( widgets['save'] , 'click', function() { save_item(this.hostselectbox); });
+
 		}
 		if (widgets['cancel']) {
 			widgets['cancel'].hostselectbox = box;
-			widgets['cancel'].onclick = function() {
-				cancel_item(this.hostselectbox);
-			}
+			add_event( widgets['cancel'] , 'click', function() { cancel_item(this.hostselectbox); });
 		}
+
 		if (widgets['new']) {
 			widgets['new'].hostselectbox = box;
 			widgets['new'].disabled = false;
-			widgets['new'].onclick = function() {
-				new_item(this.hostselectbox);
-			}
+			add_event( widgets['new'] , 'click', function() { new_item(this.hostselectbox); });
+
 		}
 		if (widgets['newitem']) {
 			widgets['newitem'].hostselectbox = box;
 			widgets['newitem'].disabled = false;
-			widgets['newitem'].onclick = function() {
-				new_subitem(this.hostselectbox);
-			}
+			add_event( widgets['newitem'] , 'click', function() { new_subitem(this.hostselectbox); });
+
 		}
 		if (widgets['delete']) {
 			widgets['delete'].hostselectbox = box;
 			widgets['delete'].disabled = true;
-			widgets['delete'].onclick = function() {
-				delete_item(this.hostselectbox);
-			}
+			add_event( widgets['delete'] , 'click', function() { delete_item(this.hostselectbox); });
 		}
 		tmp = new Ajax.Request(this.url, opt);
 	};
