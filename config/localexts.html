@@ -29,7 +29,7 @@
 var usercallbacks = new Object;
 var fieldnames = ['allow_aliasextns', 'allow_an_extns', 'callwaiting', 'cancel', 'hasagent', 'hasdirectory', 'hasiax', 'hasmanager', 'hassip', 'hasvoicemail', 'localextenlength', 'save', 'threewaycalling', 'userbase', 'vmsecret'];
 var widgets = {};
-var focus_fields = new Array('localextenlength','userbase','vmsecret');
+
 
 function tosetup(){
 	parent.window.location.href = "./setup/install.html";
@@ -82,10 +82,6 @@ function localajaxinit(){
 	for (var x =0 ; x < fieldnames.length ; x++ ) {
 		widgets[fieldnames[x]] = _$(fieldnames[x]);
 		widgets[fieldnames[x]].disabled = true;
-	}
-	for (var x =0; x < focus_fields.length; x++ ) {
-		widgets[focus_fields[x]].onfocus = function(){this.className = 'input9_hilight';}
-		widgets[focus_fields[x]].onblur = function(){this.className = 'input9';}
 	}
 
 	add_event( _$('localextenlength') , 'change' , update_spae ) ;

@@ -27,7 +27,6 @@
 <link href="stylesheets/schwing.css" media="all" rel="Stylesheet" type="text/css" />
 <script>
 var current_username = parent.document.getElementById('login_name').value;
-var focus_fields = new Array('newpass','newpass_rep');
 
 function askforRelogin(originalRequest){
 	if ( originalRequest.responseText.match("Success") ) {
@@ -88,10 +87,6 @@ function localajaxinit(){
 	showdiv_statusmessage();
 	setWindowTitle("Options");
 
-	for (var x =0; x < focus_fields.length; x++ ) {
-		_$(focus_fields[x]).onfocus = function(){this.className = 'input9_hilight';}
-		_$(focus_fields[x]).onblur = function(){this.className = 'input9';}
-	}
 	parent.loadscreen(this);
 	_$('newpass').focus();
 }

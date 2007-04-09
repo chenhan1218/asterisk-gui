@@ -26,16 +26,12 @@
 <link href="stylesheets/rico.css" media="all" rel="Stylesheet" type="text/css" />
 <link href="stylesheets/schwing.css" media="all" rel="Stylesheet" type="text/css" />
 <script>
-var focus_fields = new Array('newvmenu_name','newvmenu_ext');
+
 var callbacks = {};
 
 function localajaxinit(){
 	showdiv_statusmessage();
 	setWindowTitle("Record a Menu");
-	for (var x =0; x < focus_fields.length; x++ ) {
-		_$(focus_fields[x]).onfocus = function(){this.className = 'input8_hilight';}
-		_$(focus_fields[x]).onblur = function(){this.className = 'input8';}
-	}
 	_$('message_text').innerHTML = "Please wait while the system <BR> Calls the specified Extension ... ";
 	parent.astmanEngine.config2list("users.conf", _$('newvmenu_ext'), new Array, callbacks);
 }

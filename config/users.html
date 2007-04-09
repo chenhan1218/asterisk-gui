@@ -32,7 +32,7 @@ var adstatus;
 var callbacks = new Object;
 var extencallbacks = new Object;
 var fieldnames = ['callwaiting' ,'cancel' ,'cid_number' ,'context' ,'delete' ,'email' ,'fullname' ,'group' ,'hasagent' ,'hasdirectory' ,'hasiax' ,'hasmanager' ,'hassip' ,'hasvoicemail' ,'host' ,'mailbox' ,'name' ,'new' ,'save' ,'secret' ,'threewaycalling' ,'vmsecret' ,'zapchan', 'registeriax', 'registersip'];
-var focus_fields = ['cid_number' ,'context' ,'email' ,'fullname' ,'name' ,'secret' ,'vmsecret' ,'zapchan'] ;
+
 var localextenlength = 4;
 var allow_aliasextns = "no";
 var allow_an_extns = "no" ;
@@ -302,10 +302,7 @@ function localajaxinit() {
 		widgets[fieldnames[x]] = _$(fieldnames[x]);
 		widgets[fieldnames[x]].disabled = true;
 	}
-	for (var x =0; x < focus_fields.length; x++ ) {
-		widgets[focus_fields[x]].onfocus = function(){this.className = 'input8_hilight';}
-		widgets[focus_fields[x]].onblur = function(){this.className = 'input8';}
-	}
+
 	config2json('zapscan.conf', 1, analoglines_loaded ) ;
 	//parent.astmanEngine.config2list("zapscan.conf", _$('zapchan'), new Array(), phonecallbacks);
 }

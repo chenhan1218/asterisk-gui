@@ -33,7 +33,7 @@ var callbacks = new Object;
 var usercallbacks = new Object;
 var meetmecallbacks = { };
 var fieldnames = ['announce', 'cancel', 'delete', 'menu', 'music', 'name', 'newitem', 'quiet', 'record', 'room', 'save', 'setmarked', 'waitmarked'];
-var focus_fields = new Array('name','room', 'pin','pinadmin');
+
 
 function changed_extension() {
 	var app;
@@ -372,10 +372,7 @@ function localajaxinit() {
 		widgets[fieldnames[x]] = _$(fieldnames[x]);
 		widgets[fieldnames[x]].disabled = true;
 	}
-	for (var x =0; x < focus_fields.length; x++ ) {
-		_$( focus_fields[x] ).onfocus = function(){this.className = 'input8_hilight';}
-		_$( focus_fields[x] ).onblur = function(){this.className = 'input8';}
-	}
+
 	enable_disable_fields(0);
 
 	add_event( _$('pin') , 'keyup', enable_save_cancel );

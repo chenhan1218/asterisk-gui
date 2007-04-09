@@ -32,7 +32,7 @@ var didtrunks = new Object;
 var old_incomingrule, old_fromprovider ;
 var editstatus , edit_pattern, edit_DIDtrunk, edit_action, edit_priority ;
 var listOfExtensions = [] ;	// to store all the list of extensions to be displayed in the select menu
-var focus_fields = new Array('incomingrule','frompattern','fromprovider','toextension');
+
 
 user_callbacks.format = function(t, x) {
 	var tmp = asterisk_guiTDPrefix + t.name ; 
@@ -450,10 +450,7 @@ function delete_incomingrule(a,b,c,d){ // a is pattern, b is DID_trunk, c is act
 function localajaxinit() {
 	showdiv_statusmessage();
 	setWindowTitle("Incoming Calls");
-	for (var x =0; x < focus_fields.length; x++ ) {
-		_$(focus_fields[x]).onfocus = function(){this.className = 'input9_hilight';}
-		_$(focus_fields[x]).onblur = function(){this.className = 'input9';}
-	}
+
 	parent.astmanEngine.config2list("users.conf", _$('users'), new Array(), user_callbacks);
 }
 

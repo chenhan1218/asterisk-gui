@@ -32,7 +32,7 @@ var trunks_desc = { };
 var numplan_callbacks = { };
 var numberplansdata = { };
 var fieldnames = ['cancel', 'delete', 'include', 'name', 'new', 'plancomment', 'save'];
-var focus_fields = ['beginswith', 'followedby', 'pattern', 'plancomment', 'prepend', 'rulename', 'strip', 'trunks'];
+
 //var default_numberplan = 0;
 var isnewrule ;
 var iscustom ;
@@ -540,10 +540,7 @@ function localajaxinit(){
 		widgets[fieldnames[x]] = _$(fieldnames[x]);
 		widgets[fieldnames[x]].disabled = true;
 	}
-	for (var x =0; x < focus_fields.length; x++ ) {
-		_$(focus_fields[x]).onfocus = function(){this.className = 'input9_hilight';}
-		_$(focus_fields[x]).onblur = function(){this.className = 'input9';}
-	}
+
 	_$('message_text').innerHTML ="Saving Changes...";
 
 	config2json('users.conf', 1, trunks_loaded ) ;

@@ -37,8 +37,6 @@ var fieldnames =[ 'disallow','allow','callerid','cancel','contact','context','de
 		'name','new','port','provider','registeriax','registersip','save','secret','trunkname','trunkstyleanalog','trunkstylecustomvoip',
 		'trunkstylevoip','username','zapchan'];
 var provfieldnames = ['providerdesc', 'providerlogo'];
-var focus_fields = ['callerid','contact','custom_trunkname','customvoip_host','customvoip_name','customvoip_protocol','customvoip_secret','customvoip_username',
-		'fromdomain','fromuser','insecure','port','provider','secret','username'] ;
 var isnewtrunk;
 var dids_array = [];
 var old_trunkname;
@@ -491,10 +489,7 @@ function localajaxinit() {
 		provwidgets[provfieldnames[x]] = _$(provfieldnames[x]);
 		provwidgets[provfieldnames[x]].disabled = true;
 	}
-	for (var x =0; x < focus_fields.length; x++ ) {
-		$(focus_fields[x]).onfocus = function(){this.className = 'input8_hilight';}
-		$(focus_fields[x]).onblur = function(){this.className = 'input8';}
-	}
+
 	parent.astmanEngine.config2list("zapscan.conf", _$('zapchan'), new Array(), phonecallbacks);
 }
 

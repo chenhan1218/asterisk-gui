@@ -76,6 +76,10 @@ td {
 	padding : 0px 0px 0px 3px;
 }
 
+.input8:focus {
+	background-color:#FFC58A;
+}
+
 .input8_hilight {
 	background-color:#FFC58A;
 	font-size: 8pt;
@@ -93,6 +97,10 @@ td {
 	border-right-color:#666;
 	border-bottom-color:#666;
 	*/
+}
+
+.input9:focus {
+	background-color:#FFC58A;
 }
 
 .input9_hilight {

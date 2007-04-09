@@ -37,7 +37,7 @@ var widgets = {};
 var queueagents = new  Array;
 var queuenames = new Array;
 var fieldnames = ['agents', 'autofill', 'autopause', 'cancel', 'delete', 'fullname', 'joinempty', 'leavewhenempty', 'maxlen', 'musicclass', 'name', 'new', 'reportholdtime', 'save', 'strategy', 'timeout', 'wrapuptime'];
-var focus_fields = ['fullname', 'maxlen', 'musicclass', 'name', 'strategy', 'timeout', 'wrapuptime'];
+
 var k =0;
 var j = -1; 
 var extensions_conf_qs = new Array;
@@ -438,10 +438,7 @@ function localajaxinit() {
 		widgets[fieldnames[x]] = $(fieldnames[x]);
 		widgets[fieldnames[x]].disabled = true;
 	}
-	for (var x =0; x < focus_fields.length; x++ ) {
-		widgets[focus_fields[x]].onfocus = function(){this.className = 'input8_hilight';}
-		widgets[focus_fields[x]].onblur = function(){this.className = 'input8';}
-	}
+
 	adstatus = "hidden";
 	parent.astmanEngine.config2list("musiconhold.conf", $('musicclass'), new Array(), mohcallbacks);
 	$('save_q').disabled = true;

@@ -29,9 +29,6 @@
 function localajaxinit() {
 	setWindowTitle("Backup");
 	showdiv_statusmessage();
-	var _nn = _$('newbkp_name') ; 
-	_nn.onfocus = function(){this.className = 'input9_hilight';}
-	_nn.onblur = function(){this.className = 'input9';}
 
 	parent.astmanEngine.run_tool(asterisk_guiSysInfo, callback = function() { 
 		var opt = { method: 'get', asynchronous: true,
