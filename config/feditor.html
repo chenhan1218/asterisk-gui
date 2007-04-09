@@ -25,6 +25,57 @@
 <link href="stylesheets/rico.css" media="all" rel="Stylesheet" type="text/css" />
 <link href="stylesheets/schwing.css" media="all" rel="Stylesheet" type="text/css" />
 <script>
+var global_contextBeingEdited = ""; 
+var global_fileBeingEdited = "";
+
+function delete_context(){
+	if(!confirm("Are you sure you want to delete the selected context ?")){ return true; }
+
+	var uri = build_action('delcat', 0, global_contextBeingEdited ,"", "");
+	var opt = {
+		method: 'get',
+		asynchronous: true,
+		onSuccess: function() {
+			_$('div_editcontext').style.display = "none"; 
+			global_contextBeingEdited = "";
+			config2json( global_fileBeingEdited, 0, fileparsed );
+		},
+		onFailure: function(t) {
+			gui_alert("Config Error: " + t.status + ": " + t.statusText);
+			gui_alert("Failed to Rename the DID context for " + old_didcontext );
+		}
+	};
+	opt.parameters= "action=updateconfig&srcfilename=" + encodeURIComponent(global_fileBeingEdited) + "&dstfilename=" + encodeURIComponent(global_fileBeingEdited) + uri;
+	var tmp = new Ajax.Request(asterisk_rawmanPath, opt);
+}
+
+
+
+function cancel_context(){
+	global_contextBeingEdited = "";
+	_$('div_editcontext').style.display = "none";
+}
+
+function update_context(){ // rename from global_contextBeingEdited to $('context_edited').value
+	var uri = build_action('renamecat', 0, global_contextBeingEdited ,"", _$('context_edited').value );
+	var opt = {
+		method: 'get',
+		asynchronous: true,
+		onSuccess: function() {
+			_$('div_editcontext').style.display = "none"; 
+			global_contextBeingEdited = "";
+			config2json( global_fileBeingEdited, 0, fileparsed );
+		},
+		onFailure: function(t) {
+			gui_alert("Config Error: " + t.status + ": " + t.statusText);
+			gui_alert("Failed to Rename the DID context for " + old_didcontext );
+		}
+	};
+	opt.parameters= "action=updateconfig&srcfilename=" + encodeURIComponent(global_fileBeingEdited) + "&dstfilename=" + encodeURIComponent(global_fileBeingEdited) + uri;
+	var tmp = new Ajax.Request(asterisk_rawmanPath, opt);
+}
+
+
 
 function resetmainscreen(){
 	top._$('mainscreen').width= 540;
@@ -39,15 +90,111 @@ function localajaxinit() {
 
 
 function loadfile(){
-	var fname = _$('filename').value ;
-	config2json( fname, 0, fileparsed ) ;
+	global_fileBeingEdited = _$('filename').value ;
+	config2json( global_fileBeingEdited, 0, fileparsed ) ;
 }
+
+
+function showeditcontext(){
+	_$('div_editcontextContent').style.display = "none";
+	//move div_editcontext ontop of h_id and display it
+	var h_id = this.getAttribute('id') ;
+	global_contextBeingEdited = this.getAttribute('context');
+	
+	var tmp_left = _$(h_id).offsetLeft;
+	var tmp_top = _$(h_id).offsetTop;
+	var tmp_parent = _$(h_id);
+	while(tmp_parent.offsetParent != document.body){
+		tmp_parent = tmp_parent.offsetParent;
+		tmp_left += tmp_parent.offsetLeft;
+		tmp_top += tmp_parent.offsetTop;
+	}
+	_$('div_editcontext').style.left = tmp_left + 6;
+	_$('div_editcontext').style.top = tmp_top + 3 ;
+	_$('div_editcontext').style.display = "";
+	var f = this.getAttribute('context')
+	_$('context_edited').value = f ;
+	_$('context_edited').size = f.length;
+}
+
+
+function showeditcontextContent(){
+	_$('div_editcontext').style.display = "none";
+	var i_id = this.getAttribute('id') ;
+	global_contextBeingEdited = this.getAttribute('context');
+	
+	var tmp_left = _$(i_id).offsetLeft;
+	var tmp_top = _$(i_id).offsetTop;
+	var tmp_parent = _$(i_id);
+	while(tmp_parent.offsetParent != document.body){
+		tmp_parent = tmp_parent.offsetParent;
+		tmp_left += tmp_parent.offsetLeft;
+		tmp_top += tmp_parent.offsetTop;
+	}
+
+	_$('div_editcontextContent').style.left = tmp_left + 6;
+	_$('div_editcontextContent').style.top = tmp_top + 3 ;
+	_$('div_editcontextContent').style.display = "";
+	
+	_$('context_Content').value = this.CONTEXTCONTENT ;
+	_$('context_Content').rows = this.CONTEXTCONTENT_ROWS ;
+	//_$('context_edited').size = f.length;
+}
+
+
+function cancel_contextContent(){
+	global_contextBeingEdited = "";
+	_$('div_editcontextContent').style.display = "none";
+}
+
+
+function update_contextContent(){
+
+	var c = 0;
+	var uri = build_action('delcat', c , global_contextBeingEdited ,"", ""); c++;
+	uri += build_action('newcat', c , global_contextBeingEdited, "", ""); c++;
+
+	var r = 0;
+	var u = _$('context_Content').value.split("\n") ;
+	var posofeq ;
+	var firstpart ;
+	var secondpart ;
+
+	for( var f=0; f < u.length ; f++ ){
+		// in u[f] find 'first occurance of =' and split it there
+		posofeq = u[f].indexOf("=");
+		if( posofeq == -1){ continue; }
+		firstpart = u[f].substring(0, posofeq );
+		secondpart = u[f].substring( posofeq+1 );
+		uri += build_action('update', c, global_contextBeingEdited, firstpart, secondpart ); c++;
+	}
+
+	var opt = {
+		method: 'get',
+		asynchronous: true,
+		onSuccess: function() {
+			_$('div_editcontextContent').style.display = "none"; 
+			global_contextBeingEdited = "";
+			config2json( global_fileBeingEdited, 0, fileparsed );
+		},
+		onFailure: function(t) {
+			gui_alert("Config Error: " + t.status + ": " + t.statusText);
+			gui_alert("Failed to Rename the DID context for " + old_didcontext );
+		}
+	};
+	opt.parameters= "action=updateconfig&srcfilename=" + encodeURIComponent(global_fileBeingEdited) + "&dstfilename=" + encodeURIComponent(global_fileBeingEdited) + uri;
+	var tmp = new Ajax.Request(asterisk_rawmanPath, opt);
+
+}
+
+
 
 function fileparsed(b){
 	//alert(b);
 	var zz = _$('file_output');
 	var c = eval('(' + b + ')');
-
+	var p = "";
+	var rows ;
 
 	while(zz.firstChild){
 		zz.removeChild(zz.firstChild);
@@ -56,7 +203,9 @@ function fileparsed(b){
 	for( var d in c ){
 		if ( c.hasOwnProperty(d) ) {
 			var h = document.createElement("div");
-			h.setAttribute("id","context_" + d );
+			var h_id = "context_" + d;
+			h.setAttribute("id",h_id);
+			h.setAttribute("context",d);
 			h.align="left";
 			h.style.backgroundColor = '#4D5423';
 			h.style.color = '#FFFFFF';
@@ -66,10 +215,13 @@ function fileparsed(b){
 			h.style.fontSize = '10pt' ;
 			h.innerHTML = "&nbsp;&nbsp;[" + d + "]";
 			zz.appendChild(h);
-			Rico.Corner.round("context_" + d, {compact:true});
+			Rico.Corner.round(h_id, {compact:true});
+			add_event( _$(h_id) , 'click', showeditcontext );
 
 			var i = document.createElement("div");
-			i.setAttribute("id","contextContent_" + d );
+			var i_id = "contextContent_" + d;
+			i.setAttribute("id", i_id );
+			i.setAttribute("context",d);
 			i.align= "left";
 			i.style.backgroundColor = '#E0E6C4';
 			i.style.marginTop = '5px' ;
@@ -77,16 +229,26 @@ function fileparsed(b){
 			i.style.fontSize = '9pt' ;
 			i.style.fontFamily = 'courier' ;
 
+			var temp_contextContent = "" ;
+			rows = 0;
 			for(var r=0; r < c[d].length ; r++ ){
-				i.innerHTML += "&nbsp;&nbsp;" + unescape( c[d][r] ) + "<BR>" ;
+				p = unescape( c[d][r] );
+				i.innerHTML += "&nbsp;&nbsp;" + p + "<BR>" ;
+				temp_contextContent += p + "\n";
+				rows++;
 			}
+			i.CONTEXTCONTENT = temp_contextContent ;
+			i.CONTEXTCONTENT_ROWS = rows ;
 			zz.appendChild(i);
-
 			Rico.Corner.round("contextContent_" + d, {compact:true});
+			add_event( _$(i_id) , 'click', showeditcontextContent );
+
 		}
 	}
 
 }
+
+
 </script>
 <body id="foo" onload="localajaxinit()"  bgcolor="FFFFFF" onunload="resetmainscreen();">
 <div style="font-size : 12px; padding : 4px 6px 4px 6px; border-style : solid none solid none; border-top-color : #BDC7E7; border-bottom-color : #182052; border-width : 1px 0px 1px 0px; background-color : #ef8700; color : #ffffff;">
@@ -95,4 +257,21 @@ function fileparsed(b){
 	<span><input id="filename" size=15 style="font-size: 8pt; border:1px solid; padding : 0px 0px 0px 0px;">&nbsp;<input type="button" value="Go" style="font-size: 8pt; border:1px solid; padding : 0px 0px 0px 0px;" onclick="loadfile();"></span>
 </div>
 <div id="file_output" style="height:475px;width= 770px; overflow :auto;" align="center"></div>
+<div id="div_editcontext" style="display:none; z-index:1000; position: absolute;background-color : #4D5423">
+	<input id="context_edited" size=15 class="input8">&nbsp;
+	<input id="save_context" type=button value="Save" class="input8" onclick="update_context();">&nbsp;
+	<input id="cancel_context" type=button value="Cancel" class="input8" onclick="cancel_context();">&nbsp;
+	<input id="delete_context" type=button value="Delete" class="input8" onclick="delete_context();">
+</div>
+<div id="div_editcontextContent" style="display:none; z-index:1001; position: absolute;background-color : #E0E6C4">
+	<table>
+	<tr>	
+	<td>	<textarea id="context_Content" rows=1 cols=50 class="input8"></textarea>	</td>
+	<td valign="top" align="center">
+		<input id="save_contextContent" type=button value="Save" class="input8" onclick="update_contextContent();">&nbsp;
+		<input id="cancel_contextContent" type=button value="Cancel" class="input8" onclick="cancel_contextContent();">
+	</td>
+	</tr>
+	</table>
+</div>
 </body>
