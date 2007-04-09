@@ -91,13 +91,19 @@ demo.logoffs = function(msgs) {
 
 demo.logins = function(msgs) {
 	_$('statusbar').innerHTML = msgs[0].headers['message'];
-	resp = msgs[0].headers['response'];
-	if (resp == "Success" || msgs[0].headers['message'] == "Invalid/unknown command" ){
+	if ( msgs[0].headers['response'] == "Success" ){
+		parent.gui_feedback("Login Successful",'blue',6000);
 		_$('statusbar').innerHTML = "<img src='images/tick.gif'><i>Connected!</i>";
 		parent.astmanEngine.pollEvents();
 		loggedOn();
-	}else
+	}else if( msgs[0].headers['message'] == "Authentication failed" ){
+		parent.gui_feedback("Invalid Username/Password",'default',6000);
+		_$('username').focus();
+		_$('username').select();
 		loggedOff();
+	}else{
+		loggedOff();
+	}
 };
 
 demo.pongs  = function(msgs) {
