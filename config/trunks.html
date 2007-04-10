@@ -581,7 +581,8 @@ function hide_mymenu( ) {
 
 function preparemenus(){
 	var menu_div = document.getElementById('mymenu') ;
-	menu_div.style.width="90";
+	menu_div.style.width="80";
+	menu_div.style.borderColor = "#eee #bbb #bbb #ddd";
 	add_event( document.body , "click", function(){ _$('mymenu').style.display="none"; } );
 
 	var menuitem1 = document.createElement('div');
@@ -1033,7 +1034,7 @@ function advanced_cancel(){
 </div>
 <!-- Users content DIV -->
 <!-- Codecs content DIV -->
-<div id="codecs_content" STYLE="display:none; position: absolute; left: 20; top: 125; width:350;  background-color:#F4EFE5;   border-width: 1px; border-color: #7E5538; border-style: solid;z-index:5">
+<div id="codecs_content" STYLE="display:none; position: absolute; left: 20; top: 125; width:350; height:245;  background-color:#F4EFE5;   border-width: 1px; border-color: #7E5538; border-style: solid;z-index:5">
 	<table width="100%" cellpadding=0 cellspacing=0 onmousedown="startDrag(event , 'codecs_content');">
 	<TR bgcolor="#7E5538"  style="background-image:url('images/title_gradient.gif');">
 		<TD Height="20" align="center" style="cursor: move"><font style="color:#FFFFFF; font-size: 12px; font-weight:bold;">Codec Preferences</font></TD>
