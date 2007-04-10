@@ -241,7 +241,7 @@ function dialplans_loaded(b){
 		if ( c.hasOwnProperty(d) && d.substr(0,11) == 'numberplan-'  ) {
 			var New_OPTION = document.createElement('option');
 			if(c[d]['plancomment'])
-				New_OPTION.text =  c[d]['plancomment'] ;
+				New_OPTION.text =  unescape( c[d]['plancomment'] ) ;
 			else
 				New_OPTION.text =  d ;
 			New_OPTION.value = d ;
