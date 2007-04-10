@@ -1458,11 +1458,7 @@ function Astman() {
 				if (savewidget) {
 					widgets[x].savewidget = savewidget;
 					if ((widgets[x].type == 'checkbox') || (widgets[x].type == 'radio')) {
-						widgets[x].onclick = function() {
-							this.savewidget.activateSave();
-							if (this.altonclick)
-								this.altonclick();
-						}
+						add_event( widgets[x] , 'click', function() { this.savewidget.activateSave(); if (this.altonclick){this.altonclick();} });
 						if (widgets[x].altonclick)
 							widgets[x].altonclick();
 					} else {
