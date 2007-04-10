@@ -99,18 +99,10 @@ function showeditcontext(){
 	//move div_editcontext ontop of h_id and display it
 	var h_id = this.getAttribute('id') ;
 	global_contextBeingEdited = this.getAttribute('context');
-	
-	var tmp_left = _$(h_id).offsetLeft;
-	var tmp_top = _$(h_id).offsetTop;
-	var tmp_parent = _$(h_id);
-	while(tmp_parent.offsetParent != document.body){
-		tmp_parent = tmp_parent.offsetParent;
-		tmp_left += tmp_parent.offsetLeft;
-		tmp_top += tmp_parent.offsetTop;
-	}
-	_$('div_editcontext').style.left = tmp_left + 6;
-	_$('div_editcontext').style.top = tmp_top + 3 ;
+
+	_$(h_id).insertBefore(_$('div_editcontext'), null );
 	_$('div_editcontext').style.display = "";
+
 	var f = this.getAttribute('context')
 	_$('context_edited').value = f ;
 	_$('context_edited').size = f.length;
@@ -122,17 +114,7 @@ function showeditcontextContent(){
 	var i_id = this.getAttribute('id') ;
 	global_contextBeingEdited = this.getAttribute('context');
 	
-	var tmp_left = _$(i_id).offsetLeft;
-	var tmp_top = _$(i_id).offsetTop;
-	var tmp_parent = _$(i_id);
-	while(tmp_parent.offsetParent != document.body){
-		tmp_parent = tmp_parent.offsetParent;
-		tmp_left += tmp_parent.offsetLeft;
-		tmp_top += tmp_parent.offsetTop;
-	}
-
-	_$('div_editcontextContent').style.left = tmp_left + 6;
-	_$('div_editcontextContent').style.top = tmp_top + 3 ;
+	_$(i_id).insertBefore(_$('div_editcontextContent'), null );
 	_$('div_editcontextContent').style.display = "";
 	
 	_$('context_Content').value = this.CONTEXTCONTENT ;
@@ -189,6 +171,12 @@ function update_contextContent(){
 
 
 function fileparsed(b){
+	
+	_$('temp_holding').insertBefore(_$('div_editcontext'), null );
+	_$('temp_holding').insertBefore(_$('div_editcontextContent'), null );
+	_$('div_editcontext').style.display = "none";
+	_$('div_editcontextContent').style.display = "none";
+
 	//alert(b);
 	var zz = _$('file_output');
 	var c = eval('(' + b + ')');
@@ -212,6 +200,7 @@ function fileparsed(b){
 			h.style.width = '95%';
 			h.style.fontFamily = "'trebuchet ms',helvetica,sans-serif";
 			h.style.fontSize = '10pt' ;
+			var s_id = "span_" + d;
 			h.innerHTML = "&nbsp;&nbsp;[" + d + "]";
 			zz.appendChild(h);
 			Rico.Corner.round(h_id, {compact:true});
@@ -247,6 +236,10 @@ function fileparsed(b){
 
 }
 
+function stopBubble(b) {
+    if (!b) { b = window.event; }
+    b.cancelBubble = true;
+}
 
 </script>
 <body id="foo" onload="localajaxinit()"  bgcolor="FFFFFF" onunload="resetmainscreen();">
@@ -256,13 +249,14 @@ function fileparsed(b){
 	<span><input id="filename" size=15 style="font-size: 8pt; border:1px solid; padding : 0px 0px 0px 0px;">&nbsp;<input type="button" value="Go" style="font-size: 8pt; border:1px solid; padding : 0px 0px 0px 0px;" onclick="loadfile();"></span>
 </div>
 <div id="file_output" style="height:475px;width= 770px; overflow :auto;" align="center"></div>
-<div id="div_editcontext" style="display:none; z-index:1000; position: absolute;background-color : #4D5423">
+<span id="temp_holding"></span>
+<span id="div_editcontext" style="display:none; z-index:1000; background-color : #4D5423" onclick="stopBubble(event)">
 	<input id="context_edited" size=15 class="input8">&nbsp;
 	<input id="save_context" type=button value="Save" class="input8" onclick="update_context();">&nbsp;
 	<input id="cancel_context" type=button value="Cancel" class="input8" onclick="cancel_context();">&nbsp;
 	<input id="delete_context" type=button value="Delete" class="input8" onclick="delete_context();">
-</div>
-<div id="div_editcontextContent" style="display:none; z-index:1001; position: absolute;background-color : #E0E6C4">
+</span>
+<div id="div_editcontextContent" style="display:none; z-index:1001; background-color : #E0E6C4"  onclick="stopBubble(event)">
 	<table>
 	<tr>	
 	<td>	<textarea id="context_Content" rows=1 cols=50 class="input8"></textarea>	</td>
