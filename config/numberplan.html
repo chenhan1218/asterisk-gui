@@ -564,9 +564,9 @@ function trunks_loaded(b){
 	for( var d in c ){
 		if ( c.hasOwnProperty(d) && c[d]['context'] && (c[d]['context'] == asterisk_guiTDPrefix + d ) ) {
 			trunks_desc[d] = new Object();
-			trunks_desc[d].comment = (c[d]['trunkname']) ? c[d]['trunkname'] : d ;
+			trunks_desc[d].comment = (c[d]['trunkname']) ? unescape(c[d]['trunkname']) : d ;
 			var New_OPTION = document.createElement('option');
-			New_OPTION.text =  trunks_desc[d].comment ;
+			New_OPTION.text =  unescape(trunks_desc[d].comment) ;
 			New_OPTION.value =d ;
 			try {
 				_$('trunks').add(New_OPTION, null); // W3C way

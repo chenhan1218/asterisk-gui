@@ -203,9 +203,9 @@ function toJSON(z, p){
 			for ( var y in b ){ 
 				if ( b.hasOwnProperty(y) ){ 
 					if(hascomma){
-						json_data += ', "' + y + '":"' + b[y] + '"' ; 
+						json_data += ', "' + y + '":"' + escape(b[y]) + '"' ; 
 					}else{
-						json_data += '"' + y + '":"' + b[y] + '"' ; 
+						json_data += '"' + y + '":"' + escape(b[y]) + '"' ; 
 						hascomma = 1;
 					}
 				} 
