@@ -40,6 +40,13 @@ var pattern_beingedited ;
 var pattern_beingedited_priority ;
 var np_oldselect;
 
+function basicpattern(){
+	iscustom = false;
+	_$('define_advanced').style.display="none";
+	_$('define_usual').style.display="";
+}
+
+
 function ownpattern(){
 	iscustom = true;
 	_$('define_advanced').style.display="";
@@ -728,6 +735,7 @@ function free_mem( ){
 		<TD valign="top" align=right> Custom Pattern: </TD>
 		<TD valign=top>
 			<input type="text" id="pattern" size="" onChange="enablesave();" onkeyup="enablesave();"  class="input9"><BR>
+			<A href="#" onclick="basicpattern();">(define a Basic Pattern)</A><BR>
 			<table align='left' cellpadding=0 cellspacing=0>
 			<tr>	<td class="field_text"><b>N&nbsp;&nbsp;</b></td>
 				<td class="field_text">Any digit from 2 to 9</td>
