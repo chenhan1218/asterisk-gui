@@ -38,6 +38,7 @@ function delete_context(){
 			_$('AddContext').style.display = "none";
 			_$('div_editcontext').style.display = "none"; 
 			global_contextBeingEdited = "";
+			gui_feedback('Context Deleted','blue');
 			config2json( global_fileBeingEdited, 0, fileparsed );
 		},
 		onFailure: function(t) {
@@ -65,6 +66,7 @@ function update_context(){ // rename from global_contextBeingEdited to $('contex
 			_$('AddContext').style.display = "none";
 			_$('div_editcontext').style.display = "none"; 
 			global_contextBeingEdited = "";
+			gui_feedback('Context Updated','blue');
 			config2json( global_fileBeingEdited, 0, fileparsed );
 		},
 		onFailure: function(t) {
@@ -86,6 +88,7 @@ function localajaxinit() {
 	top._$('mainscreen').width= 798;
 	setWindowTitle("File Editor");
 	parent.loadscreen(this);
+	setTimeout( function(){ _$('filename').focus();}, 200);
 
 }
 
@@ -163,6 +166,7 @@ function update_contextContent(){
 		onSuccess: function() {
 			_$('div_editcontextContent').style.display = "none"; 
 			global_contextBeingEdited = "";
+			gui_feedback('Context Content Updated','blue');
 			config2json( global_fileBeingEdited, 0, fileparsed );
 		},
 		onFailure: function(t) {
@@ -257,8 +261,8 @@ function show_addcontext(){
 	_$('New_ContextName').value = "";	
 	var acb = _$('AddContextButton');
 
-	var tmp_left = acb.offsetLeft;
-	var tmp_top = acb.offsetTop + acb.offsetHeight;
+	var tmp_left = acb.offsetLeft -1;
+	var tmp_top = acb.offsetTop -1 ;
 	var tmp_parent = acb;
 
 	while(tmp_parent.offsetParent != document.body){
@@ -269,6 +273,7 @@ function show_addcontext(){
 	_$('AddContext').style.left = tmp_left;
 	_$('AddContext').style.top = tmp_top ;
 	_$('AddContext').style.display = "" ;
+	_$('New_ContextName').focus();
 }
 
 
@@ -286,6 +291,7 @@ function add_context(){
 		onSuccess: function() {
 			cancel_addcontext(); 
 			global_contextBeingEdited = "";
+			gui_feedback('New Context Added','blue');
 			config2json( global_fileBeingEdited, 0, fileparsed );
 		},
 		onFailure: function(t) {
@@ -301,7 +307,7 @@ function add_context(){
 <div style="font-size : 12px; padding : 4px 6px 4px 6px; border-style : solid none solid none; border-top-color : #BDC7E7; border-bottom-color : #182052; border-width : 1px 0px 1px 0px; background-color : #ef8700; color : #ffffff;">
 	<span style="margin-left: 4px;font-weight:bold;">File Editor</span>
 	<span style="cursor: pointer; cursor: hand;" onclick="window.location.href=window.location.href;" >&nbsp;<img src="images/refresh.png" title=" Refresh " border=0 >&nbsp;</span>
-	<span><input id="filename" size=15 style="font-size: 8pt; border:1px solid; padding : 0px 0px 0px 0px;">&nbsp;<input type="button" value="Go" style="font-size: 8pt; border:1px solid; padding : 0px 0px 0px 0px;" onclick="loadfile();"></span>
+	<span><input id="filename" size=15 class="input9">&nbsp;<input type="button" value="Go" style="font-size: 8pt; border:1px solid; padding : 0px 0px 0px 0px;" onclick="loadfile();"></span>
 </div>
 <div style="display:none; font-size:14px; font-weight:bold; font-family:helvetica,sans-serif,'trebuchet ms'; padding : 6px 0px 6px 10px;" id="div_filename">
 	<span id="CurrentFileName"></span>&nbsp;&nbsp;
@@ -326,8 +332,8 @@ function add_context(){
 	</tr>
 	</table>
 </div>
-<div id="AddContext" style="display:none; position:absolute; z-index:1004; background-color : #C1D7EC; padding : 6px 6px 6px 10px;"  onclick="stopBubble(event)">
-New Context : <input id="New_ContextName" size=20 class="input9">&nbsp;
+<div id="AddContext" style="display:none; position:absolute; z-index:1004; background-color : #C1D7EC; padding : 6px 6px 6px 10px;">
+Add New Context : <input id="New_ContextName" size=20 class="input9">&nbsp;
 		<input type="button" value="Add" style="font-size: 8pt; border:1px solid; padding : 0px 0px 0px 0px;" onclick="add_context();">&nbsp;
 		<input type="button" value="Cancel" style="font-size: 8pt; border:1px solid; padding : 0px 0px 0px 0px;" onclick="cancel_addcontext();">
 </div>
