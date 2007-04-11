@@ -35,6 +35,7 @@ function delete_context(){
 		method: 'get',
 		asynchronous: true,
 		onSuccess: function() {
+			_$('AddContext').style.display = "none";
 			_$('div_editcontext').style.display = "none"; 
 			global_contextBeingEdited = "";
 			config2json( global_fileBeingEdited, 0, fileparsed );
@@ -61,6 +62,7 @@ function update_context(){ // rename from global_contextBeingEdited to $('contex
 		method: 'get',
 		asynchronous: true,
 		onSuccess: function() {
+			_$('AddContext').style.display = "none";
 			_$('div_editcontext').style.display = "none"; 
 			global_contextBeingEdited = "";
 			config2json( global_fileBeingEdited, 0, fileparsed );
@@ -90,11 +92,15 @@ function localajaxinit() {
 
 function loadfile(){
 	global_fileBeingEdited = _$('filename').value ;
+	_$('AddContext').style.display = "none";
+	_$('div_filename').style.display = "";
+	_$('CurrentFileName').innerHTML = global_fileBeingEdited;
 	config2json( global_fileBeingEdited, 0, fileparsed ) ;
 }
 
 
 function showeditcontext(){
+	_$('AddContext').style.display = "none";
 	_$('div_editcontextContent').style.display = "none";
 	//move div_editcontext ontop of h_id and display it
 	var h_id = this.getAttribute('id') ;
@@ -110,6 +116,7 @@ function showeditcontext(){
 
 
 function showeditcontextContent(){
+	_$('AddContext').style.display = "none";
 	_$('div_editcontext').style.display = "none";
 	var i_id = this.getAttribute('id') ;
 	global_contextBeingEdited = this.getAttribute('context');
@@ -234,6 +241,11 @@ function fileparsed(b){
 		}
 	}
 
+
+	var space = document.createElement("div");
+	space.style.height = '50px';
+	zz.appendChild(space);
+
 }
 
 function stopBubble(b) {
@@ -241,12 +253,59 @@ function stopBubble(b) {
     b.cancelBubble = true;
 }
 
+function show_addcontext(){
+	_$('New_ContextName').value = "";	
+	var acb = _$('AddContextButton');
+
+	var tmp_left = acb.offsetLeft;
+	var tmp_top = acb.offsetTop + acb.offsetHeight;
+	var tmp_parent = acb;
+
+	while(tmp_parent.offsetParent != document.body){
+		tmp_parent = tmp_parent.offsetParent;
+		tmp_left += tmp_parent.offsetLeft;
+		tmp_top += tmp_parent.offsetTop;
+	}
+	_$('AddContext').style.left = tmp_left;
+	_$('AddContext').style.top = tmp_top ;
+	_$('AddContext').style.display = "" ;
+}
+
+
+function cancel_addcontext(){
+ _$('AddContext').style.display = "none";
+ _$('New_ContextName').value = "";
+}
+
+function add_context(){
+	var uri = build_action('newcat', 0, _$('New_ContextName').value ,"", "");
+
+	var opt = {
+		method: 'get',
+		asynchronous: true,
+		onSuccess: function() {
+			cancel_addcontext(); 
+			global_contextBeingEdited = "";
+			config2json( global_fileBeingEdited, 0, fileparsed );
+		},
+		onFailure: function(t) {
+			gui_alert("Config Error: " + t.status + ": " + t.statusText);
+			gui_alert("Failed to Add New context ");
+		}
+	};
+	opt.parameters= "action=updateconfig&srcfilename=" + encodeURIComponent(global_fileBeingEdited) + "&dstfilename=" + encodeURIComponent(global_fileBeingEdited) + uri;
+	var tmp = new Ajax.Request(asterisk_rawmanPath, opt);
+}
 </script>
 <body id="foo" onload="localajaxinit()"  bgcolor="FFFFFF" onunload="resetmainscreen();">
 <div style="font-size : 12px; padding : 4px 6px 4px 6px; border-style : solid none solid none; border-top-color : #BDC7E7; border-bottom-color : #182052; border-width : 1px 0px 1px 0px; background-color : #ef8700; color : #ffffff;">
 	<span style="margin-left: 4px;font-weight:bold;">File Editor</span>
 	<span style="cursor: pointer; cursor: hand;" onclick="window.location.href=window.location.href;" >&nbsp;<img src="images/refresh.png" title=" Refresh " border=0 >&nbsp;</span>
 	<span><input id="filename" size=15 style="font-size: 8pt; border:1px solid; padding : 0px 0px 0px 0px;">&nbsp;<input type="button" value="Go" style="font-size: 8pt; border:1px solid; padding : 0px 0px 0px 0px;" onclick="loadfile();"></span>
+</div>
+<div style="display:none; font-size:14px; font-weight:bold; font-family:helvetica,sans-serif,'trebuchet ms'; padding : 6px 0px 6px 10px;" id="div_filename">
+	<span id="CurrentFileName"></span>&nbsp;&nbsp;
+	<a href=# class="splbutton" onclick="show_addcontext();" id="AddContextButton">Add Context</a>
 </div>
 <div id="file_output" style="height:475px;width= 770px; overflow :auto;" align="center"></div>
 <span id="temp_holding"></span>
@@ -266,5 +325,10 @@ function stopBubble(b) {
 	</td>
 	</tr>
 	</table>
+</div>
+<div id="AddContext" style="display:none; position:absolute; z-index:1004; background-color : #C1D7EC; padding : 6px 6px 6px 10px;"  onclick="stopBubble(event)">
+New Context : <input id="New_ContextName" size=20 class="input9">&nbsp;
+		<input type="button" value="Add" style="font-size: 8pt; border:1px solid; padding : 0px 0px 0px 0px;" onclick="add_context();">&nbsp;
+		<input type="button" value="Cancel" style="font-size: 8pt; border:1px solid; padding : 0px 0px 0px 0px;" onclick="cancel_addcontext();">
 </div>
 </body>
