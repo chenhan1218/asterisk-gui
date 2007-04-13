@@ -88,6 +88,7 @@ function localajaxinit() {
 	top._$('mainscreen').width= 798;
 	setWindowTitle("File Editor");
 	load_recordedfiles();
+	add_event( _$('filenames') , 'change' , loadfile ) ;
 	parent.loadscreen(this);
 }
 
@@ -138,6 +139,7 @@ function load_recordedfiles(){
 
 
 function loadfile(){
+	if( !_$('filenames').value ) return;
 	global_fileBeingEdited = _$('filenames').value ;
 	_$('AddContext').style.display = "none";
 	_$('div_filename').style.display = "";
@@ -351,7 +353,7 @@ function add_context(){
 <div style="font-size : 12px; padding : 4px 6px 4px 6px; border-style : solid none solid none; border-top-color : #BDC7E7; border-bottom-color : #182052; border-width : 1px 0px 1px 0px; background-color : #ef8700; color : #ffffff;">
 	<span style="margin-left: 4px;font-weight:bold;">File Editor</span>
 	<span style="cursor: pointer; cursor: hand;" onclick="window.location.href=window.location.href;" >&nbsp;<img src="images/refresh.png" title=" Refresh " border=0 >&nbsp;</span>
-	<span><select id="filenames" class="input9"></select>&nbsp;<input type="button" value="Load" style="font-size: 8pt; border:1px solid; padding : 0px 0px 0px 0px;" onclick="loadfile();"></span>
+	<span><select id="filenames" class="input9"></select></span>
 </div>
 <div style="display:none; font-size:14px; font-weight:bold; font-family:helvetica,sans-serif,'trebuchet ms'; padding : 6px 0px 6px 10px;" id="div_filename">
 	<span id="CurrentFileName"></span>&nbsp;&nbsp;
