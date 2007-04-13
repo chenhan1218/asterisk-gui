@@ -967,12 +967,12 @@ extencallbacks.format = function(t, x) {
 }
 
 extencallbacks.loaded = function() {
-	parent.astmanEngine.run_tool(asterisk_guiSysInfo, callback = function() { 
+	parent.astmanEngine.run_tool(asterisk_guiListFiles + " " + asterisk_Sounds_path, callback = function() { 
 	var opt = { method: 'get', asynchronous: true,
 		onComplete: function(originalRequest){
 			_$('sysinfohtml').innerHTML = originalRequest.responseText;
 			// Add Default sound files to the list of sound files
-			var j = _$('sound_files').innerHTML ;
+			var j = _$('list_files').innerHTML ;
 			var sndfiles = j.split("\n") ;
 			var New_OPTION = document.createElement('option');
 			New_OPTION.text = "Default Sounds"  ;
@@ -1001,8 +1001,23 @@ extencallbacks.loaded = function() {
 					_$('combosel_sounds').add(New_OPTION); // IE way
 				}
 			}
+			load_recordedfiles();
+		},
+		onFailure: function(t) { alert("Config Error: " + t.status + ": " + t.statusText); }
+	};
+	opt.parameters="";
+	var tmp = new Ajax.Request(asterisk_guiSysInfo_output , opt);
+	});
+}
+
+
+function load_recordedfiles(){
+	parent.astmanEngine.run_tool(asterisk_guiListFiles + " " + asterisk_menusRecord_path, callback = function() { 
+	var opt = { method: 'get', asynchronous: true,
+		onComplete: function(originalRequest){
 			// Add Recorded Voiemenus to the list of sound files
-			var k = _$('rec_files').innerHTML ;
+			_$('sysinfohtml').innerHTML = originalRequest.responseText;
+			var k = _$('list_files').innerHTML ;
 			var recfiles = k.split("\n") ;
 			New_OPTION = document.createElement('option');
 			New_OPTION.text = "Recorded Voicemenus"  ;
@@ -1039,6 +1054,10 @@ extencallbacks.loaded = function() {
 	var tmp = new Ajax.Request(asterisk_guiSysInfo_output , opt);
 	});
 }
+
+
+
+
 
 extencallbacks.eachline = true;
 

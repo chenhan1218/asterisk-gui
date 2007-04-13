@@ -37,7 +37,7 @@ function localajaxinit(){
 }
 
 function showlist_of_files(){
-	var k = _$('rec_files').innerHTML ;
+	var k = _$('list_files').innerHTML ;
 	var recfiles = k.split("\n") ;
 
 	clear_table();
@@ -114,7 +114,7 @@ callbacks.format = function(t) {
 }
 
 callbacks.loaded = function(){
-	parent.astmanEngine.run_tool(asterisk_guiSysInfo, callback = function() { 
+	parent.astmanEngine.run_tool(asterisk_guiListFiles + " " + asterisk_menusRecord_path, callback = function() { 
 		var opt = { method: 'get', asynchronous: true,
 			onComplete: function(originalRequest){
 				_$('sysinfohtml').innerHTML = originalRequest.responseText;
