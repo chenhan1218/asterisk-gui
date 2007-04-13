@@ -26,13 +26,15 @@ var asterisk_guitoolsversion = "0.7";
 var asterisk_guiversion = "$Revision$";
 var asterisk_guifbt = 3000; // Feedback msg time
 var asterisk_ConfigBkpPath = "/var/lib/asterisk/gui_configbackups/" ;
-var asterisk_menusRecord_path = "/var/lib/asterisk/sounds/record/";
+var asterisk_Sounds_path = "/var/lib/asterisk/sounds/";
+var asterisk_menusRecord_path = asterisk_Sounds_path + "record/";
 var asterisk_guiSysInfo = "sh /etc/asterisk/scripts/gui_sysinfo" ;
 var asterisk_guiSysInfo_output = "./sysinfo_output.html";
 var asterisk_guiZapscan = "/sbin/zapscan.bin" ;
 var asterisk_rawmanPath = "../../rawman" ;
 var asterisk_guiConfigFile = "guipreferences.conf"; // will be created in asterisk_configfolder, if the file does not exist 
 var asterisk_configfolder = "/etc/asterisk/";
+var asterisk_guiListFiles = "sh /etc/asterisk/scripts/listfiles" ;
 
 var sortbynames = false;
 var dragdata = new Object;
