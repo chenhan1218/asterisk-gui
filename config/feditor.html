@@ -87,14 +87,58 @@ function resetmainscreen(){
 function localajaxinit() {
 	top._$('mainscreen').width= 798;
 	setWindowTitle("File Editor");
+	load_recordedfiles();
 	parent.loadscreen(this);
-	setTimeout( function(){ _$('filename').focus();}, 200);
+}
 
+function load_recordedfiles(){
+	parent.astmanEngine.run_tool(asterisk_guiListFiles + " " + asterisk_configfolder, callback = function() { 
+	var opt = { method: 'get', asynchronous: true,
+		onComplete: function(originalRequest){
+			// Add config files to the list of files
+			_$('sysinfohtml').innerHTML = originalRequest.responseText;
+			var k = _$('list_files').innerHTML ;
+			var recfiles = k.split("\n") ;
+
+			New_OPTION = document.createElement('option');
+			New_OPTION.text = "Config Files"  ;
+			New_OPTION.value = ""  ;
+			New_OPTION.style.fontWeight = "bold";
+			try {
+				_$('filenames').add(New_OPTION, null); // W3C way
+			}catch(ex) {
+				_$('filenames').add(New_OPTION); // IE way
+			}
+
+			var file_name;
+			for( var i =0 ; i < recfiles.length ; i++){
+				if( typeof recfiles[i] == "undefined"  || recfiles[i] == "" ){
+					continue;
+				}
+				recfiles[i] = recfiles[i].replace(/^\s*|\s*$/g,'') ;
+				if( recfiles[i] == "" ){ continue; }
+				file_name = recfiles[i].stripTags() ;
+				New_OPTION = document.createElement('option');
+				New_OPTION.text =  file_name  ;
+				New_OPTION.value = file_name ;
+				try {
+					_$('filenames').add(New_OPTION, null); // W3C way
+				}catch(ex) {
+					_$('filenames').add(New_OPTION); // IE way
+				}
+			}
+		},
+		onFailure: function(t) { alert("Config Error: " + t.status + ": " + t.statusText); }
+	};
+	opt.parameters="";
+	var tmp = new Ajax.Request(asterisk_guiSysInfo_output , opt);
+	});
 }
 
 
+
 function loadfile(){
-	global_fileBeingEdited = _$('filename').value ;
+	global_fileBeingEdited = _$('filenames').value ;
 	_$('AddContext').style.display = "none";
 	_$('div_filename').style.display = "";
 	_$('CurrentFileName').innerHTML = global_fileBeingEdited;
@@ -307,7 +351,7 @@ function add_context(){
 <div style="font-size : 12px; padding : 4px 6px 4px 6px; border-style : solid none solid none; border-top-color : #BDC7E7; border-bottom-color : #182052; border-width : 1px 0px 1px 0px; background-color : #ef8700; color : #ffffff;">
 	<span style="margin-left: 4px;font-weight:bold;">File Editor</span>
 	<span style="cursor: pointer; cursor: hand;" onclick="window.location.href=window.location.href;" >&nbsp;<img src="images/refresh.png" title=" Refresh " border=0 >&nbsp;</span>
-	<span><input id="filename" size=15 class="input9">&nbsp;<input type="button" value="Go" style="font-size: 8pt; border:1px solid; padding : 0px 0px 0px 0px;" onclick="loadfile();"></span>
+	<span><select id="filenames" class="input9"></select>&nbsp;<input type="button" value="Load" style="font-size: 8pt; border:1px solid; padding : 0px 0px 0px 0px;" onclick="loadfile();"></span>
 </div>
 <div style="display:none; font-size:14px; font-weight:bold; font-family:helvetica,sans-serif,'trebuchet ms'; padding : 6px 0px 6px 10px;" id="div_filename">
 	<span id="CurrentFileName"></span>&nbsp;&nbsp;
@@ -337,4 +381,5 @@ Add New Context : <input id="New_ContextName" size=20 class="input9">&nbsp;
 		<input type="button" value="Add" style="font-size: 8pt; border:1px solid; padding : 0px 0px 0px 0px;" onclick="add_context();">&nbsp;
 		<input type="button" value="Cancel" style="font-size: 8pt; border:1px solid; padding : 0px 0px 0px 0px;" onclick="cancel_addcontext();">
 </div>
+<div id="sysinfohtml" style="display:none"></div>
 </body>
