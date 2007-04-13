@@ -173,9 +173,9 @@ function convert_tohuman(a,b,c) { // a is pattern, b is DID_trunk, c is action,
 	}
 
 	if( a == "_X."){ // handling all unmatched 
-		return " Route all unmatched incoming calls from provider '" + trunk + "' to extension '" + exten[1] + "'" ; 
+		return " Route all unmatched incoming calls from provider '" + didtrunks[b].trunkname + "' to extension '" + exten[1] + "'" ; 
 	}
-	return " Route incoming calls from provider '" + trunk + "' that macth pattern '" + a + "' to extension '" + exten[1] + "'"  ; 
+	return " Route incoming calls from provider '" + didtrunks[b].trunkname + "' that macth pattern '" + a + "' to extension '" + exten[1] + "'"  ; 
 }
 
 
