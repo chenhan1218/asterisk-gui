@@ -59,7 +59,7 @@ function format_step(this_step){
 		return "Play '" + temp[2] + "' & Listen for KeyPress";
 	}
 	if( temp[2].match("DigitTimeout") ){
-		temp[2] = temp[2].replace(/DigitTimeout\(/, "");
+		temp[2] = temp[2].replace(/Set\(TIMEOUT\(digit\)\=/, "");
 		temp[2] = temp[2].replace(/\)/, "");
 		return "Wait '"+ temp[2] +"' sec for KeyPress";
 	}
@@ -345,7 +345,7 @@ function add_newstep(){
 		action_string = "s,"+ newpriority+ ",Background(" + _nsv.value + ")";
 		break;
 	case 'DigitTimeout':
-		action_string = "s,"+ newpriority+ ",DigitTimeout(" + _nsv.value + ")";
+		action_string = "s,"+ newpriority+ ",Set(TIMEOUT(digit)=" + _nsv.value + ")";
 		break;
 	case 'ResponseTimeout':
 		action_string = "s,"+ newpriority+ ",Set(TIMEOUT(response)=" + _nsv.value + ")";
