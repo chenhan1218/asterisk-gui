@@ -118,6 +118,7 @@ function load_recordedfiles(){
 				}
 				recfiles[i] = recfiles[i].replace(/^\s*|\s*$/g,'') ;
 				if( recfiles[i] == "" ){ continue; }
+				if( recfiles[i].substr( (recfiles[i].length - 5), recfiles[i].length) != ".conf") { continue; }
 				file_name = recfiles[i].stripTags() ;
 				New_OPTION = document.createElement('option');
 				New_OPTION.text =  file_name  ;
