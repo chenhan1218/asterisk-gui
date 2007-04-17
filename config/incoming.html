@@ -311,6 +311,7 @@ function save_new_incomingrule(){
 			refreshtable();
 			_$('userscontent').style.display = "none";
 			_$('bg_transparent').style.display ='none';
+			gui_feedback("Added Incoming Rule",'blue');
 		},
 		onFailure: function(t) {
 			gui_alert("Config Error: " + t.status + ": " + t.statusText);
@@ -385,6 +386,7 @@ function update_incomingrule(){
 			_$('userscontent').style.display = "none";
 			_$('bg_transparent').style.display ='none';
 			refreshtable();
+			gui_feedback("Updated Incoming Rule",'blue');
 		},
 		onFailure: function(t) {
 			gui_alert("Config Error: " + t.status + ": " + t.statusText);
@@ -432,6 +434,7 @@ function delete_incomingrule(a,b,c,d){ // a is pattern, b is DID_trunk, c is act
 			// add this to the global object
 			delete didtrunks[b][a];
 			refreshtable();
+			gui_feedback("Deleted 'Incoming Rule'",'default');
 		},
 		onFailure: function(t) {
 			gui_alert("Config Error: " + t.status + ": " + t.statusText);
