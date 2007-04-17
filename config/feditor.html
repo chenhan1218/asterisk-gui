@@ -370,12 +370,14 @@ function add_context(){
 </span>
 <div id="div_editcontextContent" style="display:none; z-index:1001; background-color : #E0E6C4"  onclick="stopBubble(event)">
 	<table>
-	<tr>	
-	<td>	<textarea id="context_Content" rows=1 cols=50 class="input8"></textarea>	</td>
-	<td valign="top" align="center">
+	<tr>
+	<td valign="top" align="right">
 		<input id="save_contextContent" type=button value="Save" class="input8" onclick="update_contextContent();">&nbsp;
 		<input id="cancel_contextContent" type=button value="Cancel" class="input8" onclick="cancel_contextContent();">
 	</td>
+	</tr>
+	<tr>	
+	<td>	<textarea id="context_Content" rows=1 cols=95 class="input9"></textarea>	</td>
 	</tr>
 	</table>
 </div>
