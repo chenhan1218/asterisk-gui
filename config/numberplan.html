@@ -181,12 +181,14 @@ function saverule(){
 		//		newpriority++;
 		//	}
 		//}
-		add_rule_fromeditform( newpriority, oncomplete = function(){ show_npdata_table(_extv); } );
+		var msg = "Calling Rule Added." ;
+		add_rule_fromeditform( newpriority, oncomplete = function(){ show_npdata_table(_extv);gui_feedback(msg,'blue'); } );
 	 }else{	// update exiting rule
 		// delete existing rule
 		// add rule with new values
 		delete_callingrule(pattern_beingedited,pattern_beingedited_priority, oncomplete = function(){
-				add_rule_fromeditform( pattern_beingedited_priority, oncomplete = function(){ show_npdata_table(_extv); } );
+				var msg = "Calling Rule Updated." ;
+				add_rule_fromeditform( pattern_beingedited_priority, oncomplete = function(){show_npdata_table(_extv); gui_feedback(msg,'blue');});
 			} 
 		);
 		//$('userscontent').style.display='none';
@@ -371,7 +373,7 @@ function addrowtotable(a,b,c,d){	// a is pattern, b is priority, c is trunk, d i
 
 function deletecallingrule(a,b){ // a is pattern, b is priority
 	if(!confirm("Are you sure ?")) { return true; }
-	delete_callingrule(a,b, oncomplete = function(){ show_npdata_table( _$('extensions').value ); } ) ;
+	delete_callingrule(a,b, oncomplete = function(){ show_npdata_table( _$('extensions').value ); gui_feedback("Calling Rule Deleted",'default'); } ) ;
 }
 
 function delete_callingrule(a,b,oncomplete){ // a is pattern, b is priority
@@ -621,7 +623,7 @@ function addthe_default_callingplan(a){
 	var opt = {
 		method: 'get',
 		asynchronous: true,
-		onSuccess: function(t) { location.reload(); },
+		onSuccess: function(t) { gui_feedback("Created Default DialPlan",'green'); location.reload(); },
 		onFailure: function(t) { gui_alert("Config Error: " + t.status + ": " + t.statusText); }
 	};
 	opt.parameters= "action=updateconfig&srcfilename=" + encodeURIComponent("extensions.conf") + "&dstfilename=" + encodeURIComponent("extensions.conf") + uri;
