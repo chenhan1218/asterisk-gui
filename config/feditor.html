@@ -162,6 +162,7 @@ function showeditcontext(){
 	var f = this.getAttribute('context')
 	_$('context_edited').value = f ;
 	_$('context_edited').size = f.length;
+	_$('context_edited').focus();
 }
 
 
@@ -177,6 +178,7 @@ function showeditcontextContent(){
 	_$('context_Content').value = this.CONTEXTCONTENT ;
 	_$('context_Content').rows = this.CONTEXTCONTENT_ROWS ;
 	//_$('context_edited').size = f.length;
+	_$('context_Content').focus();
 }
 
 
