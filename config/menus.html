@@ -991,7 +991,7 @@ extencallbacks.loaded = function() {
 				sndfiles[i] = sndfiles[i].replace(/^\s*|\s*$/g,'') ;
 				if( sndfiles[i] == "" ){ continue; }
 				file_name = sndfiles[i].stripTags() ;
-				file_name = file_name.substr(0,(file_name.length - 4) ) ;
+				file_name = file_name.replace(/\..*/,""); /* Replace .ulaw .gsm .whatever with nothing so its just the sound file */
 				New_OPTION = document.createElement('option');
 				New_OPTION.text =  file_name  ;
 				New_OPTION.value = file_name ;
