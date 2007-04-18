@@ -122,3 +122,18 @@ body {
 	border:1px solid; 
 	padding : 0px 0px 0px 3px;
 }
+
+
+.splbutton {
+	font-size:12px;
+	background:#FFFFFF none repeat scroll 0%; 
+	border:1px solid #8A8A8A; 
+	padding:1px 5px 1px 5px; text-decoration:none;
+}
+
+.splbutton:hover {
+	background:#F3640D none repeat scroll 0%;
+	color:#FFFFFF;
+	text-decoration:none;
+}
+

@@ -74,13 +74,21 @@ function isloggedin(originalRequest){
 }
 
 function addthe_default_callingplan(){
-	t=confirm("A default Dial Plan is not found. \n" + " Do you want to create a default Dial Plan ");
-	if(t == false){ 
-		_$('status').innerHTML = "A default DialPlan is not found !! "
-		+ "<BR> <A href=\"#\" onclick=\"addthe_default_callingplan()\">click here</A> to create a default Dial plan";
-		_$('addrule').disabled = 1;
-		return true;
-	}
+	gui_feedback("A default DialPlan is not found !! ", 5000 );
+	_$('table_one').style.display="none";
+	var newRow = _$('callingRulesTable').insertRow(-1);
+	var newCell0 = newRow.insertCell(0);
+	newCell0 .align = "center";
+	newCell0 .style.fontSize = "14px";
+	newCell0 .style.padding = "15px 0px 30px 0px";
+	newCell0 .innerHTML = "the default DialPlan <B>'DialPlan1'</B> is not found !! "
+	+ "<BR><BR><A href=\"#\" class=\"splbutton\" onclick=\"addthe_default_callingplan2()\">Click here</A> to create 'DialPlan1'" ;
+	_$('addrule').disabled = 1;
+	_$('heading2').style.display = "none";
+}
+
+
+function addthe_default_callingplan2(){
 	var default_planname = 'numberplan-custom-1' ;
 	var uri = build_action('newcat', 0, default_planname ,"", "");
 	uri += build_action('append', 1, default_planname,"plancomment", "DialPlan1"); 
@@ -96,6 +104,7 @@ function addthe_default_callingplan(){
 	opt.parameters= "action=updateconfig&srcfilename=" + encodeURIComponent("extensions.conf") + "&dstfilename=" + encodeURIComponent("extensions.conf") + uri;
 	var tmp = new Ajax.Request(rawman_url, opt);
 }
+
 
 trunkcallbacks.format = function(t) {
 	if ( t.fieldbyname['context'] != asterisk_guiTDPrefix + t.name ) {
@@ -210,6 +219,7 @@ numplan_callbacks.loaded = function() {
 		var newRow = _$('callingRulesTable').insertRow(-1);
 		var newCell0 = newRow.insertCell(0);
 		newCell0 .align = "center";
+		newCell0 .style.fontSize = "13px";
 		newCell0 .innerHTML = "<BR>A <I>Calling Rule</I> is not defined<BR><BR> Please click on the 'Add a Calling Rule' button<BR> to add a Calling Rule<BR><BR>" ;
 		return true;
 	}
@@ -504,6 +514,7 @@ return true;
 <!--  this page -->
 	<select id="extensions" style="display:none"></select>
 	<div class="heading">Step 4 of <script>document.write(parent.numberofsteps);</script>&nbsp;&nbsp;-  Outbound Calling Rules</div>
+	<div id="heading2" style="font-size:13px; padding : 0px 0px 10px 0px;">List of Calling Rules in default dialplan - <B>DialPlan1</B> </div>
 	<table class="table_blacksm" cellpadding=2 cellspacing=2 border=0 align=center width=500 id="table_one">
 		<tr>	<td width=35>S.No</td>
 			<td width=90>RuleName</td>
