@@ -22,6 +22,7 @@
 <script src="scripts/prototype.js"></script>
 <script src="scripts/rico.js"></script>
 <script src="scripts/astman.js"></script>
+<script src="scripts/lang.js"></script>
 <script src="scripts/tooltip.js"></script>
 <link href="stylesheets/rico.css" media="all" rel="Stylesheet" type="text/css" />
 <link href="stylesheets/schwing.css" media="all" rel="Stylesheet" type="text/css" />
@@ -277,6 +278,8 @@ function localajaxinit() {
 		}
 	}
 	*/
+	apply_lang('en');
+
 	setWindowTitle("Users");
 	if(window.location.href.match("sortbynames") ){
 		sortbynames = true;
@@ -321,7 +324,7 @@ function free_mem(){
 </script>
 <body id="foo" onload="localajaxinit()"  bgcolor="#EFEFEF" onunload="free_mem()">
 <div class="mainscreenTitleBar">
-	<span style="margin-left: 4px;font-weight:bold;">User and Phone Configuration</span>
+	<span style="margin-left: 4px;font-weight:bold;"><span class="lclzn">users,0</span></span>
 	<span style="cursor: pointer; cursor: hand;" onclick="window.location.href=window.location.href;" >&nbsp;<img src="images/refresh.png" title=" Refresh " border=0 >&nbsp;</span>
 </div>
 <div class="mainscreenContentBox" id="userscontent">

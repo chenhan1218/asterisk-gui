@@ -1,6 +1,6 @@
 
 
-var lang = 'en';
+
 var tooltips = new Object;
 
 function show_tooltip(lang, file,tip){
