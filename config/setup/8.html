@@ -136,6 +136,7 @@ function refreshtable(){
 		var newRow = _$('callingRulesTable').insertRow(-1);
 		var newCell0 = newRow.insertCell(0);
 		newCell0 .align = "center";
+		newCell0 .style.fontSize = "14px";
 		newCell0 .innerHTML = "<BR>An <I>incoming Calling Rule</I> is not defined<BR><BR> Please click on 'Add a Incoming Rule' button<BR> to add a new incoming call rule.<BR><BR>" ;
 		return true;
 	}
@@ -146,19 +147,22 @@ function addrowtotable(a,b,c,d){	// a is pattern, b is DID_trunk, c is action, d
 	var sno = _$('callingRulesTable').rows.length + 1;
 	var newRow = _$('callingRulesTable').insertRow(-1);
 	newRow.id = "row" + sno; 
-	
+
 	var newCell0 = newRow.insertCell(0);
 	newCell0.innerHTML = sno ;
 	newCell0.align="center";
 	newCell0.width=35;
+	newCell0.style.fontSize = "12px";
 
 	var newCell1 = newRow.insertCell(1);
-	newCell1.innerHTML =  convert_tohuman(a,b,c) ; 
+	newCell1.innerHTML =  convert_tohuman(a,b,c) ;
+	newCell1.style.fontSize = "12px"; 
 
 	var newCell2 = newRow.insertCell(2);
 	newCell2.innerHTML = "<A href=\"#\" onclick=\"edit_incomingrule('"+ a +"', '"+ b +"', '" + c + "','" + d+"')\">Edit</A>&nbsp;&nbsp;<A href=\"#\" onclick=\"delete_incomingrule('"+ a +"', '"+ b +"', '" + c + "','" + d+"')\">Delete</A>";
 	newCell2.width=75;
 	newCell2.align="center";
+	newCell2.style.fontSize = "12px";
 	return true;
 }
 
@@ -171,9 +175,9 @@ function convert_tohuman(a,b,c) { // a is pattern, b is DID_trunk, c is action,
 	}
 
 	if( a == "_X."){ // handling all unmatched 
-		return " Route all unmatched incoming calls from provider '" + trunk + "' to extension '" + exten[1] + "'" ; 
+		return " Route all unmatched incoming calls from provider '" + didtrunks[b].trunkname + "' to extension '" + exten[1] + "'" ; 
 	}
-	return " Route incoming calls from provider '" + trunk + "' that macth pattern '" + a + "' to extension '" + exten[1] + "'"  ; 
+	return " Route incoming calls from provider '" + didtrunks[b].trunkname + "' that macth pattern '" + a + "' to extension '" + exten[1] + "'"  ; 
 }
 
 
