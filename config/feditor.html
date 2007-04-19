@@ -27,6 +27,56 @@
 var global_contextBeingEdited = ""; 
 var global_fileBeingEdited = "";
 
+
+function show_createfile(){
+	_$('New_FileName').value = "";
+	var f = _$('createfile_button');
+	var tmp_left = f.offsetLeft -1;
+	var tmp_top = f.offsetTop -1 ;
+	var tmp_parent = f;
+
+	while(tmp_parent.offsetParent != document.body){
+		tmp_parent = tmp_parent.offsetParent;
+		tmp_left += tmp_parent.offsetLeft;
+		tmp_top += tmp_parent.offsetTop;
+	}
+
+	_$('CreateFile').style.left = tmp_left;
+	_$('CreateFile').style.top = tmp_top ;
+	_$('CreateFile').style.display = "" ;
+	_$('New_FileName').focus();
+
+}
+
+
+function create_file(){
+
+	var fn = _$('New_FileName').value;
+	if( fn.substr( (fn.length - 5), fn.length) != ".conf") { fn = fn+'.conf'; }
+
+	parent.astmanEngine.run_tool( "touch " + asterisk_configfolder + fn, callback = function() {
+		cancel_file();
+		gui_feedback("Created file: '" + fn + "'",'blue');
+		New_OPTION = document.createElement('option');
+		New_OPTION.text =  fn ;
+		New_OPTION.value = fn ;
+		try {
+			_$('filenames').add(New_OPTION, null); // W3C way
+		}catch(ex) {
+			_$('filenames').add(New_OPTION); // IE way
+		}
+		_$('filenames').selectedIndex = _$('filenames').options.length -1 ;
+		loadfile();
+	});
+}
+
+function cancel_file(){
+	_$('CreateFile').style.display = "none" ;
+}
+
+
+
+
 function delete_context(){
 	if(!confirm("Are you sure you want to delete the selected context ?")){ return true; }
 
@@ -357,6 +407,8 @@ function add_context(){
 	<span style="margin-left: 4px;font-weight:bold;">File Editor</span>
 	<span style="cursor: pointer; cursor: hand;" onclick="window.location.href=window.location.href;" >&nbsp;<img src="images/refresh.png" title=" Refresh " border=0 >&nbsp;</span>
 	<span><select id="filenames" class="input9"></select></span>
+	&nbsp;&nbsp;
+	<input id="createfile_button" type=button value="Create NewFile" class="input8" onclick="show_createfile();">
 </div>
 <div style="display:none; font-size:14px; font-weight:bold; font-family:helvetica,sans-serif,'trebuchet ms'; padding : 6px 0px 6px 10px;" id="div_filename">
 	<span id="CurrentFileName"></span>&nbsp;&nbsp;
@@ -387,6 +439,21 @@ function add_context(){
 Add New Context : <input id="New_ContextName" size=20 class="input9">&nbsp;
 		<input type="button" value="Add" style="font-size: 8pt; border:1px solid; padding : 0px 0px 0px 0px;" onclick="add_context();">&nbsp;
 		<input type="button" value="Cancel" style="font-size: 8pt; border:1px solid; padding : 0px 0px 0px 0px;" onclick="cancel_addcontext();">
+</div>
+<div id="CreateFile" style="display:none; position:absolute; z-index:1005; background-color : #C1D7EC; padding : 6px 6px 6px 10px;">
+	<table>
+	<tr>	<td colspan=2 align=center><B>Create New ConfigFile</B></td>
+	</tr>
+	<tr>	<td>New FileName :</td>
+		<td>	<input id="New_FileName" size=20 class="input9">&nbsp; 
+			<input type="button" value="Add" style="font-size: 8pt; border:1px solid; padding : 0px 0px 0px 0px;" onclick="create_file();">&nbsp;
+			<input type="button" value="Cancel" style="font-size: 8pt; border:1px solid; padding : 0px 0px 0px 0px;" onclick="cancel_file();"><BR>
+		</td>
+	</tr>
+	<tr>	<td></td>
+		<td>&nbsp;(Ex: newfile.conf)</td>
+	</tr>
+	</table>
 </div>
 <div id="sysinfohtml" style="display:none"></div>
 </body>
