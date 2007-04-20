@@ -184,7 +184,8 @@ callbacks.loaded = function() {
 	parent.astmanEngine.pollEvents();
 	_$('devices').contentEditable = 'true';
 	_$('devices').disabled = 0;
-	_$('new').addEventListener("click", showSPdetails, false); 
+	//_$('new').addEventListener("click", showSPdetails, false);
+	add_event( _$('new') , "click", showSPdetails );
 	loadServiceProvidersintotable();
 }
 

@@ -72,7 +72,8 @@ callbacks.cancelchanges = function(){
 callbacks.loaded = function() {
 	_$('devices').contentEditable = 'true';
 	_$('devices').disabled = 0;
-	_$('new').addEventListener("click", showuserdetails, false); 
+	//_$('new').addEventListener("click", showuserdetails, false);
+	add_event( _$('new') , "click", showuserdetails );
 	parent.astmanEngine.pollEvents();
 	loadusersintotable();
 }

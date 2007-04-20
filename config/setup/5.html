@@ -122,7 +122,8 @@ trunkcallbacks.format = function(t) {
 }
 
 trunkcallbacks.loaded = function(){
-	_$('trunks').addEventListener('click',hackenablesave,false);
+	//_$('trunks').addEventListener('click',hackenablesave,false);
+	add_event( _$('trunks') , "click", hackenablesave );
 	parent.astmanEngine.config2list("extensions.conf", _$('extensions'), new Object(), numplan_callbacks);
 }
 

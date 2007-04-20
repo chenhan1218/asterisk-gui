@@ -26,7 +26,7 @@
 </HEAD>
 <script src="../scripts/prototype.js"></script>
 <SCRIPT>
-
+add_event = parent.add_event;
 var rawman_url;
 var usercallbacks = new Object;
 var fieldnames = new Array( 'save','userbase','localextenlength','allow_aliasextns');
@@ -62,7 +62,8 @@ function localinit(){
 	};
 	rawman_url = parent.rawman_url ;
 	parent.astmanEngine.setURL(rawman_url);
-	_$('localextenlength').addEventListener("change", update_spae, false);
+	//_$('localextenlength').addEventListener("change", update_spae, false);
+	add_event( _$('localextenlength') , "change", update_spae );
 	ping();
 }
 
@@ -113,7 +114,8 @@ usercallbacks.beforeSaving= function(){
 
 
 usercallbacks.loaded = function(){
-	_$('localextenlength').addEventListener("change", store_extlength, false);
+	//_$('localextenlength').addEventListener("change", store_extlength, false);
+	add_event( _$('localextenlength') , "change", store_extlength );
 	parent.astmanEngine.pollEvents();
 	_$('devices').selectitem(0);
 	parent._$('next').disabled = false;	
