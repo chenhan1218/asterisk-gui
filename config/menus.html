@@ -994,7 +994,7 @@ extencallbacks.loaded = function() {
 				file_name = file_name.replace(/\..*/,""); /* Replace .ulaw .gsm .whatever with nothing so its just the sound file */
 				New_OPTION = document.createElement('option');
 				New_OPTION.text =  file_name  ;
-				New_OPTION.value = file_name ;
+				New_OPTION.value = asterisk_Sounds_path + file_name ;
 				try {
 					_$('combosel_sounds').add(New_OPTION, null); // W3C way
 				}catch(ex) {
@@ -1039,7 +1039,7 @@ function load_recordedfiles(){
 				file_name = file_name.substr(0,(file_name.length - 4) ) ;
 				New_OPTION = document.createElement('option');
 				New_OPTION.text =  file_name  ;
-				New_OPTION.value = file_name ;
+				New_OPTION.value = asterisk_menusRecord_path + file_name ;
 				try {
 					_$('combosel_sounds').add(New_OPTION, null); // W3C way
 				}catch(ex) {
