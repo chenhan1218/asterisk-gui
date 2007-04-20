@@ -136,7 +136,7 @@ function play_existing(filename){
 		onSuccess: function(t) { gui_feedback('Play Request Successfull !','blue'); },
 		onFailure: function(t) { gui_alert("Config Error: " + t.status + ": " + t.statusText); }
 	};
-	opt.parameters ="action=originate&channel=Local/"+extension + "&context="+asterisk_guitools+"&exten=play_file&priority=1&Variable=var1%3d"+ encodeURIComponent( filename );
+	opt.parameters ="action=originate&channel=Local/"+extension + "&context="+asterisk_guitools+"&exten=play_file&priority=1&Variable=var1%3d"+ encodeURIComponent( asterisk_menusRecord_path + filename );
 	var tmp = new Ajax.Request(asterisk_rawmanPath, opt);
 }
 
