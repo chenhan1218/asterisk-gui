@@ -87,6 +87,11 @@ function localajaxinit(){
 	showdiv_statusmessage();
 	setWindowTitle("Options");
 
+	if( window.location.href.match("forcepassword=yes") ){
+		var f = _$('userscontent').getElementsByClassName('tab');
+		for (var g=0 ; g < f.length ; g++){ f[g].style.display = 'none'; }
+	}
+
 	parent.loadscreen(this);
 	_$('newpass').focus();
 }
