@@ -119,25 +119,16 @@ function purge(d) {
 }
 
 
-function add_event( a , b, c ){  
-	// cross browser function for adding events
-	// a is element , b is event (string) , c is the function 
-	if ( a.addEventListener){
-		a.addEventListener(b, c, false);
-	} else if (a.attachEvent){
-		a.attachEvent('on'+b, c);
-	}
+// cross browser function for adding/removing events to elements
+// a is element , b is event (string) , c is the function 
+if(document.addEventListener){
+	add_event = function( a , b, c ){ a.addEventListener(b, c, false); }
+	remove_event = function(a,b,c){ a.removeEventListener( b, c , false); }
+}else if(document.attachEvent){
+	add_event = function( a , b, c ){ a.attachEvent('on'+b, c); }
+	remove_event = function(a,b,c){ a.detachEvent("on"+b, c); }
 }
 
-function remove_event(a,b,c){ 
-	// cross browser function for removing events
-	// a is element , b is event (string) , c is the function 
-	if(a.removeEventListener){
-		a.removeEventListener( b, c , false);
-	}else if(a.detachEvent){
-		a.detachEvent("on"+b, c);
-	}
-}
 
 function config2json(a, b, c){		// a is filename (string) , b is 0 or 1 , c is callback function
 	var opt = { method: 'get', asynchronous: true,
