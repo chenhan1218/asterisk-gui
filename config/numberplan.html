@@ -354,16 +354,13 @@ function addrowtotable(a,b,c,d){	// a is pattern, b is priority, c is trunk, d i
 	newCell2.innerHTML =  (m[a][b].ruledesc) ? m[a][b].ruledesc : a ; 
 	if(newCell2.innerHTML == "custom"){ newCell2.innerHTML = "custom ("+ a + ")"; }
 
+	var newCell3 = newRow.insertCell(3);
+	newCell3.align="center";
+	newCell3.width=85;
 	if(c == "invalid" || c== "undefined"  ){
-		var newCell3 = newRow.insertCell(3);
-		newCell3.align="center";
 		newCell3.innerHTML = "<span style='cursor:pointer; color : #0000ff;'  onclick=\"editcallingrule('"+ a +"', '"+ b +"')\">Select a ServiceProvider</span>";
-		newCell3.width=85;
 	}else{
-		var newCell3 = newRow.insertCell(3);
-		newCell3.align="center";
 		newCell3.innerHTML = trunks_desc[c].comment  ;
-		newCell3.width=85;
 	}
 
 	var newCell4 = newRow.insertCell(4);
