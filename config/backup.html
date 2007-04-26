@@ -116,7 +116,8 @@ function addrow_totable(filename, i ){
 
 
 function restore_bkp(filename){
-	parent.astmanEngine.run_tool("rm /etc/asterick/* -rf ", callback=function(){ restore_bkp_step2(filename);} );
+	//parent.astmanEngine.run_tool("rm /etc/asterisk/* -rf ", callback=function(){ restore_bkp_step2(filename);} );
+	restore_bkp_step2(filename);
 }
 
 
@@ -159,6 +160,13 @@ function backup_new(){
 		_nn.focus();
 		return true;
 	}
+
+	if (_nn.value.search('^[a-zA-Z_0-9]*$') == -1){
+		alert("spaces and special characters are not allowed in the filename.");
+		_nn.focus();
+		return true;
+	}
+
 	var months = ["jan", "feb","mar","apr","may","jun","jul","aug","sep","oct","nov","dec"];
 	var today=new Date()
 	var year = today.getFullYear();
