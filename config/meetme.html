@@ -279,7 +279,7 @@ callbacks.savechanges = function(){
 		}
 	}
 	var newvalue = _$('name').value + ","+ _$('pin').value + "," + _$('pinadmin').value;
-
+	temp_selectedexten = _$('name').value;
 	if ( oldvalue ==  newvalue ){
 		_$('save').disabled = true;
 		_$('cancel').disabled = true;
