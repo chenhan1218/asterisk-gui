@@ -133,6 +133,9 @@ callbacks.format = function(t) {
 }
 
 callbacks.cancelnewcategory = function(){
+	remove_event( _$('trunkstyleanalog') , 'click' , activateanalogvoip );
+	remove_event( _$('trunkstylevoip') , 'click' , activateanalogvoip );
+	remove_event( _$('trunkstylecustomvoip') , 'click' , activateanalogvoip );
 	hideSPdetails();
 }
 
@@ -402,6 +405,11 @@ callbacks.newcategory = function() {
 	_$('customvoip').style.display="none";
 	_$('userscontent_title').innerHTML = "Add Service Provider";
 	isnewtrunk = 1;
+
+	add_event( _$('trunkstyleanalog') , 'click' , activateanalogvoip );
+	add_event( _$('trunkstylevoip') , 'click' , activateanalogvoip );
+	add_event( _$('trunkstylecustomvoip') , 'click' , activateanalogvoip );
+
 	return tmp;
 }
 
@@ -687,6 +695,7 @@ function editSP(sp_value){
 		if(sp_value == _devices.options[i].value ){
 			_devices.selectitem(i);
 			showSPdetails();
+			activateanalogvoip();
 			break;
 		}
 	}
@@ -946,9 +955,9 @@ function advanced_cancel(){
 	<div id='cabinet' style='width:0;overflow:hidden'><select id='hiddenglobals'></select></div>
 	<fieldset>
 		<legend><B>&nbsp;Provider Type:&nbsp;</B></legend>
-		<LABEL FOR="trunkstyleanalog"><input name='trunkstyle' type='radio' id='trunkstyleanalog' onclick='activateanalogvoip()' value='analog'>Analog</LABEL><BR>
-		<LABEL FOR="trunkstylevoip"><input name='trunkstyle' type='radio' id='trunkstylevoip' onclick='activateanalogvoip()' value='voip'>VoIP</LABEL><BR>
-		<LABEL FOR="trunkstylecustomvoip"><input name='trunkstyle' type='radio' id='trunkstylecustomvoip' onclick='activateanalogvoip()' value='customvoip'>Custom VoIP</LABEL>
+		<LABEL FOR="trunkstyleanalog"><input name='trunkstyle' type='radio' id='trunkstyleanalog' value='analog'>Analog</LABEL><BR>
+		<LABEL FOR="trunkstylevoip"><input name='trunkstyle' type='radio' id='trunkstylevoip' value='voip'>VoIP</LABEL><BR>
+		<LABEL FOR="trunkstylecustomvoip"><input name='trunkstyle' type='radio' id='trunkstylecustomvoip' value='customvoip'>Custom VoIP</LABEL>
 	</fieldset>
 	<div id="div_providername" style="display:none">
 		<BR><BR><B>Provider Name:</B><BR><input id="name" size=10 class='input8'>
