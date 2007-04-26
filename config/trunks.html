@@ -346,6 +346,8 @@ function ifnewtrunk(){
 		for (var x=0;x<_zapchan.options.length;x++){  _zapchan.options[x].selected = false; }
 		_zapchan.value = '';
 		_$('group').value = '';
+		_$('disallow').value= "";
+		_$('allow').value = "all";
 	} else if (_$('trunkstyleanalog').checked) {
 		// Analog
 		_provider.selectedIndex  = -1;
@@ -423,7 +425,8 @@ callbacks.newcategory = function() {
 	_$('customvoip_protocol').selectedIndex = 0;
 	_$('customvoip_host').value ="";
 	_$('analog').style.display="none";
-	_$('voip').style.display="none";
+	_$('voip').style.display="";
+	_$('voip').style.height =350;
 	_$('customvoip').style.display="none";
 	_$('userscontent_title').innerHTML = "Add Service Provider";
 	isnewtrunk = 1;
@@ -630,7 +633,13 @@ function preparemenus(){
 
 	var menuitem2 = document.createElement('div');
 	menuitem2.innerHTML = "Codecs" ;
+
 	menuitem2.onclick =  function(){
+		if( _$('devices').stored_config.catbyname[this.parentNode.sp_value].fieldbyname['trunkstyle'] == 'analog'){
+			hide_mymenu();
+			gui_feedback("You can not edit codecs for an analog trunk ");
+			return true;
+		}
 		var _devices = _$('devices');
 		for(var i=0; i< _devices.length; i++){
 			if( this.parentNode.sp_value == _devices.options[i].value ){
@@ -654,9 +663,12 @@ function preparemenus(){
 	menuitem4.innerHTML = "Advanced" ;
 	menuitem4.onclick =  function(){  
 		hide_mymenu( );
+		if( _$('devices').stored_config.catbyname[this.parentNode.sp_value].fieldbyname['trunkstyle'] == 'analog'){
+			gui_feedback("No Advanced settings for analog trunks ");
+			return true;
+		}
 		var _devices = _$('devices');
- 
-		for(var i=0; i< _devices.length; i++){
+ 		for(var i=0; i< _devices.length; i++){
 			if( this.parentNode.sp_value == _devices.options[i].value ){
 				_devices.selectitem(i);
 				_$('bg_transparent').style.display = "";
