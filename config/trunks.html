@@ -275,16 +275,14 @@ callbacks.savechanges = function() {
 		if(old_trunkname != _$('name').value ){ update_didcontext(old_trunkname, _$('name').value); } // rename DID if needed
 	}
 
-
-	hideSPdetails();
-	loadServiceProvidersintotable();
-
 	return true;
 }
 
 
 function callbacks_savechanges_step2(){
-	saveSPdetails();
+	hideSPdetails();
+	loadServiceProvidersintotable();
+
 	var uri;
 	var newvalue;
 	var _devices = _$('devices') ; 
