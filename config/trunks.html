@@ -234,6 +234,23 @@ callbacks.beforeSaving = function(){
 		}
 		dids_array.push( _name.value );
 	}else{
+
+		if( _$('trunkstyleanalog').checked ){
+			_$('context').value =  asterisk_guiTDPrefix + _$('name').value  ;
+			var needcomma = 0 ;
+			var count = 0 ;
+			_$('trunkname').value = "" ;
+			for (var x=0;x< _$('zapchan').options.length;x++) {
+				if (_$('zapchan').options[x].selected) {
+					if(needcomma){ _$('trunkname').value += "," }
+					needcomma = 1 ;
+					_$('trunkname').value += _$('zapchan').options[x].value ;
+					count++ ;
+				}
+			}
+			_$('trunkname').value = ((count > 1) ? "Ports ":"Port ") + _$('trunkname').value ;
+		}
+
 		old_trunkname = _dvcs_v ;
 		if( _dvcs_v != _name.value ){ // if the trunk name is changed , change the name in dids_array
 			for( var i=0 ; i < dids_array.length; i ++){  if( dids_array[i] == _dvcs_v ) { dids_array[i] = _name.value ; break; } }
@@ -257,7 +274,12 @@ callbacks.savechanges = function() {
 	}else{
 		if(old_trunkname != _$('name').value ){ update_didcontext(old_trunkname, _$('name').value); } // rename DID if needed
 	}
-	return false;
+
+
+	hideSPdetails();
+	loadServiceProvidersintotable();
+
+	return true;
 }
 
 
