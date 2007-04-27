@@ -1,5 +1,5 @@
 #!/bin/sh
-. /etc/asterisk/scripts/output_path
+SYSINFO_OUTPUT="/var/lib/asterisk/static-http/config/sysinfo_output.html"
 
 /bin/echo "<div id=list_files>" > $SYSINFO_OUTPUT
 /bin/mkdir -p $1
