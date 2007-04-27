@@ -441,9 +441,9 @@ function saverule(){
 	 }else{	// update exiting rule
 		// delete existing rule
 		// add rule with new values
-		delete_callingrule(pattern_beingedited,pattern_beingedited_priority, oncomplete = function(){location.reload();} );
+		delete_callingrule(pattern_beingedited,pattern_beingedited_priority, oncomplete = function(){
 		add_rule_fromeditform( pattern_beingedited_priority, oncomplete = function(){location.reload();} );
-
+		});
 		//$('userscontent').style.display='none';
 		//$('addrule').disabled =0;
 		//return true;
