@@ -212,7 +212,7 @@ _install: _all $(SUBDIRS_INSTALL)
 	mkdir -p $(ASTVARLIBDIR)/scripts
 	@for x in gui_configs/*; do \
 		echo "$$x  -->  $(ASTETCDIR)" ; \
-		cp $$x $(ASTETCDIR) ; \
+		cp $$x $(ASTETCDIR)/ ; \
 	done
 	@for x in scripts/*; do \
 		echo "$$x  -->  $(ASTVARLIBDIR)/scripts" ; \
