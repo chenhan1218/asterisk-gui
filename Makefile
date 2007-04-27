@@ -204,19 +204,19 @@ _install: _all $(SUBDIRS_INSTALL)
 	@echo "Installing into $(HTTPDIR)"
 	mkdir -p $(CONFIGDIR)
 	mkdir -p $(CONFIGDIR)/images
-	mkdir -p $(CONFIGDIR)/scripts
 	mkdir -p $(CONFIGDIR)/stylesheets
 	mkdir -p $(CONFIGDIR)/bkps
 	mkdir -p $(CONFIGDIR)/setup
 	mkdir -p $(CONFIGDIR)/graphs
-	mkdir -p $(ASTETCDIR)/scripts
+	mkdir -p $(CONFIGDIR)/scripts
+	mkdir -p $(ASTVARLIBDIR)/scripts
 	@for x in gui_configs/*; do \
 		echo "$$x  -->  $(ASTETCDIR)" ; \
 		cp $$x $(ASTETCDIR)/ ; \
 	done
 	@for x in scripts/*; do \
-		echo "$$x  -->  $(ASTETCDIR)/scripts" ; \
-		cp $$x $(ASTETCDIR)/scripts ; \
+		echo "$$x  -->  $(ASTVARLIBDIR)/scripts" ; \
+		cp $$x $(ASTVARLIBDIR)/scripts ; \
 	done
 	@for x in config/images/*; do \
 		echo "$$x  -->  $(CONFIGDIR)/images/" ; \

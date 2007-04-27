@@ -35,6 +35,7 @@ var asterisk_rawmanPath = "../../rawman" ;
 var asterisk_guiConfigFile = "guipreferences.conf"; // will be created in asterisk_configfolder, if the file does not exist 
 var asterisk_configfolder = "/etc/asterisk/";
 var asterisk_guiListFiles = "sh /etc/asterisk/scripts/listfiles" ;
+var asterisk_scriptsFolder = "/var/lib/asterisk/scripts/" ; /* Directory for gui scripts (graphs.sh, for example) */
 
 var sortbynames = false;
 var dragdata = new Object;

@@ -32,7 +32,7 @@ var tabs = new Array('tab1');
 var divs_tohide = new Array('cpu_div');
 
 function update_graph(graph) {
-	var tmp_command = "sh /etc/asterisk/scripts/graphs.sh cpu > /var/lib/asterisk/static-http/config/graphs/data_cpu.html";
+	var tmp_command = "sh " + asterisk_scriptsFolder + "graphs.sh cpu > /var/lib/asterisk/static-http/config/graphs/data_cpu.html";
 	parent.astmanEngine.run_tool(tmp_command);
 	return true;
 	}
