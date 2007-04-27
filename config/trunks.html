@@ -122,8 +122,6 @@ globalvars.loaded = function() {
 
 providercallbacks.loaded = function() {
 	var p = _$('provider');
-	p.altonchange = p.onchange;
-	p.onchange = null;
 	parent.astmanEngine.config2list("extensions.conf", _$('hiddenglobals'), new Array, globalvars);
 }
 
@@ -494,15 +492,12 @@ function localajaxinit() {
 	_$('devices').contentEditable = 'false';
 	_$('zapchan').splitchar=',';
 	var _trunkstyleanalog = _$('trunkstyleanalog') ;
-	_trunkstyleanalog.altonclick = _trunkstyleanalog.onclick;
 	_trunkstyleanalog.onclick = null;
 	
 	var _trunkstylevoip = _$('trunkstylevoip');
-	_trunkstylevoip.altonclick = _trunkstylevoip.onclick;
 	_trunkstylevoip.onclick = null;
 
 	var _trunkstylecustomvoip = _$('trunkstylecustomvoip');
-	_trunkstylecustomvoip.altonclick = _trunkstylecustomvoip.onclick;
 	_trunkstylecustomvoip.onclick = null;
 
 	add_event( _$('custom_trunkname') , 'change' , function(){ 
@@ -1012,7 +1007,7 @@ function advanced_cancel(){
 	<table align="center">
 	<tr  onmouseover="show_tooltip('en', 'trunks', 1);">
 		<td style='width:80px' valign='top' class="field_text">Provider:</td>
-		<td><select size='6' id='provider' style='width:200px' altonchange='selectprovider()' class="input8"></select></td>
+		<td><select size='6' id='provider' style='width:200px' class="input8"></select></td>
 	</tr>
 	<tr><td colspan='2' align='center'><A href="#" id="providerlink"><img id='providerlogo' style='visibility:hidden;' border=0></A></td></tr>
 	<tr><td colspan='2' align='center'><div id='providerdesc' align='left' style='width:230px;height:100px; font-size:10px'></div></td></tr>
