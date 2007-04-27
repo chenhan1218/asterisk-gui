@@ -211,8 +211,8 @@ _install: _all $(SUBDIRS_INSTALL)
 	mkdir -p $(CONFIGDIR)/scripts
 	mkdir -p $(ASTVARLIBDIR)/scripts
 	@for x in gui_configs/*; do \
-		echo "$$x  -->  $(ASTETCDIR)" ; \
-		cp $$x $(ASTETCDIR)/ ; \
+		echo "$$x  -->  $(ASTVARLIBDIR)/scripts" ; \
+		cp $$x $(ASTVARLIBDIR)/scripts ; \
 	done
 	@for x in scripts/*; do \
 		echo "$$x  -->  $(ASTVARLIBDIR)/scripts" ; \
