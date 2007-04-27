@@ -1402,14 +1402,16 @@ function Astman() {
 
 				if (savewidget) {
 					widgets[x].savewidget = savewidget;
-					add_event( widgets[x] , 'click', function() { this.oldvalue = this.value; return true; });
-					add_event( widgets[x] , 'change', function() { 
-						this.savewidget.activateSave(); 
-						if (this.altonchange){ this.altonchange();} 
+					add_event( widgets[x] , 'click', function(event) { 
+						var t = (event.srcElement)?event.srcElement:this;
+						t.oldvalue = t.value;
+						return true; 
+					});
+					add_event( widgets[x] , 'change', function(event) {
+						var t = (event.srcElement)?event.srcElement:this;
+						t.savewidget.activateSave();
 					});
 				}
-				if (widgets[x].altonchange)
-					widgets[x].altonchange();
 
 			} else if (widgets[x].type) {
 				if (!cat) {
@@ -1452,22 +1454,27 @@ function Astman() {
 				if (savewidget) {
 					widgets[x].savewidget = savewidget;
 					if ((widgets[x].type == 'checkbox') || (widgets[x].type == 'radio')) {
-						add_event( widgets[x] , 'click', function() { this.savewidget.activateSave(); if (this.altonclick){this.altonclick();} });
-						if (widgets[x].altonclick)
-							widgets[x].altonclick();
+						add_event( widgets[x] , 'click', function(event) {
+							var t = (event.srcElement)?event.srcElement:this;
+							t.savewidget.activateSave();
+						});
 					} else {
 
-						add_event( widgets[x] , 'keydown', function() { this.oldvalue = this.value; return true; });
+						add_event( widgets[x] , 'keydown', function(event) {
+							var t = (event.srcElement)?event.srcElement:this;
+							t.oldvalue = t.value; return true; 
+						});
 
-						add_event( widgets[x] , 'keyup', function() { 
-							if (this.oldvalue == this.value){return true;}
-							pattern = this.getAttribute('pattern');
-							if (pattern && check_pattern(pattern, this.oldvalue) && !check_pattern(pattern, this.value)) {
-								this.value = this.oldvalue;
+						add_event( widgets[x] , 'keyup', function(event) {
+							var t = (event.srcElement)?event.srcElement:this; 
+							if (t.oldvalue == t.value){return true;}
+							pattern = t.getAttribute('pattern');
+							if (pattern && check_pattern(pattern, t.oldvalue) && !check_pattern(pattern, t.value)) {
+								t.value = t.oldvalue;
 								gui_feedback('Invalid Character !','red');
 							} else{
 								gui_feedback('','default',10);
-								this.savewidget.activateSave();
+								t.savewidget.activateSave();
 							}
 							return true;
 						});
@@ -1655,30 +1662,30 @@ function Astman() {
 		if (widgets['save']) {
 			widgets['save'].hostselectbox = box;
 
-			add_event( widgets['save'] , 'click', function() { save_item(this.hostselectbox); });
+			add_event( widgets['save'] , 'click', function(event) { var t = (event.srcElement)?event.srcElement:this; save_item(t.hostselectbox); });
 
 		}
 		if (widgets['cancel']) {
 			widgets['cancel'].hostselectbox = box;
-			add_event( widgets['cancel'] , 'click', function() { cancel_item(this.hostselectbox); });
+			add_event( widgets['cancel'] , 'click', function(event) { var t = (event.srcElement)?event.srcElement:this; cancel_item(t.hostselectbox); });
 		}
 
 		if (widgets['new']) {
 			widgets['new'].hostselectbox = box;
 			widgets['new'].disabled = false;
-			add_event( widgets['new'] , 'click', function() { new_item(this.hostselectbox); });
+			add_event( widgets['new'] , 'click', function(event) { var t = (event.srcElement)?event.srcElement:this; new_item(t.hostselectbox); });
 
 		}
 		if (widgets['newitem']) {
 			widgets['newitem'].hostselectbox = box;
 			widgets['newitem'].disabled = false;
-			add_event( widgets['newitem'] , 'click', function() { new_subitem(this.hostselectbox); });
+			add_event( widgets['newitem'] , 'click', function(event) {var t = (event.srcElement)?event.srcElement:this; new_subitem(t.hostselectbox); });
 
 		}
 		if (widgets['delete']) {
 			widgets['delete'].hostselectbox = box;
 			widgets['delete'].disabled = true;
-			add_event( widgets['delete'] , 'click', function() { delete_item(this.hostselectbox); });
+			add_event( widgets['delete'] , 'click', function(event) {var t = (event.srcElement)?event.srcElement:this; delete_item(t.hostselectbox); });
 		}
 		tmp = new Ajax.Request(this.url, opt);
 	};
