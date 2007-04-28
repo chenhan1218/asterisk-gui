@@ -147,9 +147,7 @@ function load_recordedfiles(){
 	var opt = { method: 'get', asynchronous: true,
 		onComplete: function(originalRequest){
 			// Add config files to the list of files
-			_$('sysinfohtml').innerHTML = originalRequest.responseText;
-			var k = _$('list_files').innerHTML ;
-			var recfiles = k.split("\n") ;
+			var recfiles = originalRequest.responseText.split("\n") ;
 
 			New_OPTION = document.createElement('option');
 			New_OPTION.text = "Config Files"  ;
@@ -455,5 +453,4 @@ Add New Context : <input id="New_ContextName" size=20 class="input9">&nbsp;
 	</tr>
 	</table>
 </div>
-<div id="sysinfohtml" style="display:none"></div>
 </body>

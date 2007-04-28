@@ -33,8 +33,7 @@ function localajaxinit() {
 	parent.astmanEngine.run_tool(asterisk_guiListFiles + " " + asterisk_ConfigBkpPath, callback = function() { 
 		var opt = { method: 'get', asynchronous: true,
 			onComplete: function(originalRequest){
-				_$('sysinfohtml').innerHTML = originalRequest.responseText;
-				showlist_of_files();
+				showlist_of_files(originalRequest.responseText);
 			},
 			onFailure: function(t) { alert("Config Error: " + t.status + ": " + t.statusText); }
 		};
@@ -45,9 +44,8 @@ function localajaxinit() {
 }
 
 
-function showlist_of_files(){
-	var k = _$('list_files').innerHTML ;
-	var bkpfiles = k.split("\n") ;
+function showlist_of_files(ors){
+	var bkpfiles = ors.split("\n") ;
 	clear_table();
 
 	for( var i =0 ; i < bkpfiles.length ; i++){
@@ -240,7 +238,6 @@ function backup_new(){
 		</tr>
 	</table>
 </div>
-<div id="sysinfohtml" style="display:none"></div>
 <div id="bg_transparent" STYLE="display:none; position: absolute; left: 0; top: 24; width:100%; height:100%;  background-color:#EFEFEF; -moz-opacity:.50;opacity:.50; border-width: 1px; border-color: #EFEFEF; border-style: solid; z-index:4">
 </div>
 </body>

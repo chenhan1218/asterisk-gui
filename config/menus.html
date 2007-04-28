@@ -970,10 +970,7 @@ extencallbacks.loaded = function() {
 	parent.astmanEngine.run_tool(asterisk_guiListFiles + " " + asterisk_Sounds_path, callback = function() { 
 	var opt = { method: 'get', asynchronous: true,
 		onComplete: function(originalRequest){
-			_$('sysinfohtml').innerHTML = originalRequest.responseText;
-			// Add Default sound files to the list of sound files
-			var j = _$('list_files').innerHTML ;
-			var sndfiles = j.split("\n") ;
+			var sndfiles = originalRequest.responseText.split("\n") ;
 			var New_OPTION = document.createElement('option');
 			New_OPTION.text = "Default Sounds"  ;
 			New_OPTION.value = ""  ;
@@ -1016,9 +1013,7 @@ function load_recordedfiles(){
 	var opt = { method: 'get', asynchronous: true,
 		onComplete: function(originalRequest){
 			// Add Recorded Voiemenus to the list of sound files
-			_$('sysinfohtml').innerHTML = originalRequest.responseText;
-			var k = _$('list_files').innerHTML ;
-			var recfiles = k.split("\n") ;
+			var recfiles = originalRequest.responseText.split("\n") ;
 			New_OPTION = document.createElement('option');
 			New_OPTION.text = "Recorded Voicemenus"  ;
 			New_OPTION.value = ""  ;
@@ -1228,5 +1223,4 @@ function free_mem(){
 	</tr>
 </table>
 </div>
-<div id="sysinfohtml" style="display:none"></div>
 </body>

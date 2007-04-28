@@ -36,9 +36,8 @@ function localajaxinit(){
 	parent.astmanEngine.config2list("users.conf", _$('newvmenu_ext'), new Array, callbacks);
 }
 
-function showlist_of_files(){
-	var k = _$('list_files').innerHTML ;
-	var recfiles = k.split("\n") ;
+function showlist_of_files(ors){
+	var recfiles = ors.split("\n") ;
 
 	clear_table();
 
@@ -48,7 +47,7 @@ function showlist_of_files(){
 		}
 		recfiles[i] = recfiles[i].replace(/^\s*|\s*$/g,'') ;
 		if( recfiles[i] == "" ){ continue; }
-		addrow_totable( recfiles[i].stripTags(), i );
+		addrow_totable( recfiles[i].stripTags());
 	}
 
 	var _rft = _$('recfilesTable') ;
@@ -69,7 +68,7 @@ function clear_table(){
 	}
 }
 
-function addrow_totable(filename, i){
+function addrow_totable(filename){
 	var newRow = _$('recfilesTable').insertRow(-1);
 	newRow.style.backgroundColor='#FFFFFF';
 	newRow.onmouseover= function(){ this.style.backgroundColor='#F9F0D1'; };
@@ -116,8 +115,7 @@ callbacks.loaded = function(){
 	parent.astmanEngine.run_tool(asterisk_guiListFiles + " " + asterisk_menusRecord_path, callback = function() { 
 		var opt = { method: 'get', asynchronous: true,
 			onComplete: function(originalRequest){
-				_$('sysinfohtml').innerHTML = originalRequest.responseText;
-				showlist_of_files();
+				showlist_of_files(originalRequest.responseText);
 				parent.loadscreen(this);
 			},
 			onFailure: function(t) { alert("Config Error: " + t.status + ": " + t.statusText); }
@@ -155,6 +153,13 @@ function record_new(){
 		_nm_n.focus();
 		return true;
 	}
+	if ( _nm_n.value.search('^[a-zA-Z_0-9]*$') == -1){
+		gui_alert("spaces and special characters are not allowed in the filename.");
+		_nm_n.focus();
+		return true;
+	}
+
+
 	if ( _nm_e.value == ""){
 		gui_alert("Please Select an extension to record the VoiceMenu");
 		_nm_e.focus();
@@ -269,7 +274,6 @@ function delete_sounds(filename){
 		<tr>	<td colspan=2 align=center height=10></td></tr>
 	</table>
 </div>
-<div id="sysinfohtml" style="display:none"></div>
 <div id="bg_transparent" STYLE="display:none; position: absolute; left: 0; top: 24; width:100%; height:100%;  background-color:#EFEFEF; -moz-opacity:.50;opacity:.50; border-width: 1px; border-color: #EFEFEF; border-style: solid; z-index:4">
 </div>
 </body>
