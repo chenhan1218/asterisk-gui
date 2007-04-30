@@ -89,16 +89,24 @@ callbacks.checkparams = function(box) {
 }
 
 callbacks.newcategory = function() {
+	var nar = [];
+	var _devices = _$('devices') ;
+	var _exten = _$('extensions') ;
+ 
+	for( var f=0; f < _devices.options.length ; f++ ){ nar.push( _devices.options[f].innerHTML.split(' -- ')[0]) ; }
+	for( f=0; f < _exten.options.length ; f++ ){ nar.push( _exten.options[f].innerHTML.split(' -- ')[0]) ; }
+	nar.sort();
+
 	var tmp = null;
-	var x;
+	var x = 6000;
 	if (_$('devices').stored_config.catbyname['general'])
 		tmp = objcopy(_$('devices').stored_config.catbyname['general']);
-	if (tmp) {
-		x = tmp.fieldbyname['userbase'];
-		if (x) {
-			tmp.name = first_free_exten(_$('devices'), x);
-		}
+	if (tmp) { x = parseInt( tmp.fieldbyname['userbase'],10); }
+	for( f=0; f < nar.length ; f++ ){
+		if( x < parseInt(nar[f]) ){ break; } x++;
 	}
+
+	tmp.name = x;
 	return tmp;
 }
 callbacks.identifier = "extension";
