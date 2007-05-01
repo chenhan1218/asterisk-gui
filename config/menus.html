@@ -58,12 +58,12 @@ function format_step(this_step){
 		temp[2] = temp[2].replace(/\)/, "");
 		return "Play '" + temp[2] + "' & Listen for KeyPress";
 	}
-	if( temp[2].match("DigitTimeout") ){
+	if( temp[2].match("TIMEOUT") && temp[2].match("digit") ){
 		temp[2] = temp[2].replace(/Set\(TIMEOUT\(digit\)\=/, "");
 		temp[2] = temp[2].replace(/\)/, "");
 		return "Wait '"+ temp[2] +"' sec for KeyPress";
 	}
-	if( temp[2].match("TIMEOUT") ){
+	if( temp[2].match("TIMEOUT") && temp[2].match("response") ){
 		temp[2] = temp[2].replace(/Set\(TIMEOUT\(response\)\=/, "");
 		temp[2] = temp[2].replace(/\)/, "");
 		return "Response Timeout to '" + temp[2] + "' sec";
