@@ -35,7 +35,6 @@ var editstatus ;
 var old_incomingrule, old_fromprovider ;
 var edit_pattern, edit_DIDtrunk, edit_action, edit_priority ;
 var listOfExtensions = [] ;	// to store all the list of extensions to be displayed in the select menu
-var focus_fields = new Array('incomingrule','frompattern','fromprovider','toextension');
 
 user_callbacks.format = function(t, x) {
 	var tmp = asterisk_guiTDPrefix + t.name ; 
@@ -468,10 +467,6 @@ function isloggedin(originalRequest){
 	if ( originalRequest.responseText.match("Pong") ) {
 		showdiv_statusmessage();
 		setWindowTitle("Incoming Calls");
-		for (var x =0; x < focus_fields.length; x++ ) {
-			$(focus_fields[x]).onfocus = function(){this.className = 'input9_hilight';}
-			$(focus_fields[x]).onblur = function(){this.className = 'input9';}
-		}
 		parent.astmanEngine.config2list("users.conf", _$('users'), new Array(), user_callbacks);
 	}
 }

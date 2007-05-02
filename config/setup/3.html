@@ -36,12 +36,6 @@ var nextpage = "4.html";
 var prevpage = "1.html";
 
 function localinit(){
-	var focus_fields = [ 'localextenlength','userbase' ];
-	for( var  r =0; r < focus_fields.length ; r++ ){
-		var d = _$(focus_fields[r]);
-		d.onfocus = function(){ this.className = 'input9_hilight'; }
-		d.onblur = function(){ this.className = 'input9'; }
-	}
 	parent._$('next').disabled = true;
 	parent._$('next').onclick = function(){	 
 		if( !_$('save').disabled ){
@@ -62,7 +56,6 @@ function localinit(){
 	};
 	rawman_url = parent.rawman_url ;
 	parent.astmanEngine.setURL(rawman_url);
-	//_$('localextenlength').addEventListener("change", update_spae, false);
 	add_event( _$('localextenlength') , "change", update_spae );
 	ping();
 }

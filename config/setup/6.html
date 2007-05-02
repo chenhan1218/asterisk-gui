@@ -45,13 +45,6 @@ callbacks.savechanges = function() {
 }
 
 function localinit(){
-	var focus_fields = [ 'name','maxmsg','maxmessage','maxgreet'];
-	for( var  r =0; r < focus_fields.length ; r++ ){
-		var d = _$(focus_fields[r]);
-		d.onfocus = function(){ this.className = 'input9_hilight'; }
-		d.onblur = function(){ this.className = 'input9'; }
-	}
-
 	//parent.$('next').disabled = true;
 	parent._$('next').onclick = function(){	 
 		if ( _$('name').value.length==0 ){

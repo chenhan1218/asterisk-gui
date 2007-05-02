@@ -123,6 +123,9 @@ body {
 	padding : 0px 0px 0px 3px;
 }
 
+.input9:focus {
+	background-color:#FFC58A;
+}
 
 .splbutton {
 	font-size:12px;
