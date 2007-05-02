@@ -94,8 +94,16 @@ function delete_didcontext(trunk){
 
 providercallbacks.postselect = function() {
 	var _pl = _$('providerlink') ;
+	var f = _$('provider');
+
 	try{
-		var f = _$('provider');
+		_$('providerlogo').style.display = "";
+		_$('providerlogo').setAttribute( "src" , "../" + f.stored_config.catbyname[f.value].fieldbyname['providerlogo'] );
+	}catch(err){
+		_$('providerlogo').style.display = "none";
+	}
+
+	try{
 		var g = f.stored_config.catbyname[f.value].fieldbyname['regurl'] ;
 		_pl.href= ( g ) ? g :'#' ;
 		_pl.target = ( g ) ? '_blank' : '';
@@ -1032,7 +1040,7 @@ function advanced_cancel(){
 	<tr>	<td style='width:80px' valign='top' class="field_text">Provider:</td>
 		<td><select id='provider' class="input9"></select></td>
 	</tr>
-	<tr><td colspan='2' align='center'><A href="#" id="providerlink"><img id='providerlogo' style='visibility:hidden;' border=0></A></td></tr>
+	<tr><td colspan='2' align='center'><A href="#" id="providerlink"><img id='providerlogo' style='display:none' border=0></A></td></tr>
 	<tr><td colspan='2' align='center'><div id='providerdesc' align='left' style='width:230px; font-size:10px'></div></td></tr>
 	<tr>
 		<td class="field_text">Username:</td>
