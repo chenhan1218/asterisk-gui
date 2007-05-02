@@ -52,7 +52,7 @@ function add_didcontext(trunk){
 		asynchronous: true,
 		onSuccess: function(t) { },
 		onFailure: function(t) {
-			gui_alert("Config Error: " + t.status + ": " + t.statusText + "<BR><BR>"+ "Failed to create a DID context for " + trunk );
+			alert("Config Error: " + t.status + ": " + t.statusText + "<BR><BR>"+ "Failed to create a DID context for " + trunk );
 		}
 	};
 	opt.parameters= "action=updateconfig&srcfilename=" + encodeURIComponent("extensions.conf") + "&dstfilename=" + encodeURIComponent("extensions.conf") + uri;
@@ -68,8 +68,8 @@ function update_didcontext(old_trunk, new_trunk){
 		asynchronous: true,
 		onSuccess: function(t) { callbacks_savechanges_step2(); },
 		onFailure: function(t) {
-			gui_alert("Config Error: " + t.status + ": " + t.statusText);
-			gui_alert("Failed to Rename the DID context for " + old_didcontext );
+			alert("Config Error: " + t.status + ": " + t.statusText);
+			alert("Failed to Rename the DID context for " + old_didcontext );
 		}
 	};
 	opt.parameters= "action=updateconfig&srcfilename=" + encodeURIComponent("extensions.conf") + "&dstfilename=" + encodeURIComponent("extensions.conf") + uri;
@@ -85,7 +85,7 @@ function delete_didcontext(trunk){
 		asynchronous: true,
 		onSuccess: function(t) { },
 		onFailure: function(t) {
-			gui_alert("Config Error: " + t.status + ": " + t.statusText + "<BR> Failed to delete DID context for " + trunk);
+			alert("Config Error: " + t.status + ": " + t.statusText + "<BR> Failed to delete DID context for " + trunk);
 		}
 	};
 	opt.parameters= "action=updateconfig&srcfilename=" + encodeURIComponent("extensions.conf") + "&dstfilename=" + encodeURIComponent("extensions.conf") + uri;
@@ -208,21 +208,21 @@ callbacks.beforeSaving = function(){
 	var _msg3 = "When using Analog, at least one port must be selected.";
 	var _msg4 = "Please enter a Comment for this Service Provider";
 
-	if ( _tsv.checked && !_$('username').value.length ) { gui_alert(_msg1); return false; }
+	if ( _tsv.checked && !_$('username').value.length ) { alert(_msg1); return false; }
 
 	if ( _tsa.checked ) {
 		var _zapchan = _$('zapchan');
-		if( _zapchan.options.length == 0 ){ gui_alert(_msg2); return false; }
-		if (!_zapchan.value) { gui_alert( _msg3); return false; }
+		if( _zapchan.options.length == 0 ){ alert(_msg2); return false; }
+		if (!_zapchan.value) { alert( _msg3); return false; }
 	}
 	if ( _tscv.checked ) {
 		var _csv_n = _$('customvoip_name');
-		if( _csv_n.value.length == 0 ){ gui_alert( _msg4); _csv_n.focus(); return false; }
+		if( _csv_n.value.length == 0 ){ alert( _msg4); _csv_n.focus(); return false; }
 		var _cv_h = _$('customvoip_host') ; 
-		if ( !_cv_h.value ) { gui_alert("Please enter a host name"); _cv_h.focus(); return false; }
-		if ( !_cv_un.value ) { gui_alert("Please enter a Username"); _cv_un.focus(); return false; }
+		if ( !_cv_h.value ) { alert("Please enter a host name"); _cv_h.focus(); return false; }
+		if ( !_cv_un.value ) { alert("Please enter a Username"); _cv_un.focus(); return false; }
 	}
-	if( !_tsv.checked && !_tsa.checked && !_tscv.checked ){ gui_alert("A trunk must be Analog or VoIP or Custom VOIP"); return false; }
+	if( !_tsv.checked && !_tsa.checked && !_tscv.checked ){ alert("A trunk must be Analog or VoIP or Custom VOIP"); return false; }
 
 	if(_dvcs_v.length ==0 ){
 		ifnewtrunk();
