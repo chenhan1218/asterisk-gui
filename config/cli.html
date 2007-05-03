@@ -29,7 +29,7 @@ function localajaxinit() {
 	setWindowTitle("Asterisk CLI Emulator");
 	parent.loadscreen(this);
 	_$('cli_cmd').value = "core show version";
-	_$('cli_cmd').focus();
+	setTimeout( function(){_$('cli_cmd').focus();},500);
 }
 
 function resetmainscreen(){
