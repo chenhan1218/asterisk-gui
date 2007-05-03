@@ -1048,6 +1048,23 @@ function Astman() {
 		tmp = new Ajax.Request(this.url, opt);
 	}
 
+	this.run_cmd = function(cmd, callback) {
+		var opt = {
+			method: 'get',
+			asynchronous: true,
+			onSuccess: function(originalRequest) { 
+				if (callback)
+					callback(originalRequest.responseText);
+			},
+			onFailure: function(t) {
+				gui_alert("Tool Error: " + t.status + ": " + t.statusText);
+			}
+		};
+		var tmp;
+		opt.parameters="action=command&command=" + encodeURIComponent(cmd);
+		tmp = new Ajax.Request(this.url, opt);
+	}
+
 	this.clickChannel = function(ev) {
 		var target = ev.target;
 		// XXX This is icky, we statically use astmanEngine to call the callback XXX 
