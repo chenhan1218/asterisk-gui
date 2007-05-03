@@ -1048,7 +1048,7 @@ function Astman() {
 		tmp = new Ajax.Request(this.url, opt);
 	}
 
-	this.run_cmd = function(cmd, callback) {
+	this.cliCommand = function(cmd, callback) {
 		var opt = {
 			method: 'get',
 			asynchronous: true,

@@ -37,7 +37,7 @@ function resetmainscreen(){
 }
 
 function executeCommand(cmd){
-	parent.astmanEngine.run_cmd(cmd, gotResponse);
+	parent.astmanEngine.cliCommand(cmd, gotResponse);
 }
 
 function gotResponse(op){
