@@ -24,6 +24,10 @@
 <link href="stylesheets/rico.css" media="all" rel="Stylesheet" type="text/css" />
 <link href="stylesheets/schwing.css" media="all" rel="Stylesheet" type="text/css" />
 <script>
+var CLI_HSTY = []; // cli history of previous commands 
+var CLI_INDEX = 0; // index for navigating through command history
+var COMMAND;
+
 function localajaxinit() {
 	top._$('mainscreen').width= 798;
 	setWindowTitle("Asterisk CLI Emulator");
@@ -41,19 +45,36 @@ function executeCommand(cmd){
 }
 
 function gotResponse(op){
-
+	var cc = _$('cli_cmd');
 	op = op.replace(/Response: Follows/, "");
 	op = op.replace(/Privilege: Command/, "");
 	op = op.replace(/--END COMMAND--/, "");
-	op = "Command><B> <Font color=#13138a size=+1>" + _$('cli_cmd').value + "</FONT></B>" + op ;
+	op = "Command><B> <Font color=#13138a size=+1>" + COMMAND + "</FONT></B>" + op ;
+	CLI_HSTY.push(COMMAND); CLI_INDEX = CLI_HSTY.length;
 	_$('cli_output').innerHTML = "<PRE>"+ op + "</PRE>";
 	_$('cli_cmd').value = "";
 	_$('cli_cmd').focus();
 }
 
 function sendCommand(e){
+	var cc = _$('cli_cmd');
+
+	if(e.keyCode == 38){
+		if(CLI_INDEX ==0){return false;}
+		cc.value =CLI_HSTY[CLI_INDEX-1]; CLI_INDEX -= 1;
+		cc.focus(); 
+		return false;
+	}
+	if(e.keyCode == 40){
+		if(!CLI_HSTY[CLI_INDEX]){cc.value = ""; CLI_INDEX = CLI_HSTY.length; return false;}
+		cc.value = CLI_HSTY[CLI_INDEX]; CLI_INDEX += 1;
+		cc.focus();
+		return false;
+	}
+
 	if(e.keyCode == 13){
-		executeCommand( _$('cli_cmd').value );
+		COMMAND = cc.value;
+		executeCommand(COMMAND);
 		return false;
 	}
 }
@@ -67,6 +88,6 @@ function sendCommand(e){
 </div>
 <div style="padding : 0px 0px 0px 0px;">
 <div style="padding : 0px 1px 0px 2px; height:444px;width= 797px; overflow :auto; font-size : 12px;" id="cli_output"></div><BR>
-Asterisk CLI>&nbsp;<input id="cli_cmd" size=95 onKeyPress="sendCommand(event)" class="input9">
+Asterisk CLI>&nbsp;<TEXTAREA id="cli_cmd" style="height:18px" onKeyPress="sendCommand(event)" class="input9" rows=1 cols=95></TEXTAREA>
 </div>
 </body>
