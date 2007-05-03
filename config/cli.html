@@ -41,6 +41,11 @@ function executeCommand(cmd){
 }
 
 function gotResponse(op){
+
+	op = op.replace(/Response: Follows/, "");
+	op = op.replace(/Privilege: Command/, "");
+	op = op.replace(/--END COMMAND--/, "");
+	op = "Command><B> <Font color=#13138a size=+1>" + _$('cli_cmd').value + "</FONT></B>" + op ;
 	_$('cli_output').innerHTML = "<PRE>"+ op + "</PRE>";
 	_$('cli_cmd').value = "";
 	_$('cli_cmd').focus();
