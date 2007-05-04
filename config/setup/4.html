@@ -42,6 +42,9 @@ var provfieldnames = ['providerdesc', 'providerlogo'];
 var isnewtrunk;
 var dids_array = [];
 var old_trunkname;
+var used_fxos = {};
+used_fxos.oldvalue = "";
+used_fxos.newvalue = "";
 
 function add_didcontext(trunk){
 	var didcontext = asterisk_guiTDPrefix + trunk ;
@@ -135,7 +138,14 @@ providercallbacks.loaded = function() {
 }
 
 callbacks.format = function(t) {
-	if( InArray(dids_array, t.name) ){ return t.fieldbyname['trunkname']; }
+	if( InArray(dids_array, t.name) ){ 
+		// 
+		if(t.fieldbyname['zapchan']){ 
+			var s = t.fieldbyname['zapchan'].split(",");
+			for(var u=0; u < s.length; u++){ used_fxos[s[u]] = true ; }
+		} 
+		return t.fieldbyname['trunkname']; 
+	}
 	return null;
 }
 
@@ -244,6 +254,7 @@ callbacks.beforeSaving = function(){
 	}else{
 
 		if( _$('trunkstyleanalog').checked ){
+			used_fxos.oldvalue = _$('devices').stored_config.catbyname[_dvcs_v].fieldbyname['zapchan'] ;
 			_$('context').value =  asterisk_guiTDPrefix + _$('name').value  ;
 			var needcomma = 0 ;
 			var count = 0 ;
@@ -256,6 +267,7 @@ callbacks.beforeSaving = function(){
 					count++ ;
 				}
 			}
+			used_fxos.newvalue = _$('trunkname').value;
 			_$('trunkname').value = ((count > 1) ? "Ports ":"Port ") + _$('trunkname').value ;
 		}
 
@@ -267,6 +279,7 @@ callbacks.beforeSaving = function(){
 }
 
 callbacks.savechanges = function() {
+	update_used_fxos();
 	if(isnewtrunk == 1){ //New Trunk created , add [DID_trunk_x] in extensions.conf
 		add_didcontext(_$('name').value);
 		if (_$('trunkstylevoip').checked) {
@@ -281,9 +294,19 @@ callbacks.savechanges = function() {
 		callbacks_savechanges_step2();
 	}else{
 		if(old_trunkname != _$('name').value ){ update_didcontext(old_trunkname, _$('name').value); } // rename DID if needed
+		hideSPdetails();
+		loadServiceProvidersintotable();
 	}
 
 	return true;
+}
+
+function update_used_fxos(){
+	var r; 
+	var ovs = used_fxos.oldvalue.split(",");
+	var nvs = used_fxos.newvalue.split(",");
+	for(r=0; r < ovs.length; r++){ delete used_fxos[ovs[r]]; }
+	for(r=0; r < nvs.length; r++){ used_fxos[nvs[r]] = true; }
 }
 
 
@@ -359,6 +382,7 @@ function ifnewtrunk(){
 		_provider.selectedIndex  = -1;
 		count = 0;
 		_trunkname.value = "";
+		used_fxos.oldvalue = "";
 		for (var x=0;x<_zapchan.options.length;x++) {
 			if (_zapchan.options[x].selected) {
 				if (needcomma){ _trunkname.value += "," }
@@ -367,6 +391,7 @@ function ifnewtrunk(){
 				count++;
 			}
 		}
+		used_fxos.newvalue = _trunkname.value;
 		_trunkname.value = ((count > 1) ? "Ports ":"Port ") + _trunkname.value;
 		_$('callerid').value = 'asreceived';
 		_$('hassip').value = 'no';
@@ -473,6 +498,7 @@ function activateanalogvoip() {
 	_zcal.innerHTML ="";
 	_$('customvoip').style.display = "none" ;
 	_$('voip').style.display= "none";
+	var disablestring;
 
 	if (_$('trunkstyleanalog').checked) {
 		_$('analog').style.display = "block";
@@ -482,10 +508,17 @@ function activateanalogvoip() {
 		}else{
 			for (k=0;k< _zapchan.length ;k++ ){
 				var selectedline = "selectedline" + k;
-				if(_zapchan.options[k].selected){
-					_zcal.innerHTML += '<LABEL FOR="' + selectedline + '"><INPUT id="' + selectedline + '" TYPE="CHECKBOX" VALUE="'+ _zapchan.options[k].value+ '" checked onclick="update_zapchan()">' + _zapchan.options[k].text + '</LABEL><BR>';
+
+				if( used_fxos[_zapchan.options[k].value] && !_zapchan.options[k].selected){
+					disablestring = " disabled";
 				}else{
-					_zcal.innerHTML += '<LABEL FOR="'+ selectedline+'"><INPUT id="' + selectedline + '" TYPE="CHECKBOX" VALUE="'+ _zapchan.options[k].value+ '" onclick="update_zapchan()">' + _zapchan.options[k].text + '</LABEL><BR>';
+					disablestring = "";
+				}
+
+				if(_zapchan.options[k].selected){
+					_zcal.innerHTML += '<LABEL FOR="' + selectedline + '"><INPUT id="' + selectedline + '" TYPE="CHECKBOX" VALUE="'+ _zapchan.options[k].value+ '" checked onclick="update_zapchan()"' + disablestring +'>' + _zapchan.options[k].text + '</LABEL><BR>';
+				}else{
+					_zcal.innerHTML += '<LABEL FOR="'+ selectedline+'"><INPUT id="' + selectedline + '" TYPE="CHECKBOX" VALUE="'+ _zapchan.options[k].value+ '" onclick="update_zapchan()"' + disablestring +'>' + _zapchan.options[k].text + '</LABEL><BR>';
 				}
 			}
 		}
