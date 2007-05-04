@@ -55,6 +55,11 @@ function loggedOn() {
 		checkessentials();
 	}
 
+	if(!parent.eventeater.pingstatus){
+		parent.eventeater.pingstatus = true;
+		parent.pingevery(60);
+	}
+
 	parent.setLoggedOn(1);
 	parent.loggedon = 1;
 	localloggedon = 1;
@@ -94,7 +99,7 @@ demo.logins = function(msgs) {
 	if ( msgs[0].headers['response'] == "Success" ){
 		parent.gui_feedback("Login Successful",'blue',6000);
 		_$('statusbar').innerHTML = "<img src='images/tick.gif'><i>Connected!</i>";
-		parent.astmanEngine.pollEvents();
+		//parent.astmanEngine.pollEvents();
 		loggedOn();
 	}else if( msgs[0].headers['message'] == "Authentication failed" ){
 		parent.gui_feedback("Invalid Username/Password",'default',6000);

@@ -45,6 +45,28 @@ var accordion;
 var copyright = "Copyright &copy;2006-2007 Digium, Inc.  All Rights Reserved. &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
 var tooltip_default = "Move the mouse over to a field to see tooltips";
 var asterisk_guitools_inextconf = 0;
+eventeater.pingstatus = false;
+var keepPinging;
+
+function pingevery(a){
+	keepPinging = setInterval( makeping, a*250 );
+}
+
+function makeping(){
+	var tmp;
+	var opt = {
+		method: 'get',
+		parameters: "action=ping",
+		asynchronous: true,
+		onComplete: function(t){
+			//if( t.responseText.match("Authentication failed") || t.responseText =="" ){
+			//	window.clearInterval(keepPinging);
+			//}
+			// For some reason, I could not get clearInterval to work. I will fix this soon. - pari
+		}
+	};
+	tmp = new Ajax.Request( asterisk_rawmanPath, opt);
+}
 
 eventeater.eventcb = function(msgs) {
 	if (loggedon == 1){
@@ -136,7 +158,6 @@ function setLoggedOn(onoff) {
 
 function loadscreen(srcbody) {
 	_$('mainscreen').style.display = '';
-	if (loggedon == 1){ astmanEngine.pollEvents(); }
 }
 
 function setstatus(status) {	_$('status').innerHTML = copyright + status;	}
@@ -201,7 +222,7 @@ function registerajax() {
 }
 
 astmanEngine.setURL(asterisk_rawmanPath );
-astmanEngine.setEventCallback(eventeater.eventcb);
+//astmanEngine.setEventCallback(eventeater.eventcb);
 
 function Logoff() {
 	if(!confirm("Are you sure ?")){ return true; }

@@ -118,10 +118,11 @@ function localajaxinit(){
 	refreshChannelsList() ;
 	parent.astmanEngine.setEventCallback(parent.eventeater.eventcd );
 	parent.loadscreen(this);
+	parent.astmanEngine.pollEvents();
 }
 
 function localajaxend(){
-	parent.astmanEngine.setEventCallback(parent.eventeater.eventcb );
+	parent.astmanEngine.setEventCallback(null);
 	if( navigator.userAgent.indexOf("MSIE") != -1 ){ 
 		try{ purge( document.body ); } catch(e){ }	
 	}
