@@ -174,6 +174,7 @@ function show_Acctooltip(name, tip){
 }
 
 function registerajax() {
+	_$('mainscreen').src = "home.html" ;
 	Rico.Corner.round('tooltip_round', {compact:true});
 		// if you want google style feedback boxes :-)
 		// _$('feedback_round').style.backgroundColor = "#EFEFEF";		 
@@ -283,7 +284,7 @@ function reloadConfig(){
 			<span style="margin-left: 4px;font-weight:bold">Loading Screen&nbsp;<img src='images/dots.gif'></span>
 		</div>
 		<div id="borderbox" class="mainscreenBorderBox" height="100%"></div>
-		<iframe width="540" height="505" frameborder="0" border="0" marginheight="0" marginwidth="0" src="home.html" id="mainscreen" style="position:absolute;top:48px;" SCROLLING=no></iframe>
+		<iframe width="540" height="505" frameborder="0" border="0" marginheight="0" marginwidth="0" id="mainscreen" style="position:absolute;top:48px;" SCROLLING=no></iframe>
 	</td>
 	<td valign=top width=250 height="505">
 		<div class="mainscreenTooltipBar" align=right>
