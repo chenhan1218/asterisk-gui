@@ -20,6 +20,7 @@
  */
 
 var sc_displaytime = 1000;
+var asterisk_guipingerror = "Message: Authentication Required";
 var asterisk_guiappname =  "Asterisk GUI (Beta)";
 var asterisk_guitools = "asterisk_guitools";
 var asterisk_guitoolsversion = "0.7";
@@ -1603,7 +1604,7 @@ function Astman() {
 		me.eventcallback(msgs);
 	};
 	this.eventResponse = function(t) {
-		if( t.responseText.match("Message: Authentication Required") ){		
+		if( t.responseText.match(asterisk_guipingerror) ){		
 				parent.window.location.href = parent.window.location.href ;
 		}
 		var _nu = navigator.userAgent; 

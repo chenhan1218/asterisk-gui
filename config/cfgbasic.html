@@ -59,10 +59,10 @@ function makeping(){
 		parameters: "action=ping",
 		asynchronous: true,
 		onComplete: function(t){
-			//if( t.responseText.match("Authentication failed") || t.responseText =="" ){
-			//	window.clearInterval(keepPinging);
-			//}
-			// For some reason, I could not get clearInterval to work. I will fix this soon. - pari
+			if( t.responseText.match(asterisk_guipingerror) ){
+				window.location.href=window.location.href;
+			}
+			
 		}
 	};
 	tmp = new Ajax.Request( asterisk_rawmanPath, opt);
