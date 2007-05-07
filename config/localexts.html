@@ -98,7 +98,7 @@ function update_spae(){
 	if( lel.value == ub.value.length ) { 
 		return;
 	}else if( lel.value < ub.value.length ){
-		ub.value = ub.value.substr(0,lel);
+		ub.value = ub.value.substr(0,lel.value);
 		return;
 	}else if( lel.value > ub.value.length ){
 		while ( lel.value != ub.value.length  ){ ub.value = ub.value + "0" ; }
