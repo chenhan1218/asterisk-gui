@@ -195,6 +195,8 @@ callbacks.postselect = function(){
 callbacks.delchanges = function(box, value) {
 	deletesp_fromui(value);
 	delete_didcontext(value);
+	used_fxos.newvalue = "";
+	update_used_fxos();
 	var _hglobals = _$('hiddenglobals');
 	var oldvalue = _hglobals.stored_config.catbyname['globals'].fieldbyname[value];
 	if (oldvalue) {
@@ -932,6 +934,7 @@ function deleteSP(trunk){
 		if(_devices.options[i].value == trunk){
 			_devices.selectitem(i) ;
 			_$('delete').disabled = 0;
+			used_fxos.oldvalue = _devices.stored_config.catbyname[_devices.value].fieldbyname['zapchan'] ;
 			if( !_$('delete').click() ){ return; }
 			break;
 		}
