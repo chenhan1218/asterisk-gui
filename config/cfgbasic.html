@@ -195,6 +195,9 @@ function show_Acctooltip(name, tip){
 }
 
 function registerajax() {
+	astmanEngine = new Astman();
+	astmanEngine.setURL(asterisk_rawmanPath);
+
 	_$('mainscreen').src = "home.html" ;
 	Rico.Corner.round('tooltip_round', {compact:true});
 		// if you want google style feedback boxes :-)
@@ -221,7 +224,7 @@ function registerajax() {
 	started = 1;
 }
 
-astmanEngine.setURL(asterisk_rawmanPath );
+
 //astmanEngine.setEventCallback(eventeater.eventcb);
 
 function Logoff() {

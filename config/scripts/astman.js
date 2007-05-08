@@ -1857,4 +1857,4 @@ function merge_extensions(u, e) { // read e and add into u according to sort ord
 	}
 }
 
-astmanEngine = new Astman();
+
