@@ -37,7 +37,10 @@ var eventeater = {};
 var localextenlength;
 
 function localinit(){
-
+	astmanEngine = new Astman();
+	astmanEngine.setURL(rawman_url);
+	astmanEngine.setEventCallback(eventeater.eventcb);
+	_$('mainscreen').src="1.html";
 }
 
 eventeater.eventcb = function(msgs) {
@@ -46,8 +49,6 @@ eventeater.eventcb = function(msgs) {
 	}
 }
 
-astmanEngine.setURL(rawman_url);
-astmanEngine.setEventCallback(eventeater.eventcb);
 </script>
 <body onload="localinit()" topmargin=0  bgcolor="FFFFFF">
 <TABLE width=800 cellpadding=0 cellspacing=0 border=0 align="center" style="border: 1px solid #660000; margin-top: 8px;">
@@ -63,7 +64,7 @@ astmanEngine.setEventCallback(eventeater.eventcb);
 		</TABLE>
 	     </TD>
 	</TR>
-	<TR><TD height=400><iframe width=785 height=396 frameborder="0" border="0" marginheight="0" marginwidth="0" src="1.html" id="mainscreen" SCROLLING=no></iframe></TD>
+	<TR><TD height=400><iframe width=785 height=396 frameborder="0" border="0" marginheight="0" marginwidth="0" id="mainscreen" SCROLLING=no></iframe></TD>
 	</TR>
 	<TR><TD height=50 bgcolor="#DBDBDB"  align="right" valign="middle">
 		<TABLE cellpadding=0 cellspacing=0 width="130" border=0 align="right">
