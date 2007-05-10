@@ -256,7 +256,7 @@ function update_contextContent(){
 		if( posofeq == -1){ continue; }
 		firstpart = u[f].substring(0, posofeq );
 		secondpart = u[f].substring( posofeq+1 );
-		uri += build_action('update', c, global_contextBeingEdited, firstpart, secondpart ); c++;
+		uri += build_action('append', c, global_contextBeingEdited, firstpart, secondpart ); c++;
 	}
 
 	var opt = {
