@@ -17,17 +17,23 @@
  * the GNU General Public License Version 2. See the LICENSE file
  * at the top of the source tree.
  *
- * ******** PENDING ****** PENDING ***
 -->
 <script src="scripts/prototype.js"></script>
 <script src="scripts/astman.js"></script>
 <link href="stylesheets/rico.css" media="all" rel="Stylesheet" type="text/css" />
 <link href="stylesheets/schwing.css" media="all" rel="Stylesheet" type="text/css" />
 <script>
+var TIMERULES_CATEGORY = 'timebasedrules';
 var timebasedrules = {};
 var voicemenus = [];
 var user_extens = [];
 var isNewRule;
+var NOW_EDITING ;
+
+function clear_table(){
+	var t = _$('tbrulesTable') ;
+	for( var i=0; i < t.rows.length; ){ t.deleteRow(i); }
+}
 
 function showlist_of_rules(){
 	var t;
@@ -93,10 +99,10 @@ function get_users(m){
 function get_timerules(b){
 	var c,d,e,t,p,q;
 	c = eval('(' + b + ')');
-
+	var found = 0;
 	for( d in c ){
 		if(c.hasOwnProperty(d)){
-			if( d == 'timebasedrules'){ e = c[d];}
+			if( d == TIMERULES_CATEGORY ){ e = c[d]; found = 1;}
 			if( d.substr(0,17) == 'voicemenu-custom-'){
 				p = {};
 				q = get_menuname(c[d]);
@@ -105,6 +111,14 @@ function get_timerules(b){
 				voicemenus.push(p);
 			}
 		}
+	}
+
+
+	if(!found){ // If Time Based Rules Context Not Found - add one and reload
+		var as = 'action=updateconfig&srcfilename=extensions.conf&dstfilename=extensions.conf&Action-000000=newcat&Cat-000000='+TIMERULES_CATEGORY+'&Var-000000=&Value-000000=' ;
+		var rel = function(){window.location.href=window.location.href;}
+		makerequest(as, rel);
+		return;
 	}
 
 	for( t=0; t < e.length; t++) {
@@ -128,7 +142,7 @@ function get_menuname(c){
 
 function parsetimeconditions(a,b){ // a is the [timebasedrules] array, b is the index
 /*	timebasedrules[1] = {};
-	timebasedrules[1].rulename =  ; //'NoOp(Christmas)'
+	timebasedrules[1].rulename =  ; // Ex: July4
 	timebasedrules[1].ruleconditons = {} ;
 	timebasedrules[1].ruleconditons.fromhour = '' ;
 	timebasedrules[1].ruleconditons.fromminutes = '' ;
@@ -267,6 +281,7 @@ function add_trule(){
 	isNewRule = 1;
 	reset_fields();
 	_$('create_rule').disabled = 1;
+	_$('form_caption').innerHTML = "<B>" + "Add new Time Rule" + "</B>";
 	_$('timerule_editdiv').style.display = "";
 	_$('id_rulename').focus();
 }
@@ -288,10 +303,75 @@ function reset_fields(){
 
 function save_rule(){
 	if(isNewRule){
-		add_newrule();
+		var getnewruleextension = function(){
+			var t=1;
+			while(timebasedrules[t]){ t++; }
+			return t;
+		}
+		var s = getnewruleextension();
+		add_newrule(s);
 	}else{
 		update_rule();
 	}
+}
+
+function makerequest(a, b){
+	var tmp;
+	var opt = {
+		method: 'get',
+		parameters: a,
+		asynchronous: true,
+		onComplete: function(t){ if(b){ b(t.responseText); } }
+	};
+	tmp = new Ajax.Request( asterisk_rawmanPath, opt);
+}
+
+function add_newrule(nre){
+	var added_newrule = function(f){
+		timebasedrules[nre] = {};
+		timebasedrules[nre].rulename = _$('id_rulename').value ;
+		timebasedrules[nre].ruleconditons = {} ;
+		timebasedrules[nre].ruleconditons.fromhour = _$('startime_hour').value ;
+		timebasedrules[nre].ruleconditons.fromminutes = _$('startime_minute').value ;
+		timebasedrules[nre].ruleconditons.tohour = _$('endtime_hour').value ;
+		timebasedrules[nre].ruleconditons.tominutes = _$('endtime_minute').value  ;
+		timebasedrules[nre].ruleconditons.from_wday = _$('wday_start').value ;
+		timebasedrules[nre].ruleconditons.to_wday = _$('wday_end').value ;
+		timebasedrules[nre].ruleconditons.from_mday = _$('startdom').value ;
+		timebasedrules[nre].ruleconditons.to_mday = _$('enddom').value ;
+		timebasedrules[nre].ruleconditons.from_month = _$('month_start').value ;
+		timebasedrules[nre].ruleconditons.to_month = _$('month_end').value ;
+		timebasedrules[nre].ifmatch_goto = _$('dest_match').value ;
+		timebasedrules[nre].ifnomatch_goto = _$('dest_nomatch').value ;
+
+		cancel_rule();
+		clear_table();
+		showlist_of_rules();
+	}
+
+	var tc = _$('startime_hour').value + ':' + _$('startime_minute').value + '-' + _$('endtime_hour').value + ':' + 
+		_$('endtime_minute').value + '|' + _$('wday_start').value + '-' + _$('wday_end').value + '|' + _$('startdom').value 
+		+ '-'+ _$('enddom').value + '|' + _$('month_start').value + '-' + _$('month_end').value ;
+
+	var line1 = nre + ',1,NoOp(' + _$('id_rulename').value + ')';
+	var line2 = nre + ',n,GotoIfTime(' + tc + '?' +  _$('dest_match').value + ')' ;
+	var line3 = nre + ',n,Goto('+ _$('dest_nomatch').value + ')' ;
+
+	var actionstring = 'action=updateconfig&srcfilename=extensions.conf&dstfilename=extensions.conf' + 
+			'&Action-000000=append&Cat-000000=' + TIMERULES_CATEGORY + '&Var-000000=exten&Value-000000=' + encodeURIComponent(line1) + 
+			'&Action-000001=append&Cat-000001=' + TIMERULES_CATEGORY + '&Var-000001=exten&Value-000001=' + encodeURIComponent(line2) +
+			'&Action-000002=append&Cat-000002='+ TIMERULES_CATEGORY + '&Var-000002=exten&Value-000002=' + encodeURIComponent(line3) ;
+
+	makerequest(actionstring, added_newrule);
+}
+
+
+
+function update_rule(){
+	// delete existing and add new
+	
+	delete_rule(NOW_EDITING, function(){ add_newrule(NOW_EDITING);} );
+	
 }
 
 
@@ -299,18 +379,43 @@ function edit_form(f){
 	isNewRule = 0;
 	reset_fields();
 	form_updatevalues(f);
+	NOW_EDITING = f;
+	_$('form_caption').innerHTML = "<B>" + "Edit Time Rule" + "</B>";
 	_$('create_rule').disabled = 1;
 	_$('timerule_editdiv').style.display = "";
 	_$('id_rulename').focus();
 }
 
-function delete_rule(f){
+function delete_rule(f,y){
+	// prepare and make ajax request
+	// onSuccess update timebasedrules object, and also update table
 
+	var g = timebasedrules[f];
+	var h = g.ruleconditons;
+ 
+	var tc = h.fromhour + ':' + h.fromminutes + '-' + h.tohour + ':' + h.tominutes + '|' + h.from_wday  + '-' 
+		+ h.to_wday + '|' + h.from_mday + '-'+ h.to_mday + '|' + h.from_month + '-' + h.to_month ;
+
+	var line1 = f + ',1,NoOp(' + g.rulename + ')';
+	var line2 = f + ',n,GotoIfTime(' + tc + '?' +  g.ifmatch_goto + ')' ;
+	var line3 = f + ',n,Goto('+ g.ifnomatch_goto + ')' ;
+
+	var actionstring = 'action=updateconfig&srcfilename=extensions.conf&dstfilename=extensions.conf' + 
+			'&Action-000000=delete&Cat-000000=' + TIMERULES_CATEGORY + '&Var-000000=exten&Value-000000=&Match-000000=' + encodeURIComponent(line1) + 
+			'&Action-000001=delete&Cat-000001=' + TIMERULES_CATEGORY + '&Var-000001=exten&Value-000001=&Match-000001=' + encodeURIComponent(line2) +
+			'&Action-000002=delete&Cat-000002='+ TIMERULES_CATEGORY + '&Var-000002=exten&Value-000002=&Match-000002=' + encodeURIComponent(line3) ;
+
+	var deletedrule = function(){
+		delete timebasedrules[f];
+		clear_table();
+		showlist_of_rules();
+		if(y){y();}
+	}
+
+	makerequest(actionstring, deletedrule);
 }
 
 function form_updatevalues(f){
-//	_$('id_rulename').value = "";
-//	var slectboxes = ['','','','','','','','',];
 	_$('id_rulename').value = timebasedrules[f].rulename;
 
 	_$('startime_hour').selectedIndex = parseInt(timebasedrules[f].ruleconditons.fromhour);
@@ -339,8 +444,6 @@ function form_updatevalues(f){
 
 }
 
-
-// * ******** PENDING ****** PENDING ***
 </script>
 <body onload="localajaxinit()"  bgcolor="FFFFFF">
 <div style="font-size : 12px; padding : 4px 6px 4px 6px; border-style : solid none solid none; border-top-color : #BDC7E7; border-bottom-color : #182052; border-width : 1px 0px 1px 0px; background-color : #ef8700; color : #ffffff;">
@@ -355,16 +458,15 @@ function form_updatevalues(f){
 			<td align="center" width=115>Options</td>
 		</tr>
 	</table>
-	<div id="tbrulesTable_div" style="height:260px;width=100%; overflow :auto; padding : 0px 0px 0px 0px;">
+	<div id="tbrulesTable_div" style="height:430px;width=100%; overflow :auto; padding : 0px 0px 0px 0px;">
 		<table id="tbrulesTable" cellpadding=2 cellspacing=1 border=0 align=center width=500 bgcolor="#DEDEDE"></table>
 	</div>
 	<BR>
 </div>
-* ******** PENDING ****** PENDING ***
 <div id="timerule_editdiv" STYLE="display:none; position: absolute; left: 20; top: 20; width:480; height:320; background-color:#F4EFE5; border-width: 1px; border-color: #7E5538; border-style: solid; z-index:5">
 	<table width="100%" cellpadding=0 cellspacing=0  onmousedown="startDrag(event , 'timerule_editdiv');">
 	<TR bgcolor="#7E5538"  style="background-image:url('images/title_gradient.gif');">
-		<TD><font color="#FFFFFF">&nbsp;&nbsp;<span><B>Edit/Add Time Rule</B></span></FONT></TD>
+		<TD><font color="#FFFFFF">&nbsp;&nbsp;<span id="form_caption"></span></FONT></TD>
 		<TD Height="20" align="right" style="cursor: move">
 			<A href="#" onclick="$('cancel').click();" style="color:#FFFFFF; font-size: 12px; font-weight:bold;">X</A>
 		</TD>
@@ -372,7 +474,7 @@ function form_updatevalues(f){
 	</TR>
 	</table>
 	<table cellpadding=2 cellspacing=2 border=0 width="100%" align="center">
-		<tr><td align=center colspan=2>	Rule Name : <input id="id_rulename" size=20 class="input9">	</td>	</tr>
+		<tr><td align=center colspan=2>	Rule Name : <input id="id_rulename" size=20 class="input9">&nbsp;(Ex: July4)</td>	</tr>
 		<tr><td align=center colspan=2 height=30 valign=bottom><B>Time & Date Conditions</B></td>	</tr>
 
 		<tr>	<td align=right>Start Time: <select id="startime_hour" class="input9"></select> : <select id="startime_minute" class="input9"></select></td>
