@@ -114,6 +114,9 @@ function format_step(this_step){
 	if( temp[2].match("Hangup") )
 		return "Hangup";
 
+	if( temp[2].match("Directory") && temp[2].match("default"))
+		return "Goto Directory";
+
  return this_step;
 }
 
@@ -283,7 +286,7 @@ function add_newstep(){
 		return;
 	}
 
-	if( _nsa.value != "Answer" &&   _nsa.value != "Hangup" && !_nsv .value ){
+	if( _nsa.value != "Answer" && _nsa.value != "GotoDirecotry" && _nsa.value != "Hangup" && !_nsv .value ){
 		gui_alert("Please enter a value for '" + _nsa.value +"'");
 		_nsv.focus();
 		return;
@@ -381,6 +384,9 @@ function add_newstep(){
 		break;
 	case 'Hangup':
 		action_string = "s,"+ newpriority+ ",Hangup";
+		break;
+	case 'GotoDirecotry':
+		action_string = "s,"+ newpriority+ ",Directory(default)";
 		break;
 	default : 
 		action_string = "s,undefined,undefined"; 
@@ -700,7 +706,7 @@ function update_newstep_var(){
 	_anm.style.display = "none";
 	_$('tbr').style.display = "none";
 
-        if( _nsa.value== "" || _nsa.value== "Answer"  || _nsa.value== "Hangup"  ){
+        if( _nsa.value== "" || _nsa.value== "Answer"  || _nsa.value== "Hangup" || _nsa.value== "GotoDirecotry" ){
 
         }else if( _nsa.value== "Background"  || _nsa.value== "Playback" ){
                 _nsv.style.display = "";
@@ -1189,6 +1195,7 @@ function free_mem(){
 					<option value="Wait">Wait</option>
 					<option value="WaitExten">WaitExten</option>
 					<option value="GotoMenu">Goto Menu</option>
+					<option value="GotoDirecotry">Goto Directory</option>
 					<option value="GotoExtension">Goto Extension</option>
 					<option value="GotoTimeBasedRule">Goto TimeBasedRule</option>
 					<option value="Hangup">Hangup</option>
