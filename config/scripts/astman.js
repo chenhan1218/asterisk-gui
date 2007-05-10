@@ -41,6 +41,7 @@ var asterisk_guiListFiles = "sh " + asterisk_scriptsFolder + "listfiles" ;
 var sortbynames = false;
 var dragdata = new Object;
 var asterisk_guiTDPrefix = "DID_";
+var TIMERULES_CATEGORY = 'timebasedrules';
 
 function gui_feedback(a,b,c){ 
 // a is msg, b is color (optional ), c is display time in milliseconds(optional, default to asterisk_guifbt)

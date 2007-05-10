@@ -44,6 +44,17 @@ var localextenlength ;
 function format_step(this_step){
 	var temp = this_step.split(',');
 
+	if( temp[2].match("Goto") && this_step.match(TIMERULES_CATEGORY)  ){
+		var tmp = this_step.split('Goto')[1].substr(1);
+		tmp = tmp.substr(0, tmp.length-1);
+
+		var m = _$('tbr');
+		for(var l=0; l < m.options.length; l++ ){
+			if(m.options[l].value == tmp){ return "Goto TimeBasedRule '"+  m.options[l].text + "'"; }
+		}
+		return "Goto '"+  tmp + "' (NOT FOUND)";
+	}
+
 	if( temp[2].match("Answer") )
 		return "Answer the Call";
 	if( temp[2].match("Authenticate") ){
@@ -93,7 +104,7 @@ function format_step(this_step){
 			return "Goto Menu '"+  tmp1[0] + "'";
 		}
 	}
-	
+
 	if( temp[2].match("Goto") && !temp[2].match("voicemenu-")  ){
 		var tmp = temp[2].split('(');
 		var tmp1 = tmp[1].split('|');
@@ -364,6 +375,9 @@ function add_newstep(){
 		break;
 	case 'GotoExtension':
 		action_string = "s,"+ newpriority+ ",Goto(default|" + _nsv.value + "|1)";
+		break;
+	case 'GotoTimeBasedRule':
+		action_string = "s,"+ newpriority+ ",Goto(" + _$('tbr').value + ")";
 		break;
 	case 'Hangup':
 		action_string = "s,"+ newpriority+ ",Hangup";
@@ -684,6 +698,7 @@ function update_newstep_var(){
 	_$('combodiv_sounds').style.display = "none" ;
 	_ane.style.display = "none";
 	_anm.style.display = "none";
+	_$('tbr').style.display = "none";
 
         if( _nsa.value== "" || _nsa.value== "Answer"  || _nsa.value== "Hangup"  ){
 
@@ -698,7 +713,12 @@ function update_newstep_var(){
         }else if(_nsa.value== "GotoExtension"  ){
 		_nsv.value = _ane.value;
 		_ane.style.display = "";
+        }else if(_nsa.value== "GotoTimeBasedRule"  ){
+		_$('tbr').selectedIndex = -1;
+		_$('tbr').style.display = "";
         }
+
+
 }
 
 
@@ -950,6 +970,23 @@ function localajaxinit() {
 extencallbacks.format = function(t, x) {
 	var res;
 	var qname;
+
+	if(t.name == TIMERULES_CATEGORY && t.fields[x].match("NoOp") ){
+		var m = t.fields[x].split('NoOp')[1].substr(1);
+		m = m.substr(0, m.length-1);
+		
+		var l = document.createElement('option');
+			l.text = m ;
+			l.value = TIMERULES_CATEGORY + ","+ t.fields[x].split(',')[0] + ",1" ;
+		
+		if(document.attachEvent){ 
+			_$('tbr').add(l);
+		}else{
+			_$('tbr').add(l,null);
+		}
+		return null ;
+	}
+
 	if ((t.name != specialcontext))
 	return null;
 
@@ -1153,6 +1190,7 @@ function free_mem(){
 					<option value="WaitExten">WaitExten</option>
 					<option value="GotoMenu">Goto Menu</option>
 					<option value="GotoExtension">Goto Extension</option>
+					<option value="GotoTimeBasedRule">Goto TimeBasedRule</option>
 					<option value="Hangup">Hangup</option>
 				</select>&nbsp;
 				<input type=text id="newstep_var" style="display:none" size=4 disabled class="input8">
@@ -1161,6 +1199,7 @@ function free_mem(){
 				<div id="combodiv_sounds">
 					<select size=5 id="combosel_sounds" style="font-family: Verdana, Arial, Helvetica, Sans-Serif;font-size: 11px;" class="input8"></select>
 				</div>
+				<select style="display:none" id="tbr" class="input8" onChange=" $('newstep_var').value = $('tbr').value;"></select>
 				<input type=text id="newstep_var_digit" size=3 style="display:none;" onChange=" $('newstep_var').value = $('newstep_var_digit').value;"  pattern='^\d*$' class="input8">&nbsp;
 				<SCRIPT LANGUAGE="JavaScript">combo_box('newstep_var', "combodiv_sounds","combosel_sounds"); </SCRIPT>
 				<input type=button style='width:45' id='addstep' onclick="add_newstep()"  value="Add" disabled  class="buttonbold">
