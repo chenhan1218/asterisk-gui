@@ -198,33 +198,35 @@ function loadfile(){
 
 
 function showeditcontext(){
+	var t = (event.srcElement)?event.srcElement:this;
 	_$('AddContext').style.display = "none";
 	_$('div_editcontextContent').style.display = "none";
 	//move div_editcontext ontop of h_id and display it
-	var h_id = this.getAttribute('id') ;
-	global_contextBeingEdited = this.getAttribute('context');
+	var h_id = t.getAttribute('id') ;
+	global_contextBeingEdited = t.getAttribute('context');
 
 	_$(h_id).insertBefore(_$('div_editcontext'), null );
 	_$('div_editcontext').style.display = "";
 
-	var f = this.getAttribute('context')
+	var f = t.getAttribute('context')
 	_$('context_edited').value = f ;
 	_$('context_edited').size = f.length;
 	_$('context_edited').focus();
 }
 
 
-function showeditcontextContent(){
+function showeditcontextContent(event){
+	var t = (event.srcElement)?event.srcElement:this;
 	_$('AddContext').style.display = "none";
 	_$('div_editcontext').style.display = "none";
-	var i_id = this.getAttribute('id') ;
-	global_contextBeingEdited = this.getAttribute('context');
+	var i_id = t.getAttribute('id') ;
+	global_contextBeingEdited = t.getAttribute('context');
 	
 	_$(i_id).insertBefore(_$('div_editcontextContent'), null );
 	_$('div_editcontextContent').style.display = "";
 	
-	_$('context_Content').value = this.CONTEXTCONTENT ;
-	_$('context_Content').rows = this.CONTEXTCONTENT_ROWS ;
+	_$('context_Content').value = t.CONTEXTCONTENT ;
+	_$('context_Content').rows = t.CONTEXTCONTENT_ROWS ;
 	//_$('context_edited').size = f.length;
 	_$('context_Content').focus();
 }
@@ -327,12 +329,14 @@ function fileparsed(b){
 
 			var temp_contextContent = "" ;
 			rows = 0;
+			if(c[d].length == 0){i.innerHTML += "&nbsp;&nbsp;<BR>" ;}
 			for(var r=0; r < c[d].length ; r++ ){
 				p = unescape( c[d][r] );
 				i.innerHTML += "&nbsp;&nbsp;" + p + "<BR>" ;
 				temp_contextContent += p + "\n";
 				rows++;
 			}
+			
 			i.CONTEXTCONTENT = temp_contextContent ;
 			i.CONTEXTCONTENT_ROWS = rows ;
 			zz.appendChild(i);
