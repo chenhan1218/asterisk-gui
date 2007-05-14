@@ -23,30 +23,128 @@
 var browser_alert = "You owe it to yourself to try it out !<BR><A href='http://www.getfirefox.com' style='font-size: 13px; font-family:arial,sans-serif,Helvetica,Trebuchet MS; color : #6C74A3;' target='_blank'>Get Firefox</A>";
 </script>
 <script src="scripts/prototype.js"></script>
-<script src="scripts/rico.js"></script>
 <script src="scripts/astman.js"></script>
 <link href="stylesheets/rico.css" media="all" rel="Stylesheet" type="text/css" />
 <link href="stylesheets/schwing.css" media="all" rel="Stylesheet" type="text/css" />
 <script>
-PanelDef = Class.create();
-PanelDef.prototype = {
-	initialize: function(name, label, icon, content) {
-		this.name = name;
-		this.label = label;
-		this.icon = icon;
-		this.content = content;
-	}
-}
-var panels = new Array;
 var eventeater = new Object;
 var loggedon = -1;
-var started = 0;
 var accordion;
 var copyright = "Copyright &copy;2006-2007 Digium, Inc.  All Rights Reserved. &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
 var tooltip_default = "Move the mouse over to a field to see tooltips";
 var asterisk_guitools_inextconf = 0;
 eventeater.pingstatus = false;
 var keepPinging;
+
+function createpanels(){
+	var t,u,v;
+	var a = _$('configpanel');
+	var pnameheight = 22;
+	var panels = returnpanels();
+	var pheight = (503  - (pnameheight*panels.length) ) ;
+	a.pheight = pheight;
+	var this_id ;
+	for( var r=0; r < panels.length; r++ ){
+		this_id = panels[r].page.split(".html")[0];
+
+		t = document.createElement("div");
+		t.className = "accordionTabTitleBar";
+		t.style.backgroundColor = "#6B79A5";
+		t.style.color = "#CED7EF";
+		t.style.fontWeight = "normal";
+		t.style.display = "none";
+		t.setAttribute('id', this_id );
+		t.height = pnameheight;
+		t.innerHTML = "<nobr><img style='vertical-align: middle;' src='images/accordion-icon.gif'><span style='margin-left: 0px; font-weight: bold;'>&nbsp;" + panels[r].caption + "</span></nobr>";
+
+		add_event(t, 'click', fghjhhs);
+
+		u = document.createElement("div");
+		u.className = "accordionTabContentBox";
+
+		u.style.borderStyle = "solid";
+		u.style.borderColor = "#1F669B";
+		u.style.borderWidth = "0px 1px";
+		u.style.margin = "0px";
+		u.style.overflow = "hidden";
+		u.style.backgroundImage = "url(images/panel.png)";
+		u.style.height = "1px";
+		u.style.display = "none";
+		u.setAttribute('id', this_id+"_U" );
+		u.innerHTML =panels[r].desc; 
+
+		//v = document.createElement("div");
+		//v.appendChild(t);
+		//v.appendChild(u);
+		//a.appendChild(v);
+		a.appendChild(t);
+		a.appendChild(u);
+	}
+
+	_$( "home" ).style.display = "";
+	_$( "home_U" ).style.display = "";
+	_$( "home_U" ).style.height = a.pheight +"px";
+}
+
+function fghjhhs(event){
+	var s = (event.srcElement)?event.srcElement:this;
+	if(event.srcElement && s.id==""){s = event.srcElement.parentNode.parentNode;}
+
+	if( $('mainscreen').currentpage == s.id + ".html")return;
+	var t;
+	var panels = returnpanels();
+	for( var r=0; r < panels.length; r++ ){
+		t = panels[r].page.split(".html")[0];
+		_$( t + "_U" ).style.height = "1px";
+		_$( t + "_U" ).style.display = "none";
+	}
+	_$( s.id + "_U" ).style.height = _$('configpanel').pheight + "px";
+	_$( s.id + "_U" ).style.display = "";
+
+	_$('mainscreen').style.display = "none";
+	_$('mainscreen').src = s.id + ".html";
+	_$('mainscreen').currentpage = s.id + ".html";
+}
+
+function returnpanels(){
+	var panels = [];
+
+	var newpanel = function(s){
+		var r = {};
+		r.caption = s[0];
+		r.page = s[1];
+		r.desc = s[2];
+		panels.push(r);
+	}
+
+	newpanel( ["Home", "home.html", "Asterisk Configuration Panel - Please click on a panel to manage related features"]);
+	newpanel( ["Users", "users.html", "Users is a short cut for quickly adding and removing all the necessary configuration components for any new phone."]);
+	newpanel( ["Conferencing", "meetme.html", "MeetMe conference bridging allow quick, ad-hoc conferences with or without security."]);
+	newpanel( ["Voicemail", "voicemail.html", "General settings for voicemail"]);
+	newpanel( ["Call Queues", "queues.html", "Call queues allow calls to be sequenced to one or more agents."]);
+	newpanel( ["Service Providers", "trunks.html", "Service Providers are outbound lines used to allow the system to make calls to the real world.  Trunks can be VoIP lines or traditional telephony lines."]);
+	newpanel( ["Calling Rules", "numberplan.html", "The Calling Rules define dialing permissions and least cost routing rules."]);
+	newpanel( ["Incoming Calls", "incoming.html", "Define how your incoming calls should be handled & configure DID (Direct inward Dialing)"]);
+	newpanel( ["Voice Menus", "menus.html", "Menus allow for more efficient routing of calls from incoming callers. Also known as IVR (Interactive Voice Response) menus or Digital Receptionist"]);
+	newpanel( ["Record a Menu", "record.html", "Allows you to record custom voicemenus over a phone"]);
+	newpanel( ["Active Channels", "status.html", "Monitor active channels."]);
+	newpanel( ["Graphs", "graphs.html", "View Graphs of your System Information."]);
+	newpanel( ["System Info", "sysinfo.html", "System Information."]);
+	newpanel( ["Backup", "backup.html", "Backup Management."]);
+	newpanel( ["Options", "localexts.html", "Admin Settings"]);
+
+//	new PanelDef("feditor", "File Editor", "accordion-icon.gif", " Manually edit Config Files"),
+//	new PanelDef("cli", "Asterisk CLI", "accordion-icon.gif", " Asterisk Command Line Interface"),
+///	new PanelDef("moh", "Music On Hold", "accordion-icon.gif", " Music on hold sometimes keeps people less angry while they wait for an answer"),
+///	new PanelDef("sip", "SIP", "accordion-icon.gif", "SIP (Session Initiation Protocol) Configuration"),
+//	new PanelDef("iax", "IAX", "accordion-icon.gif", "IAX (Inter-Asterisk eXchange Protocol) Configuration")
+//	new PanelDef("jabber", "Jabber", "accordion-icon.gif", "Jabber users configuration"),
+//	new PanelDef("jingle", "Jingle", "accordion-icon.gif", "Jingle configuration lets users connect to google talk networks"),
+//	new PanelDef("zapata", "Zap Channel", "accordion-icon.gif", "Zapata telephony interface configuration")
+
+	return panels;
+}
+
 
 function pingevery(a){
 	keepPinging = setInterval( makeping, a*250 );
@@ -74,87 +172,21 @@ eventeater.eventcb = function(msgs) {
 	}
 }
 
-
-panels.push( 
-
-	new PanelDef("home", "Home", "home.png",
-		"Asterisk Configuration Panel - Please click on a panel to manage related features"),
-
-	new PanelDef("users", "Users", "accordion-icon.gif",
-		"Users is a short cut for quickly adding and removing all the necessary " +
-		"configuration components for any new phone."),
-
-	new PanelDef("meetme", "Conferencing", "accordion-icon.gif",
-		"MeetMe conference bridging allow quick, ad-hoc conferences with or without " +
-		"security."),
-
-	new PanelDef("voicemail", "Voicemail", "accordion-icon.gif",
-		"General settings for voicemail"),
-
-	new PanelDef("queues", "Call Queues", "accordion-icon.gif",
-		"Call queues allow calls to be sequenced to one or more agents."),
-
-	new PanelDef("trunks", "Service Providers", "accordion-icon.gif",
-		"Service Providers are outbound lines used to allow the system to make calls to the " +
-		"real world.  Trunks can be VoIP lines or traditional telephony lines."),
-
-	new PanelDef("numberplan", "Calling Rules", "accordion-icon.gif",
-		"The Calling Rules define dialing permissions and least cost routing rules."),
-
-	new PanelDef("incoming", "Incoming Calls", "accordion-icon.gif",
-		"Define how your incoming calls should be handled & configure DID (Direct inward Dialing)"),
-
-	new PanelDef("menus", "Voice Menus", "accordion-icon.gif",
-		"Menus allow for more efficient routing of calls from incoming callers. Also known as IVR (Interactive Voice Response) menus or Digital Receptionist"),
-
-	new PanelDef("record", "Record a Menu", "accordion-icon.gif",
-		"Allows you to record custom voicemenus over a phone"),
-	
-	new PanelDef("status", "Active Channels", "accordion-icon.gif", "Monitor active channels."),
-
-	new PanelDef("graphs", "Graphs", "accordion-icon.gif", "View Graphs of your System Information."),
-
-	new PanelDef("sysinfo", "System Info", "accordion-icon.gif", "System Information."),
-
-	new PanelDef("backup", "Backup", "accordion-icon.gif", "Backup Management."),
-
-	new PanelDef("localexts", "Options", "accordion-icon.gif", "Admin Settings")
-
-);
-
-// show additional panels for advanced mode
-if(window.location.href.match("advanced=yes") ){
-panels.splice(10,0,
-	new PanelDef("timerules", "Time Based Rules", "accordion-icon.gif", " Define Call handling Rules based on Time, Day, Date and/or Month"),
-
-	new PanelDef("feditor", "File Editor", "accordion-icon.gif", " Manually edit Config Files"),
-
-	new PanelDef("cli", "Asterisk CLI", "accordion-icon.gif", " Asterisk Command Line Interface"),
-
-	new PanelDef("moh", "Music On Hold", "accordion-icon.gif", " Music on hold sometimes keeps people less angry while they wait for an answer"),
-
-	new PanelDef("sip", "SIP", "accordion-icon.gif", "SIP (Session Initiation Protocol) Configuration"),
-
-	new PanelDef("iax", "IAX", "accordion-icon.gif", "IAX (Inter-Asterisk eXchange Protocol) Configuration")
-
-//	new PanelDef("jabber", "Jabber", "accordion-icon.gif", "Jabber users configuration"),
-
-//	new PanelDef("jingle", "Jingle", "accordion-icon.gif", "Jingle configuration lets users connect to google talk networks"),
-
-//	new PanelDef("zapata", "Zap Channel", "accordion-icon.gif", "Zapata telephony interface configuration")
-	);
-}
-
-
 function setLoggedOn(onoff) {
-	loggedon = onoff;
-	for (var i = 0; i < panels.length; i++) {
-		if (panels[i].name == 'home'){continue;}
-		var w = _$(panels[i].name); 
-		w.onClick = (loggedon == 1)?w.realonclick: false;
-		w.onMouseOver = (loggedon == 1)?w.realonmouseover:false;
-		w.style.visibility = (loggedon == 1)?'inherit':'hidden';
+	if(!onoff){return;}
+	loggedon = 1;
+	var panels = returnpanels();
+	var pnameheight = 22;
+	var pheight = (503  - (pnameheight*panels.length) ) ;
+	for( var r=0; r < panels.length; r++ ){
+		t = panels[r].page.split(".html")[0];
+		_$( t + "_U" ).style.height = "1px";
+		_$( t + "_U" ).style.display = "none";
+		_$( t ).style.display = "";
 	}
+	_$("home").style.display = "";
+	_$("home_U").style.height = _$('configpanel').pheight + "px";
+	_$("home_U").style.display = "";
 }
 
 function loadscreen(srcbody) {
@@ -162,32 +194,9 @@ function loadscreen(srcbody) {
 }
 
 function setstatus(status) {	_$('status').innerHTML = copyright + status;	}
-function showmainscreen(page) {
-	if (started) {
-		var opt = {
-			method: 'get',
-			asynchronous: true,
-			onComplete: function (originalRequest){
-				if ( originalRequest.responseText.match("Error") ) {
-					window.location.href=window.location.href;
-					return ;
-				}
-				if ( originalRequest.responseText.match("Pong") ) {
-					_$('mainscreen').src = page.titleBar.id + ".html";
-				}
-			}
-		};
-		opt.parameters="action=ping" ;
-		var tmp = new Ajax.Request(asterisk_rawmanPath , opt);
-		//$('mainscreen').src = page.titleBar.id + ".html";
-	}
-}
 
-function fademainscreen(page, newpage) {
-	// Confirm Discard Changes goes here 
-	_$('tooltip').innerHTML = tooltip_default;
-	_$('mainscreen').style.display = "none";
-}
+
+
 
 function show_Acctooltip(name, tip){
 	if( loggedon != 1){ return; }
@@ -197,32 +206,13 @@ function show_Acctooltip(name, tip){
 
 function registerajax() {
 	astmanEngine = new Astman();
-	astmanEngine.setURL(asterisk_rawmanPath);
+	astmanEngine.setURL(asterisk_rawmanPath );
 
+	createpanels();
 	_$('mainscreen').src = "home.html" ;
-	Rico.Corner.round('tooltip_round', {compact:true});
-		// if you want google style feedback boxes :-)
-		// _$('feedback_round').style.backgroundColor = "#EFEFEF";		 
-		// Rico.Corner.round('feedback_round', {compact:true}); 
-		 
 	if( navigator.userAgent.indexOf("MSIE") != -1 || navigator.userAgent.indexOf("Konqueror") != -1 || navigator.userAgent.indexOf("Safari") != -1 ){
 		gui_feedback(browser_alert, 'green');
 	}
-	var pnameheight = 22;
-	var pheight = (503  - (pnameheight*panels.length) ) ;
-	accordion = new Rico.Accordion( $('configpanel'), { panelHeight: pheight,onHideTab:fademainscreen,onShowTab:showmainscreen });
-	//$('borderbox').style.height = $('screenholder').clientHeight;
-	//$('titlebar').style.width = $('borderbox').clientWidth - 12;
-	for (var i = 0; i < panels.length; i++) {
-		var w = _$(panels[i].name) ;
-		if (panels[i].name == 'home'){
-			w.style.height =  "19px";
-			continue;
-		}
-		w.realonclick = w.onClick;
-		w.realonmouseover = w.onMouseOver;
-	}
-	started = 1;
 }
 
 
@@ -234,9 +224,6 @@ function Logoff() {
 		method: 'get',
 		asynchronous: true,
 		onSuccess: function() {	 
-			setLoggedOn(0);
-			loggedon == -1;
-			// reload the browser URL
 			window.location.href=window.location.href;
 		},
 		onFailure: function(t) {
@@ -270,59 +257,47 @@ function reloadConfig(){
 	<title>Asterisk Configuration GUI (Beta)</title>
 	<link rel="shortcut icon" href="images/favicon.ico" />
 </head>
-<body onload="registerajax( )" topmargin=1>
-<table border="0" align="center" cellspacing="0" cellpadding="0" bgcolor="#dddddd" width=950 height=570>
-<tr height=47>
-	<td valign="bottom" align='right' bgcolor='white' height=47><img align='left' src="images/digiumlogo.gif" align="left"></td>
-	<td valign='middle' align='center' bgcolor='white'>
-		<div id="feedback_round" style="display:none;background-color: #FFFFFF; width:400px">
-			<div id='feedback' style="font-family: Arial, sans-serif, Helvetica, Trebuchet MS ;font-size: 13px;font-weight : bold;"></div>
+<body onload="registerajax()" topmargin=1>
+<table align="center" bgcolor="#dddddd" border="0" cellpadding="0" cellspacing="0" height="570" width="950">
+<tbody>
+	<tr height="47">
+		<td align="right" bgcolor="white" height="47" valign="bottom"><img src="images/digiumlogo.gif" align="left"></td>
+		<td align="center" bgcolor="white" valign="middle">
+		<div id="feedback_round" style="background-color: #FFFFFF; width: 400px; display: none;">
+			<div id="feedback" style="font-family: Arial,sans-serif,Helvetica,Trebuchet MS; font-size: 13px; font-weight: bold;"></div>
 		</div>
 
 	</td>
-	<td valign='bottom' align='right' bgcolor='white'>
+	<td align="right" bgcolor="white" valign="bottom">
 		<!-- <a href="#" onclick=" system_link()">System Configuration</a>&nbsp;|&nbsp; -->
-		<a target='_extern' href="http://www.digium.com/en/company/profile/">About Digium</a>&nbsp;|&nbsp;
-		<a target='_extern' href="http://www.asterisknow.org/bugs">Report a Bug</a>&nbsp;|&nbsp;
-		<a target='_extern' href="http://www.asterisknow.org/help">Help</a>&nbsp;
-		<input type="hidden" id="login_name">
+		<a target="_extern" href="http://www.digium.com/en/company/profile/">About Digium</a>&nbsp;|&nbsp;
+		<a target="_extern" href="http://www.asterisknow.org/bugs">Report a Bug</a>&nbsp;|&nbsp;
+		<a target="_extern" href="http://www.asterisknow.org/help">Help</a>&nbsp;
+		<input id="login_name" type="hidden">
 	</td>
 </tr>
-<tr><td height="505">
-	<div id="configpanel" style="width:150px; height: 505px;">
-	<script>
-	for (var i = 0; i < panels.length; i++) {
-		var t = "<div onmouseover='show_Acctooltip(\""+ panels[i].name +"\", \""+ panels[i].content +"\")'  onmouseout='show_Acctooltip(\""+ panels[i].name +"\", \"" + tooltip_default +"\")'>";
-		t += "	<div id='" + panels[i].name + "' class='accordionTabTitleBar'>";
-		t += "		<nobr><img style='vertical-align:middle' src='images/" + panels[i].icon + "'>";
-		t += "		<span style='margin-left: 0px;font-weight:bold'>" + panels[i].label + "</span></nobr>";
-		t += "  </div>";
-		t += "  <div class='accordionTabContentBox' style='background-image:url(images/panel.png)'>" +  panels[i].content + "</div>";
-		t += "</div>";
-		document.write(t);
-	}
-	</script>
-	</div>
+<tr>	<td height="505">
+		<div id="configpanel" style="border-bottom: 1px solid rgb(31, 102, 155); width: 150px; height: 505px;"></div>
 	</td>
-	<td width="550" height="505" bgcolor="#EFEFEF" valign="top" id="screenholder">
-		<div id="titlebar" class="mainscreenTitleBar" style="position:absolute;top:48px">
-			<span style="margin-left: 4px;font-weight:bold">Loading Screen&nbsp;<img src='images/dots.gif'></span>
+	<td id="screenholder" bgcolor="#efefef" height="505" valign="top" width="550">
+		<div id="titlebar" class="mainscreenTitleBar" style="position: absolute; top: 48px;">
+			<span style="margin-left: 4px; font-weight: bold;">Loading Screen&nbsp;<img src="images/dots.gif"></span>
 		</div>
 		<div id="borderbox" class="mainscreenBorderBox" height="100%"></div>
-		<iframe width="540" height="505" frameborder="0" border="0" marginheight="0" marginwidth="0" id="mainscreen" style="position:absolute;top:48px;" SCROLLING=no></iframe>
+		<iframe border="0" marginheight="0" marginwidth="0" id="mainscreen" style="position: absolute; top: 48px;" frameborder="0" height="505" scrolling="no" width="540"></iframe>
 	</td>
-	<td valign=top width=250 height="505">
-		<div class="mainscreenTooltipBar" align=right>
-		<span id="reloadconfig" style="display:none"></span>&nbsp;&nbsp;&nbsp;<span id="logoutlink" style="display:none"></span>&nbsp;
+	<td height="505" valign="top" width="250">
+		<div class="mainscreenTooltipBar" align="right">
+			<span id="reloadconfig" style="display:none">Activate Changes</span>&nbsp;&nbsp;&nbsp;<span id="logoutlink" style="display:none">Logout</span>&nbsp;
 		</div>
-		<div id="tooltip_round" class="tooltip_round">
-		<div id='tooltip' style="margin-left:4px; font-family : Trebuchet MS, Arial, Helvetica, sans-serif;font-size: 11px; "><script>document.write(tooltip_default);</script></div>
-		</div>
+		<div style="padding-top: 0pt; padding-bottom: 0pt;" id="tooltip_round" class="tooltip_round"><div style="background-color: rgb(221, 221, 221);"><span style="border-style: solid; border-color: rgb(206, 206, 206); border-width: 0px 1px; overflow: hidden; background-color: rgb(191, 191, 191); display: block; height: 1px; font-size: 1px; margin-left: 1px; margin-right: 1px;"></span><span style="border-style: solid; border-color: rgb(206, 206, 206); border-width: 0px 1px; overflow: hidden; background-color: rgb(191, 191, 191); display: block; height: 1px; font-size: 1px; margin-left: 0px; margin-right: 0px;"></span></div>
+		<div id="tooltip" style="margin-left: 4px; font-family: Trebuchet MS,Arial,Helvetica,sans-serif; font-size: 11px;">Move the mouse over to a field to see tooltips</div>
+		<div style="background-color: rgb(221, 221, 221);"><span style="border-style: solid; border-color: rgb(206, 206, 206); border-width: 0px 1px; overflow: hidden; background-color: rgb(191, 191, 191); display: block; height: 1px; font-size: 1px; margin-left: 0px; margin-right: 0px;"></span><span style="border-style: solid; border-color: rgb(206, 206, 206); border-width: 0px 1px; overflow: hidden; background-color: rgb(191, 191, 191); display: block; height: 1px; font-size: 1px; margin-left: 1px; margin-right: 1px;"></span></div></div>
 	</td>
 </tr>
-<tr><td colspan="3" align=center height=18>
-		<div id="status" class="statusbar">Copyright &copy;2006-2007 Digium, Inc.  Digium&reg; and Asterisk&reg; are registered <a href="http://www.digium.com/en/company/profile/trademarkpolicy.php">trademarks</a> of Digium, Inc.  All Rights Reserved. <i><a href="#">Legal Information</a></i></div>
+<tr><td colspan="3" align="center" height="18">
+		<div id="status" class="statusbar">Copyright 2006-2007 Digium, Inc.  Digium and Asterisk are registered <a href="http://www.digium.com/en/company/profile/trademarkpolicy.php">trademarks</a> of Digium, Inc.  All Rights Reserved. <i><a href="#">Legal Information</a></i></div>
 		</td>
 </tr>
-</table>
+</tbody></table>
 </body>

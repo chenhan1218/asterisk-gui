@@ -23,7 +23,6 @@
 <link href="stylesheets/rico.css" media="all" rel="Stylesheet" type="text/css" />
 <link href="stylesheets/schwing.css" media="all" rel="Stylesheet" type="text/css" />
 <script>
-var demo = new Object;
 var localloggedon = -1;
 var asterisk_guitools = parent.asterisk_guitools;
 var asterisk_rawmanPath = parent.asterisk_rawmanPath;
@@ -35,6 +34,34 @@ function updateButtons(){
 	_$('logoff').disabled = (f)?0:1;
 	_$('login').disabled = (f)?1:0;
 	if(!f){ try{ _$('username').focus();}catch(err){ } }
+}
+
+function localinit() {
+	top.document.title = "Asterisk GUI (Beta) -- Home";
+	var tmp;
+	var opt = {
+		method: 'get',
+		parameters: "action=ping",
+		asynchronous: true,
+		onComplete: function(t){
+			var f = t.responseText;
+			if( f.match("Pong")){
+				console.log("L1");
+				_$('statusbar').innerHTML = "<img src='images/tick.gif'><i>Connected!</i>";
+				loggedOn();
+				parent.loadscreen(this);
+				return;
+			}
+			if( f.match(parent.asterisk_guipingerror)){
+				_$('statusbar').innerHTML = "<i>Please login...</i>";
+				loggedOff();
+				parent.loadscreen(this);
+				_$('username').focus();
+				return;
+			}
+		}
+	};
+	tmp = new Ajax.Request( asterisk_rawmanPath, opt);
 }
 
 function loggedOn() {
@@ -82,19 +109,34 @@ function loggedOff() {
 	if ((parent.loggedon == 0) && (localloggedon == 0))
 		return;
 	parent.setLoggedOn(0);
+	parent.loggedon = 0;
 	parent.document.getElementById('logoutlink').innerHTML = "&nbsp;";
 	localloggedon = 0;
-	_$('username').className  = "input9";
-	_$('secret').className  = "input9";
-	updateButtons();
+	_$('username').disabled = 0;
+	_$('secret').disabled = 0;
+	_$('logoff').disabled = 1;
+	_$('login').disabled = 0;
 }
 
-demo.logoffs = function(msgs) {
-	_$('statusbar').innerHTML = msgs[0].headers['message'];
-	loggedOff();
-};
 
-demo.logins = function(msgs) {
+function doLogin() {
+	if( _$('username').value == "" ){
+		parent.gui_feedback("Please enter a Username");
+		_$('username').focus();
+		return true;			
+	}
+
+	if( _$('secret').value == "" ){
+		parent.gui_feedback("Please enter a password");
+		_$('secret').focus();
+		return true;			
+	}
+	parent.document.getElementById('login_name').value = _$('username').value ;
+	_$('statusbar').innerHTML = "<i>Logging in...</i>";
+	parent.astmanEngine.sendRequest('action=login&username=' + _$('username').value + "&secret=" + _$('secret').value, afterlogin);
+}
+
+afterlogin = function(msgs) {
 	_$('statusbar').innerHTML = msgs[0].headers['message'];
 	if ( msgs[0].headers['response'] == "Success" ){
 		parent.gui_feedback("Login Successful",'blue',6000);
@@ -111,47 +153,9 @@ demo.logins = function(msgs) {
 	}
 };
 
-demo.pongs  = function(msgs) {
-	resp = msgs[0].headers['response'];
-	if (resp == "Pong") {
-		_$('statusbar').innerHTML = "<i>Already connected...</i>";
-		loggedOn();
-		parent.loadscreen(this);
-	} else {
-		_$('statusbar').innerHTML = "<i>Please login...</i>";
-		loggedOff();
-		parent.loadscreen(this);
-	}
-}
-
-function doLogin() {
-	if( _$('username').value == "" ){
-		parent.gui_feedback("Please enter a Username");
-		_$('username').focus();
-		return true;			
-	}
-
-	if( _$('secret').value == "" ){
-		parent.gui_feedback("Please enter a password");
-		_$('secret').focus();
-		return true;			
-	}
-	parent.document.getElementById('login_name').value = _$('username').value ;
-	_$('statusbar').innerHTML = "<i>Logging in...</i>";
-	parent.astmanEngine.sendRequest('action=login&username=' + _$('username').value + "&secret=" + _$('secret').value, demo.logins);
-}
 
 function doLogoff() {
 	parent.Logoff();
-}
-
-function localajaminit() {	
-	parent.astmanEngine.sendRequest('action=ping', demo.pongs);
-}
-
-function localinit() {
-	top.document.title = "Asterisk GUI (Beta) -- Home";
-	localajaminit();
 }
 
 function submitOnEnter(e){ 
@@ -200,10 +204,10 @@ function checkExtconfig(originalRequest){
 		<table align="center">
 		<tr>	<td colspan="2"><h2>Asterisk&trade; Configuration Engine</h2></td>
 		<tr>	<td>Username:</td>
-			<td><input disabled=1 id="username"  class="input9" size=12></td>
+			<td><input id="username"  class="input9" size=12></td>
 		</tr>
 		<tr>	<td>Password:</td>
-			<td><input disabled=1 type="password" id="secret" class="input9" size=12 onKeyPress="submitOnEnter(event)"></td>
+			<td><input type="password" id="secret" class="input9" size=12 onKeyPress="submitOnEnter(event)"></td>
 		</tr>
 		<tr>	<td colspan=2 align="center">
 			<div id="statusbar">
@@ -212,7 +216,7 @@ function checkExtconfig(originalRequest){
 			</td>
 		</tr>
 		<tr>	<td align='center' colspan='2'>
-				<input type="submit" id="login" value="Login" disabled=1 onClick="doLogin()" class="input">
+				<input type="submit" id="login" value="Login" onClick="doLogin()" class="input">
 				&nbsp;&nbsp;&nbsp;&nbsp;
 				<input type="submit" id="logoff" value="Logoff" disabled=1 onClick="doLogoff()" class="input">
 			</td>
