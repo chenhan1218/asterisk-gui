@@ -101,6 +101,7 @@ function fghjhhs(event){
 	_$( s.id + "_U" ).style.height = _$('configpanel').pheight + "px";
 	_$( s.id + "_U" ).style.display = "";
 
+	_$('AdvancedOptionsSelect').selectedIndex=-1;
 	_$('mainscreen').style.display = "none";
 	_$('mainscreen').src = s.id + ".html";
 	_$('mainscreen').currentpage = s.id + ".html";
@@ -281,7 +282,7 @@ function hide_advops(){
 function goto_advancedoption(){ 
 	//<select id="AdvancedOptionsSelect" class="input9" onchange="goto_advancedoption()">
 	_$('mainscreen').style.display = "none";
-	if( _$('AdvancedOptionsSelect').value == 'TOSETUP'){top.window.location.href = "./setup/install.html";}
+	if( _$('AdvancedOptionsSelect').value == 'TOSETUP'){top.window.location.href = "./setup/install.html"; return;}
 
 	var t;
 	var panels = returnpanels();
