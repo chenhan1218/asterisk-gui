@@ -29,7 +29,7 @@
 var usercallbacks = new Object;
 var fieldnames = ['allow_aliasextns', 'allow_an_extns', 'callwaiting', 'cancel', 'hasagent', 'hasdirectory', 'hasiax', 'hasmanager', 'hassip', 'hasvoicemail', 'localextenlength', 'save', 'threewaycalling', 'userbase', 'vmsecret', 'login_exten', 'login_callback_exten'];
 var widgets = {};
-
+var agent_extens={};
 
 function tosetup(){
 	parent.window.location.href = "./setup/install.html";
@@ -41,14 +41,40 @@ usercallbacks.format =  function(t) {
 }
 
 usercallbacks.savechanges = function(){
-		/* Quick function to save our changes, if they exist. */
-		if ( _$('login_exten').value != "" ) {
-			add_login(_$('login_exten').value);
+
+	var p=0, uri = "";
+
+	if( _$('login_exten').value != agent_extens.login_exten_old){ 
+		if(agent_extens.login_exten_old){
+			uri += build_action('delete', p, specialcontext ,'exten', "", agent_extens.login_exten_old + ',1,agentlogin()' ); p++;
 		}
-		if ( _$('login_callback_exten').value != "" ) {
-			add_login(_$('login_callback_exten').value, "callbacklogin");
+		if(_$('login_exten').value.length){
+			uri += build_action('append', p, specialcontext ,'exten', _$('login_exten').value + ',1,agentlogin()' );p++;
 		}
-		return true;
+	}
+
+	if( _$('login_callback_exten').value != agent_extens.login_callback_exten_old){ 
+		if(agent_extens.login_callback_exten_old){
+			uri += build_action('delete', p, specialcontext ,'exten', "", agent_extens.login_callback_exten_old + ',1,agentcallbacklogin()' );p++;
+		}
+		if(_$('login_callback_exten').value.length){
+			uri += build_action('append', p, specialcontext ,'exten', _$('login_callback_exten').value + ',1,agentcallbacklogin()' );p++;
+		}
+	} 
+	
+	if(uri!=""){
+		var opt = {
+			method: 'get',
+			asynchronous: true,
+			onSuccess: function() {},
+			onFailure: function(t) {
+				gui_alert("Config Error: " + t.status + ": " + t.statusText);
+				return false;
+			}
+		};
+		opt.parameters="action=updateconfig&srcfilename=" + encodeURIComponent("extensions.conf") + "&dstfilename=" + encodeURIComponent("extensions.conf") + uri;
+		var tmp = new Ajax.Request(asterisk_rawmanPath, opt);
+	}
 }
 
 usercallbacks.beforeSaving= function(){
@@ -57,13 +83,16 @@ usercallbacks.beforeSaving= function(){
 		return false;
 	}
 
+	agent_extens.login_exten_old = _$('devices').stored_config.catbyname['general'].fieldbyname['login_exten'] ;
+	agent_extens.login_callback_exten_old = _$('devices').stored_config.catbyname['general'].fieldbyname['login_callback_exten'] ;
+
 	return true;
 }
 
 usercallbacks.loaded = function(){
-	var d = _$('devices') ; 
+	var d = _$('devices');
 	d.selectitem(0);
-	
+
 	if ( typeof d.stored_config.catbyname['general'].fieldbyname['localextenlength'] == "undefined" ){ 
 		var opt = {
 			method: 'get',
@@ -83,49 +112,6 @@ usercallbacks.loaded = function(){
 	parent.loadscreen(this);
 }
 
-function rename_extension(a,b){
-        // rename extension 'a' in extensions.conf to 'b'
-        // change 'exten => a,1,Queue' in default to 'exten => b,1,Queue'
-        var opt0 = {
-                method: 'get',
-                asynchronous: true,
-                onSuccess: function() { 
-                        return true;    
-                },
-                onFailure: function(t) {
-                        gui_alert("Config Error: " + t.status + ": " + t.statusText);
-                        return false;
-                }
-        };
-        uri0 = build_action('update', 0, specialcontext ,'exten', b+',1,Queue(${EXTEN})', a+',1,Queue(${EXTEN})' ); 
-        opt0.parameters="action=updateconfig&srcfilename=" + encodeURIComponent("extensions.conf") + "&dstfilename=" + encodeURIComponent("extensions.conf") + uri0;
-        tmp0 = new Ajax.Request(asterisk_rawmanPath, opt0);
-}
-
-function add_login(exten, type){
-        /* add extension to let the agents login to the queue! */
-        /* if type is set, we will do AgentcallbackLogin or Agent Login */ 
-        /* add 'exten => exten,1,Agent(Callback?)Login' to default */
-	var istype = "agentlogin()";
-        var opt0 = {
-                method: 'get',
-                asynchronous: true,
-                onSuccess: function() { 
-                        return true;    
-                },
-                onFailure: function(t) {
-                        gui_alert("Config Error: " + t.status + ": " + t.statusText);
-                        return false;
-                }
-        };
-	if (type) {
-		istype = "agentcallbacklogin()";
-	} 	
-        uri0 = build_action('append', 0, specialcontext ,'exten', exten+',1,'+ istype); 
-	alert("uri0 is " + uri0);
-        opt0.parameters="action=updateconfig&srcfilename=" + encodeURIComponent("extensions.conf") + "&dstfilename=" + encodeURIComponent("extensions.conf") + uri0;
-        tmp0 = new Ajax.Request(asterisk_rawmanPath, opt0);
-}
 
 function localajaxinit(){
 	setWindowTitle("Local Extension Settings");
