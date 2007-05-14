@@ -59,6 +59,7 @@ function load_todayslog(){
 
 
 function localajaxinit(){
+	top._$('mainscreen').width= 798;
 	setWindowTitle("System Log");
 	// call the tool (sysinfo)
 	var date = new Date() ; 
@@ -72,6 +73,7 @@ function localajaxinit(){
 }
 
 function free_mem(){
+	top._$('mainscreen').width= 540;
 	if( navigator.userAgent.indexOf("MSIE") == -1 ){ return true; }
 	try{
 		purge( document.body );
@@ -80,43 +82,27 @@ function free_mem(){
 
 </script>
 <body id="foo" onload="localajaxinit()" bgcolor="EFEFEF"  onunload="free_mem()">
-<div class="mainscreenTitleBar">
-	<span style="margin-left: 4px;font-weight:bold;">Asterisk Logs</span>
+<div style="font-size : 12px; padding : 4px 6px 4px 6px; border-style : solid none solid none; border-top-color : #BDC7E7; border-bottom-color : #182052; border-width : 1px 0px 1px 0px; background-color : #ef8700; color : #ffffff;">
+	<span style="margin-left: 4px;font-weight:bold;">Asterisk Log messages</span>
 	<span style="cursor: pointer; cursor: hand;" onclick="window.location.href=window.location.href;" >&nbsp;<img src="images/refresh.png" title=" Refresh " border=0 >&nbsp;</span>
+	<span>
+		<select id="log_month" class="input8">
+			<option value="Jan">Jan</option>
+			<option value="Feb">Feb</option>
+			<option value="Mar">Mar</option>
+			<option value="Apr">Apr</option>
+			<option value="May">May</option>
+			<option value="Jun">Jun</option>
+			<option value="Jul">Jul</option>
+			<option value="Aug">Aug</option>
+			<option value="Sep">Sep</option>
+			<option value="Oct">Oct</option>
+			<option value="Nov">Nov</option>
+			<option value="Dec">Dec</option>
+		</select>
+		<select id="log_day"  class="input8"><script> for(var i=1; i < 32; i++){ document.write( '<option value="' + i + '">' + i + '</option>' ); }</script></select>
+		<input type="button" value="Go" onclick="thisday_log();"  class="input8">
+	</span>
 </div>
-<div class="mainscreenContentBox" id="userscontent">
-<table class="mainscreenTable" align="center">
-	<tr valign="top" height="18">	
-	<td align="left">
-		<div id="information" style=" border: solid 0px black; background: transparent; padding: 4px; height:440px; width:95%;">
-			<BR>
-			<div id="today_log">
-				Asterisk Log messages : 
-					<select id="log_month">
-					<option value="Jan">Jan</option>
-					<option value="Feb">Feb</option>
-					<option value="Mar">Mar</option>
-					<option value="Apr">Apr</option>
-					<option value="May">May</option>
-					<option value="Jun">Jun</option>
-					<option value="Jul">Jul</option>
-					<option value="Aug">Aug</option>
-					<option value="Sep">Sep</option>
-					<option value="Oct">Oct</option>
-					<option value="Nov">Nov</option>
-					<option value="Dec">Dec</option>
-					</select>
-					<select id="log_day">
-					<script> for(var i=1; i < 32; i++){ document.write( '<option value="' + i + '">' + i + '</option>' ); }</script>
-					</select>
-					<input type="button" value="Go" onclick="thisday_log();">
-
-				<div id="todaylog" style="font-family:courier; font-size:8.5pt; width:522px; height:405px; overflow :auto;"></div>
-			</div>
-		</div>
-	</td>
-	</tr>
-	<tr><td></td></tr>
-</table>
-</div>
+<div id="todaylog" style="font-family:courier; font-size:8.5pt; width:793px; height:475px; overflow :auto;"></div>
 </body>
