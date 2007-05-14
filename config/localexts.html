@@ -31,10 +31,6 @@ var fieldnames = ['allow_aliasextns', 'allow_an_extns', 'callwaiting', 'cancel',
 var widgets = {};
 var agent_extens={};
 
-function tosetup(){
-	parent.window.location.href = "./setup/install.html";
-}
-
 usercallbacks.format =  function(t) {
 	if(t.name == "general" ){ return t.name; }
 	return null;
@@ -114,6 +110,12 @@ usercallbacks.loaded = function(){
 
 
 function localajaxinit(){
+	if (top._$('AdvancedOptions').style.display == "none"){
+		_$('advbasic').innerHTML = '(Show Advanced Options)';
+	}else{
+		_$('advbasic').innerHTML = '(Hide Advanced Options)';
+	}
+
 	setWindowTitle("Local Extension Settings");
 	for (var x =0 ; x < fieldnames.length ; x++ ) {
 		widgets[fieldnames[x]] = _$(fieldnames[x]);
@@ -141,6 +143,7 @@ function update_spae(){
 	}
 }
 
+
 function free_mem( ){
 	if( navigator.userAgent.indexOf("MSIE") == -1 ){ return true; }
 	try{
@@ -150,35 +153,35 @@ function free_mem( ){
 	} catch(e){ }
 }
 
-function basicadvanced(){
-	var _url = "";
-	if(top.window.location.href.match("advanced=yes") ){ _url = "./cfgbasic.html"; }else{ _url = "./cfgbasic.html?advanced=yes" }
-	parent.window.location.href = _url ;
+
+function flipadvbasic(){
+	if(_$('advbasic').innerHTML.toLowerCase().match('show') ){
+		_$('advbasic').innerHTML = '(Hide Advanced Options)';
+		top._$('AdvancedOptions').style.display = '';
+		top._$('AdvancedOptionsSelect').selectedIndex=-1;
+		return;
+	}
+
+	if(_$('advbasic').innerHTML.toLowerCase().match('hide') ){
+		_$('advbasic').innerHTML = '(Show Advanced Options)';
+		top._$('AdvancedOptions').style.display = 'none';
+		return;
+	}
 }
+
 
 </script>
 <body id="foo" onload="localajaxinit()" bgcolor="EFEFEF"  onunload="free_mem()">
-<div class="mainscreenTitleBar"><span style="margin-left: 4px;font-weight:bold">Admin Options - Local Extension Settings</span></div>
+<div class="mainscreenTitleBar">
+	<span style="margin-left: 4px;font-weight:bold">Admin Settings</span>
+	<span style="margin-left: 14px;font-weight:bold; cursor: pointer" id="advbasic" onclick="flipadvbasic();">(Show Advanced Options)</span>
+</div>
 <div class="mainscreenContentBox" id="userscontent">
-<TABLE align=center width="520" cellpadding=0 cellspacing=0 style="margin: 5px 0 0 0;">
-<TR>
-	<TD valign="bottom" align="center" class="tab"><a href="#" class="tabselected">Local Extension settings</a></TD>
-	<TD><a href="options.html" class="tab">Change Password</a></TD>
-	<TD valign="bottom" align="left">
-		<a href="#" class="tab" onclick="basicadvanced();">
-		<script>
-			if( top.window.location.href.match("advanced=yes") ){ document.write("Basic"); }else{ document.write("Advanced"); }
-		</script>
-		</a>
-	</TD>
-	<TD valign="bottom" align="left"><a href="#" class="tab" onclick="tosetup();">Setup Wizard</a></TD> 
-</TR>
-</TABLE>
-<BR>
 <table class="mainscreenTable" align="center">
 <tr>	
 <td align="center" valign="top">
-	<select id="devices" style="display:none"></select> 
+	<select id="devices" style="display:none"></select>
+	<BR> 
 	<fieldset  style="width: 400px">
 		<legend>&nbsp;Local Extension Settings:&nbsp;</legend>
 		<table align='center'  width='390'  cellpadding=2 cellspacing=1>
@@ -193,11 +196,19 @@ function basicadvanced(){
 			</select>&nbsp;</td>
 		</tr>
 		<tr><td class="field_text" align=left>First Extension Number : <input type=text id="userbase" size=5  class="input9"></td></tr>
-		<tr><td onmouseover="show_tooltip('en', 'users', 18);" class="field_text" align=left>Agent Login Extension :  <input type=text id="login_exten" size=5  class="input9"></td></tr>
-		<tr><td onmouseover="show_tooltip('en', 'users', 19);" class="field_text" align=left>Agent Callback Login Extension :  <input type=text id="login_callback_exten" size=5  class="input9"></td></tr>
-
 		<tr><td class="field_text" align="left"><input type=checkbox id="allow_aliasextns">Allow analog phones to be assigned to multiple extensions</td></tr>
 		<tr><td class="field_text" align="left"><input type=checkbox id="allow_an_extns">Allow extensions to be AlphaNumeric (SIP/IAX users)</td></tr>
+		</table>
+	</fieldset><BR>
+	<fieldset  style="width: 400px">
+		<legend>&nbsp;Agent Login Settings:&nbsp;</legend>
+		<table align='center'  width='390'  cellpadding=2 cellspacing=1>
+			<tr>	<td onmouseover="show_tooltip('en', 'users', 18);" class="field_text" align=right>Agent Login Extension : </td>
+				<td><input type=text id="login_exten" size=5  class="input9"></td>
+			</tr>
+			<tr>	<td onmouseover="show_tooltip('en', 'users', 19);" class="field_text" align=right>Agent Callback Login Extension : </td>
+				<td><input type=text id="login_callback_exten" size=5  class="input9"></td>
+			</tr>
 		</table>
 	</fieldset><BR>
 	<fieldset style="width: 400px">

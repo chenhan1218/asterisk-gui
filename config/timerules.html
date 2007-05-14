@@ -78,12 +78,12 @@ function get_users(m){
 
 	for( l in n ){
 		if(n.hasOwnProperty(l)){
-			if( l =='general'){ continue;}
+			if( l =='general'){ continue;} // ignore 'general' context
 			if ( n[l]['context'] && unescape(n[l]['context']) == asterisk_guiTDPrefix + l ) {
 				continue;
 			}
 
-			if( n[l]['context'] ){
+			if( !n[l]['trunkstyle'] ){ // all entries from users.conf other than trunks
 				var p = {};
 				p.username = (n[l]['fullname'])? unescape(n[l]['fullname'])+" ("+l+")" : "Local Extension ("+l+")";
 				p.usercontextstring = "default,"+l+",1" ;

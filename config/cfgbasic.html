@@ -205,6 +205,7 @@ function show_Acctooltip(name, tip){
 }
 
 function registerajax() {
+	pao();
 	astmanEngine = new Astman();
 	astmanEngine.setURL(asterisk_rawmanPath );
 
@@ -252,6 +253,49 @@ function reloadConfig(){
 	opt.parameters="action=updateconfig&reload=yes&srcfilename=" + encodeURIComponent("extensions.conf") + "&dstfilename=" + encodeURIComponent("extensions.conf") + uri;
 	var tmp = new Ajax.Request(asterisk_rawmanPath , opt);
 }
+
+
+function pao(){
+	var acb = _$('dimg');
+	var tmp_left = acb.offsetLeft -1;
+	var tmp_top = acb.offsetTop -1 ;
+	var tmp_parent = acb;
+	while(tmp_parent.offsetParent != document.body){
+		tmp_parent = tmp_parent.offsetParent;
+		tmp_left += tmp_parent.offsetLeft;
+	}
+	_$('AdvancedOptions').style.left = tmp_left + 700 ;
+	_$('AdvancedOptions').style.top = 1 ;
+	_$('AdvancedOptionsSelect').selectedIndex=-1;
+}
+
+function hide_advops(){
+	_$('AdvancedOptions').style.display='none';
+
+	if ( _$('mainscreen').contentWindow.flipadvbasic  ){
+		_$('mainscreen').contentWindow.flipadvbasic();
+	}
+
+}
+
+function goto_advancedoption(){ 
+	//<select id="AdvancedOptionsSelect" class="input9" onchange="goto_advancedoption()">
+	_$('mainscreen').style.display = "none";
+	if( _$('AdvancedOptionsSelect').value == 'TOSETUP'){top.window.location.href = "./setup/install.html";}
+
+	var t;
+	var panels = returnpanels();
+	for( var r=0; r < panels.length; r++ ){
+		t = panels[r].page.split(".html")[0];
+		_$( t + "_U" ).style.height = "1px";
+		_$( t + "_U" ).style.display = "none";
+	}
+	_$( "localexts_U" ).style.height = _$('configpanel').pheight + "px";
+	_$( "localexts_U" ).style.display = "";
+
+	_$('mainscreen').src = _$('AdvancedOptionsSelect').value ;
+	//_$('AdvancedOptionsSelect').selectedIndex=-1;
+}
 </script>
 <head>
 	<title>Asterisk Configuration GUI (Beta)</title>
@@ -261,7 +305,7 @@ function reloadConfig(){
 <table align="center" bgcolor="#dddddd" border="0" cellpadding="0" cellspacing="0" height="570" width="950">
 <tbody>
 	<tr height="47">
-		<td align="right" bgcolor="white" height="47" valign="bottom"><img src="images/digiumlogo.gif" align="left"></td>
+		<td align="right" bgcolor="white" height="47" valign="bottom" id="dimg"><img src="images/digiumlogo.gif" align="left"></td>
 		<td align="center" bgcolor="white" valign="middle">
 		<div id="feedback_round" style="background-color: #FFFFFF; width: 400px; display: none;">
 			<div id="feedback" style="font-family: Arial,sans-serif,Helvetica,Trebuchet MS; font-size: 13px; font-weight: bold;"></div>
@@ -300,4 +344,26 @@ function reloadConfig(){
 		</td>
 </tr>
 </tbody></table>
+<div id="AdvancedOptions" style="display:none; position:absolute; z-index:1004; width:220px; background-color : #EFEFEF; padding : 2px 2px 4px 2px;">
+	<table cellpadding=1 cellspacing=0 border=0 width=220>
+		<tr>	<td align=right>Goto:&nbsp;</td>
+			<td align="center">
+			<select id="AdvancedOptionsSelect" class="input9" onchange="goto_advancedoption()">
+				<option value="feditor.html">File Editor</option>
+				<option value="cli.html">Asterisk CLI</option>
+				<option value="moh.html">Music on Hold</option>
+				<option value="timerules.html">Time Based Rules</option>
+				<option value="sip.html">SIP</option>
+				<option value="iax.html">IAX</option>
+			<!--	<option value="jabber.html">Jabber</option>
+				<option value="jingle.html">Jingle</option>
+				<option value="zapata.html">Zap Channel</option>	-->
+				<option value="options.html">Change Password</option>
+				<option value="TOSETUP">Setup Wizard</option>
+			</select>
+			</td>
+			<td align="right" valign="top"><span style="color: #909090; font-size: 8pt;cursor:pointer;" onclick="hide_advops();">X</span></td>
+		</tr>
+	</table>
+</div>
 </body>

@@ -79,10 +79,6 @@ function compare_passwords(){
 	}
 }
 
-function tosetup(){
-	parent.window.location.href = "./setup/install.html";
-}
-
 function localajaxinit(){
 	showdiv_statusmessage();
 	setWindowTitle("Options");
@@ -96,32 +92,10 @@ function localajaxinit(){
 	_$('newpass').focus();
 }
 
-
-function basicadvanced(){
-	var _url = "";
-	if(top.window.location.href.match("advanced=yes") ){ _url = "./cfgbasic.html"; }else{ _url = "./cfgbasic.html?advanced=yes" }
-	parent.window.location.href = _url ;
-}
-
 </script>
 <body id="foo" onload="localajaxinit()" bgcolor="EFEFEF">
-<div class="mainscreenTitleBar"><span style="margin-left: 4px;font-weight:bold">Admin Options</span></div>
+<div class="mainscreenTitleBar"><span style="margin-left: 4px;font-weight:bold">Change Password</span></div>
 <div class="mainscreenContentBox" id="userscontent">
-
-<TABLE align=center width="520" cellpadding=0 cellspacing=0 style="margin: 5px 0 0 0;">
-<TR>
-	<TD valign="bottom" align="center"><a href="localexts.html" class="tab">Local Extension settings</a></TD>
-	<TD><a href="#" class="tabselected">Change Password</a></TD>
-	<TD valign="bottom" align="left">
-		<a href="#" class="tab" onclick="basicadvanced();">
-		<script>
-			if(top.window.location.href.match("advanced=yes") ){ document.write("Basic"); }else{ document.write("Advanced"); }
-		</script>
-		</a>
-	</TD>
-	<TD valign="bottom" align="left"><a href="#" onclick="tosetup();" class="tab">Setup Wizard</a></TD> 
-</TR>
-</TABLE>
 <BR>
 <table class="mainscreenTable" align="center">
 	<tr valign="top" height="18"><td align="center"></td></tr>

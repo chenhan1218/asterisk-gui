@@ -46,7 +46,6 @@ function localinit() {
 		onComplete: function(t){
 			var f = t.responseText;
 			if( f.match("Pong")){
-				console.log("L1");
 				_$('statusbar').innerHTML = "<img src='images/tick.gif'><i>Connected!</i>";
 				loggedOn();
 				parent.loadscreen(this);
