@@ -58,6 +58,8 @@ function createpanels(){
 		t.innerHTML = "<nobr><img style='vertical-align: middle;' src='images/accordion-icon.gif'><span style='margin-left: 0px; font-weight: bold;'>&nbsp;" + panels[r].caption + "</span></nobr>";
 
 		add_event(t, 'click', fghjhhs);
+		add_event(t, 'mouseover', my_tooltip);
+		add_event(t, 'mouseout', default_tooltip);
 
 		u = document.createElement("div");
 		u.className = "accordionTabContentBox";
@@ -73,10 +75,6 @@ function createpanels(){
 		u.setAttribute('id', this_id+"_U" );
 		u.innerHTML =panels[r].desc; 
 
-		//v = document.createElement("div");
-		//v.appendChild(t);
-		//v.appendChild(u);
-		//a.appendChild(v);
 		a.appendChild(t);
 		a.appendChild(u);
 	}
@@ -84,6 +82,15 @@ function createpanels(){
 	_$( "home" ).style.display = "";
 	_$( "home_U" ).style.display = "";
 	_$( "home_U" ).style.height = a.pheight +"px";
+}
+
+function my_tooltip(event){
+	var s = (event.srcElement)?event.srcElement:this;
+	show_Acctooltip(_$(s.id+"_U").innerHTML );
+}
+
+function default_tooltip(){
+	show_Acctooltip("Move the mouse over to a field to see tooltips");
 }
 
 function fghjhhs(event){
@@ -133,15 +140,6 @@ function returnpanels(){
 	newpanel( ["System Info", "sysinfo.html", "System Information."]);
 	newpanel( ["Backup", "backup.html", "Backup Management."]);
 	newpanel( ["Options", "localexts.html", "Admin Settings"]);
-
-//	new PanelDef("feditor", "File Editor", "accordion-icon.gif", " Manually edit Config Files"),
-//	new PanelDef("cli", "Asterisk CLI", "accordion-icon.gif", " Asterisk Command Line Interface"),
-///	new PanelDef("moh", "Music On Hold", "accordion-icon.gif", " Music on hold sometimes keeps people less angry while they wait for an answer"),
-///	new PanelDef("sip", "SIP", "accordion-icon.gif", "SIP (Session Initiation Protocol) Configuration"),
-//	new PanelDef("iax", "IAX", "accordion-icon.gif", "IAX (Inter-Asterisk eXchange Protocol) Configuration")
-//	new PanelDef("jabber", "Jabber", "accordion-icon.gif", "Jabber users configuration"),
-//	new PanelDef("jingle", "Jingle", "accordion-icon.gif", "Jingle configuration lets users connect to google talk networks"),
-//	new PanelDef("zapata", "Zap Channel", "accordion-icon.gif", "Zapata telephony interface configuration")
 
 	return panels;
 }
@@ -197,9 +195,7 @@ function loadscreen(srcbody) {
 function setstatus(status) {	_$('status').innerHTML = copyright + status;	}
 
 
-
-
-function show_Acctooltip(name, tip){
+function show_Acctooltip(tip){
 	if( loggedon != 1){ return; }
 	_$('tooltip').innerHTML = tip ;
 
@@ -216,9 +212,6 @@ function registerajax() {
 		gui_feedback(browser_alert, 'green');
 	}
 }
-
-
-//astmanEngine.setEventCallback(eventeater.eventcb);
 
 function Logoff() {
 	if(!confirm("Are you sure ?")){ return true; }
@@ -280,7 +273,6 @@ function hide_advops(){
 }
 
 function goto_advancedoption(){ 
-	//<select id="AdvancedOptionsSelect" class="input9" onchange="goto_advancedoption()">
 	_$('mainscreen').style.display = "none";
 	if( _$('AdvancedOptionsSelect').value == 'TOSETUP'){top.window.location.href = "./setup/install.html"; return;}
 
@@ -295,7 +287,6 @@ function goto_advancedoption(){
 	_$( "localexts_U" ).style.display = "";
 
 	_$('mainscreen').src = _$('AdvancedOptionsSelect').value ;
-	//_$('AdvancedOptionsSelect').selectedIndex=-1;
 }
 </script>
 <head>
