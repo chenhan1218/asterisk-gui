@@ -27,38 +27,8 @@
 <link href="stylesheets/schwing.css" media="all" rel="Stylesheet" type="text/css" />
 <script>
 var sysinfocallbacks = new Object;
-var tabs = new Array('tab1', 'tab2', 'tab3','tab4');
-var divs_tohide = new Array('osversion_div', 'uptime_div', 'asterisk_div', 'today_div','hostname_div','ifconfig_div','df_div','memory_div','today_log');
-
-function thisday_log(){
-	 _$('status_message').style.display = "" ;
-	var _ld = _$('log_day').value; 
-	if(  _ld < 10 ){ var space = "  "; }else{ var space = " ";  }
-	var tmp_command = "/bin/grep /var/log/asterisk/messages -e '" + _$('log_month').value + space + _ld 
-						+ " ' > /var/lib/asterisk/static-http/config/today_log.html" ;
-	parent.astmanEngine.run_tool( tmp_command , onSuccess = function() { _$('status_message').style.display='none'; load_todayslog(); } );
-}
-
-function 	load_todayslog(){
-	_$('status_message').style.display= "" ;	
-	
-	var opt = {
-		method: 'get',
-		asynchronous: true,
-		onComplete: function(originalRequest){
-			_$('status_message').style.display = 'none' ;
-			_$('todaylog').innerHTML = (originalRequest.responseText) ? "<PRE>"+originalRequest.responseText.escapeHTML() +"</PRE>" : "No log messages found on this Day" ;
-			
-		},
-		onFailure: function(t) {
-			_$('status_message').style.display = 'none' ;
-			gui_alert("Config Error: " + t.status + ": " + t.statusText);
-		}
-	};
-	opt.parameters="";
-	var tmp = new Ajax.Request("./today_log.html", opt);
-	return true;
-}
+var tabs = new Array('tab1', 'tab2', 'tab3');
+var divs_tohide = new Array('osversion_div', 'uptime_div', 'asterisk_div', 'today_div','hostname_div','ifconfig_div','df_div','memory_div');
 
 function show_window(x){
 	for(i=0; i < tabs.length ; i++){
@@ -76,9 +46,6 @@ function show_window(x){
 		break;
 		case 3:
 		var divs_toshow = new Array('df_div','memory_div');
-		break;
-		case 4:
-		var divs_toshow = new Array('today_log');
 		break;
 	}
 	
@@ -119,7 +86,6 @@ function getsysinfohtml(){
 			for(var i=0; i < divs_toshow.length; i++ ){ _$(divs_toshow[i]).style.display = ""; }
 
 			document.getElementById(tabs[0]).className = "tabselected";
-			load_todayslog();
 		},
 		onFailure: function(t) {
 			_$('status_message').style.display='none';
@@ -135,10 +101,7 @@ function getsysinfohtml(){
 function localajaxinit(){
 	setWindowTitle("System Info");
 	// call the tool (sysinfo)
-	var date = new Date() ; 
 	showdiv_statusmessage();
-	_$('log_month').selectedIndex = date.getMonth() ;
-	_$('log_day').selectedIndex = date.getDate()  - 1 ;
 	_$('status_message').style.display="block";
 	_$('message_text').innerHTML = "Loading system Information ...";
 	parent.loadscreen(this);
@@ -165,7 +128,6 @@ function free_mem(){
 		<a href="#" class="tab" onclick="return show_window(1);" id="tab1"  onmouseover="show_tooltip('en', 'sysinfo', 0);">General</a>&nbsp;&nbsp;
 		<a href="#" class="tab" onclick="return show_window(2);" id="tab2"  onmouseover="show_tooltip('en', 'sysinfo', 1);">ifconfig</a>&nbsp;&nbsp;
 		<a href="#" class="tab" onclick="return show_window(3);" id="tab3"  onmouseover="show_tooltip('en', 'sysinfo', 2);">Resources</a>&nbsp;&nbsp;
-		<a href="#" class="tab" onclick="return show_window(4);" id="tab4"  onmouseover="show_tooltip('en', 'sysinfo', 3);">Logs</a>&nbsp;&nbsp;
 		<div id="sysinfohtml" style="display:none"></div>
 
 		<div id="information" style=" border: solid 0px black; background: transparent; padding: 4px; height:440px; width:95%;">
@@ -193,29 +155,6 @@ function free_mem(){
 			</div>
 			<div id="memory_div" style="display:none;">
 					Memory Usage:<PRE><div id="memoryusage" style="font-family:courier; font-size:8.5pt;"></div></PRE>
-			</div>
-			<div id="today_log" style="display:none;">
-				Asterisk Log messages (today): 
-					<select id="log_month">
-					<option value="Jan">Jan</option>
-					<option value="Feb">Feb</option>
-					<option value="Mar">Mar</option>
-					<option value="Apr">Apr</option>
-					<option value="May">May</option>
-					<option value="Jun">Jun</option>
-					<option value="Jul">Jul</option>
-					<option value="Aug">Aug</option>
-					<option value="Sep">Sep</option>
-					<option value="Oct">Oct</option>
-					<option value="Nov">Nov</option>
-					<option value="Dec">Dec</option>
-					</select>
-					<select id="log_day">
-					<script> for(var i=1; i < 32; i++){ document.write( '<option value="' + i + '">' + i + '</option>' ); }</script>
-					</select>
-					<input type="button" value="Go" onclick="thisday_log();">
-
-				<div id="todaylog" style="font-family:courier; font-size:8.5pt; width:522px; height:405px; overflow :auto;"></div>
 			</div>
 		</div>
 	</td>
