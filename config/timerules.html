@@ -300,7 +300,27 @@ function reset_fields(){
 	}
 }
 
+function check_allfields(){
+	
+	if(!_$('id_rulename').value){
+		alert("Please Enter a Rule Name");
+		_$('id_rulename').focus();
+		return false;
+	}
+
+	var slectboxes = ['startime_hour', 'startime_minute','endtime_hour','endtime_minute','wday_start','wday_end','startdom','enddom','month_start','month_end','dest_match','dest_nomatch'];
+	for (var r=0; r < slectboxes.length; r++){
+		if(!_$(slectboxes[r]).value){
+			alert("Please select a value");
+			_$(slectboxes[r]).focus();
+			return false;
+		}
+	}
+}
+
+
 function save_rule(){
+	if(!check_allfields()){return false;}
 	if(isNewRule){
 		var getnewruleextension = function(){
 			var t=1;
@@ -462,7 +482,7 @@ function form_updatevalues(f){
 	</div>
 	<BR>
 </div>
-<div id="timerule_editdiv" STYLE="display:none; position: absolute; left: 20; top: 20; width:480; height:320; background-color:#F4EFE5; border-width: 1px; border-color: #7E5538; border-style: solid; z-index:5">
+<div id="timerule_editdiv" STYLE="display:none; position: absolute; left: 20; top: 40; width:480; height:320; background-color:#F4EFE5; border-width: 1px; border-color: #7E5538; border-style: solid; z-index:5">
 	<table width="100%" cellpadding=0 cellspacing=0  onmousedown="startDrag(event , 'timerule_editdiv');">
 	<TR bgcolor="#7E5538"  style="background-image:url('images/title_gradient.gif');">
 		<TD><font color="#FFFFFF">&nbsp;&nbsp;<span id="form_caption"></span></FONT></TD>
