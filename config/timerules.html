@@ -39,6 +39,16 @@ function showlist_of_rules(){
 	for( t in timebasedrules ){
 		if(timebasedrules.hasOwnProperty(t)){ addrow_totable( timebasedrules[t],t ); }
 	}
+
+	var u = _$('tbrulesTable');
+	if( u.rows.length == 0 ){
+		_$('table_one').style.display="none";
+		var newRow = u.insertRow(-1);
+		var newCell0 = newRow.insertCell(0);
+		newCell0.align = "center";
+		newCell0.innerHTML = "<BR><I> No Previous Time Rules found !!</I> <BR><BR>" +
+			"Please click on the 'New Time Rule' button<BR> to define a New Time Based Rule<BR><BR>" ;
+	}
 }
 
 function addrow_totable(k,l){
