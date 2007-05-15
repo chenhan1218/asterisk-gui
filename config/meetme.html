@@ -113,12 +113,7 @@ callbacks.loaded = function() {
 	}
 	_ext.contentEditable = 'true';
 	_ext.disabled = 0;
-	if( navigator.userAgent.indexOf("MSIE") != -1){
-		_$('advancedw').style.height=130;
-		togglefeatures = function(){ } ;
-	}else{
-		_ext.style.height = "415px";
-	}
+	_ext.style.height = "415px";
 	parent.loadscreen(this);
 }
 
