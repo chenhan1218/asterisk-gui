@@ -86,10 +86,21 @@ function createpanels(){
 
 function my_tooltip(event){
 	var s = (event.srcElement)?event.srcElement:this;
+
+	_$(s.id).style.backgroundColor="#63699C";
+	_$(s.id).style.color="#FFFFFF";
+	_$(s.id).style.fontWeight="bold";
+
 	show_Acctooltip(_$(s.id+"_U").innerHTML );
 }
 
-function default_tooltip(){
+function default_tooltip(event){
+	var s = (event.srcElement)?event.srcElement:this;
+
+	_$(s.id).style.backgroundColor="#6B79A5";
+	_$(s.id).style.color="#CED7EF";
+	_$(s.id).style.fontWeight="normal";
+
 	show_Acctooltip("Move the mouse over to a field to see tooltips");
 }
 
