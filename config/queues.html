@@ -20,14 +20,11 @@
  *
 -->
 <script src="scripts/prototype.js"></script>
-<script src="scripts/rico.js"></script>
 <script src="scripts/astman.js"></script>
 <script src="scripts/tooltip.js"></script>
 <link href="stylesheets/rico.css" media="all" rel="Stylesheet" type="text/css" />
 <link href="stylesheets/schwing.css" media="all" rel="Stylesheet" type="text/css" />
-
 <script>
-var adstatus;
 var mohcallbacks = new Object;
 var queuecallbacks = new Object;
 var usercallbacks = new Object;
@@ -43,19 +40,6 @@ var j = -1;
 var extensions_conf_qs = new Array;
 var localextenlength ;
 var userbase;
-
-function togglefeatures() {
-	if (adstatus == "shown") {
-		adstatus = "hidden";
-		new Rico.Effect.Size('advancedw', null, 1, 120, 8, {complete:function() { $('advancedw').style.height=1;} } );
-	} else {
-		adstatus = "shown";
-		$('advancedw').style.visibility = "visible";
-		new Rico.Effect.Size('advancedw', null, 190, 120, 8 );
-	}
-}
-
-
 
 function rename_extension(a,b){
 	// rename extension 'a' in extensions.conf to 'b'
@@ -423,23 +407,12 @@ extencallbacks.format = function(t, x) {
 function localajaxinit() {
 	showdiv_statusmessage();
 	setWindowTitle("Call Queues");
-//	$('advancedi').style.width = $('split').width - 60;
-	if( navigator.userAgent.indexOf("MSIE") != -1){
-		togglefeatures = function(){ } ;
-		$('advancedw').style.display = "";
-		$('advancedw').style.height=190;
-	}else{
-		$('advancedw').style.overflow = "hidden";
-		$('advancedw').style.height = 1;
-		$('advancedw').style.width = $('split').style.width;
-		$('queues').style.height = "415px";
-	}
+	$('queues').style.height = "415px";
 	for (var x=0; x < fieldnames.length ; x++) {
 		widgets[fieldnames[x]] = $(fieldnames[x]);
 		widgets[fieldnames[x]].disabled = true;
 	}
 
-	adstatus = "hidden";
 	parent.astmanEngine.config2list("musiconhold.conf", $('musicclass'), new Array(), mohcallbacks);
 	$('save_q').disabled = true;
 	$('message_text').innerHTML = " Saving Changes ... ";
@@ -447,7 +420,7 @@ function localajaxinit() {
 }
 
 mohcallbacks.format = function(t) {
-			return t.name;
+	return t.name;
 }
 
 mohcallbacks.loaded = function() {
@@ -473,7 +446,7 @@ function free_mem( ){
 <div class="mainscreenContentBox" id="mailboxcontent">
 <table class="mainscreenTable" align="center">
 	<tr valign="top">
-		<td colspan='2'>Extensions:</td>
+		<td colspan='2'>Queues:</td>
 	</tr>
 	<tr valign="top">
 	<td>
@@ -514,53 +487,55 @@ function free_mem( ){
 							<div id="testmulti" style='border:1px solid; font-size: 8pt; height:75px; width: 200px;overflow :auto;'></div>
 						</td>
 					</tr>
-					<tr><td colspan='2'></td></tr>
 				</table>
 			</td>
 			</tr>
-			<tr ><td height=10></td></tr>
-			<tr onmouseover="show_tooltip('en', 'queues', 4);">
-				<td style="cursor: pointer; cursor: hand;"><img id="split" onClick="togglefeatures()" src="images/split-v.gif"></td>
-			</tr>
-			<tr>	<td>	<div style="background-image:url(images/slice-v.gif)" id='advancedw'>
-					<table id='advancedi' align='center'>
-						<tr onmouseover="show_tooltip('en', 'queues', 5);" >
-							<td class="field_text">TimeOut:</td>
-							<td>&nbsp;<input size='2' id='timeout'  pattern='^\d*$' class="input8"></td>
-						</tr>
-						<tr onmouseover="show_tooltip('en', 'queues', 6);" >
-							<td class="field_text">Wrapup Time:</td>
-							<td>&nbsp;<input size='2' id='wrapuptime' pattern='^\d*$' class="input8"></td>
-						</tr>
-						<tr>	<td colspan=2>
-								<span  class="field_text" onmouseover="show_tooltip('en', 'queues', 7);" ><input type=checkbox id='autofill'> Auto Fill</span>
-								<span  class="field_text" onmouseover="show_tooltip('en', 'queues', 8);">&nbsp;&nbsp;<input type=checkbox id='autopause'>Auto Pause</span>
-							</td>
-						</tr>
-						<tr onmouseover="show_tooltip('en', 'queues', 9);" >
-							<td class="field_text">Max Len:</td>
-							<td>&nbsp;<input size='2' id='maxlen' pattern='^\d*$' class="input8"></td>
-						</tr>
-						<tr onmouseover="show_tooltip('en', 'queues', 10);" >
-							<td class="field_text">JoinEmpty:</td>
-							<td><input type=checkbox id='joinempty'></td></tr>
-						<tr onmouseover="show_tooltip('en', 'queues', 11);" >
-							<td class="field_text">LeaveWhenEmpty:</td>
-							<td><input type=checkbox id='leavewhenempty'></td>
-						</tr>
-						<tr onmouseover="show_tooltip('en', 'queues', 12);" >
-							<td class="field_text">Report Hold Time:</td>
-							<td><input type=checkbox id='reportholdtime'></td>
-						</tr>
-						<tr  onmouseover="show_tooltip('en', 'queues', 13);" >
-							<td colspan=2  class="field_text">Music On Hold: <select id="musicclass" class="input8"></select></td>
-						</tr>
+			<tr><td height=5></td></tr>
+			<tr>	<td align=center>
+				<fieldset style="width: 225px; ">
+					<legend>&nbsp;Queue Options:&nbsp;</legend>
+					<table>
+					<tr onmouseover="show_tooltip('en', 'queues', 5);" >
+						<td class="field_text">TimeOut:</td>
+						<td>&nbsp;<input size='2' id='timeout'  pattern='^\d*$' class="input8"></td>
+					</tr>
+					<tr onmouseover="show_tooltip('en', 'queues', 6);" >
+						<td class="field_text">Wrapup Time:</td>
+						<td>&nbsp;<input size='2' id='wrapuptime' pattern='^\d*$' class="input8"></td>
+					</tr>
+					<tr onmouseover="show_tooltip('en', 'queues', 9);" >
+						<td class="field_text">Max Len:</td>
+						<td>&nbsp;<input size='2' id='maxlen' pattern='^\d*$' class="input8"></td>
+					</tr>
+					<tr  onmouseover="show_tooltip('en', 'queues', 13);" >
+						<td class="field_text">Music On Hold: </td>
+						<td><select id="musicclass" class="input8"></select></td>
+					</tr>
 					</table>
-					</div>
+					<table>
+					<tr onmouseover="show_tooltip('en', 'queues', 7);" >
+						<td><input type=checkbox id='autofill'></td>
+						<td class="field_text">Auto Fill:</td>
+					</tr>
+					<tr onmouseover="show_tooltip('en', 'queues', 8);" >
+						<td><input type=checkbox id='autopause'></td>
+						<td class="field_text">Auto Pause:</td>
+					</tr>
+					<tr onmouseover="show_tooltip('en', 'queues', 10);" >
+						<td><input type=checkbox id='joinempty'></td>
+						<td class="field_text">JoinEmpty:</td>
+					</tr>
+					<tr onmouseover="show_tooltip('en', 'queues', 11);" >
+						<td><input type=checkbox id='leavewhenempty'></td>
+						<td class="field_text">LeaveWhenEmpty:</td>
+					</tr>
+					<tr onmouseover="show_tooltip('en', 'queues', 12);" >
+						<td><input type=checkbox id='reportholdtime'></td>
+						<td class="field_text">Report Hold Time:</td>
+					</tr>
+					</table>
+				</fieldset>
 				</td>
-			</tr>
-			<tr onmouseover="show_tooltip('en', 'queues', 4);">
-				<td style="cursor: pointer; cursor: hand;">	<img onClick="togglefeatures()" src="images/adv-v.gif">		</td>
 			</tr>
 			</table>
 		</div>
