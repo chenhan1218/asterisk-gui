@@ -20,7 +20,6 @@
  *
 -->
 <script src="scripts/prototype.js"></script>
-<script src="scripts/rico.js"></script>
 <script src="scripts/astman.js"></script>
 <script src="scripts/lang.js"></script>
 <script src="scripts/tooltip.js"></script>
@@ -29,7 +28,6 @@
 <script>
 var origwidth;
 var widgets = new Object;
-var adstatus;
 var callbacks = new Object;
 var extencallbacks = new Object;
 var fieldnames = ['callwaiting' ,'cancel' ,'cid_number' ,'context' ,'delete' ,'email' ,'fullname' ,'group' ,'hasagent' ,'hasdirectory' ,'hasiax' ,'hasmanager' ,'hassip' ,'hasvoicemail' ,'host' ,'mailbox' ,'name' ,'new' ,'save' ,'secret' ,'threewaycalling' ,'vmsecret' ,'zapchan', 'registeriax', 'registersip'];
@@ -70,12 +68,7 @@ callbacks.format = function(t) {
 	}
 	
 	if (t.fieldbyname['fullname'] && t.fieldbyname['fullname'].length ) {
-		if( sortbynames ){
-			return t.fieldbyname['fullname'] + "  (" + t.name +")";
-		}else{
-			return t.name + " -- " + t.fieldbyname['fullname'];
-		}
-
+		return t.name + " -- " + t.fieldbyname['fullname'];
 	} else{
 		return t.name;
 	}
@@ -165,10 +158,6 @@ callbacks.beforeSaving = function(){
 }
 
 callbacks.postselect = function(box, val) {
-	if (adstatus == "hidden") {
-		adstatus = "shown";
-		togglefeatures() ;
-	}
 	parent._$('tooltip').innerHTML = parent.tooltip_default ; 
 	if( box.selectedIndex == -1)
 		return true;
@@ -257,16 +246,6 @@ function dialplans_loaded(b){
 	parent.astmanEngine.config2list("users.conf", _$('devices'), widgets, callbacks);
 }
 
-function togglefeatures() {
-	if (adstatus == "shown") {
-		adstatus = "hidden";
-		new Rico.Effect.Size('features', null, 1, 120, 8, {complete:function() { _$('features').style.height=1;} } );
-	} else {
-		adstatus = "shown";
-		_$('features').style.visibility = "visible";
-		new Rico.Effect.Size('features', null, 160, 120, 8 );
-	}
-}
 function localajaxinit() {
 	/*
 	// Automatically open the related panel - like when this page is called using a back button
@@ -279,16 +258,10 @@ function localajaxinit() {
 	}
 	*/
 	apply_lang('en');
+	setWindowTitle("User Extensions");
 
-	setWindowTitle("Users");
-	if(window.location.href.match("sortbynames") ){
-		sortbynames = true;
-		_$('link_sortby').innerHTML = " <A href=\"users.html\">Sort By Extensions</A> ";
-	}else{
-		_$('link_sortby').innerHTML = " <A href=\"users.html?sortbynames\">Sort By Name</A> ";
-	}
-
-	var _features = _$('features'); 
+	//var _features = _$('features'); 
+	/*
 	if( navigator.userAgent.indexOf("MSIE") != -1){
 		togglefeatures = function(){ } ;
 		_features.style.display = "";
@@ -298,7 +271,8 @@ function localajaxinit() {
 		_features.style.height = 1;
 		_$('devices').style.height = "415px";
 	}
-	_features.style.width = 302;
+	*/
+	//_features.style.width = 302;
 	adstatus = "hidden";
 	_$('devices').contentEditable = 'false';
 	for (var x =0; x < fieldnames.length; x++ ) {
@@ -330,15 +304,15 @@ function free_mem(){
 <div class="mainscreenContentBox" id="userscontent">
 <table class="mainscreenTable" align="center">
 	<tr valign="top">
-		<td colspan=2>Extensions: ( <span id="link_sortby"></span>) </td>	
+		<td colspan=2>User Extensions: </td>	
 	</tr>
 	<tr valign="top">
 		<td><select disabled size="25" id="devices" style="width:220px;"  class="input10"><option>Loading...</option></select></td>
 		<td style="width:311px; height: 415px"><select id='extensions' style='display:none;width:0px;height:0px'></select>
 			<div id='adjustments' style='width:310'>
-			<table cellspacing='0' cellpadding='0' >
+			<table cellspacing='0' cellpadding='0' width=310 border=0>
 			<tr valign="top">
-			<td>
+			<td align="center">
 				<table>
 				<tr onmouseover="show_tooltip('en', 'users', 0);" ><td class="field_text">Extension:</td><td><input size='5' id='name' pattern='^\d*$' class="input8"></td></tr>
 				<tr onmouseover="show_tooltip('en', 'users', 1);"><td class="field_text">Name:</td><td><input size='20' id='fullname' pattern='^[a-zA-Z_0-9 ]*$' class="input8"></td></tr>
@@ -347,30 +321,56 @@ function free_mem(){
 				<tr onmouseover="show_tooltip('en', 'users', 3);"><td class="field_text">E-mail:</td><td><input size='20' id='email' pattern='^[0-9a-zA-Z\.\-\_\@]*$' class="input8"></td></tr>
 				<tr onmouseover="show_tooltip('en', 'users', 4);"><td class="field_text">Caller ID:</td><td><input size='12' id='cid_number'  pattern='^[\d\-]*$' class="input8"></td></tr>
 				<tr onmouseover="show_tooltip('en', 'users', 5);"><td class="field_text">Analog Phone:</td><td><select size="1" id='zapchan' style='width:120px' class="input8"></select>
-				<span id="noanaloglines" style="display:none"><I>&nbsp;No Analog lines detected.</I></span></td></tr>
+				<span id="noanaloglines" style="display:none" class="field_text"><I>&nbsp;No Analog lines detected.</I></span></td></tr>
 				<tr onmouseover="show_tooltip('en', 'users', 6);"><td class="field_text">Dial Plan:</td><td><select size='1' id='context' style='width:120px' class="input8"></select></td></tr>
 				<tr><td colspan='2' align='center'><input type='hidden' id='mailbox'><input type='hidden' id='group'><input type='checkbox' id='registersip' style="display:none"><input type='checkbox' id='registeriax' style="display:none"></td></tr>
 				</table>
 			</td>
 			</tr>
-			<tr><td style="cursor: pointer; cursor: hand;"><img id="split" onClick="togglefeatures()" src="images/split-v.gif"></td></tr>
 			<tr><td align="center">
-				<div style="background-image:url(images/slice-v.gif); height:1px" id='features'>
-				<table align='center'  width='60%'  cellpadding=0 cellspacing=0>
-				<tr onmouseover="show_tooltip('en', 'users', 8);"><td class="field_text">Voicemail:</td><td><input type='checkbox' id='hasvoicemail'></td></tr>
-				<tr onmouseover="show_tooltip('en', 'users', 9);"><td class="field_text">In Directory:</td><td><input type='checkbox' id='hasdirectory'></td></tr>
-				<tr onmouseover="show_tooltip('en', 'users', 10);"><td class="field_text">SIP:</td><td><input type='checkbox' id='hassip'></td></tr>
-				<tr onmouseover="show_tooltip('en', 'users', 11);"><td class="field_text">IAX:</td><td><input type='checkbox' id='hasiax'></td></tr>
-				<tr onmouseover="show_tooltip('en', 'users', 12);"><td class="field_text">CTI:</td><td><input type='checkbox' id='hasmanager'></td></tr>
-				<tr onmouseover="show_tooltip('en', 'users', 13);"><td class="field_text">Call&nbsp;Waiting:</td><td><input type='checkbox' id='callwaiting'></td></tr>
-				<tr onmouseover="show_tooltip('en', 'users', 14);"><td class="field_text">3-Way&nbsp;Calling:</td><td><input type='checkbox' id='threewaycalling'></td></tr>
-				<tr onmouseover="show_tooltip('en', 'users', 15);"><td class="field_text">Is&nbsp;Agent:</td><td><input type='checkbox' id='hasagent' dfalt='1'><input type='hidden' dfalt='dynamic' id='host'></td>
+				<BR>
+				<fieldset style="width: 225px; ">
+					<legend>&nbsp;Extension Options:&nbsp;</legend>
+				<table align='center'  width='220'  cellpadding=1 cellspacing=1>
+				<tr onmouseover="show_tooltip('en', 'users', 8);">
+					<td width=40 align=right><input type='checkbox' id='hasvoicemail'></td>
+					<td class="field_text">Voicemail</td>
+				</tr>
+				<tr onmouseover="show_tooltip('en', 'users', 9);">
+					<td align=right><input type='checkbox' id='hasdirectory'></td>
+					<td class="field_text">In Directory</td>
+				</tr>
+				<tr onmouseover="show_tooltip('en', 'users', 10);">
+					<td align=right><input type='checkbox' id='hassip'></td>
+					<td class="field_text">SIP</td>
+				</tr>
+				<tr onmouseover="show_tooltip('en', 'users', 11);">
+					<td align=right><input type='checkbox' id='hasiax'></td>
+					<td class="field_text">IAX</td>
+				</tr>
+				<tr onmouseover="show_tooltip('en', 'users', 12);">
+					<td align=right><input type='checkbox' id='hasmanager'></td>
+					<td class="field_text">CTI</td>
+				</tr>
+				<tr onmouseover="show_tooltip('en', 'users', 13);">
+					<td align=right><input type='checkbox' id='callwaiting'></td>
+					<td class="field_text">Call&nbsp;Waiting</td>
+				</tr>
+				<tr onmouseover="show_tooltip('en', 'users', 14);">
+					<td align=right><input type='checkbox' id='threewaycalling'></td>
+					<td class="field_text">3-Way&nbsp;Calling</td>
+				</tr>
+				<tr onmouseover="show_tooltip('en', 'users', 15);">
+					<td align=right>
+						<input type='checkbox' id='hasagent' dfalt='1'>
+						<input type='hidden' dfalt='dynamic' id='host'>
+					</td>
+					<td class="field_text">Is&nbsp;Agent</td>
 				</tr>
 				</table>
-				</div>
+				</fieldset>
 			</td>
 			</tr>
-			<tr><td style="cursor: pointer; cursor: hand;"><img onClick="togglefeatures()" src="images/adv-v.gif"></td></tr>
 			</table>
 			</div>
 		</td></tr>				
