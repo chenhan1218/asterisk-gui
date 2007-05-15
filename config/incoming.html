@@ -95,6 +95,9 @@ numplan_callbacks.format = function(t, x) {
 		return false;
 	}
 
+	if(( t.name.substr(0,17) == 'voicemenu-custom-' && x== undefined )){
+		add_toext( 'Goto(' + t.name + '|s|1)' , t.fieldbyname['comment'] + ' -- VoiceMenu');
+	}
 
 	return false;
 }
