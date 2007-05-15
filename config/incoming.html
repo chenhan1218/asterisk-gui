@@ -31,8 +31,17 @@ var user_callbacks = new Object;
 var didtrunks = new Object;
 var old_incomingrule, old_fromprovider ;
 var editstatus , edit_pattern, edit_DIDtrunk, edit_action, edit_priority ;
-var listOfExtensions = [] ;	// to store all the list of extensions to be displayed in the select menu
 
+function add_toext(a,b){ // a is value, b is text
+	var New_OPTION = document.createElement('option');
+	New_OPTION.text = b ;
+	New_OPTION.value = a ;
+	try {
+		_$('toextension').add(New_OPTION, null); // W3C way
+	}catch(ex) {
+		_$('toextension').add(New_OPTION); // IE way
+	}
+}
 
 user_callbacks.format = function(t, x) {
 	var tmp = asterisk_guiTDPrefix + t.name ; 
@@ -42,7 +51,7 @@ user_callbacks.format = function(t, x) {
 		return t.name;
 	}
 	if (t.fieldbyname['fullname'] && t.fieldbyname['fullname'].length && x == undefined && t.name != "general" ) {
-		listOfExtensions.push( t.name + " -- " + t.fieldbyname['fullname'] );
+		add_toext("Goto(default|" + t.name + "|1)", t.name + " -- " + t.fieldbyname['fullname'] );
 	}
 	return false;
 }
@@ -58,7 +67,9 @@ user_callbacks.includecats = true;
 numplan_callbacks.format = function(t, x) {
 	if ((t.name == specialcontext && x != undefined )){
 		var p = format_extension( _$('extensions'), t, x)  ;
-		if ( p != null ){ listOfExtensions.push(p); }
+		if ( p != null ){
+			add_toext("Goto(default|" + p.split(' -- ')[0] + "|1)", p );
+		}
 	}
 	if ( ( t.name.substring(0,asterisk_guiTDPrefix.length) == asterisk_guiTDPrefix ) && x == undefined ){
 		if(typeof didtrunks[t.name] == "undefined"){
@@ -79,20 +90,6 @@ numplan_callbacks.format = function(t, x) {
 }
 
 numplan_callbacks.loaded = function() {
-	listOfExtensions.sort();
-	for(var a =0; a < listOfExtensions.length ; a++ ){
-		var b = listOfExtensions[a].split(' -- ');
-		//$('toextension').innerHTML = $('toextension').innerHTML + "<option value='" + b[0] + "'>" + listOfExtensions[a] + "</option>";
-		  var New_OPTION = document.createElement('option');
-		  New_OPTION.text = listOfExtensions[a] ;
-		  New_OPTION.value = b[0] ;
-		  try {
-			_$('toextension').add(New_OPTION, null); // W3C way
-		  }catch(ex) {
-			_$('toextension').add(New_OPTION); // IE way
-		  }
-	}
-
 	// load list of trunks to 'fromprovider'
 	var t ;
 	for ( t in didtrunks){
@@ -220,16 +217,12 @@ function edit_incomingrule(a,b,c,d){// a is pattern, b is DID_trunk, c is action
 		}
 	}
 
-	if( c.match("Goto") && !c.match("voicemenu-")  ){ 
-		var tmp = c.split('(');
-		var exten = tmp[1].split('|'); // extension is exten[1]
-		var y = _$('toextension');
-		y.selectedIndex = -1 ;
-		for(var t=0; t < y.length ; t++ ){
-			if( y.options[t].value == exten[1] ){
-				y.selectedIndex = t;
-				break;
-			}
+	var y = _$('toextension');
+	y.selectedIndex = -1 ;
+	for(var t=0; t < y.length ; t++ ){
+		if( y.options[t].value == c ){
+			y.selectedIndex = t;
+			break;
 		}
 	}
 
@@ -279,7 +272,7 @@ function save_new_incomingrule(){
 		var newpattern = "_X." ;
 		var temp_provider = fpv.value;
 		var temp_priority = "1";
-		var temp_action = "Goto(default|" + te.value + "|1)";
+		var temp_action = te.value;
 		var new_exten = newpattern  + "," + temp_priority + "," + temp_action;
 		var new_exten2 = "s,1," + temp_action;
 		var uri = build_action('append', 0, temp_provider ,"exten", new_exten);
@@ -287,7 +280,7 @@ function save_new_incomingrule(){
 	}else{
 		var newpattern = fp.value ;
 		var temp_provider = fpv.value ;
-		var temp_action = "Goto(default|" + te.value + "|1)";
+		var temp_action = te.value;
 		var temp_priority = "1";
 		var new_exten = newpattern  + "," + temp_priority + "," + temp_action;
 		var uri = build_action('append', 0, temp_provider ,"exten", new_exten ); 
@@ -348,7 +341,7 @@ function update_incomingrule(){
 	var p = 0 ;
 	var uri = "" ;
 	var temp_provider = _$('fromprovider').value ;
-	var temp_action = "Goto(default|" + te.value + "|1)";
+	var temp_action = te.value;
 	var temp_priority = "1";
 	var tmp_old_string = edit_pattern  + "," + edit_priority + "," + edit_action;
 	uri += build_action('delete', p, edit_DIDtrunk ,"exten", "", tmp_old_string); p++;
