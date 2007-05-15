@@ -86,6 +86,16 @@ numplan_callbacks.format = function(t, x) {
 		didtrunks[t.name][temp[0]].priority = temp[1];
 		didtrunks[t.name][temp[0]].action = temp[2];
 	}
+
+	if( (t.name == TIMERULES_CATEGORY && x != undefined )) {
+		if (!t.fields[x].match('NoOp')){ return false; }
+		var m = t.fields[x].split('NoOp')[1].substr(1);
+		    m = m.substr(0, m.length-1);
+		add_toext("Goto("+TIMERULES_CATEGORY+"|" + t.fields[x].split(',')[0] + "|1)", m + " -- Time Based Rule" );
+		return false;
+	}
+
+
 	return false;
 }
 
@@ -162,17 +172,21 @@ function addrowtotable(a,b,c,d){	// a is pattern, b is DID_trunk, c is action, d
 }
 
 
-function convert_tohuman(a,b,c) { // a is pattern, b is DID_trunk, c is action, 
-	var trunk = b.substr(4) ;
-	if( c.match("Goto") && !c.match("voicemenu-")  ){ 
-		var tmp = c.split('(');
-		var exten = tmp[1].split('|'); // extension is exten[1]
+function convert_tohuman(a,b,c) { // a is pattern, b is DID_trunk, c is action,
+	var x;
+	var y = _$('toextension');
+	y.selectedIndex = -1 ;
+	for(var t=0; t < y.length ; t++ ){
+		if( y.options[t].value == c ){
+			x = y.options[t].text;
+			break;
+		}
 	}
 
 	if( a == "_X."){ // handling all unmatched 
-		return " Route all unmatched incoming calls from provider '" + didtrunks[b].trunkname + "' to extension '" + exten[1] + "'" ; 
+		return " Route all unmatched incoming calls from provider '" + didtrunks[b].trunkname + "' to '" + x + "'" ; 
 	}
-	return " Route incoming calls from provider '" + didtrunks[b].trunkname + "' that match pattern '" + a + "' to extension '" + exten[1] + "'"  ; 
+	return " Route incoming calls from provider '" + didtrunks[b].trunkname + "' that match pattern '" + a + "' to '" + x + "'"  ; 
 }
 
 
