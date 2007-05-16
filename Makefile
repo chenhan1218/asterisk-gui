@@ -89,6 +89,15 @@ HTTPDIR:=$(ASTDATADIR)/static-http
 CONFIGDIR:=$(HTTPDIR)/config
 
 HTTPHOST?=$(shell hostname)
+
+HTTPBINDADDR?=$(shell cat $(ASTETCDIR)/http.conf  2>/dev/null | grep -v ^\; | grep bindaddr | cut -f 2 -d '=')
+ifeq ($(HTTPBINDADDR),0.0.0.0)
+  HTTPBINDADDR:=$(HTTPHOST)
+endif
+ifeq ($(HTTPBINDADDR),)
+  HTTPBINDADDR:=$(HTTPHOST)
+endif
+
 HTTPBINDPORT?=$(shell cat $(ASTETCDIR)/http.conf  2>/dev/null | grep -v ^\; | grep bindport | cut -f 2 -d '=')
 ifeq ($(HTTPBINDPORT),)
   HTTPBINDPORT:=8088
@@ -98,9 +107,9 @@ HTTPPREFIX?=$(shell echo $(HTTPPREFIXBASE) | cut -f 2 -d '=')
 ifeq ($(HTTPPREFIXBASE),)
   HTTPPREFIX:=asterisk
 endif
-HTTPURL:=http://$(HTTPHOST):$(HTTPBINDPORT)/$(HTTPPREFIX)/static/config/cfgbasic.html
-HTTPSETUPURL:=http://$(HTTPHOST):$(HTTPBINDPORT)/$(HTTPPREFIX)/static/config/setup/install.html
-HTTPSETUPURL:=http://localhost:$(HTTPBINDPORT)/$(HTTPPREFIX)/static/config/setup/install.html
+HTTPURL:=http://$(HTTPBINDADDR):$(HTTPBINDPORT)/$(HTTPPREFIX)/static/config/cfgbasic.html
+HTTPSETUPURL:=http://$(HTTPBINDADDR):$(HTTPBINDPORT)/$(HTTPPREFIX)/static/config/setup/install.html
+HTTPLOCALURL:=http://127.0.0.1:$(HTTPBINDPORT)/$(HTTPPREFIX)/static/config/cfgbasic.html
 
 SUBDIRS:=tools
 SUBDIRS_CLEAN:=$(SUBDIRS:%=%-clean)
@@ -177,13 +186,18 @@ checkconfig:
 		exit 1; \
 	fi
 
+	@echo ""
+	@echo ""
 	@echo " --- Everything looks good ---	"
+	@echo ""
 	@echo " * GUI should be available at $(HTTPURL) "
-	@echo " * Before using the GUI, Please visit the install page at $(HTTPSETUPURL) "
+	@echo ""
+	@echo " * Before using the GUI, Please visit the install page at"
+	@echo " * $(HTTPSETUPURL) "
 	@echo "" 
+	@echo ""
 	@echo " * Note: If you have bindaddr=127.0.0.1 in $(ASTETCDIR)/http.conf "
 	@echo "   you will only be able to visit it from the local machine. "
-	@echo ""
 	@echo "   Example: $(HTTPLOCALURL)"
 	@echo ""
 	@echo " * The login and password should be an entry from $(ASTETCDIR)/manager.conf"
