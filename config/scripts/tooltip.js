@@ -31,7 +31,7 @@ function show_tooltip(lang, file,tip){
 	tooltips['users'] .en[16] = "<B>VM Password:</B> Voicemail Password for this user, Ex: \"1234\"."; //Voicemail Password
 	tooltips['users'] .en[17] = "<B>Hints:</B> If checked the phone being called will be sent a \"hint\" to light up status lamps on SIP phones."; // Hint phone before being dialed.
 	tooltips['users'] .en[18] = "<B>Agent Login Extension:</B> Extension to be dialed for the Agents to Login to the Specific Queue. <br> This is an extension that all the Agents can Call to Login to their specified Queues. ";
-	tooltips['users'] .en[19] = "<B>Agent Callback Login Extension:</B> Extension to be dialed for the Agents to Login to the Specific Queue. <br> Same as Agent Login Extension, accept you do not have to remain on the line. ";
+	tooltips['users'] .en[19] = "<B>Agent Callback Login Extension:</B> Extension to be dialed for the Agents to Login to the Specific Queue. <br> Same as Agent Login Extension, except you do not have to remain on the line. ";
 
 // Tooltips for Conferencing (meetme)
 	tooltips['meetme']= new Object;
