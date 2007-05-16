@@ -567,7 +567,7 @@ function disable_ormore(){
 }
 
 function trunks_loaded(b){
-	var c = eval('(' + b + ')');
+	var c = b ;
 	for( var d in c ){
 		if ( c.hasOwnProperty(d) && c[d]['context'] && (c[d]['context'] == asterisk_guiTDPrefix + d ) ) {
 			trunks_desc[d] = new Object();

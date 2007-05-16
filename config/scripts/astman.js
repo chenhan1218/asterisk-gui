@@ -135,14 +135,14 @@ if(document.addEventListener){
 
 function config2json(a, b, c){		// a is filename (string) , b is 0 or 1 , c is callback function
 	var opt = { method: 'get', asynchronous: true,
-		onSuccess: function(originalRequest) {  var f = toJSON(originalRequest.responseText, b) ;  c(f) ; },
+		onSuccess: function(originalRequest) {  var f = toJSO(originalRequest.responseText, b) ;  c(f) ; },
 		onFailure: function(t) { gui_alert("Config Error: " + t.status + ": " + t.statusText); },
 		parameters: "action=getconfig&filename="+a };
 	var tmp = new Ajax.Request(asterisk_rawmanPath , opt);
 }
 
-function toJSON(z, p){
-	// This function converts z,  the asterisk config file as read using 'action=getconfig' to a JSON string 
+function toJSO(z, p){
+	// This function converts z,  the asterisk config file as read using 'action=getconfig' to a JavaScript Object 
 	// where z is originalRequest.responseText of the getconfig on a asterisk format config file, 
 	// and p is 0 or 1, 
 	//	 0 for non unique subfields ( extensions.conf context where there are multiple subfields with same name - -  Ex: 'exten ='   )
@@ -159,59 +159,27 @@ function toJSON(z, p){
 			var g = t[r].indexOf(":") ; 
 			var catname = t[r].substr(g+1) ; // catogory 
 			catname = catname.replace(/^\s*|\s*$/g,'') ; // trim 
-			a[ catno ] = { };
-			a[ catno ].categoryname = catname  ;
-			if(!p)
-				a[ catno ].subfields = [] ;
-			else
-				a[ catno ].subfields = {} ;
+			if(!p){
+				a[catname] = [];
+			}else{
+				a[catname] = {};
+			}
 		}else if ( h == "line" ){
 			var j = t[r].indexOf(":") ;
 			var subfield = t[r].substr(j+1) ; // subfield
 			subfield = subfield.replace(/^\s*|\s*$/g,'') ; // trim 
-			if( !p){
-				a[ catno ].subfields.push( subfield ) ;
+
+			if(!p){
+				a[catname].push(subfield);
 			}else{
 				var v = subfield.indexOf("=");
-				var subfield_a = subfield.substring(0,v); // subfield variable
-				var subfield_b =  subfield.substr(v+1) ; // subfield variable value
-				a[ catno ].subfields[subfield_a] = subfield_b;
+				var subfield_a = subfield.substring(0,v);//subfield variable
+				var subfield_b =  subfield.substr(v+1) ;//subfield variable value
+				a[catname][subfield_a] = subfield_b;
 			}
 		}
 	}
-	// start building the json string
-	json_data = "{" ;
-	if(!p){
-		for( var s=0; s < a.length; s++ ){
-			var b = a[s].subfields ;
-			json_data += '"' + a[s].categoryname + '" : [ ' ;
-			for ( var y = 0 ;  y < b.length ;  y++ ){
-				json_data += '"' + escape(b[y]) + '"' ;
-				if( y < b.length - 1 ){	json_data += ',' ;	}
-			}
-			if( s < a.length - 1 ){ json_data += ' ],' ; }else{ json_data += ' ]}' ; }
-		}
-	}else{
-		for( var s=0; s < a.length; s++ ){
-			var b = a[s].subfields ;
-			json_data += '"' + a[s].categoryname + '" :  {' ;
-			var hascomma = 0;
-			for ( var y in b ){ 
-				if ( b.hasOwnProperty(y) ){ 
-					if(hascomma){
-						json_data += ', "' + y + '":"' + escape(b[y]) + '"' ; 
-					}else{
-						json_data += '"' + y + '":"' + escape(b[y]) + '"' ; 
-						hascomma = 1;
-					}
-				} 
-			}
-			if( s < a.length - 1 ){ json_data += ' },' ; }else{ json_data += ' }}' ; }
-		}
-	}
-	if(json_data == "{"){ return '{}';}
-	// done building the json string
-	return json_data ;
+	return a ;
 }
 
 function setWindowTitle(a){
