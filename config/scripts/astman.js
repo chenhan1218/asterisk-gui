@@ -1201,7 +1201,7 @@ function Astman() {
 					msgs[msgnum].names = new Array();
 					y=0;
 				}
-				msgs[msgnum].headers[fields[0].toLowerCase()] = fields[1];
+				msgs[msgnum].headers[fields[0].toLowerCase()] = allheaders[x].substr(fields[0].length +2);
 				msgs[msgnum].names[y++] = fields[0].toLowerCase();
 				if (me.debug)
 					me.debug.value = me.debug.value + "field " + fields[0] + "/" + fields[1] + "\n";
