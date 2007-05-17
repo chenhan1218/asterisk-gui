@@ -19,7 +19,6 @@
  *
 -->
 <script src="scripts/prototype.js"></script>
-<script src="scripts/rico.js"></script>
 <script src="scripts/astman.js"></script>
 <link href="stylesheets/rico.css" media="all" rel="Stylesheet" type="text/css" />
 <link href="stylesheets/schwing.css" media="all" rel="Stylesheet" type="text/css" />
@@ -310,9 +309,10 @@ function fileparsed(b){
 			h.style.width = '95%';
 			h.style.fontFamily = "'trebuchet ms',helvetica,sans-serif";
 			h.style.fontSize = '10pt' ;
+			h.style.padding = '2px 2px 3px 3px' ;
 			h.innerHTML = "&nbsp;&nbsp;[" + d + "]";
 			zz.appendChild(h);
-			Rico.Corner.round(h_id, {compact:true});
+			//Rico.Corner.round(h_id, {compact:true});
 			add_event( _$(h_id) , 'click', showeditcontext );
 
 			var i = document.createElement("div");
@@ -324,6 +324,7 @@ function fileparsed(b){
 			i.style.marginTop = '5px' ;
 			i.style.width = '95%';
 			i.style.fontSize = '9pt' ;
+			i.style.padding = '2px 2px 3px 3px' ;
 			i.style.fontFamily = 'courier' ;
 
 			var temp_contextContent = "" ;
@@ -339,7 +340,7 @@ function fileparsed(b){
 			i.CONTEXTCONTENT = temp_contextContent ;
 			i.CONTEXTCONTENT_ROWS = rows ;
 			zz.appendChild(i);
-			Rico.Corner.round("contextContent_" + d, {compact:true});
+			//Rico.Corner.round("contextContent_" + d, {compact:true});
 			add_event( _$(i_id) , 'click', showeditcontextContent );
 
 		}
