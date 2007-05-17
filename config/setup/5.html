@@ -333,7 +333,7 @@ function parsepattern(a,e){
 	var temp = a.substr(1);
 	// if there is a dot at the end 
 	//		check ormore and remove the trailing dot
-	if( temp.substr(-1,1) == "." ){
+	if( temp.substr(-1,1) == "!" ){
 		temp = temp.slice(0, -1);
 		returnstring = "or more";
 		if(e == 1)
@@ -460,7 +460,7 @@ function	buildpatternstring(){
 	}
 	// append a '.' if 'ormore' is checked
 	if( _$('ormore').checked ){
-		pattern = pattern + "." ;
+		pattern = pattern + "!" ;
 	}
 	// assign this to the field 'pattern'
 	_$('pattern').value = pattern;
