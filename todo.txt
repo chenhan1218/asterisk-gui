@@ -1,0 +1,28 @@
+If you want to discuss about new features in asterisk-GUI
+please subscribe to the asterisk-GUI mailing list
+(http://lists.digium.com/mailman/listinfo/asterisk-gui),
+
+IRC:  #asterisk-gui on freenode
+
+
+List of features we are currently working on
+---------------------------------- 
+
+* Operator Extension
+
+* Voicemail Groups
+
+* Digital Cards Support
+
+* Ring Groups
+
+
+
+List of requested features
+--------------------------
+
+* Call Forwarding
+
+* CDR support
+
+
