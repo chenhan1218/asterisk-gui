@@ -296,6 +296,24 @@ distclean: clean
 	-rm -f makeopts config.log config.status
 	-rm -rf autom4te.cache
 
+uninstall:
+	rm -rf $(CONFIGDIR)
+	rm -rf $(ASTVARLIBDIR)/scripts
+
+update: 
+	@if [ -d .svn ]; then \
+		echo "Updating from Subversion..." ; \
+		svn update | tee update.out; \
+		rm -f .version; \
+		if [ `grep -c ^C update.out` -gt 0 ]; then \
+			echo ; echo "The following files have conflicts:" ; \
+			grep ^C update.out | cut -b4- ; \
+		fi ; \
+		rm -f update.out; \
+	else \
+		echo "Not under version control";  \
+	fi
+
 samples:
 	mkdir -p $(ASTETCDIR)
 	for x in configs/*.sample; do \
