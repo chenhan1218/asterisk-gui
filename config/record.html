@@ -126,14 +126,8 @@ callbacks.loaded = function(){
 
 function play_existing(filename){
 	var extension = prompt("Please enter an Extension on which you want to listen to the file",""); 
-	var opt = {
-		method: 'get',
-		asynchronous: true,
-		onSuccess: function(t) { gui_feedback('Play Request Successfull !','blue'); },
-		onFailure: function(t) { gui_alert("Config Error: " + t.status + ": " + t.statusText); }
-	};
-	opt.parameters ="action=originate&channel=Local/"+extension + "&context="+asterisk_guitools+"&exten=play_file&priority=1&Variable=var1%3d"+ encodeURIComponent( asterisk_menusRecord_path + filename );
-	var tmp = new Ajax.Request(asterisk_rawmanPath, opt);
+	var as = "action=originate&channel=Local/"+extension + "&context="+asterisk_guitools+"&exten=play_file&priority=1&Variable=var1%3d"+ encodeURIComponent( asterisk_menusRecord_path + filename );
+	makerequest( '','',as, function(){gui_feedback('Play Request Successfull !','blue'); });
 }
 
 function record_existing(filename){
@@ -172,21 +166,8 @@ function record_new(){
 
 function originate_recordrequest(newvmenu_ext, filename_torecord){
 	_$('status_message').style.display="";
-	var opt = {
-		method: 'get',
-		asynchronous: true,
-		onSuccess: function(t) { 
-			setTimeout( function(){ _$('status_message').style.display='none'; },sc_displaytime);
-			
-		},
-		onFailure: function(t) {
-			_$('status_message').style.display='none';
-			gui_alert("Config Error: " + t.status + ": " + t.statusText);
-		}
-	};
-	opt.parameters ="action=originate&channel=Local/"+newvmenu_ext + "&context="+asterisk_guitools+"&exten=record_vmenu&priority=1&Variable=var1%3d"+ encodeURIComponent( asterisk_menusRecord_path + filename_torecord );
-
-	var tmp = new Ajax.Request(asterisk_rawmanPath, opt);
+	var as = "action=originate&channel=Local/"+newvmenu_ext + "&context="+asterisk_guitools+"&exten=record_vmenu&priority=1&Variable=var1%3d"+ encodeURIComponent( asterisk_menusRecord_path + filename_torecord );
+	makerequest( '','',as, function(){ setTimeout( function(){ _$('status_message').style.display='none'; },sc_displaytime); });
 }
 
 function delete_sounds(filename){

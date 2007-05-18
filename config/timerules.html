@@ -122,11 +122,9 @@ function get_timerules(b){
 		}
 	}
 
-
 	if(!found){ // If Time Based Rules Context Not Found - add one and reload
-		var as = 'action=updateconfig&srcfilename=extensions.conf&dstfilename=extensions.conf&Action-000000=newcat&Cat-000000='+TIMERULES_CATEGORY+'&Var-000000=&Value-000000=' ;
-		var rel = function(){window.location.href=window.location.href;}
-		makerequest(as, rel);
+		var as = build_action('newcat', 0, TIMERULES_CATEGORY, "", "") ;
+		makerequest( 'u','extensions.conf',as, function(){window.location.href=window.location.href;} );
 		return;
 	}
 
@@ -345,16 +343,6 @@ function save_rule(){
 	}
 }
 
-function makerequest(a, b){
-	var tmp;
-	var opt = {
-		method: 'get',
-		parameters: a,
-		asynchronous: true,
-		onComplete: function(t){ if(b){ b(t.responseText); } }
-	};
-	tmp = new Ajax.Request( asterisk_rawmanPath, opt);
-}
 
 function add_newrule(nre){
 	var added_newrule = function(f){
@@ -387,12 +375,10 @@ function add_newrule(nre){
 	var line2 = nre + ',n,GotoIfTime(' + tc + '?' +  _$('dest_match').value + ')' ;
 	var line3 = nre + ',n,Goto('+ _$('dest_nomatch').value + ')' ;
 
-	var actionstring = 'action=updateconfig&srcfilename=extensions.conf&dstfilename=extensions.conf' + 
-			'&Action-000000=append&Cat-000000=' + TIMERULES_CATEGORY + '&Var-000000=exten&Value-000000=' + encodeURIComponent(line1) + 
-			'&Action-000001=append&Cat-000001=' + TIMERULES_CATEGORY + '&Var-000001=exten&Value-000001=' + encodeURIComponent(line2) +
-			'&Action-000002=append&Cat-000002='+ TIMERULES_CATEGORY + '&Var-000002=exten&Value-000002=' + encodeURIComponent(line3) ;
-
-	makerequest(actionstring, added_newrule);
+	var as = build_action('append', 0, TIMERULES_CATEGORY, "exten", line1 ) ;
+	as += build_action('append', 1, TIMERULES_CATEGORY, "exten", line2 ) ;
+	as += build_action('append', 2, TIMERULES_CATEGORY, "exten", line3 ) ;
+	makerequest( 'u','extensions.conf',as, added_newrule );
 }
 
 
@@ -430,19 +416,18 @@ function delete_rule(f,y){
 	var line2 = f + ',n,GotoIfTime(' + tc + '?' +  g.ifmatch_goto + ')' ;
 	var line3 = f + ',n,Goto('+ g.ifnomatch_goto + ')' ;
 
-	var actionstring = 'action=updateconfig&srcfilename=extensions.conf&dstfilename=extensions.conf' + 
-			'&Action-000000=delete&Cat-000000=' + TIMERULES_CATEGORY + '&Var-000000=exten&Value-000000=&Match-000000=' + encodeURIComponent(line1) + 
-			'&Action-000001=delete&Cat-000001=' + TIMERULES_CATEGORY + '&Var-000001=exten&Value-000001=&Match-000001=' + encodeURIComponent(line2) +
-			'&Action-000002=delete&Cat-000002='+ TIMERULES_CATEGORY + '&Var-000002=exten&Value-000002=&Match-000002=' + encodeURIComponent(line3) ;
+	var as = build_action('delete', 0, TIMERULES_CATEGORY, "exten",'',line1 ) ;
+		as += build_action('delete', 1, TIMERULES_CATEGORY, "exten",'', line2 ) ;
+		as += build_action('delete', 2, TIMERULES_CATEGORY, "exten",'', line3 ) ;
 
-	var deletedrule = function(){
-		delete timebasedrules[f];
-		clear_table();
-		showlist_of_rules();
-		if(y){y();}
-	}
-
-	makerequest(actionstring, deletedrule);
+	makerequest( 'u','extensions.conf',as,
+		function(){
+			delete timebasedrules[f];
+			clear_table();
+			showlist_of_rules();
+			if(y){y();}
+		}
+	);
 }
 
 function form_updatevalues(f){

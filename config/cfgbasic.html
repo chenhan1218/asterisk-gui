@@ -161,19 +161,7 @@ function pingevery(a){
 }
 
 function makeping(){
-	var tmp;
-	var opt = {
-		method: 'get',
-		parameters: "action=ping",
-		asynchronous: true,
-		onComplete: function(t){
-			if( t.responseText.match(asterisk_guipingerror) ){
-				window.location.href=window.location.href;
-			}
-			
-		}
-	};
-	tmp = new Ajax.Request( asterisk_rawmanPath, opt);
+	makerequest("","","action=ping", function(t){ if( t.match(asterisk_guipingerror) ){ window.location.href=window.location.href;} } );
 }
 
 eventeater.eventcb = function(msgs) {
@@ -226,18 +214,7 @@ function registerajax() {
 
 function Logoff() {
 	if(!confirm("Are you sure ?")){ return true; }
-	var opt2 = {
-		method: 'get',
-		asynchronous: true,
-		onSuccess: function() {	 
-			window.location.href=window.location.href;
-		},
-		onFailure: function(t) {
-			gui_alert("Config Error: " + t.status + ": " + t.statusText);
-		}
-	};
-	opt2.parameters ="action=logoff";
-	var tmp2 = new Ajax.Request(asterisk_rawmanPath , opt2);
+	makerequest("","","action=logoff", function(t){ window.location.href=window.location.href; } );
 }
 
 function system_link(){
@@ -248,15 +225,10 @@ function system_link(){
 function reloadConfig(){
 	_$('reloadconfig').style.display = 'none'; 
 	window.setTimeout( function(){ _$('reloadconfig').style.display=""; }, asterisk_guifbt );
-	var opt = { 
-		method: 'get', 
-		asynchronous: true, 
-		onSuccess: function(t) { gui_feedback("Restarted Asterisk !!",'blue'); } ,
-		onFailure: function(t) { gui_alert("Config Error: " + t.status + ": " + t.statusText); }
-	};
-	var uri = parent.build_action('renamecat', 0, "","", "", ""); 
-	opt.parameters="action=updateconfig&reload=yes&srcfilename=" + encodeURIComponent("extensions.conf") + "&dstfilename=" + encodeURIComponent("extensions.conf") + uri;
-	var tmp = new Ajax.Request(asterisk_rawmanPath , opt);
+
+	var uri = parent.build_action('renamecat', 0, "","", "", "");
+	var r = "action=updateconfig&reload=yes&srcfilename=" + encodeURIComponent("extensions.conf") + "&dstfilename=" + encodeURIComponent("extensions.conf") + uri;
+	makerequest("","",r, function(t){ gui_feedback("Restarted Asterisk !!",'blue'); } );
 }
 
 

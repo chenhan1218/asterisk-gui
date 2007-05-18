@@ -132,10 +132,12 @@ function add_rule_fromeditform( this_priority, oncomplete ){
 	commentstring = _ptv + ',' + this_priority + ',' + _rnv + "," + commentstring ;
 	uri += build_action('append', 1 , _extv ,"comment", commentstring );
 
-	var opt = {
-		method: 'get',
-		asynchronous: true,
-		onSuccess: function(t) { 
+	_$('userscontent').style.display = "none";
+	_$('bg_transparent').style.display = "none";
+	_$('status_message').style.display = "";
+
+	makerequest('u', 'extensions.conf', uri,
+		function(t){
 			_$('status_message').style.display="none";
 			var m = numberplansdata[_extv]['npdata'];
 			if ( typeof m[_ptv] == 'undefined' ) { m[_ptv] = { }; }
@@ -143,16 +145,8 @@ function add_rule_fromeditform( this_priority, oncomplete ){
 			m[_ptv][this_priority].rulename =  _rnv ; 
 			m[_ptv][this_priority].ruledesc = (iscustom) ? "custom" : parsepattern(_ptv,0) ;
 			oncomplete(); 
-		},
-		onFailure: function(t) {
-			gui_alert("Config Error: " + t.status + ": " + t.statusText);
 		}
-	};
-	opt.parameters= "action=updateconfig&srcfilename=" + encodeURIComponent("extensions.conf") + "&dstfilename=" + encodeURIComponent("extensions.conf") + uri;
-	_$('userscontent').style.display = "none";
-	_$('bg_transparent').style.display = "none";
-	_$('status_message').style.display = "";
-	var tmp = new Ajax.Request(asterisk_rawmanPath, opt);
+	);
 }
 
 function saverule(){
@@ -373,24 +367,17 @@ function delete_callingrule(a,b,oncomplete){ // a is pattern, b is priority
 	var uri = build_action('delete', 0, _extv ,"exten", "", rule_string ); 
 	commentstring = a + ',' + b + ',' + m[a][b].rulename + ',' + commentstring ;
 	uri += build_action('delete', 1 , _extv ,"comment","", commentstring );
-
-	var opt = {
-		method: 'get',
-		asynchronous: true,
-		onSuccess: function(t) { 
-			_$('status_message').style.display="none";
-			delete numberplansdata[ _extv ]['npdata'][a][b] ;
-			oncomplete(); 
-		},
-		onFailure: function(t) {
-			gui_alert("Config Error: " + t.status + ": " + t.statusText);
-		}
-	};
-	opt.parameters= "action=updateconfig&srcfilename=" + encodeURIComponent("extensions.conf") + "&dstfilename=" + encodeURIComponent("extensions.conf") + uri;
 	_$('userscontent').style.display = "none";
 	_$('bg_transparent').style.display = "none";
 	_$('status_message').style.display = "";
-	var tmp = new Ajax.Request(asterisk_rawmanPath, opt);
+
+	makerequest('u','extensions.conf', uri,
+		function(t){
+			_$('status_message').style.display="none";
+			delete numberplansdata[ _extv ]['npdata'][a][b] ;
+			oncomplete(); 
+		}
+	);
 }
 
 
@@ -597,14 +584,7 @@ function addthe_default_callingplan(a){
 	var uri = build_action('newcat', 0, default_planname ,"", "");
 	uri += build_action('append', 1, default_planname,"plancomment", "DialPlan1"); 
 	uri += build_action('append', 2, default_planname,"include", "default"); 
-	var opt = {
-		method: 'get',
-		asynchronous: true,
-		onSuccess: function(t) { gui_feedback("Created Default DialPlan",'green'); location.reload(); },
-		onFailure: function(t) { gui_alert("Config Error: " + t.status + ": " + t.statusText); }
-	};
-	opt.parameters= "action=updateconfig&srcfilename=" + encodeURIComponent("extensions.conf") + "&dstfilename=" + encodeURIComponent("extensions.conf") + uri;
-	var tmp = new Ajax.Request(asterisk_rawmanPath, opt);
+	makerequest('u','extensions.conf', uri, function(t){gui_feedback("Created Default DialPlan",'green'); location.reload(); }   );
 }
 
 

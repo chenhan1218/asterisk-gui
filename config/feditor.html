@@ -78,25 +78,14 @@ function cancel_file(){
 
 function delete_context(){
 	if(!confirm("Are you sure you want to delete the selected context ?")){ return true; }
-
 	var uri = build_action('delcat', 0, global_contextBeingEdited ,"", "");
-	var opt = {
-		method: 'get',
-		asynchronous: true,
-		onSuccess: function() {
+	makerequest('u', global_fileBeingEdited, uri , function(t) {
 			_$('AddContext').style.display = "none";
 			_$('div_editcontext').style.display = "none"; 
 			global_contextBeingEdited = "";
 			gui_feedback('Context Deleted','blue');
 			config2json( global_fileBeingEdited, 0, fileparsed );
-		},
-		onFailure: function(t) {
-			gui_alert("Config Error: " + t.status + ": " + t.statusText);
-			gui_alert("Failed to Rename the DID context for " + old_didcontext );
-		}
-	};
-	opt.parameters= "action=updateconfig&srcfilename=" + encodeURIComponent(global_fileBeingEdited) + "&dstfilename=" + encodeURIComponent(global_fileBeingEdited) + uri;
-	var tmp = new Ajax.Request(asterisk_rawmanPath, opt);
+		});
 }
 
 
@@ -108,23 +97,13 @@ function cancel_context(){
 
 function update_context(){ // rename from global_contextBeingEdited to $('context_edited').value
 	var uri = build_action('renamecat', 0, global_contextBeingEdited ,"", _$('context_edited').value );
-	var opt = {
-		method: 'get',
-		asynchronous: true,
-		onSuccess: function() {
+	makerequest('u',global_fileBeingEdited, uri, function(t) {
 			_$('AddContext').style.display = "none";
 			_$('div_editcontext').style.display = "none"; 
 			global_contextBeingEdited = "";
 			gui_feedback('Context Updated','blue');
 			config2json( global_fileBeingEdited, 0, fileparsed );
-		},
-		onFailure: function(t) {
-			gui_alert("Config Error: " + t.status + ": " + t.statusText);
-			gui_alert("Failed to Rename the DID context for " + old_didcontext );
-		}
-	};
-	opt.parameters= "action=updateconfig&srcfilename=" + encodeURIComponent(global_fileBeingEdited) + "&dstfilename=" + encodeURIComponent(global_fileBeingEdited) + uri;
-	var tmp = new Ajax.Request(asterisk_rawmanPath, opt);
+		});
 }
 
 
@@ -258,23 +237,12 @@ function update_contextContent(){
 		uri += build_action('append', c, global_contextBeingEdited, firstpart, secondpart ); c++;
 	}
 
-	var opt = {
-		method: 'get',
-		asynchronous: true,
-		onSuccess: function() {
+	makerequest('u',global_fileBeingEdited, uri, function(t){
 			_$('div_editcontextContent').style.display = "none"; 
 			global_contextBeingEdited = "";
 			gui_feedback('Context Content Updated','blue');
 			config2json( global_fileBeingEdited, 0, fileparsed );
-		},
-		onFailure: function(t) {
-			gui_alert("Config Error: " + t.status + ": " + t.statusText);
-			gui_alert("Failed to Rename the DID context for " + old_didcontext );
-		}
-	};
-	opt.parameters= "action=updateconfig&srcfilename=" + encodeURIComponent(global_fileBeingEdited) + "&dstfilename=" + encodeURIComponent(global_fileBeingEdited) + uri;
-	var tmp = new Ajax.Request(asterisk_rawmanPath, opt);
-
+	});
 }
 
 
@@ -385,23 +353,12 @@ function cancel_addcontext(){
 
 function add_context(){
 	var uri = build_action('newcat', 0, _$('New_ContextName').value ,"", "");
-
-	var opt = {
-		method: 'get',
-		asynchronous: true,
-		onSuccess: function() {
+	makerequest('u',global_fileBeingEdited,uri, function(){
 			cancel_addcontext(); 
 			global_contextBeingEdited = "";
 			gui_feedback('New Context Added','blue');
 			config2json( global_fileBeingEdited, 0, fileparsed );
-		},
-		onFailure: function(t) {
-			gui_alert("Config Error: " + t.status + ": " + t.statusText);
-			gui_alert("Failed to Add New context ");
-		}
-	};
-	opt.parameters= "action=updateconfig&srcfilename=" + encodeURIComponent(global_fileBeingEdited) + "&dstfilename=" + encodeURIComponent(global_fileBeingEdited) + uri;
-	var tmp = new Ajax.Request(asterisk_rawmanPath, opt);
+	});
 }
 </script>
 <body id="foo" onload="localajaxinit()"  bgcolor="FFFFFF" onunload="resetmainscreen();">

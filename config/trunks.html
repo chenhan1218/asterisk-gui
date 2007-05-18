@@ -47,49 +47,20 @@ function add_didcontext(trunk){
 	var didcontext = asterisk_guiTDPrefix + trunk ;
 	var uri = build_action('newcat', 0, didcontext ,"", "");
 	uri += build_action('append', 1, didcontext ,"include", "default"); 
-	var opt = {
-		method: 'get',
-		asynchronous: true,
-		onSuccess: function(t) { },
-		onFailure: function(t) {
-			gui_alert("Config Error: " + t.status + ": " + t.statusText + "<BR><BR>"+ "Failed to create a DID context for " + trunk );
-		}
-	};
-	opt.parameters= "action=updateconfig&srcfilename=" + encodeURIComponent("extensions.conf") + "&dstfilename=" + encodeURIComponent("extensions.conf") + uri;
-	var tmp = new Ajax.Request(asterisk_rawmanPath, opt);
+	makerequest('u', 'extensions.conf',uri, function(t){ });
 }
 
 function update_didcontext(old_trunk, new_trunk){
 	var old_didcontext = asterisk_guiTDPrefix + old_trunk  ;
 	var new_didcontext = asterisk_guiTDPrefix + new_trunk  ;
 	var uri = build_action('renamecat', 0, old_didcontext ,"", new_didcontext );
-	var opt = {
-		method: 'get',
-		asynchronous: true,
-		onSuccess: function(t) { callbacks_savechanges_step2(); },
-		onFailure: function(t) {
-			gui_alert("Config Error: " + t.status + ": " + t.statusText);
-			gui_alert("Failed to Rename the DID context for " + old_didcontext );
-		}
-	};
-	opt.parameters= "action=updateconfig&srcfilename=" + encodeURIComponent("extensions.conf") + "&dstfilename=" + encodeURIComponent("extensions.conf") + uri;
-	var tmp = new Ajax.Request(asterisk_rawmanPath, opt);
+	makerequest('u','extensions.conf', uri, function(t){ callbacks_savechanges_step2(); }  );
 }
-
 
 function delete_didcontext(trunk){
 	var didcontext = asterisk_guiTDPrefix + trunk ;
 	var uri = build_action('delcat', 0, didcontext ,"", "");
-	var opt = {
-		method: 'get',
-		asynchronous: true,
-		onSuccess: function(t) { },
-		onFailure: function(t) {
-			gui_alert("Config Error: " + t.status + ": " + t.statusText + "<BR> Failed to delete DID context for " + trunk);
-		}
-	};
-	opt.parameters= "action=updateconfig&srcfilename=" + encodeURIComponent("extensions.conf") + "&dstfilename=" + encodeURIComponent("extensions.conf") + uri;
-	var tmp = new Ajax.Request(asterisk_rawmanPath, opt);
+	makerequest('u','extensions.conf', uri, function(t){ } );
 }
 
 providercallbacks.postselect = function() {

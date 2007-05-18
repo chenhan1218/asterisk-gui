@@ -214,20 +214,9 @@ function delete_vmenu_fromlistofmenus(){
 	}
 	// use the deleted_voicmenu to delete the alias (if it exists) in the default
 	if(_$('alias_exten').value.length > 0){
-		var opt = {
-			method: 'get',
-			asynchronous: true,
-			onSuccess: function(t) { 									
-				delete voicemenusdata[deleted_voicmenu];
-			},
-			onFailure: function(t) {
-				gui_alert("Config Error: " + t.status + ": " + t.statusText);
-			}
-		};
 		var existing_alias_string = voicemenusdata[deleted_voicmenu].alias_exten + ",1,Goto(" + deleted_voicmenu + "|s|1)"  ;
 		var uri = build_action('delete', 0, specialcontext ,"exten", "", existing_alias_string ); 
-		opt.parameters="action=updateconfig&srcfilename=" + encodeURIComponent("extensions.conf") + "&dstfilename=" + encodeURIComponent("extensions.conf") + uri;
-		var tmp = new Ajax.Request(asterisk_rawmanPath, opt);
+		makerequest('u','extensions.conf', uri, function(t){ } );
 	}
 	delete voicemenusdata[deleted_voicmenu];
 }
@@ -293,44 +282,7 @@ function add_newstep(){
 	_$('status_message').style.display = "";
 	// prepare a request to add the new step to the voicemenu
 	// make a request to append
-	var opt = {
-		method: 'get',
-		asynchronous: true,
-		onSuccess: function() { 
-			setTimeout(function(){ _$('status_message').style.display = 'none'; },sc_displaytime);
-			// if request successfull then add this to the steps select box
-			var newoption = document.createElement("option"); 
-			newoption.text = format_step(action_string ); 
-			newoption.value = action_string ;
-			var _steps = _$('steps') ;
-			_steps.options.add ( newoption );
-			// and also add the information to the voicemenus data
-			if(voicemenusdata[_vmv].extensions['s']){
-				voicemenusdata[_vmv].extensions['s'].push(action_string);
-			}else{
-				voicemenusdata[_vmv].extensions['s'] = new Array;
-				voicemenusdata[_vmv].extensions['s'][0] = action_string;
-			}
-			// empty this textbox & disable this button, select the newly added item to the steps options box
-			_nsa.selectedIndex = 0;
-			_$('deletestep').disabled = false;
-			_steps.selectedIndex = _steps.length - 1 ;
-			gui_feedback('New step added !','blue');
-			update_updown();
-			_nsv.value = "";
-			_nsv.style.display = "none" ;
-			_$('add_newstep_extensions').style.display = "none";
-			_$('add_newstep_menus').style.display = "none";
-			_$('combodiv_sounds').style.display = "none" ;
-			_nsvd = _$('newstep_var_digit'); 
-			_nsvd.value= "";
-			_nsvd.style.display= "none" ;
-		},
-		onFailure: function(t) {
-			_$('status_message').style.display = 'none';
-			gui_alert("Config Error: " + t.status + ": " + t.statusText);
-		}
-	};
+
 	var uri = "";
 	var action_string = "";
 	var priorities = new Array;
@@ -392,8 +344,39 @@ function add_newstep(){
 	}
 
 	uri += build_action('append', 0, _vmv,"exten", action_string ); 
-	opt.parameters="action=updateconfig&srcfilename=" + encodeURIComponent("extensions.conf") + "&dstfilename=" + encodeURIComponent("extensions.conf") + uri;
-	tmp = new Ajax.Request(asterisk_rawmanPath, opt);
+
+	makerequest('u','extensions.conf', uri,
+		function(t){
+			setTimeout(function(){ _$('status_message').style.display = 'none'; },sc_displaytime);
+			// if request successfull then add this to the steps select box
+			var newoption = document.createElement("option"); 
+			newoption.text = format_step(action_string ); 
+			newoption.value = action_string ;
+			var _steps = _$('steps') ;
+			_steps.options.add ( newoption );
+			// and also add the information to the voicemenus data
+			if(voicemenusdata[_vmv].extensions['s']){
+				voicemenusdata[_vmv].extensions['s'].push(action_string);
+			}else{
+				voicemenusdata[_vmv].extensions['s'] = new Array;
+				voicemenusdata[_vmv].extensions['s'][0] = action_string;
+			}
+			// empty this textbox & disable this button, select the newly added item to the steps options box
+			_nsa.selectedIndex = 0;
+			_$('deletestep').disabled = false;
+			_steps.selectedIndex = _steps.length - 1 ;
+			gui_feedback('New step added !','blue');
+			update_updown();
+			_nsv.value = "";
+			_nsv.style.display = "none" ;
+			_$('add_newstep_extensions').style.display = "none";
+			_$('add_newstep_menus').style.display = "none";
+			_$('combodiv_sounds').style.display = "none" ;
+			_nsvd = _$('newstep_var_digit'); 
+			_nsvd.value= "";
+			_nsvd.style.display= "none" ;
+		}
+	);
 
 }
 
@@ -421,57 +404,6 @@ function save_vmenu(){
 	}
 	_$('status_message').style.display ="" ;
 	var _cmv = _$('comment').value ;
-
-	var opt = {
-		method: 'get',
-		asynchronous: true,
-		onSuccess: function() { 
-			setTimeout( function(){_$('status_message').style.display="none"; },sc_displaytime );
-			gui_feedback('Updated.','blue');
-			_$('savevmenu').disabled = true;
-			_$('save').disabled = true;
-			_$('cancel').disabled = true;
-			
-			if( _vms.options[_vms.selectedIndex].innerHTML=='New Entry' ){ // (if new Voicemenu 
-				voicemenusdata[current_vmenu] = new Object();	
-				voicemenusdata[current_vmenu].comment =  _cmv ;
-				voicemenusdata[current_vmenu].alias_exten =  _ae.value;
-				voicemenusdata[current_vmenu].extensions = new Object();
-				// add the "s,1,Answer" data to voicemenus data
-				voicemenusdata[current_vmenu].extensions['s'] = new Array();
-				voicemenusdata[current_vmenu].extensions['s'][0] = answer_call_string;
-				for (var k=0; k< keys.length; k++){
-					if( buildstring[keys[k]] ){
-						voicemenusdata[current_vmenu].extensions[keys[k]] = new Array();
-						voicemenusdata[current_vmenu].extensions[keys[k]][0] = buildstring[keys[k]] ;
-					}
-				}
-				// update vmenus
-				_vms.options[_vms.selectedIndex].text = "VoiceMenu - " + _cmv;
-				_vms.options[_vms.selectedIndex].value = current_vmenu;
-				select_vmenu();
-				// add the new menu to the list of menus being displayed in the keypad options
-				add_newvmenu_tolistofkeymenus();
-
-			}else{ // if editing existing keypress options
-				for (var k=0; k< keys.length; k++){
-					if( buildstring[keys[k]] ){
-						voicemenusdata[current_vmenu].extensions[keys[k]] = new Array();
-						voicemenusdata[current_vmenu].extensions[keys[k]][0] = buildstring[keys[k]] ;
-					}else{
-						if( voicemenusdata[current_vmenu].extensions[keys[k]] ){
-							voicemenusdata[current_vmenu].extensions[keys[k]] = [];
-						}
-					}
-				}
-			}
-
-		},
-		onFailure: function(t) {
-			_$('status_message').style.display='none';
-			gui_alert("Config Error: " + t.status + ": " + t.statusText);
-		}
-	};
 	var uri = "" ;
 	var p = 0 ;
 	var buildstring = new Object ;
@@ -554,9 +486,49 @@ function save_vmenu(){
 		uri += build_action('append', p, current_vmenu,"exten", buildstring[keys[k]]); p = p+1;
 	}
 
-	opt.parameters="action=updateconfig&srcfilename=" + encodeURIComponent("extensions.conf") + "&dstfilename=" + encodeURIComponent("extensions.conf") + uri;
-	// send the request
-	tmp = new Ajax.Request(asterisk_rawmanPath, opt);
+	makerequest('u','extensions.conf', uri ,
+		function(t){
+			setTimeout( function(){_$('status_message').style.display="none"; },sc_displaytime );
+			gui_feedback('Updated.','blue');
+			_$('savevmenu').disabled = true;
+			_$('save').disabled = true;
+			_$('cancel').disabled = true;
+			
+			if( _vms.options[_vms.selectedIndex].innerHTML=='New Entry' ){ // (if new Voicemenu 
+				voicemenusdata[current_vmenu] = new Object();	
+				voicemenusdata[current_vmenu].comment =  _cmv ;
+				voicemenusdata[current_vmenu].alias_exten =  _ae.value;
+				voicemenusdata[current_vmenu].extensions = new Object();
+				// add the "s,1,Answer" data to voicemenus data
+				voicemenusdata[current_vmenu].extensions['s'] = new Array();
+				voicemenusdata[current_vmenu].extensions['s'][0] = answer_call_string;
+				for (var k=0; k< keys.length; k++){
+					if( buildstring[keys[k]] ){
+						voicemenusdata[current_vmenu].extensions[keys[k]] = new Array();
+						voicemenusdata[current_vmenu].extensions[keys[k]][0] = buildstring[keys[k]] ;
+					}
+				}
+				// update vmenus
+				_vms.options[_vms.selectedIndex].text = "VoiceMenu - " + _cmv;
+				_vms.options[_vms.selectedIndex].value = current_vmenu;
+				select_vmenu();
+				// add the new menu to the list of menus being displayed in the keypad options
+				add_newvmenu_tolistofkeymenus();
+
+			}else{ // if editing existing keypress options
+				for (var k=0; k< keys.length; k++){
+					if( buildstring[keys[k]] ){
+						voicemenusdata[current_vmenu].extensions[keys[k]] = new Array();
+						voicemenusdata[current_vmenu].extensions[keys[k]][0] = buildstring[keys[k]] ;
+					}else{
+						if( voicemenusdata[current_vmenu].extensions[keys[k]] ){
+							voicemenusdata[current_vmenu].extensions[keys[k]] = [];
+						}
+					}
+				}
+			}
+		}
+	);
 }
 
 
@@ -620,11 +592,13 @@ function swap_step(a,b){
 
 	tmp1.splice(1,1,priority_2);
 	tmp2.splice(1,1,priority_1);
+	var uri = "";
+	// ok find $('steps').options[a].value in extensions.conf and replace it with tmp1.join() and also replace $('steps').options[b].value with tmp2.join()	
+	uri += build_action('update', 0, _vms_v ,"exten",tmp1.join(), _steps.options[a].value);
+	uri += build_action('update', 1, _vms_v ,"exten",tmp2.join(), _steps.options[b].value);
 
-	var opt = {
-		method: 'get',
-		asynchronous: true,
-		onSuccess: function() { 
+	makerequest('u','extensions.conf', uri,
+		function(t){
 			// update voicemenusdata
 			for(var p=0; p< voicemenusdata[_vms_v].extensions['s'].length; p++){
 				if( voicemenusdata[_vms_v].extensions['s'][p] == _steps.options[a].value ){
@@ -642,19 +616,8 @@ function swap_step(a,b){
 			_steps.selectedIndex = b;
 			gui_feedback('Step Priority Updated!','blue');
 			update_updown();
-
-		},
-		onFailure: function(t) {
-			gui_alert("Config Error: " + t.status + ": " + t.statusText);
 		}
-	};	
-	var uri = "";
-
-	// ok find $('steps').options[a].value in extensions.conf and replace it with tmp1.join() and also replace $('steps').options[b].value with tmp2.join()	
-	uri += build_action('update', 0, _vms_v ,"exten",tmp1.join(), _steps.options[a].value);
-	uri += build_action('update', 1, _vms_v ,"exten",tmp2.join(), _steps.options[b].value);
-	opt.parameters="action=updateconfig&srcfilename=" + encodeURIComponent("extensions.conf") + "&dstfilename=" + encodeURIComponent("extensions.conf") + uri;
-	tmp = new Ajax.Request(asterisk_rawmanPath, opt);
+	);
 }
 
 
@@ -663,11 +626,10 @@ function delete_step(){
 	_$('status_message').style.display="";
 	var _vmenus = _$('vmenus');
 	var _steps = _$('steps');
-
-	var opt = {
-		method: 'get',
-		asynchronous: true,
-		onSuccess: function() { 
+	var uri = "";
+	uri += build_action('delete', 0, _vmenus.value,"exten", "", _steps.value); 
+	makerequest('u','extensions.conf', uri,
+		function(t){
 			setTimeout(function(){ _$('status_message').style.display='none';} ,sc_displaytime);
 			// Update voicemenusdata
 			for(var p=0; p< voicemenusdata[_vmenus.value].extensions['s'].length; p++){
@@ -678,16 +640,9 @@ function delete_step(){
 			_steps.remove( _steps.selectedIndex);
 			gui_feedback('Step Deleted !','default');
 			_$('deletestep').disabled = true;
-		},
-		onFailure: function(t) {
-			_$('status_message').style.display='none';
-			gui_alert("Config Error: " + t.status + ": " + t.statusText);
 		}
-	};	
-	var uri = "";
-	uri += build_action('delete', 0, _vmenus.value,"exten", "", _steps.value); 
-	opt.parameters="action=updateconfig&srcfilename=" + encodeURIComponent("extensions.conf") + "&dstfilename=" + encodeURIComponent("extensions.conf") + uri;
-	tmp = new Ajax.Request(asterisk_rawmanPath, opt);
+	);
+
 }
 
 

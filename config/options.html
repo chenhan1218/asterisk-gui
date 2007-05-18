@@ -27,21 +27,6 @@
 <script>
 var current_username = parent.document.getElementById('login_name').value;
 
-function askforRelogin(originalRequest){
-	if ( originalRequest.responseText.match("Success") ) {
-		gui_feedback("Password Updated Successfully", "blue", 5000);
-		alert("Password Updated Successfully!!  \n\n You will now be redirected to the login page \n You must relogin using your new password") ;
-		var opt2 = {
-			method: 'get',
-			asynchronous: true,
-			onSuccess: function() { parent.window.location.href = parent.window.location.href; },
-			onFailure: function(t) { gui_alert("Config Error: " + t.status + ": " + t.statusText); }
-		};
-		opt2.parameters ="action=logoff";
-		var tmp2 = new Ajax.Request(asterisk_rawmanPath, opt2);
-	}
-}
-
 function changepassword(){
 	var _newpass = _$('newpass'); 
 	if( _newpass.value!=_$('newpass_rep').value ){
@@ -56,14 +41,16 @@ function changepassword(){
 		return true;
 	}
 
-	var opt = {
-		method: 'get',
-		asynchronous: true,
-		onSuccess: askforRelogin ,
-		onFailure: function(t) { gui_alert("Config Error: " + t.status + ": " + t.statusText); }
-	};
-	opt.parameters ="action=updateconfig&srcfilename=manager.conf&dstfilename=manager.conf&Action-000000=update&Cat-000000=" + current_username + "&Var-000000=secret&Value-000000="+ encodeURIComponent( _newpass.value );
-	var tmp = new Ajax.Request(asterisk_rawmanPath, opt);
+	var acs = build_action('update', 0, current_username, "secret",'', _newpass.value ) ;
+	makerequest('u', 'manager.conf',acs,
+		function(t){
+			if ( t.match("Success") ) {
+				gui_feedback("Password Updated Successfully", "blue", 5000);
+				alert("Password Updated Successfully!!  \n\n You will now be redirected to the login page \n You must relogin using your new password") ;
+				makerequest("","","action=logoff", function(t){parent.window.location.href = parent.window.location.href;} );
+			}
+		}
+	);
 	return;
 }
 

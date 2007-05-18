@@ -44,57 +44,22 @@ var userbase;
 function rename_extension(a,b){
 	// rename extension 'a' in extensions.conf to 'b'
 	// change 'exten => a,1,Queue' in default to 'exten => b,1,Queue'
-	var opt0 = {
-		method: 'get',
-		asynchronous: true,
-		onSuccess: function() { 
-			return true;	
-		},
-		onFailure: function(t) {
-			gui_alert("Config Error: " + t.status + ": " + t.statusText);
-			return false;
-		}
-	};
-	uri0 = build_action('update', 0, specialcontext ,'exten', b+',1,Queue(${EXTEN})', a+',1,Queue(${EXTEN})' ); 
-	opt0.parameters="action=updateconfig&srcfilename=" + encodeURIComponent("extensions.conf") + "&dstfilename=" + encodeURIComponent("extensions.conf") + uri0;
-	tmp0 = new Ajax.Request(asterisk_rawmanPath, opt0);
+	var uri = build_action('update', 0, specialcontext ,'exten', b+',1,Queue(${EXTEN})', a+',1,Queue(${EXTEN})' ); 
+	makerequest('u','extensions.conf', uri, function(t){return true;} );
 }
 
 function add_extension(a){
 	// add extension 'a' in extensions.conf 
 	// add 'exten => a,1,Queue' to default
-	var opt0 = {
-		method: 'get',
-		asynchronous: true,
-		onSuccess: function() { 
-			return true;	
-		},
-		onFailure: function(t) {
-			gui_alert("Config Error: " + t.status + ": " + t.statusText);
-			return false;
-		}
-	};
-	uri0 = build_action('append', 0, specialcontext ,'exten', a+',1,Queue(${EXTEN})'); 
-	opt0.parameters="action=updateconfig&srcfilename=" + encodeURIComponent("extensions.conf") + "&dstfilename=" + encodeURIComponent("extensions.conf") + uri0;
-	tmp0 = new Ajax.Request(asterisk_rawmanPath, opt0);
+	var uri = build_action('append', 0, specialcontext ,'exten', a+',1,Queue(${EXTEN})');
+	makerequest('u','extensions.conf',uri, function(t){return true;} );
+
 }
 
 function delete_extension(a){
-	// delete extension 'a' in extensions.conf 
-	var opt0 = {
-		method: 'get',
-		asynchronous: true,
-		onSuccess: function() { 
-			return true;	
-		},
-		onFailure: function(t) {
-			gui_alert("Config Error: " + t.status + ": " + t.statusText);
-			return false;
-		}
-	};
-	uri0 = build_action('delete', 0, specialcontext ,'exten', '',a+',1,Queue(${EXTEN})'); 
-	opt0.parameters="action=updateconfig&srcfilename=" + encodeURIComponent("extensions.conf") + "&dstfilename=" + encodeURIComponent("extensions.conf") + uri0;
-	tmp0 = new Ajax.Request(asterisk_rawmanPath, opt0);
+	// delete extension 'a' in extensions.conf
+	var uri = build_action('delete', 0, specialcontext ,'exten', '',a+',1,Queue(${EXTEN})'); 
+	makerequest('u','extensions.conf', uri, function(t){return true;});
 }
 
 function save_queue(){
@@ -103,37 +68,6 @@ function save_queue(){
 	var r = 0;
 	var fields = new Array('fullname', 'strategy', 'timeout', 'wrapuptime','autofill','autopause','maxlen', 'joinempty',  'leavewhenempty', 'reportholdtime','musicclass');
 	var otherfields_action, tmp;
-	var opt = {
-		method: 'get',
-		asynchronous: true,
-		onSuccess: function() { 
-			$('status_message').style.display='none';
-			gui_feedback('Updated','blue');
-			$('new').disabled = false;
-			$('save_q').disabled = true;
-			$('save').disabled = true;
-			$('cancel').disabled = true;
-			var cattmp = new Object;
-			cattmp.catname = $('queues').value;
-
-			$('queues').engine.fields2changes($('queues').widgets, $('queues').stored_config, cattmp);
-			$('queues').options[$('queues').selectedIndex].innerHTML = $('name').value + " -- Queue '" + $('fullname').value +"'";
-			$('queues').options[$('queues').selectedIndex].value =$('name').value;
-			$('queues').options[$('queues').selectedIndex].core_name = cattmp.catname;
-
-			for (var y = 0; y < $('queues').options.length + 1; y++) {
-				if (!$('queues').options[y] || 
-					do_compare($('queues'), $('queues').options[$('queues').selectedIndex], $('queues').options[y])) {
-						$('queues').options.add($('queues').options[$('queues').selectedIndex], y);
-						break;
-				}
-			}
-		},
-		onFailure: function(t) {
-			$('status_message').style.display='none';
-			gui_alert("Config Error: " + t.status + ": " + t.statusText);
-		}
-	};
 
 	// before going any further check whether there is another entry with this name
 	if( $('name').value != $('queues').value ){
@@ -243,8 +177,31 @@ function save_queue(){
 		}
 	}
 
-	opt.parameters="action=updateconfig&srcfilename=" + encodeURIComponent("queues.conf") + "&dstfilename=" + encodeURIComponent("queues.conf") + uri;
-	tmp = new Ajax.Request(asterisk_rawmanPath, opt);
+	makerequest('u','queues.conf', uri,
+		function(t){
+			$('status_message').style.display='none';
+			gui_feedback('Updated','blue');
+			$('new').disabled = false;
+			$('save_q').disabled = true;
+			$('save').disabled = true;
+			$('cancel').disabled = true;
+			var cattmp = new Object;
+			cattmp.catname = $('queues').value;
+
+			$('queues').engine.fields2changes($('queues').widgets, $('queues').stored_config, cattmp);
+			$('queues').options[$('queues').selectedIndex].innerHTML = $('name').value + " -- Queue '" + $('fullname').value +"'";
+			$('queues').options[$('queues').selectedIndex].value =$('name').value;
+			$('queues').options[$('queues').selectedIndex].core_name = cattmp.catname;
+
+			for (var y = 0; y < $('queues').options.length + 1; y++) {
+				if (!$('queues').options[y] || 
+					do_compare($('queues'), $('queues').options[$('queues').selectedIndex], $('queues').options[y])) {
+						$('queues').options.add($('queues').options[$('queues').selectedIndex], y);
+						break;
+				}
+			}
+		}
+	);
 }
 
 

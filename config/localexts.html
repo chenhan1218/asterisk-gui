@@ -58,17 +58,7 @@ usercallbacks.savechanges = function(){
 	} 
 	
 	if(uri!=""){
-		var opt = {
-			method: 'get',
-			asynchronous: true,
-			onSuccess: function() {},
-			onFailure: function(t) {
-				gui_alert("Config Error: " + t.status + ": " + t.statusText);
-				return false;
-			}
-		};
-		opt.parameters="action=updateconfig&srcfilename=" + encodeURIComponent("extensions.conf") + "&dstfilename=" + encodeURIComponent("extensions.conf") + uri;
-		var tmp = new Ajax.Request(asterisk_rawmanPath, opt);
+		makerequest('u','extensions.conf', uri,function(t){});
 	}
 }
 
@@ -89,19 +79,12 @@ usercallbacks.loaded = function(){
 	d.selectitem(0);
 
 	if ( typeof d.stored_config.catbyname['general'].fieldbyname['localextenlength'] == "undefined" ){ 
-		var opt = {
-			method: 'get',
-			asynchronous: true,
-			onSuccess: function(t) { 
+		makerequest('u','users.conf','&Action-000000=update&Cat-000000=general&Var-000000=localextenlength&Value-000000=4',
+			function(t){ 
 				_$('localextenlength').selectedIndex = 2 ;
 				parent.loadscreen(this);
-			},
-			onFailure: function(t) {
-				gui_alert("Config Error: " + t.status + ": " + t.statusText);
 			}
-		};
-		opt.parameters="action=updateconfig&srcfilename=" + encodeURIComponent("users.conf") + "&dstfilename=" + encodeURIComponent("users.conf") + "&Action-000000=update&Cat-000000=general&Var-000000=localextenlength&Value-000000=4"; ;
-		var tmp = new Ajax.Request(asterisk_rawmanPath , opt);
+		);
 		return;
 	}
 	parent.loadscreen(this);

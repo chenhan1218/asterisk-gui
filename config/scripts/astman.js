@@ -64,9 +64,25 @@ function gui_feedback(a,b,c){
 }
 
 
-function  gui_alert(msg){
-	gui_alertmsg( 1, msg );
+function makerequest(c,f,a,b){ 
+	// c = 'u' for updateconfig, 'g' for getconfig , '' for other custom actions like 'action=logoff' etc 
+	// f is the filename, a is action string , b is the callback function, make sure that a starts with "&" when c is not ""
+	var tmp, acs;
+	if( c == 'u'){
+		acs = 'action=updateconfig&srcfilename=' + encodeURIComponent(f) + '&dstfilename=' + encodeURIComponent(f) + a ;
+	}else if(c == 'g'){
+		acs = 'action=getconfig&filename=' + encodeURIComponent(f) ;
+	}else{ acs = a; }
+
+	var opt = {
+		method: 'get', parameters: acs, asynchronous: true,
+		onComplete: function(t){ if(b){ b(t.responseText); } },
+		onFailure: function(t) { gui_alert("Config Error: " + t.status + ": " + t.statusText); return false; }
+	};
+	tmp = new Ajax.Request( asterisk_rawmanPath, opt);
 }
+
+function gui_alert(msg){ gui_alertmsg( 1, msg );}
 
 function gui_alertmsg( msgtype, msg ){
 	// Alternative to javascript's alert box - the native alert boxes are stopping the background XHRs
@@ -134,11 +150,7 @@ if(document.addEventListener){
 
 
 function config2json(a, b, c){		// a is filename (string) , b is 0 or 1 , c is callback function
-	var opt = { method: 'get', asynchronous: true,
-		onSuccess: function(originalRequest) {  var f = toJSO(originalRequest.responseText, b) ;  c(f) ; },
-		onFailure: function(t) { gui_alert("Config Error: " + t.status + ": " + t.statusText); },
-		parameters: "action=getconfig&filename="+a };
-	var tmp = new Ajax.Request(asterisk_rawmanPath , opt);
+	makerequest('g',a,'', function(t){var f = toJSO(t, b) ;  c(f) ;});
 }
 
 function toJSO(z, p){

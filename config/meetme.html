@@ -285,18 +285,18 @@ callbacks.savechanges = function(){
 			uri +=  build_action('delete', p, "rooms" ,"conf", "", oldvalue );  p++;
 		}
 		uri += build_action('append', p, "rooms","conf", newvalue );  p++;
-		var opt = { method: 'get', asynchronous: true, onComplete: function(){ 
+
+		makerequest('u','extensions.conf',uri,
+			function(t){
 				if( temp_rooms_r ==  -1 ){ // add
 					f.stored_config.catbyname.rooms.fields.push( newvalue );
 				}else{  // update
 					f.stored_config.catbyname.rooms.fields[temp_rooms_r] =  newvalue ;
 				}
-			_$('save').disabled = true; 
-			_$('cancel').disabled = true;
-			} 
-		};
-		opt.parameters="action=updateconfig&srcfilename=" + encodeURIComponent("meetme.conf") + "&dstfilename=" + encodeURIComponent("meetme.conf") + uri;
-		var tmp = new Ajax.Request(asterisk_rawmanPath , opt);
+				_$('save').disabled = true; 
+				_$('cancel').disabled = true;	
+			}
+		);
 		return true;
 	}
 }
@@ -307,14 +307,10 @@ callbacks.oncategorydelete = function(){
 	for ( var r=0; r < f.stored_config.catbyname.rooms.fields.length; r++ ) {
 		var k = f.stored_config.catbyname.rooms.fields[r].split(",");
 		if(k[0] == temp_selectedexten ){
-			var uri =  build_action('delete', 0, "rooms" ,"conf", "", f.stored_config.catbyname.rooms.fields[r] );  
-			var opt = { 	
-				method: 'get', 
-				asynchronous: true, 
-				onComplete: function(){ f.stored_config.catbyname.rooms.fields.splice(r ,1); } 
-			};
-			opt.parameters="action=updateconfig&srcfilename=" + encodeURIComponent("meetme.conf") + "&dstfilename=" + encodeURIComponent("meetme.conf") + uri;
-			var tmp = new Ajax.Request(asterisk_rawmanPath , opt);
+			var uri =  build_action('delete', 0, "rooms" ,"conf", "", f.stored_config.catbyname.rooms.fields[r] );
+			makerequest('u','meetme.conf', uri ,
+				function(t){ f.stored_config.catbyname.rooms.fields.splice(r ,1); }
+			);
 			break;
 		}
 	}
