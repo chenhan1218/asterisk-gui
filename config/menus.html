@@ -287,14 +287,8 @@ function add_newstep(){
 	var action_string = "";
 	var priorities = new Array;
 
-	// algorithm 4 calculate new priority
 	if(voicemenusdata[_vmv].extensions['s'] && voicemenusdata[_vmv].extensions['s'].length > 0 ){
-		for( var p=0; p < voicemenusdata[_vmv].extensions['s'].length; p ++){
-			var temp  = voicemenusdata[_vmv].extensions['s'][p].split(',');
-			priorities.push(temp[1]);
-		}
-		priorities = priorities.sort(sortNumber);
-		newpriority = parseInt(priorities[priorities.length - 1]) + 1;
+		newpriority = 'n';
 	}else{
 		newpriority = 1;
 	}
@@ -586,30 +580,34 @@ function swap_step(a,b){
 	var _vms_v = _$('vmenus').value ;
 
 	var tmp1 = _steps.options[a].value.split(",") ;
-	var priority_1 = tmp1[1];
-	var tmp2 = _steps.options[b].value.split(",") ;
-	var priority_2 = tmp2[1];
+	var step1_action = tmp1.slice(2).join(",");
 
-	tmp1.splice(1,1,priority_2);
-	tmp2.splice(1,1,priority_1);
+	var tmp2 = _steps.options[b].value.split(",") ;
+	var step2_action = tmp2.slice(2).join(",");
+
+	var new_step1 = tmp1[0] + ","+ tmp1[1] + "," + step2_action;
+	var new_step2 = tmp2[0] + ","+ tmp2[1] + "," + step1_action;
+
 	var uri = "";
-	// ok find $('steps').options[a].value in extensions.conf and replace it with tmp1.join() and also replace $('steps').options[b].value with tmp2.join()	
-	uri += build_action('update', 0, _vms_v ,"exten",tmp1.join(), _steps.options[a].value);
-	uri += build_action('update', 1, _vms_v ,"exten",tmp2.join(), _steps.options[b].value);
+	uri += build_action('update', 0, _vms_v ,"exten","BUFFERBUFFERBUFFER", _steps.options[a].value);
+	uri += build_action('update', 1, _vms_v ,"exten",new_step2, _steps.options[b].value);
+	uri += build_action('update', 2, _vms_v ,"exten",new_step1, "BUFFERBUFFERBUFFER");
+	// we need a buffer update other wise you end up updating the just updated value 
+	// note that rawman actions are executed sequentially.
 
 	makerequest('u','extensions.conf', uri,
 		function(t){
 			// update voicemenusdata
 			for(var p=0; p< voicemenusdata[_vms_v].extensions['s'].length; p++){
 				if( voicemenusdata[_vms_v].extensions['s'][p] == _steps.options[a].value ){
-					voicemenusdata[_vms_v].extensions['s'][p] = tmp1.join();
+					voicemenusdata[_vms_v].extensions['s'][p] = new_step1;
 				}else if (voicemenusdata[_vms_v].extensions['s'][p] == _steps.options[b].value  ){ 
-					voicemenusdata[_vms_v].extensions['s'][p] = tmp2.join();
+					voicemenusdata[_vms_v].extensions['s'][p] = new_step2;
 				}
 			}
 			// swap select values of a to b
-			_steps.options[a].value = tmp2.join();
-			_steps.options[b].value = tmp1.join();
+			_steps.options[a].value = new_step1;
+			_steps.options[b].value = new_step2;
 			var buffer = _steps.options[a].text;
 			_steps.options[a].text = _steps.options[b].text;
 			_steps.options[b].text = buffer;
@@ -628,16 +626,31 @@ function delete_step(){
 	var _steps = _$('steps');
 	var uri = "";
 	uri += build_action('delete', 0, _vmenus.value,"exten", "", _steps.value); 
+	
+	var v = _steps.selectedIndex;
+	if(v==0 && _steps.options[1] ){ // if deleting the first step, then make priority of 2nd step to '1'
+		var tmp2 = _steps.options[1].value.split(",") ;
+		var step2_action = tmp2.slice(2).join(",");
+		var new_step1 = tmp2[0] + ",1," + step2_action;
+		uri += build_action('update',1,_vmenus.value,"exten",new_step1,_steps.options[1].value);
+	}
+
 	makerequest('u','extensions.conf', uri,
 		function(t){
 			setTimeout(function(){ _$('status_message').style.display='none';} ,sc_displaytime);
 			// Update voicemenusdata
 			for(var p=0; p< voicemenusdata[_vmenus.value].extensions['s'].length; p++){
 				if( voicemenusdata[_vmenus.value].extensions['s'][p] == _steps.value ){ 
-					voicemenusdata[_vmenus.value].extensions['s'].splice(p,1); 
+					if(new_step1){
+						voicemenusdata[_vmenus.value].extensions['s'].splice(p,2, new_step1);
+					}else{
+						voicemenusdata[_vmenus.value].extensions['s'].splice(p,1);
+					}
 				}
 			}
+			//update_stepsbelow
 			_steps.remove( _steps.selectedIndex);
+			if(new_step1){ _steps.options[0].value = new_step1; }
 			gui_feedback('Step Deleted !','default');
 			_$('deletestep').disabled = true;
 		}
