@@ -62,6 +62,12 @@ function format_step(this_step){
 		temp[2] = temp[2].replace(/\)/, "");
 		return "Authenticate for Password '" + temp[2] + "'";
 	}
+	if( temp[2].match("DISA") ){
+		// Background('') - whatever in the brackets
+		temp[2] = temp[2].replace(/DISA\(/, "");
+		temp[2] = temp[2].replace(/\)/, "");
+		return "DISA ***********";
+	}
 	if( temp[2].match("Background") ){
 		// Background('') - whatever in the brackets
 		temp[2] = temp[2].replace(/Background\(/, "");
@@ -305,6 +311,9 @@ function add_newstep(){
 		break;
 	case 'Authenticate':
 		action_string = "s,"+ newpriority+ ",Authenticate(" + _nsv.value + ")";
+		break;
+	case 'DISA':
+		action_string = "s,"+ newpriority+ ",DISA(" + _nsv.value + ")";
 		break;
 	case 'Background':
 		action_string = "s,"+ newpriority+ ",Background(" + _nsv.value + ")";
@@ -690,7 +699,7 @@ function update_newstep_var(){
         }else if( _nsa.value== "Background"  || _nsa.value== "Playback" ){
                 _nsv.style.display = "";
                 _nsv.size= 12;
-        }else if( _nsa.value== "Authenticate"  || _nsa.value== "DigitTimeout"  || _nsa.value== "ResponseTimeout" ||  _nsa.value== "Wait"  ||  _nsa.value== "WaitExten" ){
+        }else if( _nsa.value== "Authenticate"  || _nsa.value== "DigitTimeout"  || _nsa.value== "ResponseTimeout" ||  _nsa.value== "Wait"  ||  _nsa.value== "WaitExten"  || _nsa.value== "DISA"){
                 _$('newstep_var_digit').style.display= "" ;
         }else if(_nsa.value== "GotoMenu"  ){
 		_nsv.value = _anm.value;
@@ -1171,6 +1180,7 @@ function free_mem(){
 					<option value="Congestion">Congestion</option>
 					<!-- <option value="SetMusicOnHold">SetMusicOnHold</option> -->
 					<option value="DigitTimeout">DigitTimeout</option>
+					<option value="DISA">DISA</option>
 					<option value="ResponseTimeout">ResponseTimeout</option>
 					<option value="Playback">Playback</option>
 					<option value="Wait">Wait</option>
