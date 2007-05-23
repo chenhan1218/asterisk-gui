@@ -113,6 +113,9 @@ function format_step(this_step){
 	if( temp[2].match("Hangup") )
 		return "Hangup";
 
+	if( temp[2].match("Busy") )
+		return "Busy Tone";
+
 	if( temp[2].match("Directory") && temp[2].match("default"))
 		return "Goto Directory";
 
@@ -274,7 +277,7 @@ function add_newstep(){
 		return;
 	}
 
-	if( _nsa.value != "Answer" && _nsa.value != "GotoDirecotry" && _nsa.value != "Hangup" && !_nsv .value ){
+	if( _nsa.value != "Answer" && _nsa.value != "GotoDirecotry" && _nsa.value != "Busy" && _nsa.value != "Hangup" && !_nsv .value ){
 		gui_alert("Please enter a value for '" + _nsa.value +"'");
 		_nsv.focus();
 		return;
@@ -302,6 +305,9 @@ function add_newstep(){
 		break;
 	case 'Background':
 		action_string = "s,"+ newpriority+ ",Background(" + _nsv.value + ")";
+		break;
+	case 'Busy':
+		action_string = "s,"+ newpriority+ ",Busy";
 		break;
 	case 'DigitTimeout':
 		action_string = "s,"+ newpriority+ ",Set(TIMEOUT(digit)=" + _nsv.value + ")";
@@ -673,7 +679,7 @@ function update_newstep_var(){
 	_anm.style.display = "none";
 	_$('tbr').style.display = "none";
 
-        if( _nsa.value== "" || _nsa.value== "Answer"  || _nsa.value== "Hangup" || _nsa.value== "GotoDirecotry" ){
+        if( _nsa.value== "" || _nsa.value== "Answer"  || _nsa.value== "Hangup" || _nsa.value== "GotoDirecotry" || _nsa.value== "Busy" ){
 
         }else if( _nsa.value== "Background"  || _nsa.value== "Playback" ){
                 _nsv.style.display = "";
@@ -1155,6 +1161,7 @@ function free_mem(){
 					<option value="Answer">Answer</option>
 					<option value="Authenticate">Authenticate</option>
 					<option value="Background">Background</option>
+					<option value="Busy">Busy Tone</option>
 					<!-- <option value="SetMusicOnHold">SetMusicOnHold</option> -->
 					<option value="DigitTimeout">DigitTimeout</option>
 					<option value="ResponseTimeout">ResponseTimeout</option>
