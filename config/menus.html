@@ -1002,15 +1002,15 @@ extencallbacks.loaded = function() {
 	var opt = { method: 'get', asynchronous: true,
 		onComplete: function(originalRequest){
 			var sndfiles = originalRequest.responseText.split("\n") ;
-			var New_OPTION = document.createElement('option');
-			New_OPTION.text = "Default Sounds"  ;
-			New_OPTION.value = ""  ;
-			New_OPTION.style.fontWeight = "bold";
-			try {
-				_$('combosel_sounds').add(New_OPTION, null); // W3C way
-			}catch(ex) {
-				_$('combosel_sounds').add(New_OPTION); // IE way
-			}
+			var opt_temp = document.createElement('option');
+			var ie; if(document.attachEvent){ ie=1;}else{ie=0;}
+			var el = _$('combosel_sounds');
+			var h = opt_temp.cloneNode(true);
+			h.text = "Default Sounds"  ;
+			h.value = ""  ;
+			h.style.fontWeight = "bold";
+			if(ie){el.add(h);} else{ el.add(h,null);}
+
 			var file_name;
 			for( var i =0 ; i < sndfiles.length ; i++){
 				if( typeof sndfiles[i] == "undefined"  || sndfiles[i] == "" ){
@@ -1020,14 +1020,10 @@ extencallbacks.loaded = function() {
 				if( sndfiles[i] == "" ){ continue; }
 				file_name = sndfiles[i].stripTags() ;
 				file_name = file_name.replace(/\..*/,""); /* Replace .ulaw .gsm .whatever with nothing so its just the sound file */
-				New_OPTION = document.createElement('option');
-				New_OPTION.text =  file_name  ;
-				New_OPTION.value = asterisk_Sounds_path + file_name ;
-				try {
-					_$('combosel_sounds').add(New_OPTION, null); // W3C way
-				}catch(ex) {
-					_$('combosel_sounds').add(New_OPTION); // IE way
-				}
+				h = opt_temp.cloneNode(true);
+				h.text = file_name  ;
+				h.value = asterisk_Sounds_path + file_name  ;
+				if(ie){el.add(h);} else{ el.add(h,null);}
 			}
 			load_recordedfiles();
 		},
