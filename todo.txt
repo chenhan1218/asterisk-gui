@@ -7,22 +7,25 @@ IRC:  #asterisk-gui on freenode
 
 List of features we are currently working on
 ---------------------------------- 
-
-* Operator Extension
-
 * Voicemail Groups
 
 * Digital Cards Support
 
 * Ring Groups
 
+* Make the GUI resolution independent - request from BSD_tech
 
 
 List of requested features
 --------------------------
-
 * Call Forwarding
 
 * CDR support
+
+
+
+Completed
+----------
+* Operator Extension
 
 
