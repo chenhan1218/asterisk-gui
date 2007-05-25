@@ -80,10 +80,19 @@ numplan_callbacks.format = function(t, x) {
 	if ( ( t.name.substring(0,asterisk_guiTDPrefix.length) == asterisk_guiTDPrefix ) && t.names[x]=='exten' ){
 		//get pattern & action
 		var temp = t.fields[x].split(',');
-		if( temp[0] == "s" ){return false;}
-		didtrunks[t.name][temp[0]] = new Object();
-		didtrunks[t.name][temp[0]].priority = temp[1];
-		didtrunks[t.name][temp[0]].action = temp[2];
+		var f = temp[0];
+		if( f == "s" ){return false;}
+		didtrunks[t.name][f] = new Object();
+		didtrunks[t.name][f].priority = temp[1];
+		temp.splice(0,2);
+		didtrunks[t.name][f].action = temp.join(',');
+	}
+
+	if( t.name.match('ringroups-custom-') && (x == undefined) ){
+		var k = t.fieldbyname['gui_ring_groupname'];
+		var l = (k)?k:t.name;
+		add_toext( 'Goto('+t.name+',s,1)', l + ' -- RingGroup' );
+		return false;
 	}
 
 	if( (t.name == TIMERULES_CATEGORY && x != undefined )) {
