@@ -22,7 +22,10 @@ List of requested features
 
 * CDR support
 
+* Label/Tag/Name Analog Channels for presentation in GUI
 
+* Directory management - A printable sheet of users and numbers
+  (For the time being you can create an IVR and use the directory option )
 
 Completed
 ----------
