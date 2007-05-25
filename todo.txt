@@ -27,6 +27,8 @@ List of requested features
 
 * 'Timing Condition X' should be able to redirect to 'Timing Conditon Y'
 
+* Assign an optional extension number to ringgroups
+
 
 Completed
 ----------
