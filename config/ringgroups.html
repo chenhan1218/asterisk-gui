@@ -31,11 +31,12 @@ var opt_temp = document.createElement('option');
 if(document.attachEvent){ ie=1;}else{ie=0;}
 var RG_COMMENT = 'gui_ring_groupname';
 var RG_FORMAT = 'ringroups-custom-';
-
+var RG_EDITING;
 
 
 function clear_table(){
 	var t = _$('rgsTable') ;
+	_$('table_one').style.display = '';
 	for( var i=0; i < t.rows.length; ){ t.deleteRow(i); }
 }
 
@@ -53,7 +54,7 @@ function showlist_of_rules(){
 		var newCell0 = newRow.insertCell(0);
 		newCell0.align = "center";
 		newCell0.innerHTML = "<BR><I> No Previous Ring Groups found !!</I> <BR><BR>" +
-			"Please click on the 'New Ring Group' button<BR> to define a New RingGroup<BR><BR>" ;
+			"To create a ring group click on the 'New Ring Group' button <BR><BR>" ;
 	}
 }
 
@@ -70,17 +71,97 @@ function addrow_totable(k,l){
 	newCell0.align = "center";
 	
 	var newCell1 = newRow.insertCell(1);
-	newCell1 .innerHTML = k.rgname ;
+	newCell1 .innerHTML = k.rgname;
 	newCell1.align = "left";
 	
 	var newCell2 = newRow.insertCell(2);
-	newCell2 .innerHTML = "<input type=\"button\" onclick='delete_rg(\""+ l+ "\")'  value=\"Delete\"  class=\"splbutton\">" ;
+	newCell2 .innerHTML = "<input type=\"button\" onclick='edit_form(\""+ l+ "\")'  value=\"Edit\" class=\"splbutton\">&nbsp;" + "<input type=\"button\" onclick='delete_rg(\""+ l+ "\")'  value=\"Delete\"  class=\"splbutton\">" ;
 	newCell2.align = "center";
 	newCell2.width = 115;
 }
 
+function edit_form(g){
+	isNewRG = 0;
+	RG_EDITING = g;
+	var this_ringgroup = ringgroups[g];
+	_$('text_rgname').value = this_ringgroup.rgname ;
+	if( this_ringgroup.ringstyle == 'ringall' ){ _$('select_strategy').selectedIndex = 0 ; }
+	if( this_ringgroup.ringstyle == 'ringinorder' ){ _$('select_strategy').selectedIndex = 1 ; }
+
+	var r = _$('select_ringthesechannels');
+	while (r.options.length)
+		r.remove(0);
+
+	var s = _$('select_listofchannels');
+	while (s.options.length)
+		s.remove(0);
+
+	for (var y=0; y < this_ringgroup.rgchannels.length ; y++ ){
+		h = opt_temp.cloneNode(true);
+		h.text = this_ringgroup.rgchannels[y] ;
+		h.value = this_ringgroup.rgchannels[y] ;
+		if(ie){r.add(h);} else{ r.add(h,null);}
+	}
+
+	for( var u in LISTOFCHANNELS ){ if(LISTOFCHANNELS.hasOwnProperty(u)) {
+		if( !InArray(this_ringgroup.rgchannels, u) ){
+			h = opt_temp.cloneNode(true);
+			h.text = u ;
+			h.value = u ;
+			if(ie){s.add(h);} else{ s.add(h,null);}
+		}
+	}}
+
+	var find_index = function(el,val){
+		for(var t=0; t< el.options.length; t++){
+			if( el.options[t].value == val){ el.selectedIndex = t; return; }
+		}
+	}
+
+	if( this_ringgroup.laststep.match('Voicemail') ){
+		_$('select_voicemails').style.display = "";
+		_$('select_vmenus').style.display = "none";
+		_$('select_voicemails').selectedIndex = -1;
+		find_index(_$('select_voicemails'), this_ringgroup.laststep );
+		_$('radio_fbvm').checked = true;
+	}
+
+	if( this_ringgroup.laststep.match('voicemenu-custom-') ){
+		_$('select_voicemails').style.display = "none";
+		_$('select_vmenus').style.display = "";
+		_$('select_vmenus').selectedIndex = -1;
+		find_index(_$('select_vmenus'), this_ringgroup.laststep );
+		_$('radio_fbivr').checked = true;
+	}
+	if( this_ringgroup.laststep == 'Hangup' ){
+		_$('select_voicemails').style.display = "none";
+		_$('select_vmenus').style.display = "none";
+		_$('radio_fbhgp').checked = true;
+	}
+
+	_$('ringgroup_editdiv').style.display = '';
+}
+
+
+function delete_rg(g){
+	if(!confirm("Are you sure ?")){ return true; }
+	var uri = build_action('delcat', 0, RG_FORMAT+g, "", "");
+	makerequest('u','extensions.conf', uri, function(t){
+		delete ringgroups[g];
+		clear_table();
+		showlist_of_rules();
+	});
+}
+
 
 function save_rg(){
+	if(_$('select_ringthesechannels').options.length ==0){
+		gui_alert("You can not create a ring group with no members"); return false;
+	}
+	if( !_$('text_rgname').value.strip()){
+		gui_alert("Please enter a name for the ring group"); return false;
+	}
+
 	if(isNewRG){ 
 		var getnewringgroupcontext = function(){
 			var t=1;
@@ -89,7 +170,13 @@ function save_rg(){
 		}
 		var s = getnewringgroupcontext();
 		create_newRG(s);
- 	}
+ 	}else{
+		var uri = build_action('delcat', 0, RG_FORMAT+RG_EDITING, "", "");
+		makerequest('u','extensions.conf', uri, function(t){
+			delete ringgroups[RG_EDITING];
+			create_newRG(RG_EDITING);
+		});
+	}
 }
 
 function create_newRG(v){
@@ -162,6 +249,10 @@ function switch_fb_selects(){
 		_$('select_voicemails').style.display = "none";
 		_$('select_vmenus').style.display = "";
 	}	
+	if( _$('radio_fbhgp').checked ){
+		_$('select_voicemails').style.display = "none";
+		_$('select_vmenus').style.display = "none";
+	}
 }
 
 
@@ -179,6 +270,7 @@ function localajaxinit(){
 
 	add_event( _$('radio_fbvm') , 'click', switch_fb_selects );
 	add_event( _$('radio_fbivr') , 'click', switch_fb_selects );
+	add_event( _$('radio_fbhgp') , 'click', switch_fb_selects );
 	add_event( _$('button_add_toringlist') , 'click', function(){
 		a2b(_$('select_listofchannels'),_$('select_ringthesechannels'));
 	});
@@ -192,10 +284,7 @@ function localajaxinit(){
 			y.selectedIndex = 0;
 			a2b(y,z);
 		}
-	});	
-
-
-
+	});
 
 	// Load all user extensions
 	// Load Fall back extensions - Voicemail (same user extensions) and IVR menus
@@ -206,7 +295,6 @@ function localajaxinit(){
 	//
 	// so we need to load users.conf and extensions.conf
 	//
-
 	config2json('users.conf', 1, get_users) ;
 
 	parent.loadscreen(this);
@@ -324,7 +412,13 @@ function add_rg(){
 	_$('form_caption').innerHTML = "<B>Add Ring Group</B>";
 	_$('select_voicemails').style.display = "none";
 	_$('select_vmenus').style.display = "none";
+	_$('radio_fbhgp').checked = true;
+
 	_$('ringgroup_editdiv').style.display = '';
+
+	var r = _$('select_ringthesechannels');
+	while (r.options.length)
+		r.remove(0);
 
 	var y = _$('select_listofchannels');
 	while (y.options.length)
@@ -336,7 +430,6 @@ function add_rg(){
 		h.value = u ;
 		if(ie){y.add(h);} else{ y.add(h,null);}
 	}}
-
 }
 
 function cancel_rg(){ _$('ringgroup_editdiv').style.display = 'none'; }
@@ -375,7 +468,7 @@ function cancel_rg(){ _$('ringgroup_editdiv').style.display = 'none'; }
 		<tr>
 			<td>Name: <input type="text" id="text_rgname" size=18 class="input9"></td>
 			<td colspan=2 align="center">
-				Strategy: <select id="select_strategy"><option value="ringall">Ring all</option><option  value="ringinorder">Ring in Order</option></select>
+				Strategy: <select id="select_strategy" class="input8"><option value="ringall">Ring all</option><option  value="ringinorder">Ring in Order</option></select>
 			</td>
 		</tr>
 		<tr>	<td width=200 align=center valign=top height=200>
@@ -415,8 +508,8 @@ function cancel_rg(){ _$('ringgroup_editdiv').style.display = 'none'; }
 				<input name='failbacktype' type='radio' id='radio_fbhgp' value='radio_fbhgp'>HangUp</LABEL>
 			</td>
 			<td>
-				<select id="select_voicemails" class="input10"></select>
-				<select id="select_vmenus" class="input10"></select>
+				<select id="select_voicemails" class="input8"></select>
+				<select id="select_vmenus" class="input8"></select>
 			</td>
 		</tr>
 		<tr>	<td align=center colspan=3 valign=bottom height=40>
