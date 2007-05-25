@@ -353,10 +353,21 @@ function read_extensions(n){
 			if(ie){el.add(h);} else{ el.add(h,null);}
 		}
 	}}
+	config2json('zapscan.conf', 1, read_zapchannels) ;
+}
+
+
+function read_zapchannels(c){
+	for( var d in c ){
+		if ( c.hasOwnProperty(d) && c[d]['port'] && (c[d]['port'] == 'fxo' ) ) {
+			LISTOFCHANNELS['Zap/'+d] = true;
+		}
+	}
 
 	clear_table();
 	showlist_of_rules();
 }
+
 
 function parse_addtoringgroups(u, v){
 	//ringgroups
