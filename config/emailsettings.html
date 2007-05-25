@@ -28,6 +28,19 @@ var vmfields = ['serveremail','emailsubject','emailbody','save','cancel'];
 var vmwidgets = {};
 var voicemailcallbacks = {};
 
+voicemailcallbacks.savechanges = function(){
+	var t =	_$('emailbody').value ;
+	var r = t.split('\\n');
+	_$('emailbody').value = r.join('\r\n');	
+}
+
+voicemailcallbacks.beforeSaving = function() {
+	var r = _$('emailbody').value.split('\n');
+	var s = r.join('\\n');
+	_$('emailbody').value = s;
+	return true;
+}
+
 voicemailcallbacks.format = function(t) {
 	if (t.name != 'general')
 		return null;
@@ -36,6 +49,9 @@ voicemailcallbacks.format = function(t) {
 
 voicemailcallbacks.loaded = function() {
 	_$('hiddenvoicemail').selectitem(0) ;
+	var t =	_$('emailbody').value ;
+	var r = t.split('\\n');
+	_$('emailbody').value = r.join('\r\n');
 	parent.loadscreen(this);
 }
 
@@ -81,6 +97,9 @@ function localajaxinit(){
 <BR>
 <table align="center" cellpadding=2 cellspacing=1 border=0>
 <TR>	<TD valign=top align=center style="font-size:10px;"><B>Template Variables:</B></TD>
+	<TD style="font-size : 11px;">\t : TAB</TD>
+</TR>
+<TR>	<TD></TD>
 	<TD style="font-size : 11px;">{VM_NAME} : Recipient's firstname and lastname</TD>
 </TR>
 <TR>	<TD></TD>
