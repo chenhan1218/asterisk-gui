@@ -11,8 +11,6 @@ List of features we are currently working on
 
 * Digital Cards Support
 
-* Ring Groups
-
 * Make the GUI resolution independent - request from BSD_tech
 
 
@@ -27,8 +25,12 @@ List of requested features
 * Directory management - A printable sheet of users and numbers
   (For the time being you can create an IVR and use the directory option )
 
+* 'Timing Condition X' should be able to redirect to 'Timing Conditon Y'
+
+
 Completed
 ----------
 * Operator Extension
 
+* Ring Groups
 
