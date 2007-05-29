@@ -55,6 +55,14 @@ var ASTGUI = { // the idea is to eventually move all the global variables and fu
 		} 
 	},
 
+	selectbox_insertOption_before: function(el,opt, i){
+		if(isIE){ 
+			el.add(opt, i ); 
+		}else{ 
+			el.add(opt, el.options[i] );
+		} 
+	},
+
 	selectbox_push: function(el,txt, val){
 		el.options[el.options.length] = new Option (txt,val);
 	},
