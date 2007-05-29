@@ -5,17 +5,16 @@ please subscribe to the asterisk-GUI mailing list
 IRC:  #asterisk-gui on freenode
 
 
-List of features we are currently working on
----------------------------------- 
+Todo
+----- 
 * Voicemail Groups
+
+* Option to configure the default context 'disa' for DISA
 
 * Digital Cards Support
 
 * Make the GUI resolution independent - request from BSD_tech
 
-
-List of requested features
---------------------------
 * Call Forwarding
 
 * CDR support
