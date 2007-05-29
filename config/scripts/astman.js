@@ -43,6 +43,33 @@ var dragdata = new Object;
 var asterisk_guiTDPrefix = "DID_";
 var TIMERULES_CATEGORY = 'timebasedrules';
 
+if(document.attachEvent){ var isIE = true; }else{ var isIE = false; }
+
+var ASTGUI = { // the idea is to eventually move all the global variables and functions into this one object so that the global name space is not as cluttered as it is now.
+
+	selectbox_insert_before: function(el,txt, val, i){
+		if(isIE){ 
+			el.add(new Option (txt,val), i ); 
+		}else{ 
+			el.add(new Option (txt,val), el.options[i] );
+		} 
+	},
+
+	selectbox_push: function(el,txt, val){
+		el.options[el.options.length] = new Option (txt,val);
+	},
+
+	selectbox_remove_i: function(el, i){
+		el.options[i] = null;
+	},
+
+	selectbox_clear: function(el){
+		el.options.length = 0;
+	}
+
+};
+
+
 function gui_feedback(a,b,c){ 
 // a is msg, b is color (optional ), c is display time in milliseconds(optional, default to asterisk_guifbt)
 	if(!b || b=='default'){
