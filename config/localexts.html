@@ -35,11 +35,8 @@ usercallbacks.format =  function(t) {
 	if(t.name == "general" ){ return t.name; }
 
 	if( !t.fieldbyname['trunkstyle'] ){ // all entries from users.conf other than trunks
-		var ie = (document.attachEvent)? 1:0;
-		h = document.createElement('option');
-		h.text = (t.fieldbyname['fullname'])? unescape(t.fieldbyname['fullname'])+" ("+t.name+")" : "Local Extension ("+t.name+")";
-		h.value = t.name;
-		if(ie){ _$('operatorExtension').add(h);} else{ _$('operatorExtension').add(h,null);}
+		var ht = (t.fieldbyname['fullname'])? unescape(t.fieldbyname['fullname'])+" ("+t.name+")" : "Local Extension ("+t.name+")";
+		ASTGUI.selectbox_push(_$('operatorExtension'),ht, t.name);
 	}
 
 	return null;

@@ -56,14 +56,7 @@ function create_file(){
 	parent.astmanEngine.run_tool( "touch " + asterisk_configfolder + fn, callback = function() {
 		cancel_file();
 		gui_feedback("Created file: '" + fn + "'",'blue');
-		New_OPTION = document.createElement('option');
-		New_OPTION.text =  fn ;
-		New_OPTION.value = fn ;
-		try {
-			_$('filenames').add(New_OPTION, null); // W3C way
-		}catch(ex) {
-			_$('filenames').add(New_OPTION); // IE way
-		}
+		ASTGUI.selectbox_push(_$('filenames'),fn, fn);
 		_$('filenames').selectedIndex = _$('filenames').options.length -1 ;
 		loadfile();
 	});
@@ -126,17 +119,8 @@ function load_recordedfiles(){
 		onComplete: function(originalRequest){
 			// Add config files to the list of files
 			var recfiles = originalRequest.responseText.split("\n") ;
-
-			New_OPTION = document.createElement('option');
-			New_OPTION.text = "Config Files"  ;
-			New_OPTION.value = ""  ;
-			New_OPTION.style.fontWeight = "bold";
-			try {
-				_$('filenames').add(New_OPTION, null); // W3C way
-			}catch(ex) {
-				_$('filenames').add(New_OPTION); // IE way
-			}
-
+			ASTGUI.selectbox_push(_$('filenames'),"Config Files", "");
+			_$('filenames').options[0].style.fontWeight = "bold";
 			var file_name;
 			for( var i =0 ; i < recfiles.length ; i++){
 				if( typeof recfiles[i] == "undefined"  || recfiles[i] == "" ){
@@ -146,14 +130,7 @@ function load_recordedfiles(){
 				if( recfiles[i] == "" ){ continue; }
 				if( recfiles[i].substr( (recfiles[i].length - 5), recfiles[i].length) != ".conf") { continue; }
 				file_name = recfiles[i].stripTags() ;
-				New_OPTION = document.createElement('option');
-				New_OPTION.text =  file_name  ;
-				New_OPTION.value = file_name ;
-				try {
-					_$('filenames').add(New_OPTION, null); // W3C way
-				}catch(ex) {
-					_$('filenames').add(New_OPTION); // IE way
-				}
+				ASTGUI.selectbox_push(_$('filenames'),file_name, file_name);
 			}
 		},
 		onFailure: function(t) { alert("Config Error: " + t.status + ": " + t.statusText); }

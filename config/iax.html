@@ -83,15 +83,7 @@ function selectbox_add(selectbox_id, codec){
 	}
 
 	function addtosel(a,b,c){ // a is text, b is value, c is the select box id
-	  var newoption = document.createElement('option');
-	  newoption.text = a ;
-	  newoption.value = b ;
-	  var selectbox = document.getElementById( c );
-	  try {
-		selectbox.add(newoption, null); // standards compliant; doesn't work in IE
-	  }catch(ex) {
-		selectbox.add(newoption); // IE only
-	  }
+          ASTGUI.selectbox_push(_$(c),a, b);
 	}
 }
 function 	selectbox_remove(selectbox_id,codec){

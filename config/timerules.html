@@ -236,38 +236,25 @@ function parsetimeconditions(a,b){ // a is the [timebasedrules] array, b is the 
 
 
 function set_selectboxes(){
-	var ie;
-	var opt_temp = document.createElement('option');
-	if(document.attachEvent){ ie=1;}else{ie=0;}
-
 	var tostring = function (s){
 		return (s<10)?"0"+String(s):s;
 	}
 
 	var updateselect = function( el,start,end ){
-		var s,u;
-		for(s =start; s< end; s++){
-			u = opt_temp.cloneNode(true);
+		for( var s =start; s< end; s++){
 			s = tostring(s);
-			u.text = s ;	u.value = s;
-			if(ie){el.add(u);} else{el.add(u,null);}
+			ASTGUI.selectbox_push(el,s,s);
 		}
 		el.selectedIndex = -1;
 	}
 
 	var update_select_menus = function(el){
-		var g,h;
+		var g;
 		for ( g=0; g <voicemenus.length; g++){
-			h = opt_temp.cloneNode(true);
-			h.text = voicemenus[g].menuname ;
-			h.value = voicemenus[g].menucontextstring;
-			if(ie){el.add(h);} else{ el.add(h,null);}
+			ASTGUI.selectbox_push(el,voicemenus[g].menuname,voicemenus[g].menucontextstring);
 		}
 		for ( g=0 ; g <user_extens.length; g++){
-			h = opt_temp.cloneNode(true);
-			h.text = user_extens[g].username;
-			h.value = user_extens[g].usercontextstring;
-			if(ie){ el.add(h);} else{ el.add(h,null);}
+			ASTGUI.selectbox_push(el,user_extens[g].username,user_extens[g].usercontextstring);
 		}
 	}
 

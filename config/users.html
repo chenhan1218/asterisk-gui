@@ -199,14 +199,7 @@ function analoglines_loaded(b){
 
 	for( var d in c ){
 		if ( c.hasOwnProperty(d) && c[d]['port'] && (c[d]['port'] == 'fxo' ) ) {
-			var New_OPTION = document.createElement('option');
-			New_OPTION.text =  "Analog Port #" + d ;
-			New_OPTION.value = d ;
-			try {
-				_zapchan.add(New_OPTION, null); // W3C way
-			}catch(ex) {
-				_zapchan.add(New_OPTION); // IE way
-			}
+			ASTGUI.selectbox_push(_zapchan,"Analog Port #" + d, d);
 		}
 	}
 	
@@ -214,11 +207,7 @@ function analoglines_loaded(b){
 		_zapchan.style.display="none";
 		_$('noanaloglines').style.display="";
 	}
-	var noneopt = document.createElement("OPTION");
-	_zapchan.options.add(noneopt,0);
-	noneopt.value = "";
-	noneopt.innerText = "None";
-
+	ASTGUI.selectbox_insert_before(_zapchan,"None", "", 0);
 	config2json('extensions.conf', 1, dialplans_loaded ) ;
 	//parent.astmanEngine.config2list("extensions.conf", _$('context'), new Array(), numcallbacks);
 }
@@ -229,17 +218,8 @@ function dialplans_loaded(b){
 
 	for( var d in c ){
 		if ( c.hasOwnProperty(d) && d.substr(0,11) == 'numberplan-'  ) {
-			var New_OPTION = document.createElement('option');
-			if(c[d]['plancomment'])
-				New_OPTION.text =  unescape( c[d]['plancomment'] ) ;
-			else
-				New_OPTION.text =  d ;
-			New_OPTION.value = d ;
-			try {
-				_context.add(New_OPTION, null); // W3C way
-			}catch(ex) {
-				_context.add(New_OPTION); // IE way
-			}
+			var txt = (c[d]['plancomment'])?unescape(c[d]['plancomment']) : d;
+			ASTGUI.selectbox_push(_context,txt, d);
 		}
 	}
 

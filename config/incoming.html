@@ -32,14 +32,7 @@ var old_incomingrule, old_fromprovider ;
 var editstatus , edit_pattern, edit_DIDtrunk, edit_action, edit_priority ;
 
 function add_toext(a,b){ // a is value, b is text
-	var New_OPTION = document.createElement('option');
-	New_OPTION.text = b ;
-	New_OPTION.value = a ;
-	try {
-		_$('toextension').add(New_OPTION, null); // W3C way
-	}catch(ex) {
-		_$('toextension').add(New_OPTION); // IE way
-	}
+	ASTGUI.selectbox_push(_$('toextension'),b,a);
 }
 
 user_callbacks.format = function(t, x) {
@@ -113,20 +106,9 @@ numplan_callbacks.format = function(t, x) {
 numplan_callbacks.loaded = function() {
 	// load list of trunks to 'fromprovider'
 	var t ;
-	for ( t in didtrunks){
-	if(  didtrunks.hasOwnProperty(t) ){
-		  var a = document.createElement('option');
-		  a.text = didtrunks[t].trunkname ;
-		  a.value = t ;
-		  var b = document.getElementById('fromprovider');
-		  try {
-			b.add(a, null); 
-		  }
-		  catch(ex) {
-			b.add(a); 
-		  }
-	  }
-	}
+	for (t in didtrunks){	if(  didtrunks.hasOwnProperty(t) ){
+		ASTGUI.selectbox_push(_$('fromprovider'),didtrunks[t].trunkname, t);
+	}}
 	// load the object didtrunks into the table callingRulesTable
 	refreshtable();
 	parent.loadscreen(this);

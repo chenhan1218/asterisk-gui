@@ -27,8 +27,6 @@ var isNewRG, ie;
 var UserExtensions = [];
 var LISTOFCHANNELS = {};
 var ringgroups = {};
-var opt_temp = document.createElement('option');
-if(document.attachEvent){ ie=1;}else{ie=0;}
 var RG_COMMENT = 'gui_ring_groupname';
 var RG_FORMAT = 'ringroups-custom-';
 var RG_EDITING;
@@ -90,26 +88,16 @@ function edit_form(g){
 	if( this_ringgroup.ringstyle == 'ringinorder' ){ _$('select_strategy').selectedIndex = 1 ; }
 
 	var r = _$('select_ringthesechannels');
-	while (r.options.length)
-		r.remove(0);
-
 	var s = _$('select_listofchannels');
-	while (s.options.length)
-		s.remove(0);
-
+	ASTGUI.selectbox_clear(s);
+	ASTGUI.selectbox_clear(r);
 	for (var y=0; y < this_ringgroup.rgchannels.length ; y++ ){
-		h = opt_temp.cloneNode(true);
-		h.text = this_ringgroup.rgchannels[y] ;
-		h.value = this_ringgroup.rgchannels[y] ;
-		if(ie){r.add(h);} else{ r.add(h,null);}
+		ASTGUI.selectbox_push(r,this_ringgroup.rgchannels[y], this_ringgroup.rgchannels[y]);
 	}
 
 	for( var u in LISTOFCHANNELS ){ if(LISTOFCHANNELS.hasOwnProperty(u)) {
 		if( !InArray(this_ringgroup.rgchannels, u) ){
-			h = opt_temp.cloneNode(true);
-			h.text = u ;
-			h.value = u ;
-			if(ie){s.add(h);} else{ s.add(h,null);}
+			ASTGUI.selectbox_push(s,u,u);
 		}
 	}}
 
@@ -258,12 +246,8 @@ function switch_fb_selects(){
 
 
 function a2b(a,b){
-	var h; 
-	h = opt_temp.cloneNode(true);
 	if(a.selectedIndex < 0){return false;}
-	h.text = a.options[a.selectedIndex].text ;
-	h.value = a.options[a.selectedIndex].value;
-	if(ie){b.add(h);} else{ b.add(h,null);}
+	ASTGUI.selectbox_push(b,a.options[a.selectedIndex].text, a.options[a.selectedIndex].value);
 	a.remove(a.selectedIndex);
 }
 
@@ -315,11 +299,7 @@ function get_users(n){
 			UserExtensions.push(l);
 			if( n[l]['hassip']=='yes'){LISTOFCHANNELS['SIP/' + l] = true;}
 			if( n[l]['hasiax']=='yes'){LISTOFCHANNELS['IAX2/' + l] = true;}
-
-			h = opt_temp.cloneNode(true);
-			h.text = l + " -- " + n[l]['fullname'] ;
-			h.value = 'Voicemail(' + l + ',b)';
-			if(ie){el.add(h);} else{ el.add(h,null);}
+			ASTGUI.selectbox_push(el, l + " -- " + n[l]['fullname'] , 'Voicemail(' + l + ',b)');
 		}
 	}}
 	config2json('extensions.conf', 0, read_extensions) ;
@@ -348,10 +328,7 @@ function read_extensions(n){
 
 		t = l.substr(0,17);
 		if( t =='voicemenu-custom-' ){ // if is a Voice Menu
-			h = opt_temp.cloneNode(true);
-			h.text = get_menuname(n[l]);
-			h.value = 'Goto('+ n[l] + '|s|1)';
-			if(ie){el.add(h);} else{ el.add(h,null);}
+			ASTGUI.selectbox_push(el,get_menuname(n[l]), 'Goto('+ n[l] + '|s|1)' );
 		}
 	}}
 	config2json('zapscan.conf', 1, read_zapchannels) ;
@@ -429,18 +406,13 @@ function add_rg(){
 	_$('ringgroup_editdiv').style.display = '';
 
 	var r = _$('select_ringthesechannels');
-	while (r.options.length)
-		r.remove(0);
-
 	var y = _$('select_listofchannels');
-	while (y.options.length)
-		y.remove(0);
+
+	ASTGUI.selectbox_clear(r);
+	ASTGUI.selectbox_clear(y);
 
 	for( var u in LISTOFCHANNELS ){ if(LISTOFCHANNELS.hasOwnProperty(u)) {
-		h = opt_temp.cloneNode(true);
-		h.text = u ;
-		h.value = u ;
-		if(ie){y.add(h);} else{ y.add(h,null);}
+		ASTGUI.selectbox_push(y,u,u);
 	}}
 }
 
