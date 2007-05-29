@@ -449,16 +449,10 @@ function insert_option(box, res, value, core_name){
 		for ( var g=0; g < box.options.length  ; g++) {
 			if(	opt_new.text < box.options[g].text  ){ // add before this element in box
 				add = 1;
-				try{
-					box.add(opt_new, box.options[g] );
-					break;
-				}catch(err){
-					box.add(opt_new, g);
-					break;
-				}
+				ASTGUI.selectbox_insertOption_before(box,opt_new, g);
 			}
 		}
-		if ( add ==0 ){ try{ box.add(opt_new, null); } catch(err){ box.add(opt_new); }}
+		if ( add ==0 ){ ASTGUI.selectbox_push_option(box,opt_new);}
 	}
 }
 
@@ -761,10 +755,7 @@ function new_item(box) {
 		category.fields = new Array;
 	}
 
-	var newoption = box.ownerDocument.createElement("option");
-	newoption.text = "New Entry";
-	newoption.value = "";
-	box.options.add(newoption);
+	ASTGUI.selectbox_push(box,"New Entry", "");
 	box.selectedIndex = box.options.length - 1;
 	box.oldselect = box.options.length - 1;
 	box.stored_config.catbyname[""] = category;
@@ -814,10 +805,9 @@ function new_subitem(box) {
 	if (!subcat || !subcat.length || !subname || !subname.length)
 		return;
 
-	box.options.add(newoption);
+	ASTGUI.selectbox_push_option(box,newoption);
 	box.selectedIndex = box.options.length - 1;
 	box.oldselect = box.options.length - 1;
-
 	category = box.stored_config.catbyname[subcat];
 	pos = category.names.length;
 	category.subfields[pos] = subitem;
@@ -1868,16 +1858,11 @@ function merge_extensions(u, e) { // read e and add into u according to sort ord
 		for ( var g=0; g < u.options.length  ; g++) {
 			if(	opt_new.text < u.options[g].text  ){ // add before this element in u 
 				add = 1;
-				try{
-					u.add(opt_new, u.options[g]);
-					break;
-				}catch(err){
-					u.add(opt_new, g);
-					break;
-				}
+				ASTGUI.selectbox_insertOption_before(u,opt_new,g);
+				break;
 			}
 		}
-		if ( add ==0 ){ try{ u.add(opt_new, null); } catch(err){ u.add(opt_new); }}
+		if ( add ==0 ){ ASTGUI.selectbox_push_option(u,opt_new);}
 	}
 }
 
