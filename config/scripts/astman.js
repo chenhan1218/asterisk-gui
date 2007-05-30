@@ -60,15 +60,10 @@ var ASTGUI = { // the idea is to eventually move all the global variables and fu
 			return q.split('exten=')[1].split(',')[1];
 		},
 
-		getAction: function(q){ // q can be the the whole contextLine or just 'parseContextLine.read(contextline)[1]' 
-			if( q.match('exten=') ){ 
-				var r = q.split('exten=')[1] ;
-			}else{
-				var r = q;
-			}
-			var f = r.indexOf(",");
-			var g = r.indexOf("," , f+1 );
-			return r.substr(g+1);
+		getAction: function(q){ // q can be the the whole contextLine or just 'parseContextLine.read(contextline)[1]'
+			var t = q.split(',');
+			t.splice(0,2);
+			return t.join(',');
 		}
 	},
 
