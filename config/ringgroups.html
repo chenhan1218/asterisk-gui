@@ -128,6 +128,7 @@ function edit_form(g){
 		_$('radio_fbhgp').checked = true;
 	}
 
+	_$('text_rgExten').value = (this_ringgroup.rgExten)?this_ringgroup.rgExten:"" ;
 	_$('ringgroup_editdiv').style.display = '';
 }
 
@@ -161,6 +162,10 @@ function save_rg(){
 		create_newRG(s);
  	}else{
 		var uri = build_action('delcat', 0, RG_FORMAT+RG_EDITING, "", "");
+		if(ringgroups[RG_EDITING].rgExten){
+			var y = ringgroups[RG_EDITING].rgExten + ',1,Goto(' + RG_FORMAT+RG_EDITING + '|s|1)' ;
+			uri += build_action('delete', 1, specialcontext ,"exten", "", y); 
+		}
 		makerequest('u','extensions.conf', uri, function(t){
 			delete ringgroups[RG_EDITING];
 			create_newRG(RG_EDITING);
@@ -185,6 +190,12 @@ function create_newRG(v){
 	uri += build_action('append', p, context ,RG_COMMENT, _$('text_rgname').value); p = p+1;
 
 	uri += build_action('append', p, context ,"exten", "s,1,Answer"); p = p+1;
+
+	if( _$('text_rgExten').value.length ){
+		var y = _$('text_rgExten').value + ',1,Goto(' + context + '|s|1)' ;
+		uri += build_action('append', p, specialcontext ,"exten", y); p++;
+		this_ringgroup.rgExten = _$('text_rgExten').value ;
+	}
 
 	if( _$('select_strategy').value =='ringinorder'){
 		for( s=0; s< rcs.options.length; s++  ){
@@ -319,7 +330,25 @@ function read_extensions(n){
 		return null;
 	}
 
+	var get_ringGroupExtensions = function(c){
+		var r,s;
+		for( r =0; r < c.length; r++){
+			s = ASTGUI.parseContextLine.read(c[r]);
+			if( s[0] == "exten" && c[r].match(RG_FORMAT) && c[r].match('Goto') ) {
+				var u = s[1].split('Goto(')[1].split('|')[0];
+				var f = u.substr(RG_FORMAT.length);
+				if(!ringgroups[f]){ ringgroups[f] = {}; }
+				ringgroups[f].rgExten = ASTGUI.parseContextLine.getExten(s[1]);
+			}
+		}
+	}
+
 	for( l in n ){	if(n.hasOwnProperty(l)){
+		if(l == specialcontext){
+			get_ringGroupExtensions(n[l]);
+			continue;
+		}
+
 		t = l.substr(0,RG_FORMAT.length);
 		if(  t == RG_FORMAT ){ // if is a ring group
 			parse_addtoringgroups(l, n[l]);
@@ -350,7 +379,7 @@ function read_zapchannels(c){
 function parse_addtoringgroups(u, v){
 	//ringgroups
 	var f = u.substr(RG_FORMAT.length);
-	ringgroups[f] = {};
+	if(!ringgroups[f]){ ringgroups[f] = {}; }
 	var this_ringgroup = ringgroups[f];
 	this_ringgroup.rgname = u;
 	this_ringgroup.rgchannels = [];
@@ -438,7 +467,7 @@ function cancel_rg(){ _$('ringgroup_editdiv').style.display = 'none'; }
 	</div>
 	<BR>
 </div>
-<div id="ringgroup_editdiv" STYLE="display:none; position: absolute; left: 20; top: 40; width:480; height:400; background-color:#F4EFE5; border-width: 1px; border-color: #7E5538; border-style: solid; z-index:5">
+<div id="ringgroup_editdiv" STYLE="display:none; position: absolute; left: 20; top: 40; width:480; height:430; background-color:#F4EFE5; border-width: 1px; border-color: #7E5538; border-style: solid; z-index:5">
 	<table width="100%" cellpadding=0 cellspacing=0  onmousedown="startDrag(event , 'ringgroup_editdiv');">
 	<TR bgcolor="#7E5538"  style="background-image:url('images/title_gradient.gif');">
 		<TD><font color="#FFFFFF">&nbsp;&nbsp;<span id="form_caption"></span></FONT></TD>
@@ -450,7 +479,7 @@ function cancel_rg(){ _$('ringgroup_editdiv').style.display = 'none'; }
 	</table>
 	<table cellpadding=2 cellspacing=2 border=0 width="100%" align="center">
 		<tr>
-			<td>Name: <input type="text" id="text_rgname" size=18 class="input9"></td>
+			<td>Name: <input type="text" id="text_rgname" size=15 class="input9"></td>
 			<td colspan=2 align="center">
 				Strategy: <select id="select_strategy" class="input8"><option value="ringall">Ring all</option><option  value="ringinorder">Ring in Order</option></select>
 			</td>
@@ -476,6 +505,10 @@ function cancel_rg(){ _$('ringgroup_editdiv').style.display = 'none'; }
 			</td>
 			<td width=200 align=center valign=top>
 				<B>Available Channels</B>
+			</td>
+		</tr>
+		<tr>	<td align=center valign=top colspan=3>
+			Extension for this ring group (optional) : <input type=text id="text_rgExten" size=5 class="input9">
 			</td>
 		</tr>
 		<tr>	<td colspan=2 align="left" class="field_text">
