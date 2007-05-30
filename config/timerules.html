@@ -109,6 +109,23 @@ function get_timerules(b){
 	var c,d,e,t,p,q;
 	c =  b ;
 	var found = 0;
+	var get_menuname = function(c){
+		var r,s;
+		for( r =0; r < c.length; r++){
+			s = unescape(c[r]);
+			if( s.match('comment=') ){return "VoiceMenu " + s.split('comment=')[1];}
+		}
+		return null;
+	}
+	
+	var get_ringGroupName = function(c){
+		var r,s;
+		for( r =0; r < c.length; r++){
+			if( c[r].match('gui_ring_groupname=') ){return "RingGroup " + c[r].split('gui_ring_groupname=')[1];}
+		}
+		return b;
+	}
+
 	for( d in c ){
 		if(c.hasOwnProperty(d)){
 			if( d == TIMERULES_CATEGORY ){ e = c[d]; found = 1;}
@@ -118,6 +135,11 @@ function get_timerules(b){
 				p.menuname = (q)?q:d;
 				p.menucontextstring = d+",s,1";
 				voicemenus.push(p);
+				continue;
+			}
+			if( d.substr(0,17) == 'ringroups-custom-'){
+				ASTGUI.selectbox_push(_$('dest_match'), get_ringGroupName(c[d]) , d+",s,1");
+				ASTGUI.selectbox_push(_$('dest_nomatch'), get_ringGroupName(c[d]) , d+",s,1");
 			}
 		}
 	}
@@ -134,16 +156,6 @@ function get_timerules(b){
 
 	showlist_of_rules();
 	set_selectboxes();
-}
-
-
-function get_menuname(c){
-	var r,s;
-	for( r =0; r < c.length; r++){
-		s = unescape(c[r]);
-		if( s.match('comment=') ){return "VoiceMenu " + s.split('comment=')[1];}
-	}
-	return null;
 }
 
 

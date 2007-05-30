@@ -72,13 +72,11 @@ numplan_callbacks.format = function(t, x) {
 	}
 	if ( ( t.name.substring(0,asterisk_guiTDPrefix.length) == asterisk_guiTDPrefix ) && t.names[x]=='exten' ){
 		//get pattern & action
-		var temp = t.fields[x].split(',');
-		var f = temp[0];
+		var f = ASTGUI.parseContextLine.getExten(t.fields[x]);
 		if( f == "s" ){return false;}
 		didtrunks[t.name][f] = new Object();
-		didtrunks[t.name][f].priority = temp[1];
-		temp.splice(0,2);
-		didtrunks[t.name][f].action = temp.join(',');
+		didtrunks[t.name][f].priority = ASTGUI.parseContextLine.getPriority(t.fields[x]);
+		didtrunks[t.name][f].action = ASTGUI.parseContextLine.getAction(t.fields[x])
 	}
 
 	if( t.name.match('ringroups-custom-') && (x == undefined) ){
