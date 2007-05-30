@@ -46,6 +46,31 @@ var TIMERULES_CATEGORY = 'timebasedrules';
 if(document.attachEvent){ var isIE = true; }else{ var isIE = false; }
 
 var ASTGUI = { // the idea is to eventually move all the global variables and functions into this one object so that the global name space is not as cluttered as it is now.
+	parseContextLine: {
+		read: function(q){
+			var v = q.indexOf("=");
+			return  [q.substring(0,v), q.substr(v+1)];
+		},
+
+		getExten: function(q){
+			return q.split('exten=')[1].split(',')[0];
+		},
+
+		getPriority: function(q){
+			return q.split('exten=')[1].split(',')[1];
+		},
+
+		getAction: function(q){ // q can be the the whole contextLine or just 'parseContextLine.read(contextline)[1]' 
+			if( q.match('exten=') ){ 
+				var r = q.split('exten=')[1] ;
+			}else{
+				var r = q;
+			}
+			var f = r.indexOf(",");
+			var g = r.indexOf("," , f+1 );
+			return r.substr(g+1);
+		}
+	},
 
 	selectbox_insert_before: function(el,txt, val, i){
 		if(isIE){ 
