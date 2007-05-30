@@ -26,7 +26,7 @@ Todo
 
 * 'Timing Condition X' should be able to redirect to 'Timing Conditon Y'
 
-* Assign an optional extension number to ringgroups
+* Option to redirect a timerule to a ringGroup
 
 * Agent logout Extension
 
@@ -38,3 +38,4 @@ Completed
 
 * Ring Groups
 
+* Assign an optional extension number to ringgroups
