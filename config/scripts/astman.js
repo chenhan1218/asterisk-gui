@@ -53,11 +53,19 @@ var ASTGUI = { // the idea is to eventually move all the global variables and fu
 		},
 
 		getExten: function(q){
-			return q.split('exten=')[1].split(',')[0];
+			if( q.match('exten=') ){
+				return q.split('exten=')[1].split(',')[0];
+			}else{
+				return q.split(',')[0];
+			}
 		},
 
 		getPriority: function(q){
-			return q.split('exten=')[1].split(',')[1];
+			if( q.match('exten=') ){
+				return q.split('exten=')[1].split(',')[1];
+			}else{
+				return q.split(',')[1];
+			}
 		},
 
 		getAction: function(q){ // q can be the the whole contextLine or just 'parseContextLine.read(contextline)[1]'
