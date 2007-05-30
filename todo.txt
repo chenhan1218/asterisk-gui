@@ -24,10 +24,6 @@ Todo
 * Directory management - A printable sheet of users and numbers
   (For the time being you can create an IVR and use the directory option )
 
-* 'Timing Condition X' should be able to redirect to 'Timing Conditon Y'
-
-* Option to redirect a timerule to a ringGroup
-
 * Agent logout Extension
 
 *  it would be very usefull, to define the max time a client can be in the queue.. so we can put a voice telling "Please leva a meesage we will cal you back" in a vm..   or something like that :) -- killfill on irc
@@ -39,3 +35,7 @@ Completed
 * Ring Groups
 
 * Assign an optional extension number to ringgroups
+
+* 'Timing Condition X' should be able to redirect to 'Timing Conditon Y'
+
+* Option to redirect a timerule to a ringGroup
