@@ -165,13 +165,17 @@ function returnpanels(){
 	newpanel( ["Calling Rules", "numberplan.html", "The Calling Rules define dialing permissions and least cost routing rules."]);
 	newpanel( ["Incoming Calls", "incoming.html", "Define how your incoming calls should be handled & configure DID (Direct inward Dialing)"]);
 	newpanel( ["Voice Menus", "menus.html", "Menus allow for more efficient routing of calls from incoming callers. Also known as IVR (Interactive Voice Response) menus or Digital Receptionist"]);
+	newpanel( ["Time Based Rules", "timerules.html", "define call routing rules based on date and time"]);
+	newpanel( ["Ring Groups", "ringgroups.html", "define RingGroups to dial more than one extension"]);
 	newpanel( ["Record a Menu", "record.html", "Allows you to record custom voicemenus over a phone"]);
 	newpanel( ["Active Channels", "status.html", "Monitor active channels."]);
 	newpanel( ["Graphs", "graphs.html", "View Graphs of your System Information."]);
 	newpanel( ["System Info", "sysinfo.html", "System Information."]);
+	newpanel( ["Asterisk Logs", "syslog.html", "Asterisk Log messages."]);
+	newpanel( ["File Editor", "feditor.html", "Edit Asterisk Config Files"]);
+	newpanel( ["Asterisk CLI", "cli.html", "Asterisk Command Line Interface"]);
 	newpanel( ["Backup", "backup.html", "Backup Management."]);
 	newpanel( ["Options", "localexts.html", "Admin Settings"]);
-
 	return panels;
 }
 
@@ -342,18 +346,13 @@ function goto_advancedoption(){
 		<tr>	<td align=right>Goto:&nbsp;</td>
 			<td align="center">
 			<select id="AdvancedOptionsSelect" class="input9" onchange="goto_advancedoption()">
-				<option value="feditor.html">File Editor</option>
-				<option value="cli.html">Asterisk CLI</option>
 				<option value="moh.html">Music on Hold</option>
-				<option value="timerules.html">Time Based Rules</option>
-				<option value="ringgroups.html">Ring Groups</option>
 				<option value="emailsettings.html">VM Email settings</option>
 				<option value="sip.html">Global SIP Settings</option>
 				<option value="iax.html">Global IAX Settings</option>
 			<!--	<option value="jabber.html">Jabber</option>
 				<option value="jingle.html">Jingle</option>
 				<option value="zapata.html">Zap Channel</option>	-->
-				<option value="syslog.html">Asterisk Logs</option>
 				<option value="options.html">Change Password</option>
 				<option value="TOSETUP">Setup Wizard</option>
 			</select>
