@@ -122,12 +122,8 @@ function default_tooltip(event){
 }
 
 function fghjhhs(event){
-	function getTarget(x){
-		x = x || window.event;
-		return x.target || x.srcElement;
-	}
-	var f = getTarget(event);
-	var s = f;	
+	var f = ASTGUI.events.getTarget(event);
+	var s = f;
 	if (f.nodeName.toLowerCase() == 'img' || f.nodeName.toLowerCase() == 'span' ){
 		s = f.parentNode.parentNode;
 	}

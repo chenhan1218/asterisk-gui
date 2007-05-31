@@ -46,6 +46,13 @@ var TIMERULES_CATEGORY = 'timebasedrules';
 if(document.attachEvent){ var isIE = true; }else{ var isIE = false; }
 
 var ASTGUI = { // the idea is to eventually move all the global variables and functions into this one object so that the global name space is not as cluttered as it is now.
+	events: {
+		getTarget: function(x){
+			x = x || window.event;
+			return x.target || x.srcElement;
+		}
+	},
+
 	displayHeight: function(){
 		if(isIE){return document.body.clientHeight;}else{return window.innerHeight;}
 	},
