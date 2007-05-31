@@ -106,6 +106,8 @@ function resetmainscreen(){
 }
 
 function localajaxinit() {
+	var adjust_toScreen = function(){ _$('file_output').style.height = (window.innerHeight -75) + 'px'; }
+	add_event( window , 'resize', adjust_toScreen);
 	top._$('mainscreen').width= 798;
 	setWindowTitle("File Editor");
 	load_recordedfiles();
@@ -290,11 +292,6 @@ function fileparsed(b){
 
 		}
 	}
-
-
-	var space = document.createElement("div");
-	space.style.height = '50px';
-	zz.appendChild(space);
 
 }
 
