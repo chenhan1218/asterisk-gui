@@ -41,7 +41,7 @@ function createpanels(){
 	var a = _$('configpanel');
 	var pnameheight = 22;
 	var panels = returnpanels();
-	var pheight = (503  - (pnameheight*panels.length) ) ;
+	var pheight = ((window.innerHeight - 70)  - (pnameheight*panels.length) ) ;
 	a.pheight = pheight;
 	var this_id ;
 	for( var r=0; r < panels.length; r++ ){
@@ -175,7 +175,7 @@ function setLoggedOn(onoff) {
 	loggedon = 1;
 	var panels = returnpanels();
 	var pnameheight = 22;
-	var pheight = (503  - (pnameheight*panels.length) ) ;
+	var pheight = ((window.innerHeight - 70) - (pnameheight*panels.length) ) ;
 	for( var r=0; r < panels.length; r++ ){
 		t = panels[r].page.split(".html")[0];
 		_$( t + "_U" ).style.height = "1px";
@@ -201,6 +201,8 @@ function show_Acctooltip(tip){
 }
 
 function registerajax() {
+	top._$('mainscreen').style.height = (window.innerHeight - 70);
+	_$('TOP_MAINTABLE').rows[1].cells[0].height = (window.innerHeight) - 70;
 	pao();
 	astmanEngine = new Astman();
 	astmanEngine.setURL(asterisk_rawmanPath );
@@ -277,7 +279,7 @@ function goto_advancedoption(){
 	<link rel="shortcut icon" href="images/favicon.ico" />
 </head>
 <body onload="registerajax()" topmargin=1>
-<table align="center" bgcolor="#dddddd" border="0" cellpadding="0" cellspacing="0" height="570" width="950">
+<table align="center" bgcolor="#dddddd" border="0" cellpadding="0" cellspacing="0" width="950" id="TOP_MAINTABLE">
 <tbody>
 	<tr height="47">
 		<td align="right" bgcolor="white" height="47" valign="bottom" id="dimg"><img src="images/digiumlogo.gif" align="left"></td>
@@ -295,17 +297,17 @@ function goto_advancedoption(){
 		<input id="login_name" type="hidden">
 	</td>
 </tr>
-<tr>	<td height="505">
-		<div id="configpanel" style="border-bottom: 1px solid rgb(31, 102, 155); width: 150px; height: 505px;"></div>
+<tr>	<td valign=top>
+		<div id="configpanel" style="border-bottom: 1px solid rgb(31, 102, 155); width: 150px;"></div>
 	</td>
-	<td id="screenholder" bgcolor="#efefef" height="505" valign="top" width="550">
+	<td id="screenholder" bgcolor="#efefef" valign="top" width="550">
 		<div id="titlebar" class="mainscreenTitleBar" style="position: absolute; top: 48px;">
 			<span style="margin-left: 4px; font-weight: bold;">Loading Screen&nbsp;<img src="images/dots.gif"></span>
 		</div>
 		<div id="borderbox" class="mainscreenBorderBox" height="100%"></div>
-		<iframe border="0" marginheight="0" marginwidth="0" id="mainscreen" style="position: absolute; top: 48px;" frameborder="0" height="505" scrolling="no" width="540"></iframe>
+		<iframe border="0" marginheight="0" marginwidth="0" id="mainscreen" style="position: absolute; top: 48px;" frameborder="0" scrolling="no" width="540"></iframe>
 	</td>
-	<td height="505" valign="top" width="250">
+	<td valign="top" width="250">
 		<div class="mainscreenTooltipBar" align="right">
 			<span id="reloadconfig" style="display:none">Activate Changes</span>&nbsp;&nbsp;&nbsp;<span id="logoutlink" style="display:none">Logout</span>&nbsp;
 		</div>
