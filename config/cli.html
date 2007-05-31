@@ -30,7 +30,8 @@ var COMMAND;
 
 function localajaxinit() {
 	var adjust_toScreen = function(){
-		_$('cli_output').style.height = (window.innerHeight -60) + 'px';
+		var i = ASTGUI.displayHeight();
+		_$('cli_output').style.height = (i -60);
 	}
 	top._$('mainscreen').width= 798;
 	add_event( window , 'resize', adjust_toScreen);

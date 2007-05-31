@@ -106,7 +106,10 @@ function resetmainscreen(){
 }
 
 function localajaxinit() {
-	var adjust_toScreen = function(){ _$('file_output').style.height = (window.innerHeight -75) + 'px'; }
+	var adjust_toScreen = function(){
+		var i = ASTGUI.displayHeight(); 
+		_$('file_output').style.height = (i -75); 
+	}
 	add_event( window , 'resize', adjust_toScreen);
 	top._$('mainscreen').width= 798;
 	setWindowTitle("File Editor");

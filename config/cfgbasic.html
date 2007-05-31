@@ -37,22 +37,27 @@ var keepPinging;
 
 
 function fit_toScreen(){
-	var t = window.innerHeight;
+	var t = ASTGUI.displayHeight();
 	var c =_$('configpanel'); 
-	c.WIH = t; 
+	c.WIH = t;
 	_$('mainscreen').style.height = (t - 70);
 	_$('TOP_MAINTABLE').rows[1].cells[0].height = (t - 70) ;
 	var pnameheight = 22;
 	var panels = returnpanels();
 	var pheight = (( t - 70)  - (pnameheight*panels.length) ) ;
-	c.pheight = pheight;
+	if(pheight > 0){
+		c.pheight = pheight;
+	}else{
+		pheight = 0;
+		c.pheight = 0 ;
+	}
 
 	if( c.childNodes.length ){
 		var s;
 		for( var r=0; r < panels.length; r++ ){
 			s = panels[r].page.split(".html")[0];
 			if( _$(s+"_U").style.display == "" ){
-				_$(s+"_U").style.height = pheight + "px";
+				_$(s+"_U").style.height = pheight;
 			}
 		}
 	}
@@ -101,7 +106,7 @@ function createpanels(){
 
 	_$( "home" ).style.display = "";
 	_$( "home_U" ).style.display = "";
-	_$( "home_U" ).style.height = a.pheight +"px";
+	_$( "home_U" ).style.height = a.pheight;
 }
 
 function my_tooltip(event){
@@ -136,7 +141,7 @@ function fghjhhs(event){
 		_$( t + "_U" ).style.height = "1px";
 		_$( t + "_U" ).style.display = "none";
 	}
-	_$( s.id + "_U" ).style.height = _$('configpanel').pheight + "px";
+	_$( s.id + "_U" ).style.height = _$('configpanel').pheight;
 	_$( s.id + "_U" ).style.display = "";
 
 	_$('AdvancedOptionsSelect').selectedIndex=-1;
@@ -205,7 +210,7 @@ function setLoggedOn(onoff) {
 		_$( t ).style.display = "";
 	}
 	_$("home").style.display = "";
-	_$("home_U").style.height = _$('configpanel').pheight + "px";
+	_$("home_U").style.height = _$('configpanel').pheight;
 	_$("home_U").style.display = "";
 }
 
@@ -288,7 +293,7 @@ function goto_advancedoption(){
 		_$( t + "_U" ).style.height = "1px";
 		_$( t + "_U" ).style.display = "none";
 	}
-	_$( "localexts_U" ).style.height = _$('configpanel').pheight + "px";
+	_$( "localexts_U" ).style.height = _$('configpanel').pheight;
 	_$( "localexts_U" ).style.display = "";
 
 	_$('mainscreen').src = _$('AdvancedOptionsSelect').value ;
