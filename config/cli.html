@@ -27,8 +27,13 @@ var CLI_HSTY = []; // cli history of previous commands
 var CLI_INDEX = 0; // index for navigating through command history
 var COMMAND;
 
+
 function localajaxinit() {
+	var adjust_toScreen = function(){
+		_$('cli_output').style.height = (window.innerHeight -60) + 'px';
+	}
 	top._$('mainscreen').width= 798;
+	add_event( window , 'resize', adjust_toScreen);
 	setWindowTitle("Asterisk CLI Emulator");
 	parent.loadscreen(this);
 	_$('cli_cmd').value = "core show version";
