@@ -13,8 +13,6 @@ Todo
 
 * Digital Cards Support
 
-* Make the GUI resolution independent - request from BSD_tech
-
 * Call Forwarding
 
 * CDR support
@@ -39,3 +37,5 @@ Completed
 * 'Timing Condition X' should be able to redirect to 'Timing Conditon Y'
 
 * Option to redirect a timerule to a ringGroup
+
+* Make the GUI resolution independent - request from BSD_tech
