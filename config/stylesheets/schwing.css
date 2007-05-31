@@ -1,3 +1,53 @@
+div.accordionTabTitleBar {
+	font-size : 12.5px;
+	padding : 2px 2px 2px 2px;
+	border-style : solid none solid none;
+	border-top-color : #BDC7E7;
+	border-bottom-color : #182052;
+	border-width : 1px 0px 1px 0px;
+	height : 16px;
+	cursor: pointer;
+	background-color : #6B79A5;
+	color : #CED7EF;
+	font-weight :normal;
+}
+
+div.accordionTabTitleBar:hover {
+	font-weight:bold;
+	background-color : #63699C;
+	color            : #FFFFFF;
+}
+
+.accordionTabContentBox {
+	font-size        : 11px;
+	border           : 1px solid #1f669b;
+	border-top-width : 0px;
+	padding : 0px 8px 0px 8px;
+	cursor: default;
+	color : #000000;
+}
+
+body,td,a,p,.h{font-family:arial,sans-serif,Helvetica,Trebuchet MS; font-size   : 10px; cursor: default;}
+
+a:visited, a:link, a:hover  {
+	font-family : Trebuchet MS, Arial, Helvetica, sans-serif;
+}
+
+a:visited, a:link {
+   text-decoration : none;
+   color           : black;
+}
+
+a:hover  {
+	color : black;
+	text-decoration : underline;
+}
+
+h2, .header {
+   font-weight : bold;
+   font-size   : 13px;
+}
+
 .mainscreenTitleBar {
 	font-size           : 12px;
 	padding             : 4px 6px 4px 6px;

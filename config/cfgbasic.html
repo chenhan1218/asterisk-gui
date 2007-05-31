@@ -43,6 +43,7 @@ function fit_toScreen(){
 	_$('mainscreen').style.height = (t - 70);
 	_$('TOP_MAINTABLE').rows[1].cells[0].height = (t - 70) ;
 	var pnameheight = 22;
+	c.pnameheight = pnameheight;
 	var panels = returnpanels();
 	var pheight = (( t - 70)  - (pnameheight*panels.length) ) ;
 	if(pheight > 0){
@@ -66,7 +67,11 @@ function fit_toScreen(){
 function createpanels(){
 	var t,u,v;
 	var a = _$('configpanel');
-	var pnameheight = 22;
+
+//	add_event(a, 'mouseover', my_tooltip);
+//	add_event(a, 'mouseout', default_tooltip);
+	add_event(a, 'click', fghjhhs);
+
 	var panels = returnpanels();
 	var this_id ;
 	for( var r=0; r < panels.length; r++ ){
@@ -74,17 +79,10 @@ function createpanels(){
 
 		t = document.createElement("div");
 		t.className = "accordionTabTitleBar";
-		t.style.backgroundColor = "#6B79A5";
-		t.style.color = "#CED7EF";
-		t.style.fontWeight = "normal";
 		t.style.display = "none";
 		t.setAttribute('id', this_id );
-		t.height = pnameheight;
+		t.height = a.pnameheight;
 		t.innerHTML = "<nobr><img style='vertical-align: middle;' src='images/accordion-icon.gif'><span style='margin-left: 0px; font-weight: bold;'>&nbsp;" + panels[r].caption + "</span></nobr>";
-
-		add_event(t, 'click', fghjhhs);
-		add_event(t, 'mouseover', my_tooltip);
-		add_event(t, 'mouseout', default_tooltip);
 
 		u = document.createElement("div");
 		u.className = "accordionTabContentBox";
@@ -111,11 +109,6 @@ function createpanels(){
 
 function my_tooltip(event){
 	var s = (event.srcElement)?event.srcElement:this;
-
-	_$(s.id).style.backgroundColor="#63699C";
-	_$(s.id).style.color="#FFFFFF";
-	_$(s.id).style.fontWeight="bold";
-
 	show_Acctooltip(_$(s.id+"_U").innerHTML );
 }
 
@@ -130,11 +123,19 @@ function default_tooltip(event){
 }
 
 function fghjhhs(event){
-	var s = (event.srcElement)?event.srcElement:this;
-	if(event.srcElement && s.id==""){s = event.srcElement.parentNode.parentNode;}
-
+	function getTarget(x){
+		x = x || window.event;
+		return x.target || x.srcElement;
+	}
+	var f = getTarget(event);
+	var s = f;	
+	if (f.nodeName.toLowerCase() == 'img' || f.nodeName.toLowerCase() == 'span' ){
+		s = f.parentNode.parentNode;
+	}
+	if ( s.className != 'accordionTabTitleBar' )return;
 	if( $('mainscreen').currentpage == s.id + ".html")return;
 	var t;
+
 	var panels = returnpanels();
 	for( var r=0; r < panels.length; r++ ){
 		t = panels[r].page.split(".html")[0];
