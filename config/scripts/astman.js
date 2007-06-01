@@ -38,18 +38,23 @@ var asterisk_guiConfigFile = "guipreferences.conf"; // will be created in asteri
 var asterisk_configfolder = "/etc/asterisk/";
 var asterisk_guiListFiles = "sh " + asterisk_scriptsFolder + "listfiles" ;
 
-var sortbynames = false;
-var dragdata = new Object;
+var dragdata = {};
 var asterisk_guiTDPrefix = "DID_";
 var TIMERULES_CATEGORY = 'timebasedrules';
-
-if(document.attachEvent){ var isIE = true; }else{ var isIE = false; }
+var isIE = false;
+if(document.attachEvent){ isIE= true; }
 
 var ASTGUI = { // the idea is to eventually move all the global variables and functions into this one object so that the global name space is not as cluttered as it is now.
 	events: {
 		getTarget: function(x){
 			x = x || window.event;
 			return x.target || x.srcElement;
+		},
+		add: function(a,b,c){ // a is element , b is event (string) , c is the function 
+			if(isIE) { a.attachEvent('on'+b, c); }else{ a.addEventListener(b, c, false); }
+		},
+		remove: function(a,b,c){
+			if(isIE) { a.detachEvent('on'+b, c); }else{ a.removeEventListener(b, c, false); }
 		}
 	},
 
@@ -86,49 +91,51 @@ var ASTGUI = { // the idea is to eventually move all the global variables and fu
 		}
 	},
 
-	selectbox_insert_before: function(el,txt, val, i){
-		if(isIE){ 
-			el.add(new Option (txt,val), i ); 
-		}else{ 
-			el.add(new Option (txt,val), el.options[i] );
-		} 
-	},
+	selectbox: {
+		insert_before: function(el,txt, val, i){
+			if(isIE){ 
+				el.add(new Option (txt,val), i ); 
+			}else{ 
+				el.add(new Option (txt,val), el.options[i] );
+			} 
+		},
 
-	selectbox_insertOption_before: function(el,opt, i){
-		if(isIE){ 
-			el.add(opt, i ); 
-		}else{ 
-			el.add(opt, el.options[i] );
-		} 
-	},
+		insertOption_before: function(el,opt, i){
+			if(isIE){ 
+				el.add(opt, i ); 
+			}else{ 
+				el.add(opt, el.options[i] );
+			} 
+		},
 
-	selectbox_push: function(el,txt, val){
-		el.options[el.options.length] = new Option (txt,val);
-	},
+		append: function(el,txt, val){
+			el.options[el.options.length] = new Option (txt,val);
+		},
 
-	selectbox_push_option: function(el,opt){
-		if(isIE){
-			el.add(opt);
-		} else{ 
-			el.add(opt,null);
+		append_option: function(el,opt){
+			if(isIE){
+				el.add(opt);
+			} else{ 
+				el.add(opt,null);
+			}
+		},
+
+		remove_i: function(el, i){
+			el.options[i] = null;
+		},
+	
+		clear: function(el){
+			el.options.length = 0;
 		}
-	},
-
-	selectbox_remove_i: function(el, i){
-		el.options[i] = null;
-	},
-
-	selectbox_clear: function(el){
-		el.options.length = 0;
 	}
 
-};
+}; // AstGUI
 
 
 function gui_feedback(a,b,c){ 
 // a is msg, b is color (optional ), c is display time in milliseconds(optional, default to asterisk_guifbt)
 	if(!b || b=='default'){
-		var b = "#DA2804"; // dark reddish brown
+		b = "#DA2804"; // dark reddish brown
 	}
 	if(b=='blue'){ 
 		b = "#303BCA"; // dark blue
@@ -164,19 +171,16 @@ function makerequest(c,f,a,b){
 	tmp = new Ajax.Request( asterisk_rawmanPath, opt);
 }
 
-function gui_alert(msg){ gui_alertmsg( 1, msg );}
-
-function gui_alertmsg( msgtype, msg ){
-	// Alternative to javascript's alert box - the native alert boxes are stopping the background XHRs
-	//  usage - msgtype could be 1 or 2 or 3 , msg is the alert message
+function gui_alert(msg){ 
 	top.alertframename = "alertiframe";
 	top.alertmsg = msg ;
-	top.alertmsgtype = msgtype ;
+	top.alertmsgtype = 1 ;
+	var h,_hs;
 	if( !top.document.getElementById(top.alertframename)){
-		var h= top.document.createElement("IFRAME");
+		h= top.document.createElement("IFRAME");
 		h.setAttribute("id", top.alertframename );
 		h.setAttribute("ALLOWTRANSPARENCY", "true");
-		var _hs = h.style ;
+		_hs = h.style ;
 		_hs.position="absolute";
 		_hs.left= 0;
 		_hs.top= 0;
@@ -194,7 +198,6 @@ function gui_alertmsg( msgtype, msg ){
 		top.document.getElementById( top.alertframename ).style.display = "";
 	}
 }
-
 
 // Douglas Crockford's purge function for IE Memory leaks
 // http://javascript.crockford.com/memory/leak.html
@@ -217,17 +220,6 @@ function purge(d) {
             purge(d.childNodes[i]);
         }
     }
-}
-
-
-// cross browser function for adding/removing events to elements
-// a is element , b is event (string) , c is the function 
-if(document.addEventListener){
-	add_event = function( a , b, c ){ a.addEventListener(b, c, false); }
-	remove_event = function(a,b,c){ a.removeEventListener( b, c , false); }
-}else if(document.attachEvent){
-	add_event = function( a , b, c ){ a.attachEvent('on'+b, c); }
-	remove_event = function(a,b,c){ a.detachEvent("on"+b, c); }
 }
 
 
@@ -298,14 +290,14 @@ function startDrag(event, movethis ){
 		dragdata.maxleft = document.body.offsetWidth - parseInt($(dragdata.movethis).style.width) ;
 		dragdata.maxtop = document.body.offsetWidth- parseInt($(dragdata.movethis).style.height) ;
 	}
-	add_event( document , "mousemove" , movewindow ) ;
-	add_event( document , "mouseup" , stopDrag ) ;
+	ASTGUI.events.add( document , "mousemove" , movewindow ) ;
+	ASTGUI.events.add( document , "mouseup" , stopDrag ) ;
 }
 
 
 function stopDrag(){
-	remove_event( document , "mousemove" , movewindow ) ;
-	remove_event( document , "mouseup" , stopDrag ) ;
+	ASTGUI.events.remove( document , "mousemove" , movewindow ) ;
+	ASTGUI.events.remove( document , "mouseup" , stopDrag ) ;
 }
 
 function movewindow(event){
@@ -418,13 +410,13 @@ function combo_box(a, b, c ){
 //	combo_selectdiv.style.z-index = 10000;
 	combo_selectdiv.style.display = "none";
 
-	add_event( combo_text , 'keychange' , combobox_activate ) ;
-	add_event( combo_text , 'focus' , combobox_activate ) ;
-	add_event( combo_text , 'focusout' , function(){ combo_selectdiv.style.display ='none'; } ) ;
-	add_event( combo_text , 'keypress' , xyz) ;
-	add_event( combo_text , 'keyup' , abcd ) ;
-	add_event( combo_selectbox, 'keypress' , efgh ) ;
-	add_event( combo_selectbox, 'click' , ijkl ) ;
+	ASTGUI.events.add( combo_text , 'keychange' , combobox_activate ) ;
+	ASTGUI.events.add( combo_text , 'focus' , combobox_activate ) ;
+	ASTGUI.events.add( combo_text , 'focusout' , function(){ combo_selectdiv.style.display ='none'; } ) ;
+	ASTGUI.events.add( combo_text , 'keypress' , xyz) ;
+	ASTGUI.events.add( combo_text , 'keyup' , abcd ) ;
+	ASTGUI.events.add( combo_selectbox, 'keypress' , efgh ) ;
+	ASTGUI.events.add( combo_selectbox, 'click' , ijkl ) ;
 
 	function combobox_activate(){
 		var tmp_left = combo_text.offsetLeft;
@@ -488,10 +480,10 @@ function insert_option(box, res, value, core_name){
 		for ( var g=0; g < box.options.length  ; g++) {
 			if(	opt_new.text < box.options[g].text  ){ // add before this element in box
 				add = 1;
-				ASTGUI.selectbox_insertOption_before(box,opt_new, g);
+				ASTGUI.selectbox.insertOption_before(box,opt_new, g);
 			}
 		}
-		if ( add ==0 ){ ASTGUI.selectbox_push_option(box,opt_new);}
+		if ( add ==0 ){ ASTGUI.selectbox.append_option(box,opt_new);}
 	}
 }
 
@@ -794,7 +786,7 @@ function new_item(box) {
 		category.fields = new Array;
 	}
 
-	ASTGUI.selectbox_push(box,"New Entry", "");
+	ASTGUI.selectbox.append(box,"New Entry", "");
 	box.selectedIndex = box.options.length - 1;
 	box.oldselect = box.options.length - 1;
 	box.stored_config.catbyname[""] = category;
@@ -844,7 +836,7 @@ function new_subitem(box) {
 	if (!subcat || !subcat.length || !subname || !subname.length)
 		return;
 
-	ASTGUI.selectbox_push_option(box,newoption);
+	ASTGUI.selectbox.append_option(box,newoption);
 	box.selectedIndex = box.options.length - 1;
 	box.oldselect = box.options.length - 1;
 	category = box.stored_config.catbyname[subcat];
@@ -1473,12 +1465,12 @@ function Astman() {
 
 				if (savewidget) {
 					widgets[x].savewidget = savewidget;
-					add_event( widgets[x] , 'click', function(event) { 
+					ASTGUI.events.add( widgets[x] , 'click', function(event) { 
 						var t = (event.srcElement)?event.srcElement:this;
 						t.oldvalue = t.value;
 						return true; 
 					});
-					add_event( widgets[x] , 'change', function(event) {
+					ASTGUI.events.add( widgets[x] , 'change', function(event) {
 						var t = (event.srcElement)?event.srcElement:this;
 						t.savewidget.activateSave();
 					});
@@ -1525,18 +1517,18 @@ function Astman() {
 				if (savewidget) {
 					widgets[x].savewidget = savewidget;
 					if ((widgets[x].type == 'checkbox') || (widgets[x].type == 'radio')) {
-						add_event( widgets[x] , 'click', function(event) {
+						ASTGUI.events.add( widgets[x] , 'click', function(event) {
 							var t = (event.srcElement)?event.srcElement:this;
 							t.savewidget.activateSave();
 						});
 					} else {
 
-						add_event( widgets[x] , 'keydown', function(event) {
+						ASTGUI.events.add( widgets[x] , 'keydown', function(event) {
 							var t = (event.srcElement)?event.srcElement:this;
 							t.oldvalue = t.value; return true; 
 						});
 
-						add_event( widgets[x] , 'keyup', function(event) {
+						ASTGUI.events.add( widgets[x] , 'keyup', function(event) {
 							var t = (event.srcElement)?event.srcElement:this; 
 							if (t.oldvalue == t.value){return true;}
 							pattern = t.getAttribute('pattern');
@@ -1733,30 +1725,30 @@ function Astman() {
 		if (widgets['save']) {
 			widgets['save'].hostselectbox = box;
 
-			add_event( widgets['save'] , 'click', function(event) { var t = (event.srcElement)?event.srcElement:this; save_item(t.hostselectbox); });
+			ASTGUI.events.add( widgets['save'] , 'click', function(event) { var t = (event.srcElement)?event.srcElement:this; save_item(t.hostselectbox); });
 
 		}
 		if (widgets['cancel']) {
 			widgets['cancel'].hostselectbox = box;
-			add_event( widgets['cancel'] , 'click', function(event) { var t = (event.srcElement)?event.srcElement:this; cancel_item(t.hostselectbox); });
+			ASTGUI.events.add( widgets['cancel'] , 'click', function(event) { var t = (event.srcElement)?event.srcElement:this; cancel_item(t.hostselectbox); });
 		}
 
 		if (widgets['new']) {
 			widgets['new'].hostselectbox = box;
 			widgets['new'].disabled = false;
-			add_event( widgets['new'] , 'click', function(event) { var t = (event.srcElement)?event.srcElement:this; new_item(t.hostselectbox); });
+			ASTGUI.events.add( widgets['new'] , 'click', function(event) { var t = (event.srcElement)?event.srcElement:this; new_item(t.hostselectbox); });
 
 		}
 		if (widgets['newitem']) {
 			widgets['newitem'].hostselectbox = box;
 			widgets['newitem'].disabled = false;
-			add_event( widgets['newitem'] , 'click', function(event) {var t = (event.srcElement)?event.srcElement:this; new_subitem(t.hostselectbox); });
+			ASTGUI.events.add( widgets['newitem'] , 'click', function(event) {var t = (event.srcElement)?event.srcElement:this; new_subitem(t.hostselectbox); });
 
 		}
 		if (widgets['delete']) {
 			widgets['delete'].hostselectbox = box;
 			widgets['delete'].disabled = true;
-			add_event( widgets['delete'] , 'click', function(event) {var t = (event.srcElement)?event.srcElement:this; delete_item(t.hostselectbox); });
+			ASTGUI.events.add( widgets['delete'] , 'click', function(event) {var t = (event.srcElement)?event.srcElement:this; delete_item(t.hostselectbox); });
 		}
 		tmp = new Ajax.Request(this.url, opt);
 	};
@@ -1827,11 +1819,7 @@ function Astman() {
 			box.calcname = tmp[0];
 			box.calccontext = t.name;
 			box.calcpriority = priority;
-			if( sortbynames ){
-				return " Voice Menu ("  + tmp[0] + ")" ;
-			}else{
-				return tmp[0] + " -- Voice Menu"  ;
-			}
+			return tmp[0] + " -- Voice Menu"  ;
 		}
 		//
 
@@ -1871,11 +1859,7 @@ function Astman() {
 		t.subfields[x]['realpriority'] = box.calcpriority;
 		box.calcname = exten;
 		box.calccontext = t.name;
-		if( sortbynames ){
-			return label+" ("  + exten + ")" ;
-		}else{
-			return exten + " -- " + label;
-		}
+		return exten + " -- " + label;
 	}	
 
 function merge_users(e, u) { // read u and add into e according to sort order
@@ -1897,11 +1881,11 @@ function merge_extensions(u, e) { // read e and add into u according to sort ord
 		for ( var g=0; g < u.options.length  ; g++) {
 			if(	opt_new.text < u.options[g].text  ){ // add before this element in u 
 				add = 1;
-				ASTGUI.selectbox_insertOption_before(u,opt_new,g);
+				ASTGUI.selectbox.insertOption_before(u,opt_new,g);
 				break;
 			}
 		}
-		if ( add ==0 ){ ASTGUI.selectbox_push_option(u,opt_new);}
+		if ( add ==0 ){ ASTGUI.selectbox.append_option(u,opt_new);}
 	}
 }
 

@@ -61,7 +61,7 @@ function localajaxinit(){
 		var i = ASTGUI.displayHeight();
 		_$('todaylog').style.height = (i - 35); 
 	}
-	add_event( window , 'resize', adjust_toScreen);
+	ASTGUI.events.add( window , 'resize', adjust_toScreen);
 	top._$('mainscreen').width= 798;
 	setWindowTitle("System Log");
 	// call the tool (sysinfo)

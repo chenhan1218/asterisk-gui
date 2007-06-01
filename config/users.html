@@ -198,7 +198,7 @@ function analoglines_loaded(b){
 
 	for( var d in c ){
 		if ( c.hasOwnProperty(d) && c[d]['port'] && (c[d]['port'] == 'fxo' ) ) {
-			ASTGUI.selectbox_push(_zapchan,"Analog Port #" + d, d);
+			ASTGUI.selectbox.append(_zapchan,"Analog Port #" + d, d);
 		}
 	}
 	
@@ -206,7 +206,7 @@ function analoglines_loaded(b){
 		_zapchan.style.display="none";
 		_$('noanaloglines').style.display="";
 	}
-	ASTGUI.selectbox_insert_before(_zapchan,"None", "", 0);
+	ASTGUI.selectbox.insert_before(_zapchan,"None", "", 0);
 	config2json('extensions.conf', 1, dialplans_loaded ) ;
 	//parent.astmanEngine.config2list("extensions.conf", _$('context'), new Array(), numcallbacks);
 }
@@ -218,7 +218,7 @@ function dialplans_loaded(b){
 	for( var d in c ){
 		if ( c.hasOwnProperty(d) && d.substr(0,11) == 'numberplan-'  ) {
 			var txt = (c[d]['plancomment'])?unescape(c[d]['plancomment']) : d;
-			ASTGUI.selectbox_push(_context,txt, d);
+			ASTGUI.selectbox.append(_context,txt, d);
 		}
 	}
 
@@ -226,7 +226,7 @@ function dialplans_loaded(b){
 }
 
 function localajaxinit() {
-	add_event(document, 'mouseover', show_tooltip);
+	ASTGUI.events.add(document, 'mouseover', show_tooltip);
 
 	/*
 	// Automatically open the related panel - like when this page is called using a back button

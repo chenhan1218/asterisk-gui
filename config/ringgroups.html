@@ -88,15 +88,15 @@ function edit_form(g){
 
 	var r = _$('select_ringthesechannels');
 	var s = _$('select_listofchannels');
-	ASTGUI.selectbox_clear(s);
-	ASTGUI.selectbox_clear(r);
+	ASTGUI.selectbox.clear(s);
+	ASTGUI.selectbox.clear(r);
 	for (var y=0; y < this_ringgroup.rgchannels.length ; y++ ){
-		ASTGUI.selectbox_push(r,this_ringgroup.rgchannels[y], this_ringgroup.rgchannels[y]);
+		ASTGUI.selectbox.append(r,this_ringgroup.rgchannels[y], this_ringgroup.rgchannels[y]);
 	}
 
 	for( var u in LISTOFCHANNELS ){ if(LISTOFCHANNELS.hasOwnProperty(u)) {
 		if( !InArray(this_ringgroup.rgchannels, u) ){
-			ASTGUI.selectbox_push(s,u,u);
+			ASTGUI.selectbox.append(s,u,u);
 		}
 	}}
 
@@ -257,22 +257,22 @@ function switch_fb_selects(){
 
 function a2b(a,b){
 	if(a.selectedIndex < 0){return false;}
-	ASTGUI.selectbox_push(b,a.options[a.selectedIndex].text, a.options[a.selectedIndex].value);
+	ASTGUI.selectbox.append(b,a.options[a.selectedIndex].text, a.options[a.selectedIndex].value);
 	a.remove(a.selectedIndex);
 }
 
 function localajaxinit(){
 
-	add_event( _$('radio_fbvm') , 'click', switch_fb_selects );
-	add_event( _$('radio_fbivr') , 'click', switch_fb_selects );
-	add_event( _$('radio_fbhgp') , 'click', switch_fb_selects );
-	add_event( _$('button_add_toringlist') , 'click', function(){
+	ASTGUI.events.add( _$('radio_fbvm') , 'click', switch_fb_selects );
+	ASTGUI.events.add( _$('radio_fbivr') , 'click', switch_fb_selects );
+	ASTGUI.events.add( _$('radio_fbhgp') , 'click', switch_fb_selects );
+	ASTGUI.events.add( _$('button_add_toringlist') , 'click', function(){
 		a2b(_$('select_listofchannels'),_$('select_ringthesechannels'));
 	});
-	add_event( _$('button_remove_fromringlist') , 'click', function(){
+	ASTGUI.events.add( _$('button_remove_fromringlist') , 'click', function(){
 		a2b(_$('select_ringthesechannels'),_$('select_listofchannels'));
 	});
-	add_event( _$('button_removeall_fromringlist') , 'click', function(){
+	ASTGUI.events.add( _$('button_removeall_fromringlist') , 'click', function(){
 		var y = _$('select_ringthesechannels');
 		var z = _$('select_listofchannels');
 		while (y.options.length){
@@ -309,7 +309,7 @@ function get_users(n){
 			UserExtensions.push(l);
 			if( n[l]['hassip']=='yes'){LISTOFCHANNELS['SIP/' + l] = true;}
 			if( n[l]['hasiax']=='yes'){LISTOFCHANNELS['IAX2/' + l] = true;}
-			ASTGUI.selectbox_push(el, l + " -- " + n[l]['fullname'] , 'Voicemail(' + l + ',b)');
+			ASTGUI.selectbox.append(el, l + " -- " + n[l]['fullname'] , 'Voicemail(' + l + ',b)');
 		}
 	}}
 	config2json('extensions.conf', 0, read_extensions) ;
@@ -356,7 +356,7 @@ function read_extensions(n){
 
 		t = l.substr(0,17);
 		if( t =='voicemenu-custom-' ){ // if is a Voice Menu
-			ASTGUI.selectbox_push(el,get_menuname(n[l]), 'Goto('+ n[l] + '|s|1)' );
+			ASTGUI.selectbox.append(el,get_menuname(n[l]), 'Goto('+ n[l] + '|s|1)' );
 		}
 	}}
 	config2json('zapscan.conf', 1, read_zapchannels) ;
@@ -436,11 +436,11 @@ function add_rg(){
 	var r = _$('select_ringthesechannels');
 	var y = _$('select_listofchannels');
 
-	ASTGUI.selectbox_clear(r);
-	ASTGUI.selectbox_clear(y);
+	ASTGUI.selectbox.clear(r);
+	ASTGUI.selectbox.clear(y);
 
 	for( var u in LISTOFCHANNELS ){ if(LISTOFCHANNELS.hasOwnProperty(u)) {
-		ASTGUI.selectbox_push(y,u,u);
+		ASTGUI.selectbox.append(y,u,u);
 	}}
 }
 

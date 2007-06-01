@@ -43,7 +43,7 @@ phonecallbacks.loaded = function() {
 }
 
 function localajaxinit(){
-	add_event(document, 'mouseover', show_tooltip);
+	ASTGUI.events.add(document, 'mouseover', show_tooltip);
 	setWindowTitle("SIP");
 	for (var x =0; x < fieldnames.length; x++ ) {
 		widgets[fieldnames[x]] = _$(fieldnames[x]);

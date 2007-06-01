@@ -966,7 +966,7 @@ menuscallbacks.newcategory = function(t) {
 
 
 function localajaxinit() {
-	add_event(document, 'mouseover', show_tooltip);
+	ASTGUI.events.add(document, 'mouseover', show_tooltip);
 	showdiv_statusmessage();
 	setWindowTitle("Voice Menus");
 	_$('message_text').innerHTML ="Saving Changes...";

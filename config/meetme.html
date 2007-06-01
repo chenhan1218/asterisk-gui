@@ -338,7 +338,7 @@ usercallbacks.loaded = function() {
 }
 
 function localajaxinit() {
-	add_event(document, 'mouseover', show_tooltip);
+	ASTGUI.events.add(document, 'mouseover', show_tooltip);
 	setWindowTitle("Conferencing");
 
 	_$('extensions').contentEditable = 'false';
@@ -349,10 +349,10 @@ function localajaxinit() {
 
 	enable_disable_fields(0);
 
-	add_event( _$('pin') , 'keyup', enable_save_cancel );
-	add_event( _$('pinadmin') , 'keyup', enable_save_cancel );
-	add_event( _$('pin') , 'change', enable_save_cancel );
-	add_event( _$('pinadmin') , 'change', enable_save_cancel );
+	ASTGUI.events.add( _$('pin') , 'keyup', enable_save_cancel );
+	ASTGUI.events.add( _$('pinadmin') , 'keyup', enable_save_cancel );
+	ASTGUI.events.add( _$('pin') , 'change', enable_save_cancel );
+	ASTGUI.events.add( _$('pinadmin') , 'change', enable_save_cancel );
 
 	parent.astmanEngine.config2list("meetme.conf", $('meetme_conf'), new Array(), meetmecallbacks);
 }

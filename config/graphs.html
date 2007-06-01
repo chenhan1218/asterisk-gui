@@ -114,7 +114,7 @@ function getsysinfohtml(){
 
 
 function localajaxinit(){
-	add_event(document, 'mouseover', show_tooltip);
+	ASTGUI.events.add(document, 'mouseover', show_tooltip);
 	setWindowTitle("Resource and Monitoring Graphs");
 	var date = new Date() ; 
 	parent.loadscreen(this);

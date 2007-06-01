@@ -35,7 +35,7 @@ usercallbacks.format =  function(t) {
 
 	if( !t.fieldbyname['trunkstyle'] ){ // all entries from users.conf other than trunks
 		var ht = (t.fieldbyname['fullname'])? unescape(t.fieldbyname['fullname'])+" ("+t.name+")" : "Local Extension ("+t.name+")";
-		ASTGUI.selectbox_push(_$('operatorExtension'),ht, t.name);
+		ASTGUI.selectbox.append(_$('operatorExtension'),ht, t.name);
 	}
 
 	return null;
@@ -110,7 +110,7 @@ usercallbacks.loaded = function(){
 
 
 function localajaxinit(){
-	add_event(document, 'mouseover', show_tooltip);
+	ASTGUI.events.add(document, 'mouseover', show_tooltip);
 	if (top._$('AdvancedOptions').style.display == "none"){
 		_$('advbasic').innerHTML = '(Show Advanced Options)';
 	}else{
@@ -123,7 +123,7 @@ function localajaxinit(){
 		widgets[fieldnames[x]].disabled = true;
 	}
 
-	add_event( _$('localextenlength') , 'change' , update_spae ) ;
+	ASTGUI.events.add( _$('localextenlength') , 'change' , update_spae ) ;
 	parent.astmanEngine.config2list("users.conf", _$('devices'),widgets, usercallbacks);
 }
 

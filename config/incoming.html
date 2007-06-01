@@ -31,7 +31,7 @@ var old_incomingrule, old_fromprovider ;
 var editstatus , edit_pattern, edit_DIDtrunk, edit_action, edit_priority ;
 
 function add_toext(a,b){ // a is value, b is text
-	ASTGUI.selectbox_push(_$('toextension'),b,a);
+	ASTGUI.selectbox.append(_$('toextension'),b,a);
 }
 
 user_callbacks.format = function(t, x) {
@@ -104,7 +104,7 @@ numplan_callbacks.loaded = function() {
 	// load list of trunks to 'fromprovider'
 	var t ;
 	for (t in didtrunks){	if(  didtrunks.hasOwnProperty(t) ){
-		ASTGUI.selectbox_push(_$('fromprovider'),didtrunks[t].trunkname, t);
+		ASTGUI.selectbox.append(_$('fromprovider'),didtrunks[t].trunkname, t);
 	}}
 	// load the object didtrunks into the table callingRulesTable
 	refreshtable();
@@ -425,7 +425,7 @@ function delete_incomingrule(a,b,c,d){ // a is pattern, b is DID_trunk, c is act
 
 
 function localajaxinit() {
-	add_event(document, 'mouseover', show_tooltip);
+	ASTGUI.events.add(document, 'mouseover', show_tooltip);
 	showdiv_statusmessage();
 	setWindowTitle("Incoming Calls");
 

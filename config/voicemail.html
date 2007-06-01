@@ -90,9 +90,9 @@ callbacks.loaded = function() {
 	$('extensions').disabled = 0;
 	$('extensions').current_category = specialcontext;
 
-	add_event( $('name') , 'keydown', function(){ this.oldvalue = this.value ;} );
+	ASTGUI.events.add( $('name') , 'keydown', function(){ this.oldvalue = this.value ;} );
 
-	add_event( $('name') , 'keyup', function(){
+	ASTGUI.events.add( $('name') , 'keyup', function(){
 		if(this.oldvalue == this.value){return true;}
 		$('save').disabled = false;
 		$('cancel').disabled = false;
@@ -264,7 +264,7 @@ function checklength(){
 
 
 function localajaxinit() {
-	add_event(document, 'mouseover', show_tooltip);
+	ASTGUI.events.add(document, 'mouseover', show_tooltip);
 	setWindowTitle("Voicemail");
 	//$('advancedi').style.width = $('split').width - 60;
 

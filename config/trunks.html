@@ -109,9 +109,9 @@ callbacks.format = function(t) {
 }
 
 callbacks.cancelnewcategory = function(){
-	remove_event( _$('trunkstyleanalog') , 'click' , activateanalogvoip );
-	remove_event( _$('trunkstylevoip') , 'click' , activateanalogvoip );
-	remove_event( _$('trunkstylecustomvoip') , 'click' , activateanalogvoip );
+	ASTGUI.events.remove( _$('trunkstyleanalog') , 'click' , activateanalogvoip );
+	ASTGUI.events.remove( _$('trunkstylevoip') , 'click' , activateanalogvoip );
+	ASTGUI.events.remove( _$('trunkstylecustomvoip') , 'click' , activateanalogvoip );
 	hideSPdetails();
 }
 
@@ -123,7 +123,7 @@ callbacks.loaded = function() {
 	var _devices = _$('devices');
 	_devices.contentEditable = 'true';
 	_devices.disabled = 0;
-	add_event( _$('new') , "click", showSPdetails ) ;
+	ASTGUI.events.add( _$('new') , "click", showSPdetails ) ;
 	loadServiceProvidersintotable();
 	preparemenus();
 	parent.loadscreen(this);
@@ -422,9 +422,9 @@ callbacks.newcategory = function() {
 	_$('userscontent_title').innerHTML = "Add Service Provider";
 	isnewtrunk = 1;
 
-	add_event( _$('trunkstyleanalog') , 'click' , activateanalogvoip );
-	add_event( _$('trunkstylevoip') , 'click' , activateanalogvoip );
-	add_event( _$('trunkstylecustomvoip') , 'click' , activateanalogvoip );
+	ASTGUI.events.add( _$('trunkstyleanalog') , 'click' , activateanalogvoip );
+	ASTGUI.events.add( _$('trunkstylevoip') , 'click' , activateanalogvoip );
+	ASTGUI.events.add( _$('trunkstylecustomvoip') , 'click' , activateanalogvoip );
 
 	return tmp;
 }
@@ -492,7 +492,7 @@ function activateanalogvoip() {
 }
 
 function localajaxinit() {
-	add_event(document, 'mouseover', show_tooltip);
+	ASTGUI.events.add(document, 'mouseover', show_tooltip);
 	setWindowTitle("Service Providers");
 	_$('devices').contentEditable = 'false';
 	_$('zapchan').splitchar=',';
@@ -505,7 +505,7 @@ function localajaxinit() {
 	var _trunkstylecustomvoip = _$('trunkstylecustomvoip');
 	_trunkstylecustomvoip.onclick = null;
 
-	add_event( _$('custom_trunkname') , 'change' , function(){ 
+	ASTGUI.events.add( _$('custom_trunkname') , 'change' , function(){ 
 		_$('name').value = _$('custom_trunkname').value;
 			_$('save').disabled = false; 
 		}
@@ -613,7 +613,7 @@ function preparemenus(){
 	var menu_div = document.getElementById('mymenu') ;
 	menu_div.style.width="80";
 	menu_div.style.borderColor = "#eee #bbb #bbb #ddd";
-	add_event( document.body , "click", function(){ _$('mymenu').style.display="none"; } );
+	ASTGUI.events.add( document.body , "click", function(){ _$('mymenu').style.display="none"; } );
 
 	var menuitem1 = document.createElement('div');
 	menuitem1.innerHTML = "Edit" ;

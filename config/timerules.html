@@ -137,8 +137,8 @@ function get_timerules(b){
 				continue;
 			}
 			if( d.substr(0,17) == 'ringroups-custom-'){
-				ASTGUI.selectbox_push(_$('dest_match'), get_ringGroupName(c[d]) , d+",s,1");
-				ASTGUI.selectbox_push(_$('dest_nomatch'), get_ringGroupName(c[d]) , d+",s,1");
+				ASTGUI.selectbox.append(_$('dest_match'), get_ringGroupName(c[d]) , d+",s,1");
+				ASTGUI.selectbox.append(_$('dest_nomatch'), get_ringGroupName(c[d]) , d+",s,1");
 			}
 		}
 	}
@@ -254,7 +254,7 @@ function set_selectboxes(){
 	var updateselect = function( el,start,end ){
 		for( var s =start; s< end; s++){
 			s = tostring(s);
-			ASTGUI.selectbox_push(el,s,s);
+			ASTGUI.selectbox.append(el,s,s);
 		}
 		el.selectedIndex = -1;
 	}
@@ -262,14 +262,14 @@ function set_selectboxes(){
 	var update_select_menus = function(el){
 		var g;
 		for ( g=0; g <voicemenus.length; g++){
-			ASTGUI.selectbox_push(el,voicemenus[g].menuname,voicemenus[g].menucontextstring);
+			ASTGUI.selectbox.append(el,voicemenus[g].menuname,voicemenus[g].menucontextstring);
 		}
 		for ( g=0 ; g <user_extens.length; g++){
-			ASTGUI.selectbox_push(el,user_extens[g].username,user_extens[g].usercontextstring);
+			ASTGUI.selectbox.append(el,user_extens[g].username,user_extens[g].usercontextstring);
 		}
 
 		for( g in timebasedrules ){ if(timebasedrules.hasOwnProperty(g)){
-			ASTGUI.selectbox_push( el, "TimeRule -- " + timebasedrules[g].rulename , TIMERULES_CATEGORY + ',' + g + ',1' );
+			ASTGUI.selectbox.append( el, "TimeRule -- " + timebasedrules[g].rulename , TIMERULES_CATEGORY + ',' + g + ',1' );
 		}}
 	}
 

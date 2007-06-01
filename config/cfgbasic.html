@@ -67,9 +67,9 @@ function createpanels(){
 	var t,u,v;
 	var a = _$('configpanel');
 
-//	add_event(a, 'mouseover', my_tooltip);
-//	add_event(a, 'mouseout', default_tooltip);
-	add_event(a, 'click', fghjhhs);
+//	ASTGUI.events.add(a, 'mouseover', my_tooltip);
+//	ASTGUI.events.add(a, 'mouseout', default_tooltip);
+	ASTGUI.events.add(a, 'click', fghjhhs);
 
 	var panels = returnpanels();
 	var this_id ;
@@ -223,7 +223,7 @@ function show_Acctooltip(tip){
 
 function registerajax() {
 	fit_toScreen();
-	add_event( window , 'resize', fit_toScreen );
+	ASTGUI.events.add( window , 'resize', fit_toScreen );
 	pao();
 	astmanEngine = new Astman();
 	astmanEngine.setURL(asterisk_rawmanPath );

@@ -55,7 +55,7 @@ function create_file(){
 	parent.astmanEngine.run_tool( "touch " + asterisk_configfolder + fn, callback = function() {
 		cancel_file();
 		gui_feedback("Created file: '" + fn + "'",'blue');
-		ASTGUI.selectbox_push(_$('filenames'),fn, fn);
+		ASTGUI.selectbox.append(_$('filenames'),fn, fn);
 		_$('filenames').selectedIndex = _$('filenames').options.length -1 ;
 		loadfile();
 	});
@@ -109,11 +109,11 @@ function localajaxinit() {
 		var i = ASTGUI.displayHeight(); 
 		_$('file_output').style.height = (i -75); 
 	}
-	add_event( window , 'resize', adjust_toScreen);
+	ASTGUI.events.add( window , 'resize', adjust_toScreen);
 	top._$('mainscreen').width= 798;
 	setWindowTitle("File Editor");
 	load_recordedfiles();
-	add_event( _$('filenames') , 'change' , loadfile ) ;
+	ASTGUI.events.add( _$('filenames') , 'change' , loadfile ) ;
 	parent.loadscreen(this);
 }
 
@@ -123,7 +123,7 @@ function load_recordedfiles(){
 		onComplete: function(originalRequest){
 			// Add config files to the list of files
 			var recfiles = originalRequest.responseText.split("\n") ;
-			ASTGUI.selectbox_push(_$('filenames'),"Config Files", "");
+			ASTGUI.selectbox.append(_$('filenames'),"Config Files", "");
 			_$('filenames').options[0].style.fontWeight = "bold";
 			var file_name;
 			for( var i =0 ; i < recfiles.length ; i++){
@@ -134,7 +134,7 @@ function load_recordedfiles(){
 				if( recfiles[i] == "" ){ continue; }
 				if( recfiles[i].substr( (recfiles[i].length - 5), recfiles[i].length) != ".conf") { continue; }
 				file_name = recfiles[i].stripTags() ;
-				ASTGUI.selectbox_push(_$('filenames'),file_name, file_name);
+				ASTGUI.selectbox.append(_$('filenames'),file_name, file_name);
 			}
 		},
 		onFailure: function(t) { alert("Config Error: " + t.status + ": " + t.statusText); }
@@ -262,7 +262,7 @@ function fileparsed(b){
 			h.innerHTML = "&nbsp;&nbsp;[" + d + "]";
 			zz.appendChild(h);
 			//Rico.Corner.round(h_id, {compact:true});
-			add_event( _$(h_id) , 'click', showeditcontext );
+			ASTGUI.events.add( _$(h_id) , 'click', showeditcontext );
 
 			var i = document.createElement("div");
 			var i_id = "contextContent_" + d;
@@ -290,7 +290,7 @@ function fileparsed(b){
 			i.CONTEXTCONTENT_ROWS = rows ;
 			zz.appendChild(i);
 			//Rico.Corner.round("contextContent_" + d, {compact:true});
-			add_event( _$(i_id) , 'click', showeditcontextContent );
+			ASTGUI.events.add( _$(i_id) , 'click', showeditcontextContent );
 
 		}
 	}

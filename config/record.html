@@ -28,7 +28,7 @@
 var callbacks = {};
 
 function localajaxinit(){
-	add_event(document, 'mouseover', show_tooltip);
+	ASTGUI.events.add(document, 'mouseover', show_tooltip);
 	showdiv_statusmessage();
 	setWindowTitle("Record a Menu");
 	_$('message_text').innerHTML = "Please wait while the system <BR> Calls the specified Extension ... ";

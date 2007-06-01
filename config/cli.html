@@ -33,7 +33,7 @@ function localajaxinit() {
 		_$('cli_output').style.height = (i -60);
 	}
 	top._$('mainscreen').width= 798;
-	add_event( window , 'resize', adjust_toScreen);
+	ASTGUI.events.add( window , 'resize', adjust_toScreen);
 	setWindowTitle("Asterisk CLI Emulator");
 	parent.loadscreen(this);
 	_$('cli_cmd').value = "core show version";

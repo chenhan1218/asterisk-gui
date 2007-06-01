@@ -97,7 +97,7 @@ function getsysinfohtml(){
 
 
 function localajaxinit(){
-	add_event(document, 'mouseover', show_tooltip);
+	ASTGUI.events.add(document, 'mouseover', show_tooltip);
 	setWindowTitle("System Info");
 	// call the tool (sysinfo)
 	showdiv_statusmessage();

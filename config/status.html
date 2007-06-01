@@ -112,7 +112,7 @@ parent.eventeater.eventcd = function (msgs) {
 
 
 function localajaxinit(){
-	add_event(document, 'mouseover', show_tooltip);
+	ASTGUI.events.add(document, 'mouseover', show_tooltip);
 	setWindowTitle("Active Channels");
 	refreshChannelsList() ;
 	parent.astmanEngine.setEventCallback(parent.eventeater.eventcd );

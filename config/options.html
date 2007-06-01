@@ -65,7 +65,7 @@ function compare_passwords(){
 }
 
 function localajaxinit(){
-	add_event(document, 'mouseover', show_tooltip);
+	ASTGUI.events.add(document, 'mouseover', show_tooltip);
 	showdiv_statusmessage();
 	setWindowTitle("Options");
 

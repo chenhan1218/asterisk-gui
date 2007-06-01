@@ -82,7 +82,7 @@ function selectbox_add(selectbox_id, codec){
 	}
 
 	function addtosel(a,b,c){ // a is text, b is value, c is the select box id
-          ASTGUI.selectbox_push(_$(c),a, b);
+          ASTGUI.selectbox.append(_$(c),a, b);
 	}
 }
 function 	selectbox_remove(selectbox_id,codec){
