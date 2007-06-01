@@ -976,7 +976,7 @@ function advanced_cancel(){
 <div id="userscontent" STYLE="display:none; position: absolute; left: 20; top: 40; width:500; height:400;  background-color:#F4EFE5;   border-width: 1px; border-color: #7E5538; border-style: solid; z-index:5">
 	<table width="100%" cellpadding=0 cellspacing=0>
 		<TR bgcolor="#7E5538" style="background-image:url('images/title_gradient.gif');">
-		<TD  onmousedown="startDrag(event , 'userscontent');" id="userscontent_title" style="cursor: move;color:#FFFFFF; font-size: 12px; font-weight:bold;" align="center"></TD>
+		<TD  onmousedown="ASTGUI.startDrag(event , 'userscontent');" id="userscontent_title" style="cursor: move;color:#FFFFFF; font-size: 12px; font-weight:bold;" align="center"></TD>
 		<TD Height="20" width=15 align="center"  style="color:#FFFFFF; font-size: 12px; font-weight:bold;" onclick="$('cancel').click();">X</TD>
 		</TR>
 	</table>
@@ -1073,7 +1073,7 @@ function advanced_cancel(){
 <!-- Users content DIV -->
 <!-- Codecs content DIV -->
 <div id="codecs_content" STYLE="display:none; position: absolute; left: 20; top: 125; width:350; height:245;  background-color:#F4EFE5;   border-width: 1px; border-color: #7E5538; border-style: solid;z-index:5">
-	<table width="100%" cellpadding=0 cellspacing=0 onmousedown="startDrag(event , 'codecs_content');">
+	<table width="100%" cellpadding=0 cellspacing=0 onmousedown="ASTGUI.startDrag(event , 'codecs_content');">
 	<TR bgcolor="#7E5538"  style="background-image:url('images/title_gradient.gif');">
 		<TD Height="20" align="center" style="cursor: move"><font style="color:#FFFFFF; font-size: 12px; font-weight:bold;">Codec Preferences</font></TD>
 		<TD Height="20" align="right" style="cursor: move"><A href="#" onclick="hide_codecs();"><font style="color:#FFFFFF; font-size: 12px; font-weight:bold;">X</font></A></TD>
@@ -1110,7 +1110,7 @@ function advanced_cancel(){
 <!-- Codecs content DIV -->
 <!-- Advanced content DIV -->
 <div id="advanced_content" STYLE="display:none; position: absolute; left: 20; top: 125; width:350; height:197;  background-color:#F4EFE5;   border-width: 1px; border-color: #7E5538; border-style: solid;z-index:7">
-	<table width="100%" cellpadding=0 cellspacing=0 onmousedown="startDrag(event , 'advanced_content');">
+	<table width="100%" cellpadding=0 cellspacing=0 onmousedown="ASTGUI.startDrag(event , 'advanced_content');">
 	<TR bgcolor="#7E5538"  style="background-image:url('images/title_gradient.gif');">
 		<TD Height="20" align="center" style="cursor: move"><font style="color:#FFFFFF; font-size: 12px; font-weight:bold;">Advanced Settings</font></TD>
 		<TD Height="20" align="right" style="cursor: move"><A href="#" onclick="advanced_cancel();"><font style="color:#FFFFFF; font-size: 12px; font-weight:bold;">X</font></A></TD>

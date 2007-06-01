@@ -38,13 +38,55 @@ var asterisk_guiConfigFile = "guipreferences.conf"; // will be created in asteri
 var asterisk_configfolder = "/etc/asterisk/";
 var asterisk_guiListFiles = "sh " + asterisk_scriptsFolder + "listfiles" ;
 
-var dragdata = {};
 var asterisk_guiTDPrefix = "DID_";
 var TIMERULES_CATEGORY = 'timebasedrules';
 var isIE = false;
 if(document.attachEvent){ isIE= true; }
 
 var ASTGUI = { // the idea is to eventually move all the global variables and functions into this one object so that the global name space is not as cluttered as it is now.
+	startDrag : function(event, movethis ){
+		var initialcursorX, initialcursorY, initialwindowleft, initialwindowtop, maxleft, maxtop ;
+		var stopDrag = function(){
+			ASTGUI.events.remove( document , "mousemove" , movewindow ) ;
+			ASTGUI.events.remove( document , "mouseup" , stopDrag ) ;
+		};
+		var movewindow = function(event){
+			var x,y;
+			if(typeof window.scrollX != "undefined"){
+			x = event.clientX + window.scrollX;
+			y = event.clientY + window.scrollY;
+			}else{
+				x =  window.event.clientX + document.documentElement.scrollLeft + document.body.scrollLeft;
+				y = window.event.clientY + document.documentElement.scrollTop + document.body.scrollTop;
+			}
+			var tmp_top = initialwindowtop  + y - initialcursorY ; 
+			var tmp_left = initialwindowleft + x - initialcursorX;
+			if( tmp_left > 0 && tmp_left < maxleft ){ _$(movethis).style.left = tmp_left }
+			if( tmp_top > 0 && tmp_top < maxtop ){ _$(movethis).style.top  = tmp_top }
+		};
+	
+		if(typeof window.scrollX != "undefined"){
+			initialcursorX = event.clientX + window.scrollX;
+			initialcursorY = event.clientY + window.scrollY;
+		}else{
+			initialcursorX =  window.event.clientX + document.documentElement.scrollLeft + document.body.scrollLeft;
+			initialcursorY = window.event.clientY + document.documentElement.scrollTop + document.body.scrollTop;
+		}
+	
+		initialwindowleft = parseInt( _$(movethis).style.left ,10 ) ;
+		initialwindowtop = parseInt(_$(movethis).style.top ,10) ;
+	
+		if(typeof window.innerWidth != "undefined"){
+			maxleft = window.innerWidth - parseInt(_$(movethis).style.width , 10) ;
+			maxtop = window.innerHeight - parseInt(_$(movethis).style.height , 10) ;
+		}else{
+			maxleft = document.body.offsetWidth - parseInt(_$(movethis).style.width , 10) ;
+			maxtop = document.body.offsetWidth- parseInt(_$(movethis).style.height , 10) ;
+		}
+		ASTGUI.events.add( document , "mousemove" , movewindow ) ;
+		ASTGUI.events.add( document , "mouseup" , stopDrag ) ;
+	},
+
 	events: {
 		getTarget: function(x){
 			x = x || window.event;
@@ -237,13 +279,14 @@ function toJSO(z, p){
 	var a = [ ] ;
 	var  json_data = "";
 	var t = z.split("\n");
+	var f, h, catno, g, catname, j, subfield, v, subfield_a , subfield_b; 
 	for(var r=0; r < t.length ; r++){
-		var f = t[r].split("-") ;
-		var h = f[0].toLowerCase();
-		var catno = parseInt( f[1] ,10 );
+		f = t[r].split("-") ;
+		h = f[0].toLowerCase();
+		catno = parseInt( f[1] ,10 );
 		if( h == "category" ){
-			var g = t[r].indexOf(":") ; 
-			var catname = t[r].substr(g+1) ; // catogory 
+			g = t[r].indexOf(":") ; 
+			catname = t[r].substr(g+1) ; // category 
 			catname = catname.replace(/^\s*|\s*$/g,'') ; // trim 
 			if(!p){
 				a[catname] = [];
@@ -251,16 +294,16 @@ function toJSO(z, p){
 				a[catname] = {};
 			}
 		}else if ( h == "line" ){
-			var j = t[r].indexOf(":") ;
-			var subfield = t[r].substr(j+1) ; // subfield
+			j = t[r].indexOf(":") ;
+			subfield = t[r].substr(j+1) ; // subfield
 			subfield = subfield.replace(/^\s*|\s*$/g,'') ; // trim 
 
 			if(!p){
 				a[catname].push(subfield);
 			}else{
-				var v = subfield.indexOf("=");
-				var subfield_a = subfield.substring(0,v);//subfield variable
-				var subfield_b =  subfield.substr(v+1) ;//subfield variable value
+				v = subfield.indexOf("=");
+				subfield_a = subfield.substring(0,v);//subfield variable
+				subfield_b =  subfield.substr(v+1) ;//subfield variable value
 				a[catname][subfield_a] = subfield_b;
 			}
 		}
@@ -270,48 +313,6 @@ function toJSO(z, p){
 
 function setWindowTitle(a){
 	top.document.title = asterisk_guiappname + " -- " + a ;
-}
-
-function startDrag(event, movethis ){
-	dragdata.movethis = movethis ;
-	if(typeof window.scrollX != "undefined"){
-		dragdata.initialcursorX = event.clientX + window.scrollX;
-		dragdata.initialcursorY = event.clientY + window.scrollY;
-	}else{
-		dragdata.initialcursorX =  window.event.clientX + document.documentElement.scrollLeft + document.body.scrollLeft;
-		dragdata.initialcursorY = window.event.clientY + document.documentElement.scrollTop + document.body.scrollTop;
-	}
-	dragdata.initialwindowleft = parseInt( $(dragdata.movethis).style.left) ;
-	dragdata.initialwindowtop = parseInt($(dragdata.movethis).style.top) ;
-	if(typeof window.innerWidth != "undefined"){
-		dragdata.maxleft = window.innerWidth - parseInt($(dragdata.movethis).style.width) ;
-		dragdata.maxtop = window.innerHeight - parseInt($(dragdata.movethis).style.height) ;
-	}else{
-		dragdata.maxleft = document.body.offsetWidth - parseInt($(dragdata.movethis).style.width) ;
-		dragdata.maxtop = document.body.offsetWidth- parseInt($(dragdata.movethis).style.height) ;
-	}
-	ASTGUI.events.add( document , "mousemove" , movewindow ) ;
-	ASTGUI.events.add( document , "mouseup" , stopDrag ) ;
-}
-
-
-function stopDrag(){
-	ASTGUI.events.remove( document , "mousemove" , movewindow ) ;
-	ASTGUI.events.remove( document , "mouseup" , stopDrag ) ;
-}
-
-function movewindow(event){
-	if(typeof window.scrollX != "undefined"){
-	  x = event.clientX + window.scrollX;
-	  y = event.clientY + window.scrollY;
-	}else{
-		x =  window.event.clientX + document.documentElement.scrollLeft + document.body.scrollLeft;
-		y = window.event.clientY + document.documentElement.scrollTop + document.body.scrollTop;
-	}
-	  var tmp_top = dragdata.initialwindowtop  + y - dragdata.initialcursorY ; 
-	  var tmp_left = dragdata.initialwindowleft + x - dragdata.initialcursorX;
-	  if( tmp_left > 0 && tmp_left < dragdata.maxleft ){ $(dragdata.movethis).style.left = tmp_left  + "px"; }
-	  if( tmp_top > 0 && tmp_top < dragdata.maxtop ){ $(dragdata.movethis).style.top  = tmp_top + "px"; }
 }
 
 function check_patternonfields(fields){
