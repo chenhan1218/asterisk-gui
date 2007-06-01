@@ -43,6 +43,7 @@ phonecallbacks.loaded = function() {
 }
 
 function localajaxinit(){
+	add_event(document, 'mouseover', show_tooltip);
 	setWindowTitle("SIP");
 	for (var x =0; x < fieldnames.length; x++ ) {
 		widgets[fieldnames[x]] = _$(fieldnames[x]);
@@ -178,50 +179,41 @@ function disallow_all_refresh(){
 <div  style="height :425px;width : 530px ; overflow :auto;">
 	<table class="field_text" align="center" width="100%" cellpadding=3 cellspacing=0 border=0>
 	<tr><td align=right colspan=2>&nbsp;</td></tr>
-	<tr onmouseover="show_tooltip('en', 'sip_general', 0);">
-		<td align=right>Context:</td>
+	<tr>	<td align=right tip="en,sip_general,0">Context:</td>
 		<td>&nbsp;<input type='text' size=10 id='context' class="input8"></td>
 	</tr>
-	<tr onmouseover="show_tooltip('en', 'sip_general', 1);">
-		<td align=right>Realm for digest authentication:</td>
+	<tr>	<td align=right tip="en,sip_general,1">Realm for digest authentication:</td>
 		<td>&nbsp;<input type='text' id='realm' class="input8"></td>
 	</tr>
-	<tr onmouseover="show_tooltip('en', 'sip_general', 2);">
-		<td align=right>UDP Port to bind to:</td>
+	<tr>	<td align=right tip="en,sip_general,2">UDP Port to bind to:</td>
 		<td>&nbsp;<input type='text' size=4 id='bindport' class="input8"></td>
 	</tr>
-	<tr onmouseover="show_tooltip('en', 'sip_general', 3);">
-		<td align=right>IP address to bind to:</td>
+	<tr>	<td align=right tip="en,sip_general,3">IP address to bind to:</td>
 		<td>&nbsp;<input type='text' size=16 id='bindaddr' class="input8"></td>
 	</tr>
-	<tr onmouseover="show_tooltip('en', 'sip_general', 4);">
-		<td align=right>Domain:</td>
+	<tr>	<td align=right tip="en,sip_general,4">Domain:</td>
 		<td>&nbsp;<input type='text' size=18 id='domain' class="input8"></td>
 	</tr>
-	<tr onmouseover="show_tooltip('en', 'sip_general', 5);">
-		<td align=right>Allow guest calls:</td>
+	<tr>	<td align=right tip="en,sip_general,5">Allow guest calls:</td>
 		<td><input type='checkbox' dfalt='y' id='allowguest' ></td>
 	</tr>
-	<tr onmouseover="show_tooltip('en', 'sip_general', 6);">
-		<td align=right>Overlap dialing support:</td>
+	<tr>	<td align=right tip="en,sip_general,6">Overlap dialing support:</td>
 		<td><input type='checkbox' dfalt='y' id='allowoverlap'></td>
 	</tr>
-	<tr onmouseover="show_tooltip('en', 'sip_general', 7);">
-		<td align=right>Allow Transfers:</td>
+	<tr>	<td align=right tip="en,sip_general,7">Allow Transfers:</td>
 		<td><input type='checkbox' dfalt='y' id='allowtransfer'></td>
 	</tr>
-	<tr onmouseover="show_tooltip('en', 'sip_general', 8);">
-		<td align=right>Enable DNS SRV lookups (on outbound calls):</td>
+	<tr>	<td align=right tip="en,sip_general,8">Enable DNS SRV lookups (on outbound calls):</td>
 		<td><input type='checkbox' dfalt='y' id='srvlookup'></td>
 	</tr>
-	<tr onmouseover="show_tooltip('en', 'sip_general', 9);">
-		<td align=right>Pedantic:</td><td>
+	<tr>
+		<td align=right tip="en,sip_general,9">Pedantic:</td><td>
 		<input type='checkbox' dfalt='no' id='pedantic'></td>
 	</tr>
-	<tr bgcolor="#FFFFFF"  onmouseover="show_tooltip('en', 'sip_general', 10);">
-		<td colspan=2><B>&nbsp;Type of Service</B></td>
+	<tr bgcolor="#FFFFFF">
+		<td colspan=2 tip="en,sip_general,10"><B>&nbsp;Type of Service</B></td>
 	</tr>
-	<tr onmouseover="show_tooltip('en', 'sip_general', 11);"><td align=right>TOS for Signalling packets:</td>
+	<tr><td align=right tip="en,sip_general,11">TOS for Signalling packets:</td>
 		<td>&nbsp;<select size=1 id="tos_sip" class="input8">
 			<option value='ef'>ef</option>
 			<option value='CS0'>CS0</option>
@@ -247,8 +239,7 @@ function disallow_all_refresh(){
 			</select>
 		</td>		
 	</tr>
-	<tr onmouseover="show_tooltip('en', 'sip_general', 12);">
-		<td align=right>TOS for RTP audio packets:</td>
+	<tr>	<td align=right tip="en,sip_general,12">TOS for RTP audio packets:</td>
 		<td>&nbsp;<select size=1 id="tos_audio" class="input8">
 			<option value='ef'>ef</option>
 			<option value='CS0'>CS0</option>
@@ -274,8 +265,7 @@ function disallow_all_refresh(){
 			</select>
 		</td>
 	</tr>
-	<tr onmouseover="show_tooltip('en', 'sip_general', 13);">
-		<td align=right>TOS for RTP video packets:</td>
+	<tr>	<td align=right tip="en,sip_general,13">TOS for RTP video packets:</td>
 		<td>&nbsp;<select size=1 id="tos_video" class="input8">
 			<option value='ef'>ef</option>
 			<option value='CS0'>CS0</option>
@@ -301,64 +291,49 @@ function disallow_all_refresh(){
 			</select>
 		</td>
 	</tr>
-	<tr onmouseover="show_tooltip('en', 'sip_general', 14);">
-		<td align=right>Max Registration/Subscription Time:</td>
+	<tr>	<td align=right tip="en,sip_general,14">Max Registration/Subscription Time:</td>
 		<td>&nbsp;<input type='text' size=4 id='maxexpiry' dfalt="3600" pattern='^\d*$' class="input8"></td>
 	</tr>
-	<tr onmouseover="show_tooltip('en', 'sip_general', 15);">
-		<td align=right>Min Registration/Subscription Time:</td>
+	<tr>	<td align=right tip="en,sip_general,15">Min Registration/Subscription Time:</td>
 		<td>&nbsp;<input type='text' dfalt='60'  size=4 id='minexpiry' pattern='^\d*$' class="input8"></td>
 	</tr>
-	<tr onmouseover="show_tooltip('en', 'sip_general', 16);">
-		<td align=right> Default Incoming/Outgoing Registration Time:</td>
+	<tr>	<td align=right tip="en,sip_general,16"> Default Incoming/Outgoing Registration Time:</td>
 		<td>&nbsp;<input type='text'  size=4 id='defaultexpiry' pattern='^\d*$' class="input8"></td>
 	</tr>
-	<tr onmouseover="show_tooltip('en', 'sip_general', 17);">
-		<td align=right>Min RoundtripTime (T1 Time):</td>
+	<tr>	<td align=right tip="en,sip_general,17">Min RoundtripTime (T1 Time):</td>
 		<td>&nbsp;<input type='text' dfalt='100'  size=4 id='t1min' pattern='^\d*$' class="input8"></td>
 	</tr>
-	<tr onmouseover="show_tooltip('en', 'sip_general', 18);">
-		<td align=right>Override Notify MIME Type:</td>
+	<tr>	<td align=right tip="en,sip_general,18">Override Notify MIME Type:</td>
 		<td>&nbsp;<input type='text'  size=16 id='notifymimetype' class="input8"></td>
 	</tr>
-	<tr onmouseover="show_tooltip('en', 'sip_general', 19);">
-		<td align=right>Time between MWI Checks:</td>
+	<tr>	<td align=right tip="en,sip_general,19">Time between MWI Checks:</td>
 		<td>&nbsp;<input type='text'  size=4 id='checkmwi' class="input8"></td>
 	</tr>
-	<tr onmouseover="show_tooltip('en', 'sip_general', 20);">
-		<td align=right>Music On Hold Interpret:</td>
+	<tr>	<td align=right tip="en,sip_general,20">Music On Hold Interpret:</td>
 		<td>&nbsp;<input type='text'  size=12 id='mohinterpret' class="input8"></td>
 	</tr>
-	<tr onmouseover="show_tooltip('en', 'sip_general', 21);">
-		<td align=right>Music On Hold Suggest:</td>
+	<tr>	<td align=right tip="en,sip_general,21">Music On Hold Suggest:</td>
 		<td>&nbsp;<input type='text'  size=12 id='mohsuggest' class="input8"></td>
 	</tr>
-	<tr onmouseover="show_tooltip('en', 'sip_general', 22);">
-		<td align=right>Language:</td>
+	<tr>	<td align=right tip="en,sip_general,22">Language:</td>
 		<td>&nbsp;<input type='text' size=3 id='language' class="input8"></td>
 	</tr>
-	<tr onmouseover="show_tooltip('en', 'sip_general', 23);">
-		<td align=right>Enable Relaxed DTMF:</td>
+	<tr>	<td align=right tip="en,sip_general,23">Enable Relaxed DTMF:</td>
 		<td><input type='checkbox' id='relaxdtmf'></td>
 	</tr>
-	<tr onmouseover="show_tooltip('en', 'sip_general', 24);">
-		<td align=right>RTP TimeOut:</td>
+	<tr>	<td align=right tip="en,sip_general,24">RTP TimeOut:</td>
 		<td>&nbsp;<input type='text' size=4 id='rtptimeout' pattern='^\d*$' class="input8"></td>
 	</tr>
-	<tr onmouseover="show_tooltip('en', 'sip_general', 25);">
-		<td align=right>RTP HoldTimeOut:</td>
+	<tr>	<td align=right tip="en,sip_general,25">RTP HoldTimeOut:</td>
 		<td>&nbsp;<input type='text' size=4 id='rtpholdtimeout' pattern='^\d*$' class="input8"></td>
 	</tr>
-	<tr onmouseover="show_tooltip('en', 'sip_general', 26);">
-		<td align=right>Trust Remote Party ID:</td>
+	<tr>	<td align=right tip="en,sip_general,26">Trust Remote Party ID:</td>
 		<td><input type='checkbox' id='trustrpid'></td>
 	</tr>
-	<tr onmouseover="show_tooltip('en', 'sip_general', 27);">
-		<td align=right>Send Remote Party ID:</td>
+	<tr>	<td align=right tip="en,sip_general,27">Send Remote Party ID:</td>
 		<td><input type='checkbox' id='sendrpid'></td>
 	</tr>
-	<tr onmouseover="show_tooltip('en', 'sip_general', 28);">
-		<td align=right>Generate In-Band Ringing:</td>
+	<tr>	<td align=right tip="en,sip_general,28">Generate In-Band Ringing:</td>
 		<td>&nbsp;<select id='progressinband' class="input8">
 			<option value='never'>never</option>
 			<option value='no'>no</option>
@@ -366,20 +341,16 @@ function disallow_all_refresh(){
 			</select>
 		</td>
 	</tr>
-	<tr onmouseover="show_tooltip('en', 'sip_general', 29);">
-		<td align=right>Server UserAgent:</td>
+	<tr>	<td align=right tip="en,sip_general,29">Server UserAgent:</td>
 		<td>&nbsp;<input type='text' size=12 id='useragent' class="input8"></td>
 	</tr>
-	<tr onmouseover="show_tooltip('en', 'sip_general', 30);">
-		<td align=right>Allow Nonlocal Redirect:</td>
+	<tr>	<td align=right tip="en,sip_general,30">Allow Nonlocal Redirect:</td>
 		<td><input type='checkbox' id='promiscredir'></td>
 	</tr>
-	<tr onmouseover="show_tooltip('en', 'sip_general', 31);">
-		<td align=right>Add 'user=phone' to URI:</td>
+	<tr>	<td align=right tip="en,sip_general,31">Add 'user=phone' to URI:</td>
 		<td><input type='checkbox' id='usereqphone'></td>
 	</tr>
-	<tr onmouseover="show_tooltip('en', 'sip_general', 32);">
-		<td align=right>DTMF Mode:</td>
+	<tr>	<td align=right tip="en,sip_general,32">DTMF Mode:</td>
 		<td>&nbsp;<select id='dtmfmode' class="input8">
 			<option value='rfc2833'>rfc2833</option>
 			<option value='info'>info</option>
@@ -388,91 +359,79 @@ function disallow_all_refresh(){
 			</select>
 		</td>
 	</tr>
-	<tr onmouseover="show_tooltip('en', 'sip_general', 33);">
-		<td align=right>Send Compact SIP Headers:</td>
+	<tr>	<td align=right tip="en,sip_general,33">Send Compact SIP Headers:</td>
 		<td><input type='checkbox' id='compactheaders'></td>
 	</tr>
 	
-	<tr bgcolor="#FFFFFF"  onmouseover="show_tooltip('en', 'sip_general', 34);">
-		<td colspan=2><B>&nbsp;SIP Video Related</B></td>
+	<tr bgcolor="#FFFFFF">
+		<td colspan=2 tip="en,sip_general,34"><B>&nbsp;SIP Video Related</B></td>
 	</tr>
-	<tr onmouseover="show_tooltip('en', 'sip_general', 35);">
-		<td align=right>Max Bitrate (kb/s):</td>
+	<tr>	<td align=right tip="en,sip_general,35">Max Bitrate (kb/s):</td>
 		<td>&nbsp;<input type='text' size=4  dfalt=384 id='maxcallbitrate' class="input8"></td>
 	</tr>
-	<tr onmouseover="show_tooltip('en', 'sip_general', 36);">
-		<td align=right>Support for SIP Video:</td>
+	<tr>	<td align=right tip="en,sip_general,36">Support for SIP Video:</td>
 		<td><input type='checkbox' id='videosupport'></td>
 	</tr>
-	<tr onmouseover="show_tooltip('en', 'sip_general', 37);">
-		<td align=right>Generate Manager Events:</td>
+	<tr>	<td align=right tip="en,sip_general,37">Generate Manager Events:</td>
 		<td><input type='checkbox' id='callevents'></td>
 	</tr>
-	<tr onmouseover="show_tooltip('en', 'sip_general', 38);">
-		<td align=right>Reject NonMatching Invites:</td>
+	<tr>	<td align=right tip="en,sip_general,38">Reject NonMatching Invites:</td>
 		<td><input type='checkbox' id='alwaysauthreject'></td>
 	</tr>
-	<tr onmouseover="show_tooltip('en', 'sip_general', 39);">
-		<td align=right>NonStandard G.726 Support:</td>
+	<tr>	<td align=right tip="en,sip_general,39">NonStandard G.726 Support:</td>
 		<td><input type='checkbox' id='g726nonstandard'></td>
 	</tr>
 	
 	<tr bgcolor="#FFFFFF" height=15><td colspan=2></td></tr>
-	<tr  onmouseover="show_tooltip('en', 'sip_general', 40);" bgcolor="#FFFFFF" ><td colspan=2><B>&nbsp;T.38 FAX Passthrough Support</B></td></tr>
-	<tr  onmouseover="show_tooltip('en', 'sip_general', 41);" bgcolor="#FFFFFF">
-		<td align=right>T.38 fax (UDPTL) Passthrough:</td>
+	<tr bgcolor="#FFFFFF"><td colspan=2 tip="en,sip_general,40"><B>&nbsp;T.38 FAX Passthrough Support</B></td></tr>
+	<tr bgcolor="#FFFFFF">
+		<td align=right tip="en,sip_general,41">T.38 fax (UDPTL) Passthrough:</td>
 		<td><input type='checkbox' id='t38pt_udptl'></td>
 	</tr>
 	<tr bgcolor="#FFFFFF" height=15><td colspan=2></td></tr>
-	<tr onmouseover="show_tooltip('en', 'sip_general', 42);">
-		<td colspan=2><B>&nbsp;Sip Debugging</B></td>
+	<tr>
+		<td colspan=2 tip="en,sip_general,42"><B>&nbsp;Sip Debugging</B></td>
 	</tr>
-	<tr onmouseover="show_tooltip('en', 'sip_general', 43);">
-		<td align=right>Enable SIP debugging:</td>
+	<tr>	<td align=right tip="en,sip_general,43">Enable SIP debugging:</td>
 		<td><input type='checkbox' id='sipdebug'></td>
 	</tr>
-	<tr onmouseover="show_tooltip('en', 'sip_general', 44);">
-		<td align=right> Record SIP History:</td>
+	<tr>	<td align=right tip="en,sip_general,44"> Record SIP History:</td>
 		<td><input type='checkbox' id='recordhistory'></td>
 	</tr>
-	<tr onmouseover="show_tooltip('en', 'sip_general', 45);">
-		<td align=right>Dump SIP History:</td>
+	<tr>	<td align=right tip="en,sip_general,45">Dump SIP History:</td>
 		<td><input type='checkbox' id='dumphistory'></td>
 	</tr>
 	
 	<tr   height=15><td colspan=2></td></tr>
 	<tr bgcolor="#FFFFFF" height=15><td colspan=2></td></tr>
-	<tr onmouseover="show_tooltip('en', 'sip_general', 46);" bgcolor="#FFFFFF">
-		<td colspan=2><B>&nbsp;Status Notifications (Subscriptions) </B></td>
+	<tr bgcolor="#FFFFFF">
+		<td colspan=2 tip="en,sip_general,46"><B>&nbsp;Status Notifications (Subscriptions) </B></td>
 	</tr>
-	<tr onmouseover="show_tooltip('en', 'sip_general', 47);" bgcolor="#FFFFFF">
-		<td align=right>Subscribe Context:</td>
+	<tr bgcolor="#FFFFFF">
+		<td align=right tip="en,sip_general,47">Subscribe Context:</td>
 		<td>&nbsp;<input size=8 type='text' id='subscribecontext' class="input8"></td>
 	</tr>
-	<tr  onmouseover="show_tooltip('en', 'sip_general', 48);" bgcolor="#FFFFFF">
-		<td align=right>Allow Subscribe:</td>
+	<tr bgcolor="#FFFFFF">
+		<td align=right tip="en,sip_general,48">Allow Subscribe:</td>
 		<td><input type='checkbox' id='allowsubscribe'></td>
 	</tr>
-	<tr  onmouseover="show_tooltip('en', 'sip_general', 49);" bgcolor="#FFFFFF">
-		<td align=right>Notify on Ringing:</td>
+	<tr bgcolor="#FFFFFF">
+		<td align=right tip="en,sip_general,49">Notify on Ringing:</td>
 		<td><input type='checkbox' id='notifyringing'></td>
 	</tr>
 	
 	
 	<tr bgcolor="#FFFFFF" height=15><td colspan=2></td></tr>
-	<tr onmouseover="show_tooltip('en', 'sip_general', 50);">
-		<td colspan=2><B>&nbsp;Outbound SIP Registrations</B></td>
+	<tr>
+		<td colspan=2 tip="en,sip_general,50"><B>&nbsp;Outbound SIP Registrations</B></td>
 	</tr>
-	<tr onmouseover="show_tooltip('en', 'sip_general', 51);">
-		<td align=right>Register:</td>
+	<tr>	<td align=right tip="en,sip_general,51">Register:</td>
 		<td>&nbsp;<input size=18 type='text' id='register' class="input8"></td>
 	</tr>
-	<tr onmouseover="show_tooltip('en', 'sip_general', 52);">
-		<td align=right>Register TimeOut:</td>
+	<tr>	<td align=right tip="en,sip_general,52">Register TimeOut:</td>
 		<td>&nbsp;<input size=4 type='text' id='registertimeout' pattern='^\d*$' class="input8"></td>
 	</tr>
-	<tr onmouseover="show_tooltip('en', 'sip_general', 53);">
-		<td align=right>Register Attempts:</td>
+	<tr>	<td align=right tip="en,sip_general,53">Register Attempts:</td>
 		<td>&nbsp;<input size=4 type='text' id='registerattempts' pattern='^\d*$' class="input8"></td>
 	</tr>
 	<tr height=15><td colspan=2></td></tr>
@@ -480,27 +439,27 @@ function disallow_all_refresh(){
 	
 	
 	<tr bgcolor="#FFFFFF" height=15><td colspan=2></td></tr>
-	<tr  onmouseover="show_tooltip('en', 'sip_general', 54);" bgcolor="#FFFFFF">
-		<td colspan=2><B>&nbsp;NAT Support</B></td>
+	<tr bgcolor="#FFFFFF">
+		<td colspan=2 tip="en,sip_general,54"><B>&nbsp;NAT Support</B></td>
 	</tr>
-	<tr  onmouseover="show_tooltip('en', 'sip_general', 55);" bgcolor="#FFFFFF">
-		<td align=right>Extern ip:</td>
+	<tr bgcolor="#FFFFFF">
+		<td align=right tip="en,sip_general,55">Extern ip:</td>
 		<td>&nbsp;<input size=16 type='text' id='externip' class="input8"></td>
 	</tr>
-	<tr  onmouseover="show_tooltip('en', 'sip_general', 56);" bgcolor="#FFFFFF">
-		<td align=right>Extern Host:</td>
+	<tr bgcolor="#FFFFFF">
+		<td align=right tip="en,sip_general,56">Extern Host:</td>
 		<td>&nbsp;<input size=16 type='text' id='externhost' class="input8"></td>
 	</tr>
-	<tr  onmouseover="show_tooltip('en', 'sip_general', 57);" bgcolor="#FFFFFF">
-		<td align=right>Extern Refresh:</td>
+	<tr bgcolor="#FFFFFF">
+		<td align=right tip="en,sip_general,57">Extern Refresh:</td>
 		<td>&nbsp;<input size=4 type='text' id='externrefresh' class="input8"></td>
 	</tr>
-	<tr  onmouseover="show_tooltip('en', 'sip_general', 58);" bgcolor="#FFFFFF">
-		<td align=right>Local Network Address:</td>
+	<tr bgcolor="#FFFFFF">
+		<td align=right tip="en,sip_general,58">Local Network Address:</td>
 		<td>&nbsp;<input size=16 type='text' id='localnet' class="input8"></td>
 	</tr>
-	<tr  onmouseover="show_tooltip('en', 'sip_general', 59);" bgcolor="#FFFFFF"><td align=right>NAT mode:</td>
-		<td>&nbsp;<select id='nat' class="input8">
+	<tr bgcolor="#FFFFFF"><td align=right>NAT mode:</td>
+		<td tip="en,sip_general,59">&nbsp;<select id='nat' class="input8">
 			<option value='yes'>yes</option>
 			<option value='no'>no</option>
 			<option value='never'>never</option>
@@ -508,8 +467,8 @@ function disallow_all_refresh(){
 			</select>
 		</td>
 	</tr>
-	<tr  onmouseover="show_tooltip('en', 'sip_general', 60);" bgcolor="#FFFFFF"><td align=right>Allow RTP Reinvite:</td>
-		<td>&nbsp;<select id='canreinvite' class="input8">
+	<tr bgcolor="#FFFFFF"><td align=right>Allow RTP Reinvite:</td>
+		<td tip="en,sip_general,60">&nbsp;<select id='canreinvite' class="input8">
 				<option value='yes'>yes</option>
 				<option value='nonat'>nonat</option>
 				<option value='update'>update</option>
@@ -519,78 +478,67 @@ function disallow_all_refresh(){
 	<tr bgcolor="#FFFFFF" height=15><td colspan=2></td></tr>
 	
 	<tr   height=15><td colspan=2></td></tr>
-	<tr onmouseover="show_tooltip('en', 'sip_general', 61);">
-		<td colspan=2><B>&nbsp;Realtime Support</B></td>
+	<tr>
+		<td colspan=2 tip="en,sip_general,61"><B>&nbsp;Realtime Support</B></td>
 	</tr>
-	<tr onmouseover="show_tooltip('en', 'sip_general', 62);">
-		<td align=right>Auto-Expire Friends:</td>
+	<tr>	<td align=right tip="en,sip_general,62">Auto-Expire Friends:</td>
 		<td><input type='text' size=4 id='rtautoclear' class="input8"></td>
 	</tr>
-	<tr onmouseover="show_tooltip('en', 'sip_general', 63);">
-		<td align=right>Cache Friends:</td>
+	<tr>	<td align=right tip="en,sip_general,63">Cache Friends:</td>
 		<td><input type='checkbox' id='rtcachefriends'></td>
 	</tr>
-	<tr onmouseover="show_tooltip('en', 'sip_general', 64);">
-		<td align=right>Save SysName:</td>
+	<tr>	<td align=right tip="en,sip_general,64">Save SysName:</td>
 		<td><input type='checkbox' id='rtsavesysname'></td>
 	</tr>
-	<tr onmouseover="show_tooltip('en', 'sip_general', 65);">
-		<td align=right>Send Registry Updates:</td>
+	<tr>	<td align=right tip="en,sip_general,65">Send Registry Updates:</td>
 		<td><input type='checkbox' id='rtupdate'></td>
 	</tr>
-	<tr onmouseover="show_tooltip('en', 'sip_general', 66);">
-		<td align=right>Ignore Expired Peers:</td>
+	<tr>	<td align=right tip="en,sip_general,66">Ignore Expired Peers:</td>
 		<td><input type='checkbox' id='ignoreregexpire'></td>
 	</tr>
 	
 	<tr bgcolor="#FFFFFF" height=15><td colspan=2></td></tr>
-	<tr  onmouseover="show_tooltip('en', 'sip_general', 67);" bgcolor="#FFFFFF">
-		<td colspan=2><B>&nbsp;SIP Domain Support</B></td>
+	<tr bgcolor="#FFFFFF">
+		<td colspan=2 tip="en,sip_general,67"><B>&nbsp;SIP Domain Support</B></td>
 	</tr>
-	<tr  onmouseover="show_tooltip('en', 'sip_general', 69);" bgcolor="#FFFFFF">
-		<td align=right>From Domain:</td>
+	<tr bgcolor="#FFFFFF">
+		<td align=right tip="en,sip_general,69">From Domain:</td>
 		<td>&nbsp;<input type='text' size=18 id='fromdomain' class="input8"></td>
 	</tr>
-	<tr  onmouseover="show_tooltip('en', 'sip_general', 70);" bgcolor="#FFFFFF">
-		<td align=right>Auto Domain:</td>
+	<tr bgcolor="#FFFFFF">
+		<td align=right tip="en,sip_general,70">Auto Domain:</td>
 		<td><input type='checkbox' id='autodomain'></td>
 	</tr>
-	<tr  onmouseover="show_tooltip('en', 'sip_general', 71);" bgcolor="#FFFFFF">
-		<td align=right>Allow External Domains:</td>
+	<tr bgcolor="#FFFFFF">
+		<td align=right tip="en,sip_general,71">Allow External Domains:</td>
 		<td><input type='checkbox' id='allowexternaldomains'></td>
 	</tr>
-	<tr  onmouseover="show_tooltip('en', 'sip_general', 72);" bgcolor="#FFFFFF">
-		<td align=right>Allow External Invites:</td>
+	<tr bgcolor="#FFFFFF">
+		<td align=right tip="en,sip_general,72">Allow External Invites:</td>
 		<td><input type='checkbox' id='allowexternalinvites'></td>
 	</tr>
 	<tr bgcolor="#FFFFFF" height=15><td colspan=2></td></tr>
 	
 	<tr   height=15><td colspan=2></td></tr>
-	<tr onmouseover="show_tooltip('en', 'sip_general', 73);">
-		<td colspan=2><B>&nbsp;Jitter Buffer Configuration</B></td>
+	<tr>
+		<td colspan=2 tip="en,sip_general,73"><B>&nbsp;Jitter Buffer Configuration</B></td>
 	</tr>
-	<tr onmouseover="show_tooltip('en', 'sip_general', 74);">
-		<td align=right>Enable Jitter Buffer:</td>
+	<tr>	<td align=right tip="en,sip_general,74">Enable Jitter Buffer:</td>
 		<td><input type='checkbox' id='jbenable'></td>
 	</tr>
-	<tr onmouseover="show_tooltip('en', 'sip_general', 75);">
-		<td align=right>Force Jitter Buffer:</td>
+	<tr>	<td align=right tip="en,sip_general,75">Force Jitter Buffer:</td>
 		<td><input type='checkbox' id='jbforce'></td>
 	</tr>
-	<tr onmouseover="show_tooltip('en', 'sip_general', 76);">
-		<td align=right>Log Frames:</td>
+	<tr>	<td align=right tip="en,sip_general,76">Log Frames:</td>
 		<td><input type='checkbox' id='jblog'></td>
 	</tr>
-	<tr onmouseover="show_tooltip('en', 'sip_general', 77);">
-		<td align=right>Max Jitter Buffer:</td>
+	<tr>	<td align=right tip="en,sip_general,77">Max Jitter Buffer:</td>
 		<td>&nbsp;<input type='text' size=4 id='jbmaxsize' pattern='^\d*$' class="input8"></td>
 	</tr>
-	<tr onmouseover="show_tooltip('en', 'sip_general', 78);">
-		<td align=right>Resync Threshold:</td>
+	<tr>	<td align=right tip="en,sip_general,78">Resync Threshold:</td>
 		<td>&nbsp;<input type='text' size=4 id='jbresyncthreshold' pattern='^\d*$' class="input8"></td>
 	</tr>
-	<tr onmouseover="show_tooltip('en', 'sip_general', 79);">
-		<td align=right>Implementation:</td>
+	<tr>	<td align=right tip="en,sip_general,79">Implementation:</td>
 		<td>&nbsp;<select id='jbimpl' class="input8">
 			<option value='fixed'>fixed</option>
 			<option value='adaptive'>adaptive</option>

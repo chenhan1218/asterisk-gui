@@ -966,6 +966,7 @@ menuscallbacks.newcategory = function(t) {
 
 
 function localajaxinit() {
+	add_event(document, 'mouseover', show_tooltip);
 	showdiv_statusmessage();
 	setWindowTitle("Voice Menus");
 	_$('message_text').innerHTML ="Saving Changes...";
@@ -1180,23 +1181,22 @@ function free_mem(){
 			<select id='extensions' style='display:none;width:0px;height:0px'></select><select id='users' style='display:none;width:0px;height:0px'></select><select id='recorded_files' style='display:none;width:0px;height:0px'></select>
 			<table align="center" width="346">
 			<tr>
-				<td width="50" align=left class="field_text" onmouseover="show_tooltip('en', 'menus', 0);">Name:</td>
+				<td width="50" align=left class="field_text" tip="en,menus,0">Name:</td>
 				<td align=left class="field_text">
 					<input id='comment'  size=15 onKeyUp="enable_savecancel()"  pattern='^[a-zA-Z_0-9 ]*$' disabled  class="input8">&nbsp;
-					<span onmouseover="show_tooltip('en', 'menus', 5);">
-					Extension: <input id="alias_exten"  onKeyUp="enable_savecancel()"  size=4 disabled class="input8" onmouseover="show_tooltip('en', 'menus', 5);">
+					<span tip="en,menus,5">
+					Extension: <input id="alias_exten"  onKeyUp="enable_savecancel()"  size=4 disabled class="input8" tip="en,menus,5">
 					</span>
 				</td>
 			</tr>
-			<tr onmouseover="show_tooltip('en', 'menus', 1);">
-				<td class="field_text">Steps:<BR>
+			<tr>	<td class="field_text"  tip="en,menus,1">Steps:<BR>
 					<input  style='width:45'  type="button" id="stepUp" value="Up" disabled onClick="step_up()" class="buttonbold"><BR><BR>
 					<input  style='width:45' type="button" id="stepDown" value="Down" disabled onClick="step_down()" class="buttonbold">
 				</td>
 				<td rowspan=2><select id='steps' size=5  style="width:280px;" onClick="step_onselect()" disabled class="input8"></select></td>
 			</tr>
-			<tr  onmouseover="show_tooltip('en', 'menus',2);"><td colspan=2 class="field_text" height=4></td></tr>
-			<tr  onmouseover="show_tooltip('en', 'menus',2);"><td colspan=2 class="field_text">Add a new Step:</td></tr>
+			<tr><td colspan=2 class="field_text" height=4  tip="en,menus,2"></td></tr>
+			<tr><td colspan=2 class="field_text"  tip="en,menus,2">Add a new Step:</td></tr>
 			<tr><td colspan=2>
 
 				<NOBR>
@@ -1236,16 +1236,14 @@ function free_mem(){
 				</NOBR>
 			</td>
 			</tr>
-			<tr onmouseover="show_tooltip('en', 'menus', 3);">
-				<td colspan=2 class="field_text">
-				<label FOR="allowexten">
+			<tr>
+				<td colspan=2 class="field_text" tip="en,menus,3">
+				<label FOR="allowexten"  tip="en,menus,3">
 					&nbsp;<input type=checkbox id=allowexten disabled onclick="enable_savecancel()"> Dial other Extensions?
 				</label>&nbsp;</td>
 			</tr>
 			<tr>	<td colspan=2 height=6></td></tr>
-			<tr onmouseover="show_tooltip('en', 'menus', 4);">
-				<td colspan=2 class="field_text">'Keypress' Events</td>
-			</tr>
+			<tr>	<td colspan=2 class="field_text"  tip="en,menus,4">'Keypress' Events</td>	</tr>
 			<tr><td colspan=2>
 				<div  style="width=340px;">
 					<table cellpadding=3 cellspacing=0 width="100%">
@@ -1260,12 +1258,12 @@ function free_mem(){
 					for (var k=0; k< keys.length; k++){
 						var p =  generate_fields( keys[k] )  ; 
 						switch(keys[k]){
-							case 't': var omo =  "onmouseover=\"show_tooltip('en', 'menus', 6 );\" " ; break;
-							case 'i': var omo =  "onmouseover=\"show_tooltip('en', 'menus', 7 );\" " ; break;
+							case 't': var omo =  " tip=\"en,menus,6\" " ; break;
+							case 'i': var omo =  " tip=\"en,menus,7\" " ; break;
 							default: var omo =  "" ;
 						}
-						document.write("<TR bgcolor='#FFFFFF' " + omo + ">\n"
-						+ "<TD width=35 align=center><font style=\"font-size: 10pt\">"+keys[k]+"</font></TD>\n"
+						document.write("<TR bgcolor='#FFFFFF'>\n"
+						+ "<TD width=35 align=center " + omo + "><font style=\"font-size: 10pt\">"+keys[k]+"</font></TD>\n"
 						+ "<TD>" 
 						+ p
 						+ "\n </TD></TR>\n\n" );

@@ -97,6 +97,7 @@ function getsysinfohtml(){
 
 
 function localajaxinit(){
+	add_event(document, 'mouseover', show_tooltip);
 	setWindowTitle("System Info");
 	// call the tool (sysinfo)
 	showdiv_statusmessage();
@@ -123,9 +124,9 @@ function free_mem(){
 <table class="mainscreenTable" align="center">
 	<tr valign="top" height="18">	
 	<td align="left">
-		<a href="#" class="tab" onclick="return show_window(1);" id="tab1"  onmouseover="show_tooltip('en', 'sysinfo', 0);">General</a>&nbsp;&nbsp;
-		<a href="#" class="tab" onclick="return show_window(2);" id="tab2"  onmouseover="show_tooltip('en', 'sysinfo', 1);">ifconfig</a>&nbsp;&nbsp;
-		<a href="#" class="tab" onclick="return show_window(3);" id="tab3"  onmouseover="show_tooltip('en', 'sysinfo', 2);">Resources</a>&nbsp;&nbsp;
+		<a href="#" class="tab" onclick="return show_window(1);" id="tab1" tip="en,sysinfo,0">General</a>&nbsp;&nbsp;
+		<a href="#" class="tab" onclick="return show_window(2);" id="tab2" tip="en,sysinfo,1">ifconfig</a>&nbsp;&nbsp;
+		<a href="#" class="tab" onclick="return show_window(3);" id="tab3" tip="en,sysinfo,2">Resources</a>&nbsp;&nbsp;
 		<div id="sysinfohtml" style="display:none"></div>
 
 		<div id="information" style=" border: solid 0px black; background: transparent; padding: 4px; height:440px; width:95%;">

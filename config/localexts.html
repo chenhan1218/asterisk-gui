@@ -110,6 +110,7 @@ usercallbacks.loaded = function(){
 
 
 function localajaxinit(){
+	add_event(document, 'mouseover', show_tooltip);
 	if (top._$('AdvancedOptions').style.display == "none"){
 		_$('advbasic').innerHTML = '(Show Advanced Options)';
 	}else{
@@ -207,10 +208,10 @@ function flipadvbasic(){
 	<fieldset  style="width: 420px">
 		<legend>&nbsp;Agent Login Settings:&nbsp;</legend>
 		<table align='center' cellpadding=2 cellspacing=1>
-			<tr>	<td onmouseover="show_tooltip('en', 'users', 18);" class="field_text" align=right>Agent Login Extension : </td>
+			<tr>	<td tip="en,users,18" class="field_text" align=right>Agent Login Extension : </td>
 				<td><input type=text id="login_exten" size=5  class="input9"></td>
 			</tr>
-			<tr>	<td onmouseover="show_tooltip('en', 'users', 19);" class="field_text" align=right>Agent Callback Login Extension : </td>
+			<tr>	<td tip="en,users,19" class="field_text" align=right>Agent Callback Login Extension : </td>
 				<td><input type=text id="login_callback_exten" size=5  class="input9"></td>
 			</tr>
 		</table>
@@ -218,28 +219,28 @@ function flipadvbasic(){
 	<fieldset style="width: 420px">
 		<legend>&nbsp;Default Settings for a New User:&nbsp;</legend>
 		<table align='center' cellpadding=2 cellspacing=1>
-		<tr>	<td onmouseover="show_tooltip('en', 'users', 15);" class="field_text" align="right"><input type='checkbox' id='hasagent'></td>
-			<td onmouseover="show_tooltip('en', 'users', 15);" class="field_text" >Is Agent</td>
-			<td onmouseover="show_tooltip('en', 'users', 8);" align=right><input type='checkbox' id='hasvoicemail'></td>
-			<td onmouseover="show_tooltip('en', 'users', 8);" class="field_text" align="left">Voicemail</td>
+		<tr>	<td tip="en,users,15" class="field_text" align="right"><input type='checkbox' id='hasagent'></td>
+			<td tip="en,users,15" class="field_text" >Is Agent</td>
+			<td tip="en,users,8" align=right><input type='checkbox' id='hasvoicemail'></td>
+			<td tip="en,users,8" class="field_text" align="left">Voicemail</td>
 		</tr>
-		<tr>	<td onmouseover="show_tooltip('en', 'users', 9);" class="field_text" align="right"><input type='checkbox' id='hasdirectory'></td>
-			<td onmouseover="show_tooltip('en', 'users', 9);" class="field_text" >In Directory</td>
-			<td onmouseover="show_tooltip('en', 'users', 12);" align=right><input type='checkbox' id='hasmanager'></td>
-			<td onmouseover="show_tooltip('en', 'users', 12);" class="field_text" align="left">CTI</td>
+		<tr>	<td tip="en,users,9" class="field_text" align="right"><input type='checkbox' id='hasdirectory'></td>
+			<td tip="en,users,9" class="field_text" >In Directory</td>
+			<td tip="en,users,12" align=right><input type='checkbox' id='hasmanager'></td>
+			<td tip="en,users,12" class="field_text" align="left">CTI</td>
 		</tr>
-		<tr>	<td onmouseover="show_tooltip('en', 'users', 10);" class="field_text" align="right"><input type='checkbox' id='hassip'></td>
-			<td onmouseover="show_tooltip('en', 'users', 10);"  class="field_text" >SIP</td>
-			<td onmouseover="show_tooltip('en', 'users', 11);" align=right><input type='checkbox' id='hasiax'></td>
-			<td onmouseover="show_tooltip('en', 'users', 11);" class="field_text" align="left">IAX</td>
+		<tr>	<td tip="en,users,10" class="field_text" align="right"><input type='checkbox' id='hassip'></td>
+			<td tip="en,users,10"  class="field_text" >SIP</td>
+			<td tip="en,users,11" align=right><input type='checkbox' id='hasiax'></td>
+			<td tip="en,users,11" class="field_text" align="left">IAX</td>
 		</tr>
-		<tr>	<td onmouseover="show_tooltip('en', 'users', 13);" class="field_text" align="right"><input type='checkbox' id='callwaiting'></td>
-			<td onmouseover="show_tooltip('en', 'users', 13);" class="field_text" >Call Waiting</td>
-			<td onmouseover="show_tooltip('en', 'users', 14);" align=right><input type='checkbox' id='threewaycalling'></td>
-			<td onmouseover="show_tooltip('en', 'users', 14);" class="field_text" align="left">3-Way&nbsp;Calling</td>
+		<tr>	<td tip="en,users,13" class="field_text" align="right"><input type='checkbox' id='callwaiting'></td>
+			<td tip="en,users,13" class="field_text" >Call Waiting</td>
+			<td tip="en,users,14" align=right><input type='checkbox' id='threewaycalling'></td>
+			<td tip="en,users,14" class="field_text" align="left">3-Way&nbsp;Calling</td>
 		</tr>
-		<tr>	<td onmouseover="show_tooltip('en', 'users', 16);" align=right><input size='3' id='vmsecret' pattern='^[0-9*]*$'  class="input9">&nbsp;</td>
-			<td onmouseover="show_tooltip('en', 'users', 16);" class="field_text" align="left">VoiceMail Password</td>
+		<tr>	<td tip="en,users,16" align=right><input size='3' id='vmsecret' pattern='^[0-9*]*$'  class="input9">&nbsp;</td>
+			<td tip="en,users,16" class="field_text" align="left">VoiceMail Password</td>
 			<td align=right></td>
 			<td  class="field_text" align="left"></td>
 		</tr>

@@ -112,6 +112,7 @@ parent.eventeater.eventcd = function (msgs) {
 
 
 function localajaxinit(){
+	add_event(document, 'mouseover', show_tooltip);
 	setWindowTitle("Active Channels");
 	refreshChannelsList() ;
 	parent.astmanEngine.setEventCallback(parent.eventeater.eventcd );
@@ -135,13 +136,13 @@ function localajaxend(){
 <table class="mainscreenTable" align="center">
 	<tr height=32 valign="middle">
 		<td align="center">
-		<input type="submit" onClick="refreshChannelsList()" id="refresh" value="Refresh"  onmouseover="show_tooltip('en', 'status', 1);"  class="buttonbold">
-		<input type="submit" onClick="doTransfer()" id="transfer" value="Transfer..."  onmouseover="show_tooltip('en', 'status', 2);"  class="buttonbold">
-		<input type="submit" onClick="doHangup()" id="hangup" value="Hangup"  onmouseover="show_tooltip('en', 'status', 3);"  class="buttonbold">
+		<input type="submit" onClick="refreshChannelsList()" id="refresh" value="Refresh" tip="en,status,1" class="buttonbold">
+		<input type="submit" onClick="doTransfer()" id="transfer" value="Transfer..." tip="en,status,2" class="buttonbold">
+		<input type="submit" onClick="doHangup()" id="hangup" value="Hangup" tip="en,status,3" class="buttonbold">
 		</td>
 	</tr>
 	<tr>	<td colspan=3 valign="top">
-		<div id="channellist" class="chanlist" onmouseover="show_tooltip('en', 'status', 0);"></div>
+		<div id="channellist" class="chanlist" tip="en,status,0"></div>
 		</td>
 	</tr>
 </table>

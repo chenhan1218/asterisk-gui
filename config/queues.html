@@ -361,6 +361,7 @@ extencallbacks.format = function(t, x) {
 ////////
 
 function localajaxinit() {
+	add_event(document, 'mouseover', show_tooltip);
 	showdiv_statusmessage();
 	setWindowTitle("Call Queues");
 	$('queues').style.height = "415px";
@@ -418,16 +419,13 @@ function free_mem( ){
 			<tr valign="top">
 			<td>
 				<table>
-					<tr onmouseover="show_tooltip('en', 'queues', 0);" >
-						<td class="field_text">Queue:</td>
+					<tr>	<td class="field_text" tip="en,queues,0">Queue:</td>
 						<td>&nbsp;<input size='5' id='name' pattern='^\d*$' class="input8"></td>
 					</tr>
-					<tr onmouseover="show_tooltip('en', 'queues', 1);" >
-						<td class="field_text">Full Name:</td>
+					<tr>	<td class="field_text"  tip="en,queues,1">Full Name:</td>
 						<td>&nbsp;<input size='24' id='fullname' pattern='^[a-zA-Z_0-9 ]*$' class="input8"></td>
 					</tr>
-					<tr onmouseover="show_tooltip('en', 'queues', 2);" >
-						<td class="field_text">Strategy :</td><td>&nbsp;<select id='strategy' class="input8"> 
+					<tr>	<td class="field_text" tip="en,queues,2">Strategy :</td><td>&nbsp;<select id='strategy' class="input8"> 
 							<option value="ringall">ringall</option> 
 							<option value="roundrobin">roundrobin</option> 
 							<option value="leastrecent">leastrecent</option> 
@@ -437,8 +435,7 @@ function free_mem( ){
 							</select>
 						</td>
 					</tr>
-					<tr onmouseover="show_tooltip('en', 'queues', 3);" >
-						<td valign='top' class="field_text">Agents:</td>
+					<tr>	<td valign='top' class="field_text" tip="en,queues,3">Agents:</td>
 						<td><select multiple='true' id='agents' style='display:none;'></select>
 							<div id="testmulti" style='border:1px solid; font-size: 8pt; height:75px; width: 200px;overflow :auto;'></div>
 						</td>
@@ -451,43 +448,34 @@ function free_mem( ){
 				<fieldset style="width: 225px; ">
 					<legend>&nbsp;Queue Options:&nbsp;</legend>
 					<table>
-					<tr onmouseover="show_tooltip('en', 'queues', 5);" >
-						<td class="field_text">TimeOut:</td>
+					<tr>	<td class="field_text" tip="en,queues,5">TimeOut:</td>
 						<td>&nbsp;<input size='2' id='timeout'  pattern='^\d*$' class="input8"></td>
 					</tr>
-					<tr onmouseover="show_tooltip('en', 'queues', 6);" >
-						<td class="field_text">Wrapup Time:</td>
+					<tr>	<td class="field_text" tip="en,queues,6">Wrapup Time:</td>
 						<td>&nbsp;<input size='2' id='wrapuptime' pattern='^\d*$' class="input8"></td>
 					</tr>
-					<tr onmouseover="show_tooltip('en', 'queues', 9);" >
-						<td class="field_text">Max Len:</td>
+					<tr>	<td class="field_text" tip="en,queues,9">Max Len:</td>
 						<td>&nbsp;<input size='2' id='maxlen' pattern='^\d*$' class="input8"></td>
 					</tr>
-					<tr  onmouseover="show_tooltip('en', 'queues', 13);" >
-						<td class="field_text">Music On Hold: </td>
+					<tr>	<td class="field_text" tip="en,queues,13">Music On Hold: </td>
 						<td><select id="musicclass" class="input8"></select></td>
 					</tr>
 					</table>
 					<table>
-					<tr onmouseover="show_tooltip('en', 'queues', 7);" >
-						<td><input type=checkbox id='autofill'></td>
-						<td class="field_text">Auto Fill:</td>
+					<tr>	<td><input type=checkbox id='autofill'></td>
+						<td class="field_text" tip="en,queues,7">Auto Fill:</td>
 					</tr>
-					<tr onmouseover="show_tooltip('en', 'queues', 8);" >
-						<td><input type=checkbox id='autopause'></td>
-						<td class="field_text">Auto Pause:</td>
+					<tr>	<td><input type=checkbox id='autopause'></td>
+						<td class="field_text" tip="en,queues,8">Auto Pause:</td>
 					</tr>
-					<tr onmouseover="show_tooltip('en', 'queues', 10);" >
-						<td><input type=checkbox id='joinempty'></td>
-						<td class="field_text">JoinEmpty:</td>
+					<tr>	<td><input type=checkbox id='joinempty'></td>
+						<td class="field_text" tip="en,queues,10">JoinEmpty:</td>
 					</tr>
-					<tr onmouseover="show_tooltip('en', 'queues', 11);" >
-						<td><input type=checkbox id='leavewhenempty'></td>
-						<td class="field_text">LeaveWhenEmpty:</td>
+					<tr>	<td><input type=checkbox id='leavewhenempty'></td>
+						<td class="field_text" tip="en,queues,11">LeaveWhenEmpty:</td>
 					</tr>
-					<tr onmouseover="show_tooltip('en', 'queues', 12);" >
-						<td><input type=checkbox id='reportholdtime'></td>
-						<td class="field_text">Report Hold Time:</td>
+					<tr>	<td><input type=checkbox id='reportholdtime'></td>
+						<td class="field_text" tip="en,queues,12">Report Hold Time:</td>
 					</tr>
 					</table>
 				</fieldset>

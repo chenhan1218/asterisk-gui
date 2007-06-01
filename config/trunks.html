@@ -492,6 +492,7 @@ function activateanalogvoip() {
 }
 
 function localajaxinit() {
+	add_event(document, 'mouseover', show_tooltip);
 	setWindowTitle("Service Providers");
 	_$('devices').contentEditable = 'false';
 	_$('zapchan').splitchar=',';
@@ -981,10 +982,10 @@ function advanced_cancel(){
 	</table>
 <table align="center" width=450>
 <tr>
-<td onmouseover="show_tooltip('en', 'trunks', 0);"  class="field_text" width=130 valign="top" align="left">
+<td class="field_text" width=130 valign="top" align="left" tip="en,trunks,0">
 <!-- Provider type -->
 	<div id='cabinet' style='width:0;overflow:hidden'><select id='hiddenglobals'></select></div>
-	<fieldset>
+	<fieldset  tip="en,trunks,0">
 		<legend><B>&nbsp;Provider Type:&nbsp;</B></legend>
 		<LABEL FOR="trunkstyleanalog"><input name='trunkstyle' type='radio' id='trunkstyleanalog' value='analog'>Analog</LABEL><BR>
 		<LABEL FOR="trunkstylevoip"><input name='trunkstyle' type='radio' id='trunkstylevoip' value='voip'>VoIP</LABEL><BR>
@@ -1000,7 +1001,7 @@ function advanced_cancel(){
 <div id='analogvoipcontainer' style='height:350;overflow:hidden' align="center">
 <div id='analog' style='overflow:hidden' align="center">
 	<table align="center">
-	<tr onmouseover="show_tooltip('en', 'trunks', 2);"><td style='width:80px' valign='top' class="field_text">Lines:</td>
+	<tr><td style='width:80px' valign='top' class="field_text"  tip="en,trunks,2">Lines:</td>
 		<td>	<select size="12" multiple='true' id='zapchan' style='width:200px' class="input8"></select>
 			<div id="zapchan_analoglines" style='height:110px; width: 200px; overflow :auto; display:none'></div>
 		</td>
@@ -1010,18 +1011,15 @@ function advanced_cancel(){
 </div>
 <div id='voip' style='height:0;overflow:hidden' align="center">
 	<table align="center">
-	<tr  onmouseover="show_tooltip('en', 'trunks', 1);">
-		<td style='width:80px' valign='top' class="field_text">Provider:</td>
+	<tr>	<td style='width:80px' valign='top' class="field_text" tip="en,trunks,1">Provider:</td>
 		<td><select size='6' id='provider' style='width:200px' class="input8"></select></td>
 	</tr>
 	<tr><td colspan='2' align='center'><A href="#" id="providerlink"><img id='providerlogo' style='visibility:hidden;' border=0></A></td></tr>
 	<tr><td colspan='2' align='center'><div id='providerdesc' align='left' style='width:230px;height:100px; font-size:10px'></div></td></tr>
-	<tr onmouseover="show_tooltip('en', 'trunks', 3);">
-		<td class="field_text">Username:</td>
+	<tr>	<td class="field_text" tip="en,trunks,3">Username:</td>
 		<td><input size='20' id='username' class="input8"></td>
 	</tr>
-	<tr onmouseover="show_tooltip('en', 'trunks', 4);">
-		<td class="field_text">Password:</td>
+	<tr>	<td class="field_text" tip="en,trunks,4">Password:</td>
 		<td><input type="password" size='20' id='secret' class="input8"></td>
 	</tr>
 	</table>

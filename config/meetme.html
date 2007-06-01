@@ -338,6 +338,7 @@ usercallbacks.loaded = function() {
 }
 
 function localajaxinit() {
+	add_event(document, 'mouseover', show_tooltip);
 	setWindowTitle("Conferencing");
 
 	_$('extensions').contentEditable = 'false';
@@ -402,12 +403,10 @@ function free_mem( ){
 			<tr valign="top">
 			<td align=center  cellspacing='0' cellpadding='0' width=305 border=0>
 				<table cellspacing='2' cellpadding='1' width=200 border=0>
-				<tr onmouseover="show_tooltip('en', 'meetme', 0);" >
-					<td class="field_text">Extension:</td>
+				<tr>	<td class="field_text" tip="en,meetme,0">Extension:</td>
 					<td>&nbsp;<input size='5' id='name' pattern='^\d*$' class="input8"></td>
 				</tr>
-				<tr onmouseover="show_tooltip('en', 'meetme', 7);">
-					<td class="field_text">Room Override:</td>
+				<tr>	<td class="field_text" tip="en,meetme,7">Room Override:</td>
 					<td>&nbsp;<input size='5' id='room' pattern='^\d*$' class="input8"></td>
 				</tr>
 				<tr>	<td colspan='2' height=15></td>	</tr>
@@ -418,12 +417,10 @@ function free_mem( ){
 				<fieldset style="width: 225px;">
 					<legend>&nbsp;Password Settings:&nbsp;</legend>
 					<table align='center'>
-						<tr onmouseover="show_tooltip('en', 'meetme', 1);">
-							<td class="field_text">PIN Code:</td>
+						<tr>	<td class="field_text" tip="en,meetme,1">PIN Code:</td>
 							<td>&nbsp;<input size='5' id='pin' pattern='^\d*$' class="input8"></td>
 						</tr>
-						<tr onmouseover="show_tooltip('en', 'meetme', 2);">
-							<td class="field_text">Admin PIN Code:</td>
+						<tr>	<td class="field_text" tip="en,meetme,2">Admin PIN Code:</td>
 							<td>&nbsp;<input size='5' id='pinadmin' pattern='^\d*$' class="input8"></td>
 						</tr>
 					</table>
@@ -437,32 +434,25 @@ function free_mem( ){
 					<legend>&nbsp;Conference Room Options:&nbsp;</legend>
 
 					<table id='advancedi' align='center'>
-					<tr onmouseover="show_tooltip('en', 'meetme', 3);">
-						<td align=right><input type='checkbox' id='music'>&nbsp;</td>
+					<tr>	<td align=right tip="en,meetme,3"><input type='checkbox' id='music'>&nbsp;</td>
 						<td class="field_text">Play hold music for first caller</td>
 					</tr>
-					<tr onmouseover="show_tooltip('en', 'meetme', 4);">
-						<td align=right><input type='checkbox' id='menu'>&nbsp;</td>
+					<tr>	<td align=right tip="en,meetme,4"><input type='checkbox' id='menu'>&nbsp;</td>
 						<td class="field_text">Enable caller menu</td>
 					</tr>
-					<tr onmouseover="show_tooltip('en', 'meetme', 5);">
-						<td align=right><input type='checkbox' id='announce'>&nbsp;</td>
+					<tr>	<td align=right tip="en,meetme,5"><input type='checkbox' id='announce'>&nbsp;</td>
 						<td class="field_text">Announce callers</td>
 					</tr>
-					<tr onmouseover="show_tooltip('en', 'meetme', 11);">
-						<td align=right><input type='checkbox' id='record'>&nbsp;</td>
+					<tr>	<td align=right tip="en,meetme,11"><input type='checkbox' id='record'>&nbsp;</td>
 						<td class="field_text">Record conference</td>
 					</tr>
-					<tr onmouseover="show_tooltip('en', 'meetme', 8);">
-						<td align=right><input type='checkbox' id='quiet'>&nbsp;</td>
+					<tr>	<td align=right tip="en,meetme,8"><input type='checkbox' id='quiet'>&nbsp;</td>
 						<td class="field_text">Quiet Mode</td>
 					</tr>
-					<tr onmouseover="show_tooltip('en', 'meetme', 9);">
-						<td align=right><input type='checkbox' id='waitmarked'>&nbsp;</td>
+					<tr>	<td align=right tip="en,meetme,9"><input type='checkbox' id='waitmarked'>&nbsp;</td>
 						<td class="field_text">Wait for marked user</td>
 					</tr>
-					<tr onmouseover="show_tooltip('en', 'meetme', 10);">
-						<td align=right><input type='checkbox' id='setmarked'>&nbsp;</td>
+					<tr>	<td align=right tip="en,meetme,10"><input type='checkbox' id='setmarked'>&nbsp;</td>
 						<td class="field_text">Set marked user</td>
 					</tr>
 					</table>

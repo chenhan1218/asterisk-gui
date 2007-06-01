@@ -114,6 +114,7 @@ function getsysinfohtml(){
 
 
 function localajaxinit(){
+	add_event(document, 'mouseover', show_tooltip);
 	setWindowTitle("Resource and Monitoring Graphs");
 	var date = new Date() ; 
 	parent.loadscreen(this);
@@ -138,7 +139,7 @@ function free_mem(){
 	<tr valign="top" height="18">	
 			<td align="left">
 
-				<a href="#" class="tab" onclick="return show_window(1);" id="tab1"  onmouseover="show_tooltip('en', 'graph', 0);">CPU</a>&nbsp;&nbsp;
+				<a href="#" class="tab" onclick="return show_window(1);" id="tab1" tip="en,graph,0">CPU</a>&nbsp;&nbsp;
 				<div id="graphshtml" style="display:none"></div>
 
 				<div id="information" style=" border: solid 0px black; background: transparent; padding: 4px; height:440px; width:95%;">

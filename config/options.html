@@ -65,6 +65,7 @@ function compare_passwords(){
 }
 
 function localajaxinit(){
+	add_event(document, 'mouseover', show_tooltip);
 	showdiv_statusmessage();
 	setWindowTitle("Options");
 
@@ -88,11 +89,9 @@ function localajaxinit(){
 		<div id="channellist" class="chanlist_small" style="width: 320px; height:110">
 		<table cellpadding=2 cellspacing=2 border=0>
 			<tr>	<td colspan=2 height=5></td></tr>
-			<tr  onmouseover="show_tooltip('en', 'options', 1);">
-				<td class="field_text">Enter New Password:</td>
+			<tr>	<td class="field_text" tip="en,options,1">Enter New Password:</td>
 				<td><input type="password" id="newpass" size=16 onkeyup="compare_passwords()"  class="input9"></td></tr>
-			<tr  onmouseover="show_tooltip('en', 'options', 2);">
-				<td class="field_text">Retype New Password:</td>
+			<tr>	<td class="field_text"  tip="en,options,2">Retype New Password:</td>
 				<td><input type="password" id="newpass_rep" size=16 onkeyup="compare_passwords()"  class="input9"></td>
 			</tr>
 			<tr>	<td colspan=2 align="center" height=20></td></tr>

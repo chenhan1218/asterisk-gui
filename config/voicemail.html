@@ -264,6 +264,7 @@ function checklength(){
 
 
 function localajaxinit() {
+	add_event(document, 'mouseover', show_tooltip);
 	setWindowTitle("Voicemail");
 	//$('advancedi').style.width = $('split').width - 60;
 
@@ -317,21 +318,17 @@ function free_mem( ){
 			<select id='hiddenvoicemail' style='display:none;'></select>
 			<div>
 				<table cellspacing='0' cellpadding='0' width=300>
-				<tr onmouseover="show_tooltip('en', 'voicemail', 0);" >
-					<td class="field_text">Extension for checking messages:</td>
+				<tr>	<td class="field_text" tip="en,voicemail,0">Extension for checking messages:</td>
 					<td>&nbsp;<input size='5' id='name' pattern='^\d*$' onKeyUp="$('cancel').disabled=false;"  class="input8" ></td>
 				</tr>
-				<tr onmouseover="show_tooltip('en', 'voicemail', 1);" >
-					<td class="field_text">Attach recordings to e-mail:</td>
+				<tr>	<td class="field_text" tip="en,voicemail,1">Attach recordings to e-mail:</td>
 					<td><input type='checkbox' id='attach'></td>
 				</tr>
 
-				<tr onmouseover="show_tooltip('en', 'voicemail', 13);">
-					<td class="field_text">Max&nbsp;greeting&nbsp;(seconds)</td>
+				<tr>	<td class="field_text" tip="en,voicemail,13">Max&nbsp;greeting&nbsp;(seconds)</td>
 					<td>&nbsp;<input size=4 id='maxgreet' pattern='^\d*$' class="input8"></td>
 				</tr>
-				<tr onmouseover="show_tooltip('en', 'voicemail', 9);" >
-					<td class="field_text" >Dial&nbsp;'0'&nbsp;for&nbsp;Operator:</td>
+				<tr>	<td class="field_text" tip="en,voicemail,9">Dial&nbsp;'0'&nbsp;for&nbsp;Operator:</td>
 					<td><input type='checkbox' id='operator'></td>
 				</tr>
 				</table>
@@ -340,8 +337,7 @@ function free_mem( ){
 			<div>	<fieldset  style="width: 225px;">
 				<legend>&nbsp;Message Options:&nbsp;</legend>
 				<table align='center' cellpadding=1 cellspacing=1 border=0 width=270>
-					<tr onmouseover="show_tooltip('en', 'voicemail', 10);">
-						<td class="field_text" align=right>Message&nbsp;Format:</td>
+					<tr>	<td class="field_text" align=right tip="en,voicemail,10">Message&nbsp;Format:</td>
 						<td>
 							<select id='attachfmt' class="input8">
 							<option value='wav49'>WAV (GSM)</option>
@@ -350,8 +346,7 @@ function free_mem( ){
 							</select>
 						</td>
 					</tr>
-					<tr onmouseover="show_tooltip('en', 'voicemail', 5);">
-						<td class="field_text" valign=top align=right>Maximum messages :<BR>(per folder)&nbsp;</td>
+					<tr>	<td class="field_text" valign=top align=right tip="en,voicemail,5">Maximum messages :<BR>(per folder)&nbsp;</td>
 						<td  valign=top>&nbsp;<select id='maxmsg' class="input8">
 							<option value='10'>10</option>
 							<option value='25'>25</option>
@@ -362,8 +357,7 @@ function free_mem( ){
 							</select>
 						</td>
 					</tr>
-					<tr onmouseover="show_tooltip('en', 'voicemail', 6);">
-						<td class="field_text"  align=right>Max message time:</td>
+					<tr>	<td class="field_text"  align=right tip="en,voicemail,6">Max message time:</td>
 						<td>&nbsp;<select id='maxmessage' class="input8">
 							<option value='60'>1 minute</option>
 							<option value='120'>2 minutes</option>
@@ -374,8 +368,7 @@ function free_mem( ){
 							</select>
 						</td>
 					</tr>
-					<tr onmouseover="show_tooltip('en', 'voicemail', 7);">
-						<td class="field_text"  align=right>Min message time:</td>
+					<tr>	<td class="field_text"  align=right tip="en,voicemail,7">Min message time:</td>
 						<td>&nbsp;<select id='minmessage' class="input8">
 							<option value='0'>No minimum</option>
 							<option value='1'>1 second</option>
@@ -395,26 +388,21 @@ function free_mem( ){
 			<div>	<fieldset  style="width: 225px;">
 				<legend>&nbsp;Playback Options:&nbsp;</legend>
 				<table align='center' cellpadding=1 cellspacing=0 border=0 width=270>
-				<tr onmouseover="show_tooltip('en', 'voicemail', 4);" >
-					<td><input type='checkbox' id='emailonly'></td>
-					<td class="field_text">Send messages by e-mail only</td>
+				<tr>	<td><input type='checkbox' id='emailonly'></td>
+					<td class="field_text" tip="en,voicemail,4">Send messages by e-mail only</td>
 				</tr>
 
-				<tr onmouseover="show_tooltip('en', 'voicemail', 2);" >
-					<td><input type='checkbox' id='saycid'></td>
-					<td class="field_text">Say message Caller-ID</td>
+				<tr>	<td><input type='checkbox' id='saycid'></td>
+					<td class="field_text" tip="en,voicemail,2">Say message Caller-ID</td>
 				</tr>
-				<tr onmouseover="show_tooltip('en', 'voicemail', 3);" >
-					<td><input type='checkbox' id='sayduration'></td>
-					<td class="field_text">Say message duration</td>
+				<tr>	<td><input type='checkbox' id='sayduration'></td>
+					<td class="field_text" tip="en,voicemail,3">Say message duration</td>
 				</tr>
-				<tr onmouseover="show_tooltip('en', 'voicemail', 12);" >
-					<td><input type='checkbox' id='envelope'></td>
-					<td class="field_text">Play&nbsp;envelope</td>
+				<tr>	<td><input type='checkbox' id='envelope'></td>
+					<td class="field_text" tip="en,voicemail,12">Play&nbsp;envelope</td>
 				</tr>
-				<tr onmouseover="show_tooltip('en', 'voicemail', 11);" >
-					<td><input type='checkbox' id='review'></td>
-					<td class="field_text">Allow&nbsp;users&nbsp;to&nbsp;review</td>
+				<tr>	<td><input type='checkbox' id='review'></td>
+					<td class="field_text" tip="en,voicemail,11">Allow&nbsp;users&nbsp;to&nbsp;review</td>
 				</tr>
 				</table>
 				</fieldset>
