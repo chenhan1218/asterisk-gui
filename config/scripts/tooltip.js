@@ -3,10 +3,13 @@
 
 var tooltips = new Object;
 
-function show_tooltip(lang, file,tip){
-	top._$('tooltip').innerHTML = 	tooltips[file][lang][tip]; 
+function show_tooltip(event){
+ 	var f = ASTGUI.events.getTarget(event) ;
+	if( f.hasAttribute('tip') ){
+		var s = f.getAttribute('tip').split(",");
+		top._$('tooltip').innerHTML = tooltips[s[1]][s[0]][s[2]]; 
+	}
 }
-
 
 //	Tooltips for users.html in english
 	tooltips['users']= new Object;

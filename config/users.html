@@ -226,6 +226,8 @@ function dialplans_loaded(b){
 }
 
 function localajaxinit() {
+	add_event(document, 'mouseover', show_tooltip);
+
 	/*
 	// Automatically open the related panel - like when this page is called using a back button
 	// This is working .. but is causing the current page to load twice.
@@ -293,15 +295,15 @@ function free_mem(){
 			<tr valign="top">
 			<td align="center">
 				<table>
-				<tr onmouseover="show_tooltip('en', 'users', 0);" ><td class="field_text">Extension:</td><td><input size='5' id='name' pattern='^\d*$' class="input8"></td></tr>
-				<tr onmouseover="show_tooltip('en', 'users', 1);"><td class="field_text">Name:</td><td><input size='20' id='fullname' pattern='^[a-zA-Z_0-9 ]*$' class="input8"></td></tr>
-				<tr onmouseover="show_tooltip('en', 'users', 2);"><td class="field_text">Password:</td><td><input size='5' id='secret' pattern='^[a-zA-Z_0-9]*$'  class="input8"></td></tr>
-				<tr onmouseover="show_tooltip('en', 'users', 16);"><td class="field_text">VM Password:</td><td><input size='5' id='vmsecret' pattern='^[0-9*]*$'  class="input8"></td></tr>
-				<tr onmouseover="show_tooltip('en', 'users', 3);"><td class="field_text">E-mail:</td><td><input size='20' id='email' pattern='^[0-9a-zA-Z\.\-\_\@]*$' class="input8"></td></tr>
-				<tr onmouseover="show_tooltip('en', 'users', 4);"><td class="field_text">Caller ID:</td><td><input size='12' id='cid_number'  pattern='^[\d\-]*$' class="input8"></td></tr>
-				<tr onmouseover="show_tooltip('en', 'users', 5);"><td class="field_text">Analog Phone:</td><td><select size="1" id='zapchan' style='width:120px' class="input8"></select>
+				<tr><td class="field_text" tip="en,users,0">Extension:</td><td><input size='5' id='name' pattern='^\d*$' class="input8"></td></tr>
+				<tr><td class="field_text" tip="en,users,1">Name:</td><td><input size='20' id='fullname' pattern='^[a-zA-Z_0-9 ]*$' class="input8"></td></tr>
+				<tr><td class="field_text" tip="en,users,2">Password:</td><td><input size='5' id='secret' pattern='^[a-zA-Z_0-9]*$'  class="input8"></td></tr>
+				<tr><td class="field_text" tip="en,users,16">VM Password:</td><td><input size='5' id='vmsecret' pattern='^[0-9*]*$'  class="input8"></td></tr>
+				<tr><td class="field_text" tip="en,users,3">E-mail:</td><td><input size='20' id='email' pattern='^[0-9a-zA-Z\.\-\_\@]*$' class="input8"></td></tr>
+				<tr><td class="field_text" tip="en,users,4">Caller ID:</td><td><input size='12' id='cid_number'  pattern='^[\d\-]*$' class="input8"></td></tr>
+				<tr><td class="field_text" tip="en,users,5">Analog Phone:</td><td><select size="1" id='zapchan' style='width:120px' class="input8"></select>
 				<span id="noanaloglines" style="display:none" class="field_text"><I>&nbsp;No Analog lines detected.</I></span></td></tr>
-				<tr onmouseover="show_tooltip('en', 'users', 6);"><td class="field_text">Dial Plan:</td><td><select size='1' id='context' style='width:120px' class="input8"></select></td></tr>
+				<tr><td class="field_text" tip="en,users,6">Dial Plan:</td><td><select size='1' id='context' style='width:120px' class="input8"></select></td></tr>
 				<tr><td colspan='2' align='center'><input type='hidden' id='mailbox'><input type='hidden' id='group'><input type='checkbox' id='registersip' style="display:none"><input type='checkbox' id='registeriax' style="display:none"></td></tr>
 				</table>
 			</td>
@@ -311,40 +313,40 @@ function free_mem(){
 				<fieldset style="width: 225px; ">
 					<legend>&nbsp;Extension Options:&nbsp;</legend>
 				<table align='center'  width='220'  cellpadding=1 cellspacing=1>
-				<tr onmouseover="show_tooltip('en', 'users', 8);">
+				<tr>
 					<td width=40 align=right><input type='checkbox' id='hasvoicemail'></td>
-					<td class="field_text">Voicemail</td>
+					<td class="field_text" tip="en,users,8">Voicemail</td>
 				</tr>
-				<tr onmouseover="show_tooltip('en', 'users', 9);">
+				<tr>
 					<td align=right><input type='checkbox' id='hasdirectory'></td>
-					<td class="field_text">In Directory</td>
+					<td class="field_text" tip="en,users,9">In Directory</td>
 				</tr>
-				<tr onmouseover="show_tooltip('en', 'users', 10);">
+				<tr>
 					<td align=right><input type='checkbox' id='hassip'></td>
-					<td class="field_text">SIP</td>
+					<td class="field_text" tip="en,users,10">SIP</td>
 				</tr>
-				<tr onmouseover="show_tooltip('en', 'users', 11);">
+				<tr>
 					<td align=right><input type='checkbox' id='hasiax'></td>
-					<td class="field_text">IAX</td>
+					<td class="field_text" tip="en,users,11">IAX</td>
 				</tr>
-				<tr onmouseover="show_tooltip('en', 'users', 12);">
+				<tr>
 					<td align=right><input type='checkbox' id='hasmanager'></td>
-					<td class="field_text">CTI</td>
+					<td class="field_text" tip="en,users,12">CTI</td>
 				</tr>
-				<tr onmouseover="show_tooltip('en', 'users', 13);">
+				<tr>
 					<td align=right><input type='checkbox' id='callwaiting'></td>
-					<td class="field_text">Call&nbsp;Waiting</td>
+					<td class="field_text" tip="en,users,13">Call&nbsp;Waiting</td>
 				</tr>
-				<tr onmouseover="show_tooltip('en', 'users', 14);">
+				<tr>
 					<td align=right><input type='checkbox' id='threewaycalling'></td>
-					<td class="field_text">3-Way&nbsp;Calling</td>
+					<td class="field_text" tip="en,users,14">3-Way&nbsp;Calling</td>
 				</tr>
-				<tr onmouseover="show_tooltip('en', 'users', 15);">
+				<tr>
 					<td align=right>
 						<input type='checkbox' id='hasagent' dfalt='1'>
 						<input type='hidden' dfalt='dynamic' id='host'>
 					</td>
-					<td class="field_text">Is&nbsp;Agent</td>
+					<td class="field_text" tip="en,users,15">Is&nbsp;Agent</td>
 				</tr>
 				</table>
 				</fieldset>
