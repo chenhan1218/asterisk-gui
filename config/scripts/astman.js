@@ -61,8 +61,8 @@ var ASTGUI = { // the idea is to eventually move all the global variables and fu
 			}
 			var tmp_top = initialwindowtop  + y - initialcursorY ; 
 			var tmp_left = initialwindowleft + x - initialcursorX;
-			if( tmp_left > 0 && tmp_left < maxleft ){ _$(movethis).style.left = tmp_left }
-			if( tmp_top > 0 && tmp_top < maxtop ){ _$(movethis).style.top  = tmp_top }
+			if( tmp_left > 0 && tmp_left < maxleft ){ _$(movethis).style.left = tmp_left; }
+			if( tmp_top > 0 && tmp_top < maxtop ){ _$(movethis).style.top  = tmp_top; }
 		};
 	
 		if(typeof window.scrollX != "undefined"){
@@ -316,9 +316,10 @@ function setWindowTitle(a){
 }
 
 function check_patternonfields(fields){
-	// for checking validity of field contents before form submitting 
+	// for checking validity of field contents before form submitting
+	var x; 
 	for (var i=0; i < fields.length; i++){
-		var x = document.getElementById(fields[i]);
+		x = document.getElementById(fields[i]);
 		if( x.getAttribute('pattern') && !check_pattern(x.getAttribute('pattern') , x.value)   ){
 			gui_alert("Invalid Characters in "+ fields[i]);
 			x.focus();
@@ -342,7 +343,8 @@ function showdiv_statusmessage(){
 	_hs.borderWidth= "1px";
 	_hs.borderColor= "#7E5538";
 	_hs.borderStyle= "solid";
-	h.innerHTML = "<BR><BR><TABLE border=0 cellpadding=0 cellspacing=3 align=\"center\"> <TR>	<TD><img src=\"images/loading.gif\"></TD> <TD valign=\"middle\" align=\"center\">&nbsp;&nbsp;<div id=\"message_text\"></div></TD> </TR> </TABLE> ";
+	h.innerHTML = '<BR><BR><TABLE border=0 cellpadding=0 cellspacing=3 align=center><TR><TD><img src=images/loading.gif></TD>'+
+			'<TD valign=middle align=center>&nbsp;&nbsp;<div id=message_text></div></TD></TR></TABLE> ';
 	document.body.appendChild(h);
 }
 
@@ -364,7 +366,7 @@ function combo_box(a, b, c ){
 		}else if( event.keyCode == KEYDN ||  event.keyCode == KEYUP ){
 			combo_selectbox.focus();
 			return false;
-		}else if( event.keyCode == BKSPACE && combo_text.value.length ==0 ){
+		}else if( event.keyCode == BKSPACE && !combo_text.value.length ){
 			combo_selectdiv.style.display = "none";
 			return false;
 		}else{
@@ -406,8 +408,8 @@ function combo_box(a, b, c ){
 	}
 
 	combo_selectdiv.style.position ="absolute";
-	combo_selectdiv.style.top = "0px";
-	combo_selectdiv.style.left = "0px";
+	combo_selectdiv.style.top = 0;
+	combo_selectdiv.style.left = 0;
 //	combo_selectdiv.style.z-index = 10000;
 	combo_selectdiv.style.display = "none";
 
@@ -436,20 +438,17 @@ function combo_box(a, b, c ){
 }
 
 function  InArray(search_array, searchstring ){
-	var i = search_array.length
-	if( i>0){
+	if( !search_array.length){ 
 		for(i=0; i < search_array.length; i++ ){
-			if( search_array[i] === searchstring )
-				return true;
+			if( search_array[i] === searchstring )return true;
 		}
 	}
-
-	return false;	
+	return false;
 }
 
 function objcopy(orig) {
-	var copy = new Object;
-	for (i in orig) {
+	var copy = {};
+	for (var i in orig) {
 		if (typeof orig[i] == 'object') {
 			copy[i] = objcopy(orig[i]);
 		} else {
@@ -457,7 +456,7 @@ function objcopy(orig) {
 		}
 	}
 	return copy;
-};
+}
 
 function do_compare(box, a, b){
 	var ret;
@@ -498,17 +497,17 @@ function reformat_option(box, index){
 }
 
 function update_option(box, index){
-	var v, tmp;
+	var v, tmp, res;
 	var cfg = box.stored_config;
 	v = box.options[index].value;
 	tmp = v.split(']');
 	box.remove(index);
 	if (tmp.length > 1) {
 		res = box.callbacks.format(cfg.catbyname[tmp[0]], tmp[1]);
-		insert_option(box, res, tmp[0] + "]" + tmp[1], cfg.catbyname[tmp[0]].subfields[tmp[1]]['name']); 
+		insert_option(box, res, tmp[0] + "]" + tmp[1], cfg.catbyname[tmp[0]].subfields[tmp[1]].name); 
 	} else {
 		res = box.callbacks.format(cfg.catbyname[v]);
-		insert_option(box, res, cfg.catbyname[v].name, cfg.categories[x].name);
+		insert_option(box, res, cfg.catbyname[v].name, cfg.categories[v].name);
 	}
 }
 
@@ -528,7 +527,7 @@ function update_box(box) {
 				insert_option(box,res,cfg.categories[x].name,cfg.categories[x].name);
 			}
 			for (y=0;cfg.categories[x].names[y];y++) {
-				cfg.categories[x].subfields[y] = new Object;
+				cfg.categories[x].subfields[y] = {};
 				res = box.callbacks.format(cfg.categories[x], y);
 				insert_option(box,res,cfg.categories[x].name + "]" + y,cfg.categories[x].subfields[y]['name']);
 			}
@@ -560,7 +559,7 @@ function select_item(box, errmsg) {
 	}
 	tmp = box.value.split(']');
 	if (box.oldselect && (box.oldselect > -1)) {
-		if ((tmp.length > 1) && (box.stored_config.catbyname[tmp[0]].subfields[tmp[1]].name == "")) {
+		if ((tmp.length > 1) && (!box.stored_config.catbyname[tmp[0]].subfields[tmp[1]].name)) {
 			box.remove(box.oldselect);
 			box.oldselect = -1;
 			box.stored_config.catbyname[tmp[0]].subfields.splice(tmp[1], 1);
@@ -571,7 +570,7 @@ function select_item(box, errmsg) {
 			catch(err){
 			
 			}
-		} else if (box.options[box.oldselect].value == "") {
+		} else if (!box.options[box.oldselect].value) {
 			box.remove(box.oldselect);
 			box.oldselect = -1;
 			box.stored_config.catbyname[""] = null;
@@ -602,7 +601,7 @@ function select_item(box, errmsg) {
 	if (box.callbacks.postselect)
 		box.callbacks.postselect(box, box.value);
 	return true;
-};
+}
 
 function cancel_item(box) {
 	var tmp = box.options[box.selectedIndex].value.split(']');
@@ -752,7 +751,7 @@ function delete_item(box, value, noconfirm) {
 	if (updatebox) {
 		box.remove(box.selectedIndex);
 		for (x=0;x<box.options.length;) {
-			var tmp = box.options[x].value.split(']');
+			tmp = box.options[x].value.split(']');
 			if (tmp.length > 1) {
 				if (tmp[0] == value) {
 					box.remove(x);
@@ -766,7 +765,7 @@ function delete_item(box, value, noconfirm) {
 		box.value = null;
 		select_item(box);
 	}
-};
+}
 
 function new_item(box) {
 	var category = null;
@@ -782,9 +781,9 @@ function new_item(box) {
 		category = box.callbacks.newcategory();
 	}
 	if (!category) {
-		category = new Object;
+		category = {};
 		category.fieldbyname = { };
-		category.fields = new Array;
+		category.fields = [];
 	}
 
 	ASTGUI.selectbox.append(box,"New Entry", "");
@@ -1093,7 +1092,7 @@ function Astman() {
 		var tmp;
 		opt.parameters="action=originate&channel=" + encodeURIComponent("Local/executecommand@"+asterisk_guitools ) + "&Variable=command%3d"+ encodeURIComponent(tool) + "&application=noop&timeout=60000";
 		tmp = new Ajax.Request(this.url, opt);
-	}
+	};
 
 	this.cliCommand = function(cmd, callback) {
 		var opt = {
@@ -1110,7 +1109,7 @@ function Astman() {
 		var tmp;
 		opt.parameters="action=command&command=" + encodeURIComponent(cmd);
 		tmp = new Ajax.Request(this.url, opt);
-	}
+	};
 
 	this.clickChannel = function(ev) {
 		var target = ev.target;
@@ -1130,7 +1129,7 @@ function Astman() {
 
 	this.restoreTarget = function(targetname) {
 		var other;
-		target = $(targetname);
+		var target = _$(targetname);
 		if (!target)
 			return;
 		if (target.previousSibling) {
@@ -1148,7 +1147,7 @@ function Astman() {
 	};
 	this.channelUpdate = function(msg, channame) {
 		var fields = new Array("callerid", "calleridname", "context", "extension", "priority", "account", "state", "link", "uniqueid" );
-
+		var x;
 		if (!channame || !channame.length)
 			channame = msg.headers['channel'];
 
@@ -1196,7 +1195,7 @@ function Astman() {
 	};
 	this.channelClear = function() {
 		channels = new Array;
-	}
+	};
 	this.channelInfo = function(channame) {
 		return channels[channame];
 	};
