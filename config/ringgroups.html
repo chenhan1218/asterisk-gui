@@ -188,7 +188,7 @@ function create_newRG(v){
 
 	uri += build_action('append', p, context ,RG_COMMENT, _$('text_rgname').value); p = p+1;
 
-	uri += build_action('append', p, context ,"exten", "s,1,Answer"); p = p+1;
+	uri += build_action('append', p, context ,"exten", "s,1,NoOp(RINGGROUP)"); p = p+1;
 
 	if( _$('text_rgExten').value.length ){
 		var y = _$('text_rgExten').value + ',1,Goto(' + context + '|s|1)' ;
