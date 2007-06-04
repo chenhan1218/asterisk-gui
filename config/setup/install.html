@@ -28,26 +28,31 @@
 <script src="../scripts/prototype.js"></script>
 <script src="../scripts/astman.js"></script>
 <script>
-var rawman_url = "../" + asterisk_rawmanPath;
+var rawman_url;
 var fxoports = new Array();
 var fxsports = new Array();
 var numberofsteps = 7;
 var loggedon = 0;
-var eventeater = {};
 var localextenlength;
+var keepPinging;
+var started_pinging = 0;
+
+function pingevery(a){
+	keepPinging = setInterval( makeping, a*250 );
+}
+
+function makeping(){
+	makerequest("","","action=ping", function(t){ if( t.match(asterisk_guipingerror) ){ window.location.href=window.location.href;} } );
+}
 
 function localinit(){
+	rawman_url = "../" + asterisk_rawmanPath;
+	asterisk_rawmanPath = "../" + asterisk_rawmanPath;
 	astmanEngine = new Astman();
-	astmanEngine.setURL(rawman_url);
-	astmanEngine.setEventCallback(eventeater.eventcb);
+	astmanEngine.setURL(asterisk_rawmanPath);
 	_$('mainscreen').src="1.html";
 }
 
-eventeater.eventcb = function(msgs) {
-	if (loggedon == 1){
-		astmanEngine.pollEvents();
-	}
-}
 
 </script>
 <body onload="localinit()" topmargin=0  bgcolor="FFFFFF">

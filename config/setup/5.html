@@ -123,7 +123,7 @@ trunkcallbacks.format = function(t) {
 
 trunkcallbacks.loaded = function(){
 	//_$('trunks').addEventListener('click',hackenablesave,false);
-	add_event( _$('trunks') , "click", hackenablesave );
+	ASTGUI.events.add( _$('trunks') , "click", hackenablesave );
 	parent.astmanEngine.config2list("extensions.conf", _$('extensions'), new Object(), numplan_callbacks);
 }
 
@@ -150,7 +150,7 @@ numplan_callbacks.format = function(t, x) {
 }
 
 numplan_callbacks.loaded = function() {
-	parent.astmanEngine.pollEvents();
+	//parent.astmanEngine.pollEvents();
 	if(!default_numberplan){
 		// Redirect To creating a default Number Plan
 		addthe_default_callingplan();

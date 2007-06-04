@@ -26,7 +26,7 @@
 </HEAD>
 <script src="../scripts/prototype.js"></script>
 <SCRIPT>
-add_event = parent.add_event;
+add_event = parent.ASTGUI.events.add;
 var rawman_url;
 var usercallbacks = new Object;
 var fieldnames = new Array( 'save','userbase','localextenlength','allow_aliasextns');
@@ -109,7 +109,6 @@ usercallbacks.beforeSaving= function(){
 usercallbacks.loaded = function(){
 	//_$('localextenlength').addEventListener("change", store_extlength, false);
 	add_event( _$('localextenlength') , "change", store_extlength );
-	parent.astmanEngine.pollEvents();
 	_$('devices').selectitem(0);
 	parent._$('next').disabled = false;	
 	parent._$('back').disabled = false;

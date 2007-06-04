@@ -39,7 +39,6 @@ function localinit(){
 	parent.$('next').disabled = true;
 	parent.$('back').disabled = true;
 	rawman_url = parent.rawman_url ;
-	parent.astmanEngine.setURL(rawman_url);
 	ping();
 }
 
@@ -54,12 +53,18 @@ function ping(){
 }
 
 function isloggedin(originalRequest){
+	if(!parent.started_pinging){
+		parent.started_pinging = 1;
+		parent.pingevery(60);
+	}
+
 	if ( originalRequest.responseText.match("Error") ) {
 		// User is not logged in , show him the login screen
 		_$('loginform').style.display = "";
 		_$('username').focus();
 		return true;
 	}
+
 	if ( originalRequest.responseText.match("Pong") ) {
 		// install [asterisk_guitools] if not installed
 		getextconf();
@@ -68,8 +73,7 @@ function isloggedin(originalRequest){
 
 function getextconf(){
 	parent.loggedon = 1;
-	parent.astmanEngine.pollEvents();
-
+	//parent.astmanEngine.pollEvents();
 	var opt = {
 		method: 'get',
 		asynchronous: true,
