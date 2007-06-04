@@ -438,7 +438,7 @@ function combo_box(a, b, c ){
 }
 
 function  InArray(search_array, searchstring ){
-	if( !search_array.length){ 
+	if(search_array.length){ 
 		for(i=0; i < search_array.length; i++ ){
 			if( search_array[i] === searchstring )return true;
 		}
