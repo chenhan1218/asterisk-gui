@@ -29,7 +29,7 @@ var origwidth;
 var widgets = new Object;
 var callbacks = new Object;
 var extencallbacks = new Object;
-var fieldnames = ['callwaiting' ,'cancel' ,'cid_number' ,'context' ,'delete' ,'email' ,'fullname' ,'group' ,'hasagent' ,'hasdirectory' ,'hasiax' ,'hasmanager' ,'hassip' ,'hasvoicemail' ,'host' ,'mailbox' ,'name' ,'new' ,'save' ,'secret' ,'threewaycalling' ,'vmsecret' ,'zapchan', 'registeriax', 'registersip','canreinvite','nat'];
+var fieldnames = ['callwaiting' ,'cancel' ,'cid_number' ,'context' ,'delete' ,'email' ,'fullname' ,'group' ,'hasagent' ,'hasdirectory' ,'hasiax' ,'hasmanager' ,'hassip' ,'hasvoicemail' ,'host' ,'mailbox' ,'name' ,'new' ,'save' ,'secret' ,'threewaycalling' ,'vmsecret' ,'zapchan', 'registeriax', 'registersip','canreinvite','nat','dtmfmode'];
 
 var localextenlength = 4;
 var allow_aliasextns = "no";
@@ -309,52 +309,53 @@ function free_mem(){
 			</td>
 			</tr>
 			<tr><td align="center">
-				<fieldset style="width: 225px; ">
+				<fieldset style="width:280px">
 					<legend>&nbsp;Extension Options:&nbsp;</legend>
-				<table align='center'  width='220'  cellpadding=1 cellspacing=1>
+				<table align='center' width=270 cellpadding=1 cellspacing=1>
 				<tr>
 					<td width=40 align=right><input type='checkbox' id='hasvoicemail'></td>
 					<td class="field_text" tip="en,users,8">Voicemail</td>
-				</tr>
-				<tr>
+
 					<td align=right><input type='checkbox' id='hasdirectory'></td>
 					<td class="field_text" tip="en,users,9">In Directory</td>
 				</tr>
 				<tr>
 					<td align=right><input type='checkbox' id='hassip'></td>
 					<td class="field_text" tip="en,users,10">SIP</td>
-				</tr>
-				<tr>
+
 					<td align=right><input type='checkbox' id='hasiax'></td>
 					<td class="field_text" tip="en,users,11">IAX</td>
 				</tr>
 				<tr>
 					<td align=right><input type='checkbox' id='hasmanager'></td>
 					<td class="field_text" tip="en,users,12">CTI</td>
-				</tr>
-				<tr>
-					<td align=right><input type='checkbox' id='callwaiting'></td>
-					<td class="field_text" tip="en,users,13">Call&nbsp;Waiting</td>
-				</tr>
-				<tr>
-					<td align=right><input type='checkbox' id='threewaycalling'></td>
-					<td class="field_text" tip="en,users,14">3-Way&nbsp;Calling</td>
-				</tr>
-				<tr>
-					<td align=right><input type='checkbox' id='canreinvite'></td>
-					<td class="field_text">Can Reinvite</td>
-				</tr>
-				<tr>
-					<td align=right><input type='checkbox' id='nat'></td>
-					<td class="field_text">NAT</td>
-				</tr>
-				<tr>
+
 					<td align=right>
 						<input type='checkbox' id='hasagent' dfalt='1'>
 						<input type='hidden' dfalt='dynamic' id='host'>
 					</td>
 					<td class="field_text" tip="en,users,15">Is&nbsp;Agent</td>
 				</tr>
+				<tr>
+					<td align=right><input type='checkbox' id='callwaiting'></td>
+					<td class="field_text" tip="en,users,13">Call&nbsp;Waiting</td>
+
+					<td align=right><input type='checkbox' id='threewaycalling'></td>
+					<td class="field_text" tip="en,users,14">3-Way&nbsp;Calling</td>
+				</tr>
+				<tr>
+					<td align=right><input type='checkbox' id='canreinvite'></td>
+					<td class="field_text">Can Reinvite</td>
+
+					<td align=right><input type='checkbox' id='nat'></td>
+					<td class="field_text">NAT</td>
+				</tr>
+
+				<tr>
+					<td align=right colspan=3><input id="dtmfmode" size=10 class="input8" dfalt="rfc2833"></td>
+					<td class="field_text">DTMFMode</td>
+				</tr>
+
 				</table>
 				</fieldset>
 			</td>
