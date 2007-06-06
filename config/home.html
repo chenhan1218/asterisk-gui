@@ -131,7 +131,7 @@ function doLogin() {
 	}
 	parent.document.getElementById('login_name').value = _$('username').value ;
 	_$('statusbar').innerHTML = "<i>Logging in...</i>";
-	parent.astmanEngine.sendRequest('action=login&username=' + _$('username').value + "&secret=" + _$('secret').value, afterlogin);
+	parent.astmanEngine.sendRequest('action=login&username=' + encodeURIComponent( _$('username').value ) + "&secret=" + encodeURIComponent(_$('secret').value), afterlogin);
 }
 
 afterlogin = function(msgs) {
