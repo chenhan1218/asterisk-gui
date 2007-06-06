@@ -29,7 +29,7 @@ var origwidth;
 var widgets = new Object;
 var callbacks = new Object;
 var extencallbacks = new Object;
-var fieldnames = ['callwaiting' ,'cancel' ,'cid_number' ,'context' ,'delete' ,'email' ,'fullname' ,'group' ,'hasagent' ,'hasdirectory' ,'hasiax' ,'hasmanager' ,'hassip' ,'hasvoicemail' ,'host' ,'mailbox' ,'name' ,'new' ,'save' ,'secret' ,'threewaycalling' ,'vmsecret' ,'zapchan', 'registeriax', 'registersip'];
+var fieldnames = ['callwaiting' ,'cancel' ,'cid_number' ,'context' ,'delete' ,'email' ,'fullname' ,'group' ,'hasagent' ,'hasdirectory' ,'hasiax' ,'hasmanager' ,'hassip' ,'hasvoicemail' ,'host' ,'mailbox' ,'name' ,'new' ,'save' ,'secret' ,'threewaycalling' ,'vmsecret' ,'zapchan', 'registeriax', 'registersip','canreinvite','nat'];
 
 var localextenlength = 4;
 var allow_aliasextns = "no";
@@ -309,7 +309,6 @@ function free_mem(){
 			</td>
 			</tr>
 			<tr><td align="center">
-				<BR>
 				<fieldset style="width: 225px; ">
 					<legend>&nbsp;Extension Options:&nbsp;</legend>
 				<table align='center'  width='220'  cellpadding=1 cellspacing=1>
@@ -340,6 +339,14 @@ function free_mem(){
 				<tr>
 					<td align=right><input type='checkbox' id='threewaycalling'></td>
 					<td class="field_text" tip="en,users,14">3-Way&nbsp;Calling</td>
+				</tr>
+				<tr>
+					<td align=right><input type='checkbox' id='canreinvite'></td>
+					<td class="field_text">Can Reinvite</td>
+				</tr>
+				<tr>
+					<td align=right><input type='checkbox' id='nat'></td>
+					<td class="field_text">NAT</td>
 				</tr>
 				<tr>
 					<td align=right>
