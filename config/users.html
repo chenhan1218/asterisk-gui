@@ -29,7 +29,7 @@ var origwidth;
 var widgets = new Object;
 var callbacks = new Object;
 var extencallbacks = new Object;
-var fieldnames = ['callwaiting' ,'cancel' ,'cid_number' ,'context' ,'delete' ,'email' ,'fullname' ,'group' ,'hasagent' ,'hasdirectory' ,'hasiax' ,'hasmanager' ,'hassip' ,'hasvoicemail' ,'host' ,'mailbox' ,'name' ,'new' ,'save' ,'secret' ,'threewaycalling' ,'vmsecret' ,'zapchan', 'registeriax', 'registersip','canreinvite','nat','dtmfmode'];
+var fieldnames = ['callwaiting' ,'cancel' ,'cid_number' ,'context' ,'delete' ,'email' ,'fullname' ,'group' ,'hasagent' ,'hasdirectory' ,'hasiax' ,'hasmanager' ,'hassip' ,'hasvoicemail' ,'host' ,'mailbox' ,'name' ,'new' ,'save' ,'secret' ,'threewaycalling' ,'vmsecret' ,'zapchan', 'registeriax', 'registersip','canreinvite','nat','dtmfmode', 'disallow','allow'];
 
 var localextenlength = 4;
 var allow_aliasextns = "no";
@@ -157,7 +157,8 @@ callbacks.beforeSaving = function(){
 }
 
 callbacks.postselect = function(box, val) {
-	parent._$('tooltip').innerHTML = parent.tooltip_default ; 
+	parent._$('tooltip').innerHTML = parent.tooltip_default ;
+	_$('codecs_text').innerHTML = '' ; 
 	if( box.selectedIndex == -1)
 		return true;
 	if(val == "reserved" ){
@@ -186,6 +187,7 @@ callbacks.postselect = function(box, val) {
 			return true;
 		}
 	}
+	_$('codecs_text').innerHTML = 'disallow: '+ _$('disallow').value + ' <BR> allow:' + _$('allow').value ;
 }
 
 callbacks.savechanges = function(){
@@ -276,6 +278,143 @@ function free_mem(){
 		purge( document.body );
 	} catch(e){ }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+CODECSETTINGS = {
+	selectbox_add: function(selectbox_id, codec){
+		switch(codec) {
+			case 'ulaw': ASTGUI.selectbox.append(selectbox_id,"u-law", "ulaw"); break;
+			case 'alaw': ASTGUI.selectbox.append(selectbox_id,"a-law", "alaw"); break;
+			case 'gsm': ASTGUI.selectbox.append(selectbox_id,"GSM", "gsm"); break;
+			case 'ilbc': ASTGUI.selectbox.append(selectbox_id,"ILBC", "ilbc"); break;
+			case 'speex': ASTGUI.selectbox.append(selectbox_id,"SPEEX", "speex"); break;
+			case 'g726': ASTGUI.selectbox.append(selectbox_id,"G.726", "g726"); break;
+			case 'adpcm': ASTGUI.selectbox.append(selectbox_id,"ADPCM", "adpcm"); break;
+			case 'lpc10': ASTGUI.selectbox.append(selectbox_id,"LPC10", "lpc10"); break;
+			case 'g729': ASTGUI.selectbox.append(selectbox_id,"G.729", "g729"); break;
+			default: break
+		}
+	},
+	selectbox_remove: function(selectbox_id,codec){
+		for (var x=0; x < $(selectbox_id).length; x++){
+			if( $(selectbox_id).options[x].value==codec ){	$(selectbox_id).remove(x); return true;}
+		}
+	},
+
+	update_div_setordercodecs:function(){
+		_$('disallowed').innerHTML=""; _$('allowed').innerHTML="";
+		if( _$('disallow').value == "all" ){
+			this.selectbox_add(_$("disallowed"), "ulaw");
+			this.selectbox_add(_$("disallowed"), "alaw");
+			this.selectbox_add(_$("disallowed"), "gsm");
+			this.selectbox_add(_$("disallowed"), "ilbc");
+			this.selectbox_add(_$("disallowed"), "speex");
+			this.selectbox_add(_$("disallowed"), "g726");
+			this.selectbox_add(_$("disallowed"), "adpcm");
+			this.selectbox_add(_$("disallowed"), "lpc10");
+			this.selectbox_add(_$("disallowed"), "g729");
+		}else{
+			var tmp = _$('disallow').value.split(",");
+			for(var x=0; x < tmp.length; x++){ this.selectbox_add(_$("disallowed"), tmp[x]); }
+		}
+		if(_$('allow').value =="all"){
+			this.selectbox_add(_$("allowed"), "ulaw");
+			this.selectbox_add(_$("allowed"), "alaw");
+			this.selectbox_add(_$("allowed"), "gsm");
+			this.selectbox_add(_$("allowed"), "ilbc");
+			this.selectbox_add(_$("allowed"), "speex");
+			this.selectbox_add(_$("allowed"), "g726");
+			this.selectbox_add(_$("allowed"), "adpcm");
+			this.selectbox_add(_$("allowed"), "lpc10");
+			this.selectbox_add(_$("allowed"), "g729");
+		}else{
+			var tmp = _$('allow').value.split(",");
+			for(var x=0; x < tmp.length; x++){
+				this.selectbox_add(_$("allowed"), tmp[x]);
+				this.selectbox_remove("disallowed",tmp[x]);
+			}
+		}
+	},
+
+	show_codecs: function(){
+		if( _$('devices').selectedIndex == -1 ){ return true; }
+		this.update_div_setordercodecs();
+		_$('codecs_content').style.display = "";
+		_$('bg_transparent').style.display ='';
+	},
+
+	enable_selectedcodec: function(){
+		if(_$('disallowed').selectedIndex == -1 ){return true;}
+		// add to allowed
+		this.selectbox_add(_$("allowed") ,  _$('disallowed').value );
+		// remove selected from disallowed
+		this.selectbox_remove("disallowed", _$('disallowed').value );
+		this.update_ordercodecs();
+	},
+
+	disable_selectedcodec: function(){
+		if(_$('allowed').selectedIndex == -1 ){return true;}
+		// add to disallowed
+		this.selectbox_add(_$("disallowed") ,  _$('allowed').value );
+		// remove selected from allowed
+		this.selectbox_remove("allowed", _$('allowed').value );
+		this.update_ordercodecs();
+	},
+
+	update_ordercodecs: function(){
+		var _allow = _$('allow') ;
+		var _allowed = _$('allowed') ;
+		var _disallow = _$('disallow');
+		var _disallowed = _$('disallowed');
+	
+		_disallow.value = "all";
+		_allow.value = "";
+
+		for (var x=0; x < _allowed.length ; x++){
+			if(x==0){
+				_allow.value = _allowed.options[x].value ; 
+			}else{
+				_allow.value = _allow.value + "," +  _allowed.options[x].value ; 
+			}
+		}
+		_$('save').disabled = false;
+		_$('cancel').disabled = false;
+
+		_$('codecs_text').innerHTML = 'disallow: '+ _disallow.value + ' <BR> allow:' + _allow.value ;
+	},
+	
+	disallow_all_refresh: function (){
+		_$('disallow').value = "all";
+		_$('disallowed').innerHTML=""; 	_$('allowed').innerHTML="";
+		_$('allow').value = "";
+		this.update_div_setordercodecs();
+		_$('disallow').value = "all";
+		_$('codecs_text').innerHTML = 'disallow: '+ _$('disallow').value + ' <BR> allow:' + _$('allow').value ;
+		_$('save').disabled = false;
+		_$('cancel').disabled = false;
+
+	},
+
+	codecs_hide: function (){
+		_$('codecs_content').style.display = 'none';
+		_$('bg_transparent').style.display ='none';
+	}
+}
+
+
 </script>
 <body id="foo" onload="localajaxinit()"  bgcolor="#EFEFEF" onunload="free_mem()">
 <div class="mainscreenTitleBar">
@@ -355,10 +494,16 @@ function free_mem(){
 					<td align=right colspan=3><input id="dtmfmode" size=10 class="input8" dfalt="rfc2833"></td>
 					<td class="field_text">DTMFMode</td>
 				</tr>
-
 				</table>
 				</fieldset>
 			</td>
+			</tr>
+			<tr>
+				<td onclick="CODECSETTINGS.show_codecs();" style="cursor: pointer"  class="field_text">
+					<div style="margin-left: 15px;"><I>Codecs</I>
+						<div style="margin-left: 15px;"><span id="codecs_text"></span></div>
+					</div>
+				</td>
 			</tr>
 			</table>
 			</div>
@@ -367,5 +512,43 @@ function free_mem(){
 				<td align='center'><input type='button' id='save' value='Save'  class="buttonbold">&nbsp;&nbsp;<input type='button' id='cancel' value='Cancel' class="buttonbold"></td>
 		</tr>
 </table>
+</div>
+<!-- Codecs content DIV -->
+<div id="codecs_content" STYLE="display:none; position: absolute; left: 20; top: 125; width:350; height:245;  background-color:#F4EFE5;   border-width: 1px; border-color: #7E5538; border-style: solid;z-index:5">
+	<table width="100%" cellpadding=0 cellspacing=0 onmousedown="ASTGUI.startDrag(event , 'codecs_content');">
+	<TR bgcolor="#7E5538"  style="background-image:url('images/title_gradient.gif');">
+		<TD Height="20" align="center" style="cursor: move"><font style="color:#FFFFFF; font-size: 12px; font-weight:bold;">Codec Preferences</font></TD>
+		<TD Height="20" align="right" style="cursor: move"><A href="#" onclick="CODECSETTINGS.codecs_hide();"><font style="color:#FFFFFF; font-size: 12px; font-weight:bold;">X</font></A></TD>
+		<TD width=4></TD>
+	</TR>
+	</table>
+	<table align=center>
+		<tr><td><BR></td></tr>
+		<tr><td class="field_text">Allowed</td>
+			<td></td>
+			<td class="field_text">Disallowed</td>
+		</tr>
+		<tr><td><select id="allowed" size=9 class="input8"></select></td>
+			<td>	<input type="button" id="select_codec" value="<" onclick="CODECSETTINGS.enable_selectedcodec()"><BR>
+				<input type="button" id="deselect_codec" value=">" onclick="CODECSETTINGS.disable_selectedcodec()"><BR>
+				<input type="button" value="&#187;&#187;" onclick="CODECSETTINGS.disallow_all_refresh();">
+
+			</td>
+
+			<td><select id="disallowed" size=9 class="input8"></select></td>
+		</tr>
+		<tr><td></td>
+			<td></td>
+			<td class="field_text">
+				<input id='allow' style="display:none">
+				<input id='disallow'  style="display:none">
+			</td>
+		</tr>
+		<tr><td colspan=3 align=Center><input type="button" class="buttonbold" id="setordercodecs" value="Ok" onclick="CODECSETTINGS.codecs_hide()"></td></tr>
+		<tr><td><BR></td></tr>
+	</table>
+</div>
+<!-- Codecs content DIV -->
+<div id="bg_transparent" STYLE="display:none; position: absolute; left: 0; top: 24; width:100%; height:100%;  background-color:#EFEFEF; -moz-opacity:.50;opacity:.50; border-width: 1px; border-color: #EFEFEF; border-style: solid; z-index:4">
 </div>
 </body>
