@@ -28,6 +28,7 @@ Todo
 
 * Finish multiple language support (lang.js) 
 
+* All system path variables should be able to edit via GUI.
 
 
 Completed
