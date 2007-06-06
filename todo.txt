@@ -26,6 +26,10 @@ Todo
 
 *  it would be very usefull, to define the max time a client can be in the queue.. so we can put a voice telling "Please leva a meesage we will cal you back" in a vm..   or something like that :) -- killfill on irc
 
+* Finish multiple language support (lang.js) 
+
+
+
 Completed
 ----------
 * Operator Extension
