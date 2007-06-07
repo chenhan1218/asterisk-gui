@@ -128,7 +128,9 @@ function edit_form(g){
 	}
 
 	_$('text_rgExten').value = (this_ringgroup.rgExten)?this_ringgroup.rgExten:"" ;
+	_$('text_ringTime').value = this_ringgroup.ringTime ;
 	_$('ringgroup_editdiv').style.display = '';
+
 }
 
 
@@ -175,6 +177,7 @@ function save_rg(){
 function create_newRG(v){
 	var uri="", p=0, context = 'ringroups-custom-' + v ;
 	var rcs = _$('select_ringthesechannels') ;
+	var ringtime = _$('text_ringTime').value;
 	var s,t,u;
 
 	ringgroups[v] = {};
@@ -198,7 +201,7 @@ function create_newRG(v){
 
 	if( _$('select_strategy').value =='ringinorder'){
 		for( s=0; s< rcs.options.length; s++  ){
-			t = 's,n,Dial(' + rcs.options[s].value + ',10)' ;
+			t = 's,n,Dial(' + rcs.options[s].value + ',' + ringtime + ')' ;
 			this_ringgroup.rgchannels.push(rcs.options[s].value);
 			uri += build_action('append', p, context ,"exten", t); p = p+1;
 		}
@@ -208,7 +211,7 @@ function create_newRG(v){
 		for( s=0; s< rcs.options.length; s++  ){ 
 			this_ringgroup.rgchannels.push(rcs.options[s].value);
 		}
-		t = 's,n,Dial(' + this_ringgroup.rgchannels.join("&") + ',10)' ;
+		t = 's,n,Dial(' + this_ringgroup.rgchannels.join("&") + ',' + ringtime + ')' ;
 		uri += build_action('append', p, context ,"exten", t); p = p+1;
 	}
 	
@@ -402,6 +405,7 @@ function parse_addtoringgroups(u, v){
 	if(nd==1){ 
 		this_ringgroup.ringstyle = 'ringall';
 		rc = v[indexes[0]].split('Dial(')[1].split(',')[0].split('&') ;
+		this_ringgroup.ringTime = v[indexes[0]].split('Dial(')[1].split(',')[1].split(')')[0] ;
 		for(a=0; a < rc.length; a++){ this_ringgroup.rgchannels.push(rc[a]); }
 	}
 
@@ -409,6 +413,7 @@ function parse_addtoringgroups(u, v){
 		this_ringgroup.ringstyle = 'ringinorder';
 		for(a=0; a < indexes.length; a++){
 			rc = v[indexes[a]].split('Dial(')[1].split(',')[0];
+			this_ringgroup.ringTime = v[indexes[a]].split('Dial(')[1].split(',')[1].split(')')[0] ;
 			this_ringgroup.rgchannels.push(rc);
 		}
 	}
@@ -432,6 +437,7 @@ function add_rg(){
 	_$('radio_fbhgp').checked = true;
 
 	_$('ringgroup_editdiv').style.display = '';
+	_$('text_ringTime').value = "20"; 
 
 	var r = _$('select_ringthesechannels');
 	var y = _$('select_listofchannels');
@@ -483,17 +489,17 @@ function cancel_rg(){ _$('ringgroup_editdiv').style.display = 'none'; }
 				Strategy: <select id="select_strategy" class="input8"><option value="ringall">Ring all</option><option  value="ringinorder">Ring in Order</option></select>
 			</td>
 		</tr>
-		<tr>	<td width=200 align=center valign=top height=200>
-				<select id="select_ringthesechannels" style="width:175px; height: 200px" class="input10" size=10></select>
+		<tr>	<td width=200 align=center valign=top>
+				<select id="select_ringthesechannels" style="width: 175px" class="input10" size=8></select>
 			</td>
-			<td width=80 align=center>
+			<td width=80 align=center valign=top>
 				<input type="button" id="button_add_toringlist" value="&#8592;"><BR><BR>
 				<input type="button" id="button_remove_fromringlist" value="&#8594;">
 				<BR><BR>
 				<input type="button" id="button_removeall_fromringlist" value="&#187;&#187;">
 			</td>
 			<td width=200 align=center valign=top>
-				<select id="select_listofchannels" style="width:175px; height: 200px" class="input10" size=10></select>
+				<select id="select_listofchannels" style="width: 175px" class="input10" size=8></select>
 			</td>
 		</tr>
 		<tr>	<td align=center valign=top>
@@ -508,6 +514,10 @@ function cancel_rg(){ _$('ringgroup_editdiv').style.display = 'none'; }
 		</tr>
 		<tr>	<td align=center valign=top colspan=3>
 			Extension for this ring group (optional) : <input type=text id="text_rgExten" size=5 class="input9">
+			</td>
+		</tr>
+		<tr>	<td align=center valign=top colspan=3>
+			Ring (each/all) for these many seconds : <input type=text id="text_ringTime" size=2 class="input9">
 			</td>
 		</tr>
 		<tr>	<td colspan=2 align="left" class="field_text">
