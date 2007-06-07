@@ -40,7 +40,7 @@ function changepassword(){
 		return true;
 	}
 
-	var acs = build_action('update', 0, current_username, "secret",'', _newpass.value ) ;
+	var acs = build_action('update', 0, current_username, "secret",_newpass.value,'') ;
 	makerequest('u', 'manager.conf',acs,
 		function(t){
 			if ( t.match("Success") ) {
