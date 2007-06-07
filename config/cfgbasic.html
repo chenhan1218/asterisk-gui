@@ -37,19 +37,19 @@ var keepPinging;
 
 function fit_toScreen(){
 	var t = ASTGUI.displayHeight();
+	var minimumheight = 60;
 	var c =_$('configpanel'); 
 	c.WIH = t;
-	_$('mainscreen').style.height = (t - 70);
 	_$('TOP_MAINTABLE').rows[1].cells[0].height = (t - 70) ;
 	var pnameheight = 22;
 	c.pnameheight = pnameheight;
 	var panels = returnpanels();
 	var pheight = (( t - 70)  - (pnameheight*panels.length) ) ;
-	if(pheight > 0){
+	if(pheight > minimumheight){
 		c.pheight = pheight;
 	}else{
-		pheight = 0;
-		c.pheight = 0 ;
+		pheight = minimumheight;
+		c.pheight = minimumheight ;
 	}
 
 	if( c.childNodes.length ){
@@ -61,6 +61,8 @@ function fit_toScreen(){
 			}
 		}
 	}
+
+	setTimeout( function(){_$('mainscreen').style.height = (panels.length * 22) + pheight ;}, 1500 );
 }
 
 function createpanels(){
