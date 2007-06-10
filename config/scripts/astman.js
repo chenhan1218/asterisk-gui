@@ -288,10 +288,12 @@ function toJSO(z, p){
 			g = t[r].indexOf(":") ; 
 			catname = t[r].substr(g+1) ; // category 
 			catname = catname.replace(/^\s*|\s*$/g,'') ; // trim 
-			if(!p){
-				a[catname] = [];
-			}else{
-				a[catname] = {};
+			if(!a[catname]){ // contexts could be spread at different places in the config file
+				if(!p){
+					a[catname] = [];
+				}else{
+					a[catname] = {};
+				}
 			}
 		}else if ( h == "line" ){
 			j = t[r].indexOf(":") ;
