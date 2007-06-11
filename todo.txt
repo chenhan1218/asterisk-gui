@@ -30,6 +30,10 @@ Todo
 
 * All system path variables should be able to edit via GUI.
 
+* If the timeout option for the dial app is not set, do not add a comma ;[ I will fix this tomorrow, along with other options for the Dial() app inside ringgroups.html (where the problem currently exists.) 
+
+* In addition to build_action, if you are updating an extension, be able to easily add application specific parameteres
+
 
 Completed
 ----------
