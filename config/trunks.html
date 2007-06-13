@@ -179,7 +179,7 @@ callbacks.beforeSaving = function(){
 	var _msg3 = "When using Analog, at least one port must be selected.";
 	var _msg4 = "Please enter a Comment for this Service Provider";
 
-	if ( _tsv.checked && !_$('username').value.length ) { gui_alert(_msg1); return false; }
+	if ( _tsv.checked && !_$('username').value.length && _$('provider').value != "bandwidth") { gui_alert(_msg1); return false; }
 
 	if ( _tsa.checked ) {
 		var _zapchan = _$('zapchan');
