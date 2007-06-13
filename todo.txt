@@ -34,6 +34,8 @@ Todo
 
 * In addition to build_action, if you are updating an extension, be able to easily add application specific parameteres
 
+* Add full support for bandwidth.com through the service providers page 
+
 
 Completed
 ----------
@@ -48,3 +50,5 @@ Completed
 * Option to redirect a timerule to a ringGroup
 
 * Make the GUI resolution independent - request from BSD_tech
+
+* Initial support for Bandwidth.com
