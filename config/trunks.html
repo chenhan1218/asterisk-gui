@@ -197,9 +197,6 @@ callbacks.beforeSaving = function(){
 	if( !_tsv.checked && !_tsa.checked && !_tscv.checked ){ gui_alert("A trunk must be Analog or VoIP or Custom VOIP"); return false; }
 
 	if(_dvcs_v.length ==0 ){
-		if (!_$('host').value && _$('trunkstylevoip').checked) {
-			isdouble = 1;
-		}
 		ifnewtrunk();
 	}else{
 		ifedit_existing();
