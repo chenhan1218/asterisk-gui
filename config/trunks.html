@@ -323,12 +323,13 @@ function ifnewtrunk(){
 	var _provider = _$('provider');
 	var _zapchan = _$('zapchan');
 	var _trunkname = _$('trunkname');
+	var _username2 = (_$('username').value) ? ' - ' + _$('username').value : ' - (No Username Needed)'; 
 	_$('hasexten').value = 'no';
 	_$('context').value =  asterisk_guiTDPrefix + _$('name').value  ;
 
 	if (_$('trunkstylevoip').checked) {
 		provider = _provider.stored_config.catbyname[_provider.value];
-		_trunkname.value = _provider.options[_provider.selectedIndex].innerHTML + " - " + _$('username').value;
+		_trunkname.value = _provider.options[_provider.selectedIndex].innerHTML + _username2;
 		_$('hassip').value = provider.fieldbyname['hassip'];
 		_$('hasiax').value = provider.fieldbyname['hasiax'];
 		_$('registeriax').value = provider.fieldbyname['registeriax'];
