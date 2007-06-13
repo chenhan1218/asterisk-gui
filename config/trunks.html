@@ -40,6 +40,7 @@ var isnewtrunk;
 var dids_array = [];
 var old_trunkname;
 var used_fxos = {};
+var isdouble = 0;
 used_fxos.oldvalue = "";
 used_fxos.newvalue = "";
 
@@ -196,6 +197,9 @@ callbacks.beforeSaving = function(){
 	if( !_tsv.checked && !_tsa.checked && !_tscv.checked ){ gui_alert("A trunk must be Analog or VoIP or Custom VOIP"); return false; }
 
 	if(_dvcs_v.length ==0 ){
+		if (!_$('host').value && _$('trunkstylevoip').checked) {
+			isdouble = 1;
+		}
 		ifnewtrunk();
 	}else{
 		ifedit_existing();
@@ -334,7 +338,13 @@ function ifnewtrunk(){
 		_$('hasiax').value = provider.fieldbyname['hasiax'];
 		_$('registeriax').value = provider.fieldbyname['registeriax'];
 		_$('registersip').value = provider.fieldbyname['registersip'];
-		_$('host').value = provider.fieldbyname['host'];
+		if(isdouble == 1) { /* Since we need an input and output trunk, we need to create yet another. */
+			_$('host').value = provider.fieldbyname['host_in'];
+			//_$('host').value = provider.fieldbyname['host_out'];
+		} else {
+			_$('host').value = provider.fieldbyname['host'];
+		}
+
 		for (var x=0;x<_zapchan.options.length;x++){  _zapchan.options[x].selected = false; }
 		_zapchan.value = '';
 		_$('group').value = '';
