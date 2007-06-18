@@ -81,42 +81,10 @@ function show_window(x){
 	return true;
 }
 
-function getsysinfohtml(){
-	var opt = {
-		method: 'get',
-		asynchronous: true,
-		onComplete: function(originalRequest){
-			_$('sysinfohtml').innerHTML = originalRequest.responseText;
-			_$('osversion').innerHTML = _$('si_uname').innerHTML;
-			_$('uptime').innerHTML = _$('si_uptime').innerHTML;
-			_$('asterisk').innerHTML =_$('si_astver').innerHTML + "<BR>" + "Asterisk GUI-version " + asterisk_guiversion.substr(1) ;
-			_$('today').innerHTML = _$('si_date').innerHTML;
-			_$('hostname').innerHTML =_$('si_hostname').innerHTML;
-			_$('ifconfig').innerHTML =_$('si_ifconfig').innerHTML;
-			_$('diskusage').innerHTML = _$('si_du').innerHTML;
-			_$('memoryusage').innerHTML =_$('si_free').innerHTML;
-
-			var divs_toshow = new Array('osversion_div', 'uptime_div', 'asterisk_div', 'today_div','hostname_div');
-			for(var i=0; i < divs_toshow.length; i++ ){ _$(divs_toshow[i]).style.display = ""; }
-
-			document.getElementById(tabs[0]).className = "tabselected";
-			load_todayslog();
-		},
-		onFailure: function(t) {
-			_$('status_message').style.display='none';
-			gui_alert("Config Error: " + t.status + ": " + t.statusText);
-		}
-	};
-	opt.parameters="";
-	var tmp = new Ajax.Request("./bkps/sysinfo_output.html", opt);
-	return true;
-}
-
-
 function localajaxinit(){
 	ASTGUI.events.add(document, 'mouseover', show_tooltip);
 	setWindowTitle("Resource and Monitoring Graphs");
-	var date = new Date() ; 
+	var date = new Date() ;
 	parent.loadscreen(this);
 	show_window(1);
 }
@@ -137,20 +105,18 @@ function free_mem(){
 <div class="mainscreenContentBox" id="userscontent">
 <table class="mainscreenTable" align="center">
 	<tr valign="top" height="18">	
-			<td align="left">
-
-				<a href="#" class="tab" onclick="return show_window(1);" id="tab1" tip="en,graph,0">CPU</a>&nbsp;&nbsp;
-				<div id="graphshtml" style="display:none"></div>
-
-				<div id="information" style=" border: solid 0px black; background: transparent; padding: 4px; height:440px; width:95%;">
-						<BR>
-						<div id="cpu_div" style="display:none">
-								<div id="cpu" style="font-family:courier; font-size:10pt;"></div><BR>
-								<embed id="cpu_embed" type="image/svg+xml" src="graphs/graph_cpu.svgz"
-									width="500" height="250" /> 
-						</div>
-				</div>
-			</td>
+	<td align="left">
+		<a href="#" class="tab" onclick="return show_window(1);" id="tab1" tip="en,graph,0">CPU</a>&nbsp;&nbsp;
+		<div id="graphshtml" style="display:none"></div>
+		<div id="information" style=" border: solid 0px black; background: transparent; padding: 4px; height:440px; width:95%;">
+			<BR>
+			<div id="cpu_div" style="display:none">
+					<div id="cpu" style="font-family:courier; font-size:10pt;"></div><BR>
+					<embed id="cpu_embed" type="image/svg+xml" src="graphs/graph_cpu.svgz"
+						width="500" height="250" /> 
+			</div>
+		</div>
+	</td>
 	</tr>
 	<tr><td valign="top" align=center><div  id='status'></div></td></tr>
 	<tr><td></td></tr>
