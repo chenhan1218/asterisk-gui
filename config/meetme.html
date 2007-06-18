@@ -285,7 +285,7 @@ callbacks.savechanges = function(){
 		}
 		uri += build_action('append', p, "rooms","conf", newvalue );  p++;
 
-		makerequest('u','extensions.conf',uri,
+		makerequest('u','meetme.conf',uri,
 			function(t){
 				if( temp_rooms_r ==  -1 ){ // add
 					f.stored_config.catbyname.rooms.fields.push( newvalue );
