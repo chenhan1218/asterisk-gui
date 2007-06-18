@@ -1395,7 +1395,11 @@ function Astman() {
 				} else if (override || (widgets[x].value != thevalue)) {
 					if (cat.fieldbyname) {
 						cat.fieldbyname[src] = widgets[x].value;
-						changes += build_action('update', count++, cat.name, src, cat.fieldbyname[src]);
+						if(widgets[x].hasAttribute('noblank') && !widgets[x].value){
+							changes += build_action('delete', count++, cat.name, src, "", thevalue);
+						}else{
+							changes += build_action('update', count++, cat.name, src, cat.fieldbyname[src]);
+						}
 					} else
 						cat[src] = widgets[src].value;
 				}
