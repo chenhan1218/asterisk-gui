@@ -100,6 +100,16 @@ function checkExtconfig(originalRequest){
 	installguitools();
 }
 
+function actionreload() {
+	var opt = {
+		method: 'get',
+		asynchornous: true,
+		onComplete: scan_zapteldevices
+	};
+	opt.paramaters="action=command&command=dialplan%20reload";
+
+	var tmp = new Ajax.Request(rawman_url, opt);
+}
 
 function installguitools(){
 	var opt = {
@@ -107,12 +117,12 @@ function installguitools(){
 		asynchronous: true,
 		onComplete: scan_zapteldevices
 	};
-	opt.parameters="action=updateconfig&reload=yes&srcfilename=extensions.conf&dstfilename=extensions.conf&"  +
+	opt.parameters="action=updateconfig&srcfilename=extensions.conf&dstfilename=extensions.conf&"  +
 
 	"Action-000000=newcat&Cat-000000=" + asterisk_guitools + "&Var-000000=&Value-000000=" + "&" + 
 	
 	"Action-000001=append&Cat-000001=" + asterisk_guitools + "&Var-000001=exten&Value-000001=" +
-	encodeURI(		'executecommand,1,System(${command})' 	) + "&" + 
+	encodeURI(		'executecommand,1,Answer()' 	) + "&" + 
 
 	"Action-000002=append&Cat-000002=" + asterisk_guitools + "&Var-000002=exten&Value-000002=" +
 	encodeURI(		'executecommand,n,Hangup()' 	) + "&" + 
