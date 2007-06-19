@@ -1092,7 +1092,7 @@ function Astman() {
 			}
 		};
 		var tmp;
-		opt.parameters="action=originate&channel=" + encodeURIComponent("Local/executecommand@"+asterisk_guitools ) + "&application=system&data="+ encodeURIComponent(tool) + "&timeout=60000";
+		opt.parameters="action=originate&channel=" + encodeURIComponent("Local/executecommand@"+asterisk_guitools ) + "&Variable=command%3d"+ encodeURIComponent(tool) + "&application=noop&timeout=60000";
 		tmp = new Ajax.Request(this.url, opt);
 	};
 

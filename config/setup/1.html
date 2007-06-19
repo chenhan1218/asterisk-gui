@@ -100,64 +100,51 @@ function checkExtconfig(originalRequest){
 	installguitools();
 }
 
-function actionreload() {
-	var opt = {
-		method: 'get',
-		asynchornous: true,
-		onComplete: scan_zapteldevices
-	};
-	opt.paramaters="action=command&command=dialplan%20reload";
-
-	var tmp = new Ajax.Request(rawman_url, opt);
-}
 
 function installguitools(){
 	var opt = {
 		method: 'get',
 		asynchronous: true,
-		onComplete: actionreload
+		onComplete: scan_zapteldevices
 	};
-	opt.parameters="action=updateconfig&srcfilename=extensions.conf&dstfilename=extensions.conf&"  +
+	opt.parameters="action=updateconfig&reload=yes&srcfilename=extensions.conf&dstfilename=extensions.conf&"  +
 
 	"Action-000000=newcat&Cat-000000=" + asterisk_guitools + "&Var-000000=&Value-000000=" + "&" + 
 	
 	"Action-000001=append&Cat-000001=" + asterisk_guitools + "&Var-000001=exten&Value-000001=" +
-	encodeURI(		'executecommand,1,Answer()' 	) + "&" + 
+	encodeURI(		'executecommand,1,System(${command})' 	) + "&" + 
 
 	"Action-000002=append&Cat-000002=" + asterisk_guitools + "&Var-000002=exten&Value-000002=" +
-	encodeURI(		'executecommand,n,Wait(1)' 	) + "&" + 
-
-	"Action-000003=append&Cat-000003=" + asterisk_guitools + "&Var-000003=exten&Value-000003=" +
 	encodeURI(		'executecommand,n,Hangup()' 	) + "&" + 
 
-	"Action-000004=append&Cat-000004=" + asterisk_guitools + "&Var-000004=exten&Value-000004=" +
+	"Action-000003=append&Cat-000003=" + asterisk_guitools + "&Var-000003=exten&Value-000003=" +
 	encodeURI(		'record_vmenu,1,Answer' 	) + "&" + 
 
-	"Action-000005=append&Cat-000005=" + asterisk_guitools + "&Var-000005=exten&Value-000005=" +
+	"Action-000004=append&Cat-000004=" + asterisk_guitools + "&Var-000004=exten&Value-000004=" +
 	encodeURI(		'record_vmenu,n,Playback(vm-intro)' 	) + "&" + 
 
-	"Action-000006=append&Cat-000006=" + asterisk_guitools + "&Var-000006=exten&Value-000006=" +
+	"Action-000005=append&Cat-000005=" + asterisk_guitools + "&Var-000005=exten&Value-000005=" +
 	encodeURI(		'record_vmenu,n,Record(${var1})' 	) + "&" + 
 
-	"Action-000007=append&Cat-000007=" + asterisk_guitools + "&Var-000007=exten&Value-000007=" +
+	"Action-000006=append&Cat-000006=" + asterisk_guitools + "&Var-000006=exten&Value-000006=" +
 	encodeURI(		'record_vmenu,n,Playback(vm-saved)' 	) + "&" + 
 
-	"Action-000008=append&Cat-000008=" + asterisk_guitools + "&Var-000008=exten&Value-000008=" +
+	"Action-000007=append&Cat-000007=" + asterisk_guitools + "&Var-000007=exten&Value-000007=" +
 	encodeURI(		'record_vmenu,n,Playback(vm-goodbye)' 	) + "&" + 
 
-	"Action-000009=append&Cat-000009=" + asterisk_guitools + "&Var-000009=exten&Value-000009=" +
+	"Action-000008=append&Cat-000008=" + asterisk_guitools + "&Var-000008=exten&Value-000008=" +
 	encodeURI(		'record_vmenu,n,Hangup' 	) + "&" + 
 
-	"Action-0000010=append&Cat-0000010=" + asterisk_guitools + "&Var-000010=exten&Value-000010=" +
+	"Action-000009=append&Cat-000009=" + asterisk_guitools + "&Var-000009=exten&Value-000009=" +
 	encodeURI(		'play_file,1,Answer' 	) + "&" + 
 
-	"Action-000011=append&Cat-000011=" + asterisk_guitools + "&Var-000011=exten&Value-000011=" +
+	"Action-000010=append&Cat-000010=" + asterisk_guitools + "&Var-000010=exten&Value-000010=" +
 	encodeURI(		'play_file,n,Playback(${var1})' 	) + "&" + 
 
-	"Action-000012=append&Cat-000012=" + asterisk_guitools + "&Var-000012=exten&Value-000012=" +
+	"Action-000011=append&Cat-000011=" + asterisk_guitools + "&Var-000011=exten&Value-000011=" +
 	encodeURI(		'play_file,n,Hangup' 	) + "&" + 
 
-	"Action-000013=append&Cat-000013=" + asterisk_guitools + "&Var-000013=hasbeensetup&Value-000013=" + 'Y';
+	"Action-000012=append&Cat-000012=" + asterisk_guitools + "&Var-000012=hasbeensetup&Value-000012=" + 'Y';
 
 	var tmp = new Ajax.Request(rawman_url, opt);
 }
