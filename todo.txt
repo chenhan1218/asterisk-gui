@@ -36,6 +36,8 @@ Todo
 
 * Add full support for bandwidth.com through the service providers page 
 
+* To fix call parking, give it an option to allow if the user wants people to be able to access the parking lot per numberplan
+
 
 Completed
 ----------
