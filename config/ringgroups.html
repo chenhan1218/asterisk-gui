@@ -137,6 +137,11 @@ function edit_form(g){
 function delete_rg(g){
 	if(!confirm("Are you sure ?")){ return true; }
 	var uri = build_action('delcat', 0, RG_FORMAT+g, "", "");
+	/* If we made a goto extension in default, delete the reference. */
+	if(ringgroups[RG_EDITING].rgExten){
+		var rlex = ringgroups[RG_EDITING].rgExten + ',1,Goto(' + RG_FORMAT+RG_EDITING + '|s|1)' ;
+		uri += build_action('delete', 1, specialcontext, "exten", "", rlex); 
+	}
 	makerequest('u','extensions.conf', uri, function(t){
 		delete ringgroups[g];
 		clear_table();
