@@ -44,6 +44,51 @@ var isIE = false;
 if(document.attachEvent){ isIE= true; }
 
 var ASTGUI = { // the idea is to eventually move all the global variables and functions into this one object so that the global name space is not as cluttered as it is now.
+	dialog : {
+		load_iframe : function(msg){
+			top.alertframename = "alertiframe";
+			top.alertmsg = msg ;
+			var h,_hs;
+			if( !top.document.getElementById(top.alertframename)){
+				h= top.document.createElement("IFRAME");
+				h.setAttribute("id", top.alertframename );
+				h.setAttribute("ALLOWTRANSPARENCY", "true");
+				_hs = h.style ;
+				_hs.position="absolute";
+				_hs.left= 0;
+				_hs.top= 0;
+				_hs.width= '100%';
+				_hs.height= '100%';
+				_hs.zIndex = 9999 ;
+				h.src = "guialert.html" ;
+				h.frameBorder="0";
+				h.scrolling="no";
+				_hs.filter='progid:DXImageTransform.Microsoft.Alpha(style=0,opacity=90)';
+				//h.style.MozOpacity = .90;
+				top.document.body.appendChild(h);
+			}else{
+				top.document.getElementById( top.alertframename ).contentWindow.update( );
+				top.document.getElementById( top.alertframename ).style.display = "";
+			}
+		},
+
+		waitWhile : function(msg){ 
+			top.alertmsgtype = 2 ;	
+			this.load_iframe(msg);
+		},
+
+		alertmsg : function(msg){ 
+			top.alertmsgtype = 1 ;	
+			this.load_iframe(msg);
+		},
+
+		hide : function(){
+			try{top.document.getElementById( top.alertframename ).style.display = "none";}catch(err){}
+		}
+	},
+
+
+
 	startDrag : function(event, movethis ){
 		var initialcursorX, initialcursorY, initialwindowleft, initialwindowtop, maxleft, maxtop ;
 		var stopDrag = function(){
@@ -97,6 +142,12 @@ var ASTGUI = { // the idea is to eventually move all the global variables and fu
 		},
 		remove: function(a,b,c){
 			if(isIE) { a.detachEvent('on'+b, c); }else{ a.removeEventListener(b, c, false); }
+		}
+	},
+
+	domActions: {
+		removeAllChilds: function(x){
+			while(x.firstChild){ x.removeChild(x.firstChild); }
 		}
 	},
 
@@ -1123,10 +1174,7 @@ function Astman() {
 		me.selecttarget = target.id;
 		target.className = "chanlistselected";
 
-		if(channelsCallback ){
-			channelsCallback (target.id);
-		}
-		//me.chancallback(target.id);
+		me.chancallback(target.id);
 	};
 
 	this.restoreTarget = function(targetname) {
@@ -1223,7 +1271,7 @@ function Astman() {
 					foundactive = 1;
 				}
 				count++;
-				s = s + "\t<tr class='" + cclass + "' id='" + channels[x].channel + "' onClick='astmanEngine.clickChannel(event)'>";
+				s = s + "\t<tr class='" + cclass + "' id='" + channels[x].channel + "' onClick='parent.astmanEngine.clickChannel(event)'>";
 				s = s + "<td class='field_text'>" + channels[x].channel + "</td>";
 				if (channels[x].state)
 					s = s + "<td class='field_text'>" + channels[x].state + "</td>";
@@ -1395,7 +1443,11 @@ function Astman() {
 				} else if (override || (widgets[x].value != thevalue)) {
 					if (cat.fieldbyname) {
 						cat.fieldbyname[src] = widgets[x].value;
-						changes += build_action('update', count++, cat.name, src, cat.fieldbyname[src]);
+						if( !widgets[x].value && !widgets[x].hasAttribute('allowblank') ){
+							changes += build_action('delete', count++, cat.name, src, "", thevalue);
+						}else{
+							changes += build_action('update', count++, cat.name, src, cat.fieldbyname[src]);
+						}
 					} else
 						cat[src] = widgets[src].value;
 				}
@@ -1802,7 +1854,7 @@ function Astman() {
 	}
 	
 	function format_extension(box, t, x, multipriority) {
-		var tmp;
+		var tmp, lbl;
 		var exten, app, rest, args, label, priority;
 		if ((t.names[x] != 'exten'))
 			return null;
@@ -1810,18 +1862,22 @@ function Astman() {
 		priority = tmp[1];
 
 		// if it is a Voicemenu alias .. return "extension -- Voicemenu"
-		if ( tmp[2].match("Goto") && tmp[2].match("voicemenu-custom-" )  ){
+		if ( tmp[2].match("Goto") ){
+
+			if( tmp[2].match("voicemenu-custom-") ) { lbl = "Voice Menu"; }
+			if( tmp[2].match("ringroups-custom") ) { lbl = "Ring Group"; }
+
 			t.subfields[x]['context'] = t.name;
 			t.subfields[x]['name'] = tmp[0];
 			t.subfields[x]['app'] = "Goto";
-			t.subfields[x]['label'] = "Voice Menu";
+			t.subfields[x]['label'] = lbl;
 			t.subfields[x]['args'] = "";
 			t.subfields[x]['priority'] = priority;
 
 			box.calcname = tmp[0];
 			box.calccontext = t.name;
 			box.calcpriority = priority;
-			return tmp[0] + " -- Voice Menu"  ;
+			return tmp[0] + " -- " + lbl ;
 		}
 		//
 
