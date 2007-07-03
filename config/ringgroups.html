@@ -320,7 +320,8 @@ function localajaxinit(){
 	//
 	// so we need to load users.conf and extensions.conf
 	//
-	config2json('users.conf', 1, get_users) ;
+	//config2json('users.conf', 1, get_users) ;
+	config2json('zapscan.conf', 1, read_zapchannels) ;
 
 	parent.loadscreen(this);
 }
@@ -345,6 +346,13 @@ function get_users(n){
 				LISTOFCHANNELS['IAX2/' + l] = {};
 				LISTOFCHANNELS['IAX2/' + l]['ChannelName'] = 'IAX2/' + l + " -- " + n[l]['fullname'];
 			}
+			if( n[l]['zapchan'] ){
+				var m = n[l]['zapchan'];
+				if( LISTOFCHANNELS[ 'Zap/' + m ] ){
+					LISTOFCHANNELS['Zap/'+m]['ChannelName'] = "Analog Phone -- " + n[l]['fullname'];
+				}
+			}
+
 			ASTGUI.selectbox.append(el, l + " -- " + n[l]['fullname'] , 'Voicemail(' + l + ',b)');
 		}
 	}}
@@ -395,7 +403,10 @@ function read_extensions(n){
 			ASTGUI.selectbox.append(el,get_menuname(n[l]), 'Goto('+ n[l] + '|s|1)' );
 		}
 	}}
-	config2json('zapscan.conf', 1, read_zapchannels) ;
+
+	clear_table();
+	showlist_of_rules();
+	//config2json('zapscan.conf', 1, read_zapchannels) ;
 }
 
 
@@ -403,12 +414,11 @@ function read_zapchannels(c){
 	for( var d in c ){
 		if ( c.hasOwnProperty(d) && c[d]['port'] && (c[d]['port'] == 'fxo' ) ) {
 			LISTOFCHANNELS['Zap/'+d] = {};
-			LISTOFCHANNELS['Zap/'+d]['ChannelName'] = 'Zap/' + d;
+			LISTOFCHANNELS['Zap/'+d]['ChannelName'] = 'Analog Phone ' + d;
 		}
 	}
 
-	clear_table();
-	showlist_of_rules();
+	config2json('users.conf', 1, get_users) ;
 }
 
 
@@ -457,11 +467,6 @@ function parse_addtoringgroups(u, v){
 }
 
 
-
-
-
-
-
 function add_rg(){
 	var u;
 	isNewRG = 1;
@@ -486,7 +491,6 @@ function add_rg(){
 }
 
 function cancel_rg(){ _$('ringgroup_editdiv').style.display = 'none'; }
-
 
 </script>
 <body onload="localajaxinit()"  bgcolor="FFFFFF">
