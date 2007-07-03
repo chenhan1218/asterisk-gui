@@ -197,7 +197,11 @@ callbacks.beforeSaving = function(){
 	if(_dvcs_v.length ==0 ){
 		ifnewtrunk();
 	}else{
-		ifedit_existing();
+		if( _$('custom_trunkname').value !=  _dvcs_v && _$('advanced_content').style.display == '' ){
+			_$('context').value =  asterisk_guiTDPrefix + _$('custom_trunkname').value  ;
+		}else{
+			_$('context').value =  asterisk_guiTDPrefix + _dvcs_v  ;
+		}
 	}
 
 	if(isnewtrunk ==1){
@@ -310,9 +314,6 @@ function callbacks_savechanges_step2(){
 	}
 }
 
-function ifedit_existing(){
-	_$('context').value =  asterisk_guiTDPrefix + _$('custom_trunkname').value  ;
-}
 
 
 function ifnewtrunk(){

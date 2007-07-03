@@ -88,11 +88,17 @@ function edit_form(g){
 
 	var r = _$('select_ringthesechannels');
 	var s = _$('select_listofchannels');
+	var cn ;
+
 	ASTGUI.selectbox.clear(s);
 	ASTGUI.selectbox.clear(r);
 	for (var y=0; y < this_ringgroup.rgchannels.length ; y++ ){ 
-		ASTGUI.selectbox.append(r,LISTOFCHANNELS[this_ringgroup.rgchannels[y]]['ChannelName'], this_ringgroup.rgchannels[y]);
-		//ASTGUI.selectbox.append(r,this_ringgroup.rgchannels[y], this_ringgroup.rgchannels[y]);
+		if(LISTOFCHANNELS[this_ringgroup.rgchannels[y]]){
+			cn = LISTOFCHANNELS[this_ringgroup.rgchannels[y]]['ChannelName'];
+		}else{
+			cn = this_ringgroup.rgchannels[y];
+		}
+		ASTGUI.selectbox.append(r,cn,this_ringgroup.rgchannels[y]);
 	}
 
 	for( var u in LISTOFCHANNELS ){ if(LISTOFCHANNELS.hasOwnProperty(u)) {
@@ -140,8 +146,8 @@ function delete_rg(g){
 	if(!confirm("Are you sure ?")){ return true; }
 	var uri = build_action('delcat', 0, RG_FORMAT+g, "", "");
 	/* If we made a goto extension in default, delete the reference. */
-	if(ringgroups[RG_EDITING].rgExten){
-		var rlex = ringgroups[RG_EDITING].rgExten + ',1,Goto(' + RG_FORMAT+RG_EDITING + '|s|1)' ;
+	if(ringgroups[g].rgExten){
+		var rlex = ringgroups[g].rgExten + ',1,Goto(' + RG_FORMAT+g+ '|s|1)' ;
 		uri += build_action('delete', 1, specialcontext, "exten", "", rlex); 
 	}
 	makerequest('u','extensions.conf', uri, function(t){
@@ -158,6 +164,9 @@ function save_rg(){
 	}
 	if( !_$('text_rgname').value.strip()){
 		gui_alert("Please enter a name for the ring group"); return false;
+	}
+	if( isNaN(_$('text_ringTime').value) || Number(_$('text_ringTime').value) <= 0 ){
+		gui_alert("Please enter the number of seconds"); _$('text_ringTime').focus(); return false;
 	}
 
 	if(isNewRG){ 
