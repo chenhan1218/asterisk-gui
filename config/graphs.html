@@ -29,33 +29,6 @@
 var tabs = new Array('tab1'); 
 var divs_tohide = new Array('cpu_div');
 
-function update_graph(graph) {
-	var tmp_command = "sh " + asterisk_scriptsFolder + "graphs.sh cpu > /var/lib/asterisk/static-http/config/graphs/data_cpu.html";
-	parent.astmanEngine.run_tool(tmp_command);
-	return true;
-	}
-
-function load_graphs() {
-	var _sm = _$('status_message').style ;
-	_sm.display = "" ;	
-	
-	var opt = {
-		method: 'get',
-		asynchronous: true,
-		onComplete: function(originalRequest){
-			_sm.display = 'none' ;
-			_$('todaylog').innerHTML = (originalRequest.responseText) ? "<PRE>"+originalRequest.responseText.escapeHTML() +"</PRE>" : "No log messages found on this Day" ;
-			
-		},
-		onFailure: function(t) {
-			_sm.display = 'none' ;
-			gui_alert("Config Error: " + t.status + ": " + t.statusText);
-		}
-	};
-	opt.parameters="";
-	var tmp = new Ajax.Request("graphs/cpu_data", opt);
-	return true;
-}
 
 function show_window(x){
 	for(i=0; i < tabs.length ; i++){
@@ -65,14 +38,15 @@ function show_window(x){
 	document.getElementById(tabs[x-1]).className = "tabselected";
 	document.getElementById(tabs[x-1]).blur();
 
-	clearInterval(interval_handler); /*stop our other real-time refreshers... */
+	//clearInterval(interval_handler); /*stop our other real-time refreshers... */
 
 	switch(x){
 		case 1:
 		var divs_toshow = new Array('cpu_div');
-		var interval_handler = setInterval("update_graph()",5000);
+		//var interval_handler = setInterval(update_graph,5000);
 		break;
 	}
+
 	for(var i=0; i < divs_tohide.length; i++ )
 		_$(divs_tohide[i]).style.display = "none";
 	for(var i=0; i < divs_toshow.length; i++ )
@@ -111,8 +85,8 @@ function free_mem(){
 		<div id="information" style=" border: solid 0px black; background: transparent; padding: 4px; height:440px; width:95%;">
 			<BR>
 			<div id="cpu_div" style="display:none">
-					<div id="cpu" style="font-family:courier; font-size:10pt;"></div><BR>
-					<embed id="cpu_embed" type="image/svg+xml" src="graphs/graph_cpu.svgz"
+				<div id="cpu" style="font-family:courier; font-size:10pt;"></div><BR>
+				<embed id="cpu_embed" type="image/svg+xml" src="graphs/graph_cpu.svgz"
 						width="500" height="250" /> 
 			</div>
 		</div>

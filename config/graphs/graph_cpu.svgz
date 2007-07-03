@@ -107,7 +107,7 @@ if (typeof getURL == 'undefined') {
   }
 }
 
-
+var TESTVAR = "FFRDDDDD";
 var SVGDoc = null;
 var last_cpu_total = 0;
 var last_cpu_idle = 0;
@@ -121,16 +121,31 @@ var fetch_url='data_cpu.html';
 function init(evt) {
 	SVGDoc = evt.target.ownerDocument;
 	fetch_data();
-	setInterval('fetch_data()', 5000);
+	setInterval(fetch_data, 5000);
+	//setInterval(update_graph,5000);
 }
 
+
 function fetch_data() {
-	if (fetch_url) {
-		getURL(fetch_url, plot_cpu_data);
-	} else {
-		handle_error();
-	}
+	var tmp_command = "sh " + top.asterisk_scriptsFolder + "graphs.sh cpu > /var/lib/asterisk/static-http/config/graphs/data_cpu.html";
+
+	top.astmanEngine.setURL('../'+top.asterisk_rawmanPath);
+	top.astmanEngine.run_tool(
+		tmp_command, 
+		function(){ 
+			top.astmanEngine.setURL(top.asterisk_rawmanPath);
+			if (fetch_url) {
+				getURL(fetch_url, plot_cpu_data);
+			} else {
+				handle_error();
+			}
+
+		}
+	);
+	return true;
 }
+
+
 
 function plot_cpu_data(obj) {
 	if (!obj.success || ''==obj.content) {

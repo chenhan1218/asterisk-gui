@@ -90,13 +90,15 @@ function edit_form(g){
 	var s = _$('select_listofchannels');
 	ASTGUI.selectbox.clear(s);
 	ASTGUI.selectbox.clear(r);
-	for (var y=0; y < this_ringgroup.rgchannels.length ; y++ ){
-		ASTGUI.selectbox.append(r,this_ringgroup.rgchannels[y], this_ringgroup.rgchannels[y]);
+	for (var y=0; y < this_ringgroup.rgchannels.length ; y++ ){ 
+		ASTGUI.selectbox.append(r,LISTOFCHANNELS[this_ringgroup.rgchannels[y]]['ChannelName'], this_ringgroup.rgchannels[y]);
+		//ASTGUI.selectbox.append(r,this_ringgroup.rgchannels[y], this_ringgroup.rgchannels[y]);
 	}
 
 	for( var u in LISTOFCHANNELS ){ if(LISTOFCHANNELS.hasOwnProperty(u)) {
 		if( !InArray(this_ringgroup.rgchannels, u) ){
-			ASTGUI.selectbox.append(s,u,u);
+			//ASTGUI.selectbox.append(s,u,u);
+			ASTGUI.selectbox.append( s, LISTOFCHANNELS[u]['ChannelName'] , u);
 		}
 	}}
 
@@ -315,8 +317,14 @@ function get_users(n){
 
 		if( !n[l]['trunkstyle'] ){ // all entries from users.conf other than trunks
 			UserExtensions.push(l);
-			if( n[l]['hassip']=='yes'){LISTOFCHANNELS['SIP/' + l] = true;}
-			if( n[l]['hasiax']=='yes'){LISTOFCHANNELS['IAX2/' + l] = true;}
+			if( n[l]['hassip']=='yes'){
+				LISTOFCHANNELS['SIP/' + l] = {};
+				LISTOFCHANNELS['SIP/' + l]['ChannelName'] = 'SIP/' + l + " -- " + n[l]['fullname'];
+			}
+			if( n[l]['hasiax']=='yes'){
+				LISTOFCHANNELS['IAX2/' + l] = {};
+				LISTOFCHANNELS['IAX2/' + l]['ChannelName'] = 'IAX2/' + l + " -- " + n[l]['fullname'];
+			}
 			ASTGUI.selectbox.append(el, l + " -- " + n[l]['fullname'] , 'Voicemail(' + l + ',b)');
 		}
 	}}
@@ -374,7 +382,8 @@ function read_extensions(n){
 function read_zapchannels(c){
 	for( var d in c ){
 		if ( c.hasOwnProperty(d) && c[d]['port'] && (c[d]['port'] == 'fxo' ) ) {
-			LISTOFCHANNELS['Zap/'+d] = true;
+			LISTOFCHANNELS['Zap/'+d] = {};
+			LISTOFCHANNELS['Zap/'+d]['ChannelName'] = 'Zap/' + d;
 		}
 	}
 
@@ -451,7 +460,7 @@ function add_rg(){
 	ASTGUI.selectbox.clear(y);
 
 	for( var u in LISTOFCHANNELS ){ if(LISTOFCHANNELS.hasOwnProperty(u)) {
-		ASTGUI.selectbox.append(y,u,u);
+		ASTGUI.selectbox.append( y, LISTOFCHANNELS[u]['ChannelName'], u );
 	}}
 }
 

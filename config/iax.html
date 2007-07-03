@@ -44,6 +44,10 @@ phonecallbacks.loaded = function() {
 }
 
 function localajaxinit(){
+	var adjust_toScreen = function(){
+		_$('iaxsettings_form').style.height= ASTGUI.displayHeight() - 70 ;
+	};
+	ASTGUI.events.add( window , 'resize', adjust_toScreen);
 	setWindowTitle("IAX");
 	parent.loadscreen(this);
 		for (var x =0; x< fieldnames.length; x++ ) {
@@ -169,7 +173,7 @@ function disallow_all_refresh(){
 	<span style="cursor: pointer; cursor: hand;" onclick="window.location.href=window.location.href;" >&nbsp;<img src="images/refresh.png" title=" Refresh " border=0 >&nbsp;</span>
 </div>
 <div class="mainscreenContentBox" id="userscontent">
-<div  style="height :425px;width : 530px ; overflow :auto;">
+<div  style="height :425px;width : 530px ; overflow :auto;" id='iaxsettings_form'>
 	<table class="field_text" align="center" width="100%" cellpadding=3 cellspacing=0 border=0>
 	<tr>	<td align=right colspan=2>&nbsp;</td>	</tr>
 	<tr>	<td align=right>Bind Port:</td>
