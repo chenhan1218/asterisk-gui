@@ -161,6 +161,17 @@ function save_rg(){
 	}
 
 	if(isNewRG){ 
+		var check4duplicatename = function(){ //Check for duplicate names 
+			var rgn = _$('text_rgname').value ;
+			for( var t in ringgroups ){ if(ringgroups.hasOwnProperty(t)){ 
+				if(  rgn == ringgroups[t].rgname )return false;
+			}}
+			return true;
+		};
+		if(!check4duplicatename()){
+			gui_alert("A Ring Group with this name already Exists. Please choose a different name.");
+			return false;
+		}
 		var getnewringgroupcontext = function(){
 			var t=1;
 			while(ringgroups[t]){ t++; }
@@ -449,7 +460,8 @@ function add_rg(){
 	_$('select_voicemails').style.display = "none";
 	_$('select_vmenus').style.display = "none";
 	_$('radio_fbhgp').checked = true;
-
+	_$('text_rgname').value = '';
+	_$('text_rgExten').value = '';
 	_$('ringgroup_editdiv').style.display = '';
 	_$('text_ringTime').value = "20"; 
 
