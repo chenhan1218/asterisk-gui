@@ -1122,7 +1122,11 @@ function Astman() {
 			target=target.parentNode;
 		me.selecttarget = target.id;
 		target.className = "chanlistselected";
-		me.chancallback(target.id);
+
+		if(channelsCallback ){
+			channelsCallback (target.id);
+		}
+		//me.chancallback(target.id);
 	};
 
 	this.restoreTarget = function(targetname) {
@@ -1219,7 +1223,7 @@ function Astman() {
 					foundactive = 1;
 				}
 				count++;
-				s = s + "\t<tr class='" + cclass + "' id='" + channels[x].channel + "' onClick='parent.astmanEngine.clickChannel(event)'>";
+				s = s + "\t<tr class='" + cclass + "' id='" + channels[x].channel + "' onClick='astmanEngine.clickChannel(event)'>";
 				s = s + "<td class='field_text'>" + channels[x].channel + "</td>";
 				if (channels[x].state)
 					s = s + "<td class='field_text'>" + channels[x].state + "</td>";
@@ -1391,11 +1395,7 @@ function Astman() {
 				} else if (override || (widgets[x].value != thevalue)) {
 					if (cat.fieldbyname) {
 						cat.fieldbyname[src] = widgets[x].value;
-						if(widgets[x].hasAttribute('noblank') && !widgets[x].value){
-							changes += build_action('delete', count++, cat.name, src, "", thevalue);
-						}else{
-							changes += build_action('update', count++, cat.name, src, cat.fieldbyname[src]);
-						}
+						changes += build_action('update', count++, cat.name, src, cat.fieldbyname[src]);
 					} else
 						cat[src] = widgets[src].value;
 				}

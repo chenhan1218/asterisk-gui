@@ -35,12 +35,10 @@ var fieldnames =[ 'disallow','allow','callerid','cancel','contact','context','de
 		'name','new','port','provider','registeriax','registersip','save','secret','trunkname','trunkstyleanalog','trunkstylecustomvoip',
 		'trunkstylevoip','username','zapchan'];
 var provfieldnames = ['providerdesc', 'providerlogo'];
-var opt_userandpass = ['voip_user', 'voip_pass', 'username', 'secret'];
 var isnewtrunk;
 var dids_array = [];
 var old_trunkname;
 var used_fxos = {};
-var isdouble = 0;
 used_fxos.oldvalue = "";
 used_fxos.newvalue = "";
 
@@ -180,7 +178,7 @@ callbacks.beforeSaving = function(){
 	var _msg3 = "When using Analog, at least one port must be selected.";
 	var _msg4 = "Please enter a Comment for this Service Provider";
 
-	if ( _tsv.checked && !_$('username').value.length && _$('provider').value != "bandwidth") { gui_alert(_msg1); return false; }
+	if ( _tsv.checked && !_$('username').value.length ) { gui_alert(_msg1); return false; }
 
 	if ( _tsa.checked ) {
 		var _zapchan = _$('zapchan');
@@ -324,24 +322,17 @@ function ifnewtrunk(){
 	var _provider = _$('provider');
 	var _zapchan = _$('zapchan');
 	var _trunkname = _$('trunkname');
-	var _username2 = (_$('username').value) ? ' - ' + _$('username').value : ' - (No Username Needed)'; 
 	_$('hasexten').value = 'no';
 	_$('context').value =  asterisk_guiTDPrefix + _$('name').value  ;
 
 	if (_$('trunkstylevoip').checked) {
 		provider = _provider.stored_config.catbyname[_provider.value];
-		_trunkname.value = _provider.options[_provider.selectedIndex].innerHTML + _username2;
+		_trunkname.value = _provider.options[_provider.selectedIndex].innerHTML + " - " + _$('username').value;
 		_$('hassip').value = provider.fieldbyname['hassip'];
 		_$('hasiax').value = provider.fieldbyname['hasiax'];
 		_$('registeriax').value = provider.fieldbyname['registeriax'];
 		_$('registersip').value = provider.fieldbyname['registersip'];
-		if(isdouble == 1) { /* Since we need an input and output trunk, we need to create yet another. */
-			_$('host').value = provider.fieldbyname['host_in'];
-			//_$('host').value = provider.fieldbyname['host_out'];
-		} else {
-			_$('host').value = provider.fieldbyname['host'];
-		}
-
+		_$('host').value = provider.fieldbyname['host'];
 		for (var x=0;x<_zapchan.options.length;x++){  _zapchan.options[x].selected = false; }
 		_zapchan.value = '';
 		_$('group').value = '';
@@ -495,9 +486,6 @@ function activateanalogvoip() {
 	}else if (_$('trunkstylevoip').checked) {
 		_$('voip').style.display = "";
 		_$('voip').style.height =350;
-		for(var x=0; x < opt_userandpass.length; x++) {
-		_$(opt_userandpass[x]).style.display = "none";
-		}
 	}else if (_$('trunkstylecustomvoip').checked) {
 		_$('customvoip').style.display = "" ;
 	}
@@ -505,7 +493,6 @@ function activateanalogvoip() {
 
 function localajaxinit() {
 	ASTGUI.events.add(document, 'mouseover', show_tooltip);
-	ASTGUI.events.add(_$('provider'), 'click', showhidefields);
 	setWindowTitle("Service Providers");
 	_$('devices').contentEditable = 'false';
 	_$('zapchan').splitchar=',';
@@ -525,34 +512,17 @@ function localajaxinit() {
 	) ;
 
 	for (var x =0; x< fieldnames.length; x++) {
-		if(!_$(fieldnames[x])) {
-			alert(fieldnames[x] + " does not exists.");
-		}
 		widgets[fieldnames[x]] = _$(fieldnames[x]);
 		widgets[fieldnames[x]].disabled = true;
 	}
-	for (var x =0; x < provfieldnames.length ; x++) { 
+	for (var x =0; x < provfieldnames.length ; x++) {
 		provwidgets[provfieldnames[x]] = _$(provfieldnames[x]);
 		provwidgets[provfieldnames[x]].disabled = true;
 	}
-	
-	
+
 	parent.astmanEngine.config2list("zapscan.conf", _$('zapchan'), new Array(), phonecallbacks);
 }
 
-function showhidefields() {
-	var provname = _$('provider').value;
-	if(provname == "bandwidth") {
-		for(var x=0; x < opt_userandpass.length; x++) {
-		_$(opt_userandpass[x]).style.display="none";	
-		}
-	} else {
-		for(var x=0; x < opt_userandpass.length; x++) {
-		_$(opt_userandpass[x]).style.display = "";
-		}
-	}
-	
-}
 
 function loadServiceProvidersintotable(){
 	var _spt = _$('serviceproviderstable');
@@ -1046,10 +1016,10 @@ function advanced_cancel(){
 	</tr>
 	<tr><td colspan='2' align='center'><A href="#" id="providerlink"><img id='providerlogo' style='visibility:hidden;' border=0></A></td></tr>
 	<tr><td colspan='2' align='center'><div id='providerdesc' align='left' style='width:230px;height:100px; font-size:10px'></div></td></tr>
-	<tr>	<td id='voip_user' class="field_text" tip="en,trunks,3">Username:</td>
+	<tr>	<td class="field_text" tip="en,trunks,3">Username:</td>
 		<td><input size='20' id='username' class="input8"></td>
 	</tr>
-	<tr>	<td id='voip_pass' class="field_text" tip="en,trunks,4">Password:</td>
+	<tr>	<td class="field_text" tip="en,trunks,4">Password:</td>
 		<td><input type="password" size='20' id='secret' class="input8"></td>
 	</tr>
 	</table>
