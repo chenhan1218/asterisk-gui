@@ -297,6 +297,14 @@ function add_newstep(){
 	}
 
 	if( _nsa.value != "Answer" && _nsa.value != "GotoDirecotry" && _nsa.value != "Busy" && _nsa.value != "Hangup" && _nsa.value != "Congestion" && !_nsv .value ){
+		if( _nsa.value.toLowerCase() == "dialringgroup" ){
+			if(!_$('rgrp').options.length ){
+				gui_alert("No Ring Groups exist. <BR> Please create a Ring Group before selecting this option.");
+			}else{
+				gui_alert("Please select a RingGroup");
+			}
+			return;
+		}
 		gui_alert("Please enter a value for '" + _nsa.value +"'");
 		_nsv.focus();
 		return;

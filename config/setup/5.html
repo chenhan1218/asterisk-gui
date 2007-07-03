@@ -93,6 +93,7 @@ function addthe_default_callingplan2(){
 	var uri = build_action('newcat', 0, default_planname ,"", "");
 	uri += build_action('append', 1, default_planname,"plancomment", "DialPlan1"); 
 	uri += build_action('append', 2, default_planname,"include", "default"); 
+	uri += build_action('append', 3, default_planname,"include", "parkedcalls");
 	var opt = {
 		method: 'get',
 		asynchronous: true,

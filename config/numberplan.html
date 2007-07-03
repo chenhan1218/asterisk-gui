@@ -481,10 +481,12 @@ numplan_callbacks.newcategory = function() {
 		if( c < tmp[2] ){ break; }
 		c++ ;
 	}
-	gen = _extns.stored_config.catbyname[_extns.value];
-	temp = objcopy(gen);
-	temp.name = "numberplan-custom-" + c ;
-	temp.fieldbyname['plancomment'] = "DialPlan" + c;
+	var nnp = {};
+	nnp.name = "numberplan-custom-" + c ;
+	nnp.fieldbyname = {};
+	nnp.fieldbyname['plancomment'] = "DialPlan" + c;
+	nnp.fieldbyname['include'] = "default";
+	temp = objcopy(nnp);
 	_$('plancomment').value = "DialPlan" + c;
 	return temp;
 }
@@ -584,6 +586,7 @@ function addthe_default_callingplan(a){
 	var uri = build_action('newcat', 0, default_planname ,"", "");
 	uri += build_action('append', 1, default_planname,"plancomment", "DialPlan1"); 
 	uri += build_action('append', 2, default_planname,"include", "default"); 
+	uri += build_action('append', 3, default_planname,"include", "parkedcalls"); 
 	makerequest('u','extensions.conf', uri, function(t){gui_feedback("Created Default DialPlan",'green'); location.reload(); }   );
 }
 
