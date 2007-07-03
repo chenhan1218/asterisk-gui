@@ -494,6 +494,21 @@ function activateanalogvoip() {
 
 function localajaxinit() {
 	ASTGUI.events.add(document, 'mouseover', show_tooltip);
+
+	ASTGUI.events.add( _$('customvoip_name') , 'change' , function(){ _$('trunkname').value = _$('customvoip_name').value; } );
+	ASTGUI.events.add( _$('customvoip_protocol') , 'change' , function(){ 
+		if(_$('customvoip_protocol').value == "sip"){ _$('hassip').value = 'yes'; _$('hasiax').value = 'no'; }
+		if(_$('customvoip_protocol').value == "iax"){ _$('hassip').value = 'no' ; _$('hasiax').value = 'yes'; }
+	});
+	ASTGUI.events.add( _$('customvoip_register') , 'change' , function(){ 
+		if(_$('customvoip_register').checked){ 
+			if(_$('customvoip_protocol').value == "sip"){ _$('registersip').value = 'yes'; _$('registeriax').value = 'no';  }
+			if(_$('customvoip_protocol').value == "iax"){ _$('registersip').value = 'no' ; _$('registeriax').value = 'yes'; }
+		}else{ _$('registersip').value = 'no'; _$('registeriax').value = 'no'; }
+	});
+	ASTGUI.events.add( _$('customvoip_host') , 'change' , function(){ _$('host').value = _$('customvoip_host').value; } );
+	ASTGUI.events.add( _$('customvoip_username') , 'change' , function(){ _$('username').value = _$('customvoip_username').value; } );
+	ASTGUI.events.add( _$('customvoip_secret') , 'change' , function(){ _$('secret').value = _$('customvoip_secret').value; } );
 	setWindowTitle("Service Providers");
 	_$('devices').contentEditable = 'false';
 	_$('zapchan').splitchar=',';

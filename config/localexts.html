@@ -83,6 +83,10 @@ usercallbacks.beforeSaving= function(){
 		gui_feedback("'length of Local Extensions' does not match <BR> the length of 'First Extension number'");
 		return false;
 	}
+	if( _$('login_exten').value != "" && _$('login_exten').value == _$('login_callback_exten').value ){
+		gui_alert("You can not use the same extension for 'Agent Login' and 'Agent Callback Login' ");
+		return false;
+	}
 
 	OPE = _$('devices').stored_config.catbyname['general'].fieldbyname['operatorExtension'] ;
 	agent_extens.login_exten_old = _$('devices').stored_config.catbyname['general'].fieldbyname['login_exten'] ;
@@ -213,6 +217,9 @@ function flipadvbasic(){
 			</tr>
 			<tr>	<td tip="en,users,19" class="field_text" align=right>Agent Callback Login Extension : </td>
 				<td><input type=text id="login_callback_exten" size=5  class="input9"></td>
+			</tr>
+			<tr>    <td tip="en,users,20" class="field_text" align=right>Agent Logout : </td>
+				<td tip="en,users,20"> See Tooltip</td>
 			</tr>
 		</table>
 	</fieldset><BR>

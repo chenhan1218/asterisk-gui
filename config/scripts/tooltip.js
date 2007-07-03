@@ -4,11 +4,13 @@
 var tooltips = new Object;
 
 function show_tooltip(event){
- 	var f = ASTGUI.events.getTarget(event) ;
+	var f = $(ASTGUI.events.getTarget(event)) ;
+  try{
 	if( f.hasAttribute('tip') ){
 		var s = f.getAttribute('tip').split(",");
 		top._$('tooltip').innerHTML = tooltips[s[1]][s[0]][s[2]]; 
 	}
+  }catch(er){}
 }
 
 //	Tooltips for users.html in english
@@ -34,7 +36,10 @@ function show_tooltip(event){
 	tooltips['users'] .en[16] = "<B>VM Password:</B> Voicemail Password for this user, Ex: \"1234\"."; //Voicemail Password
 	tooltips['users'] .en[17] = "<B>Hints:</B> If checked the phone being called will be sent a \"hint\" to light up status lamps on SIP phones."; // Hint phone before being dialed.
 	tooltips['users'] .en[18] = "<B>Agent Login Extension:</B> Extension to be dialed for the Agents to Login to the Specific Queue. <br> This is an extension that all the Agents can Call to Login to their specified Queues. ";
-	tooltips['users'] .en[19] = "<B>Agent Callback Login Extension:</B> Extension to be dialed for the Agents to Login to the Specific Queue. <br> Same as Agent Login Extension, except you do not have to remain on the line. ";
+	tooltips['users'] .en[19] = "<B>Agent Callback Login Extension:</B> Extension to be dialed for the Agents to Login to the Queues they are apart of.<br> Same as Agent Login Extension, except you do not have to remain on the line. ";
+	tooltips['users'] .en[20] = "<B>Agent Logout</B><BR><LI> To logout of <b>Agent Login</b> Hangup your phone. <LI>To Logout of <b>Agent Callback Login</b> Dial the same extension used to login, specify your extension and password when prompted, and hit # when asked for your callback extension. This will successfully log you out of all queues you are apart of.";
+	
+	tooltips['users'] .en[99] = "<B>Phone Serial:</B> Enter the serial number of a Polycom phone to enable phone provisioning." ;
 
 // Tooltips for Conferencing (meetme)
 	tooltips['meetme']= new Object;
@@ -48,7 +53,7 @@ function show_tooltip(event){
 	tooltips['meetme'] .en[5] = "<B>Announce Callers:</B> Checking this option announces, to all Bridge participants, the joining of any other participants.";
 	tooltips['meetme'] .en[6] = "<B>Advanced:</B> Show/Hide Advanced Conference Bridge configuration options.";
 	tooltips['meetme'] .en[7] = "<B>Room Override:</B> This option allows the entry of a secondary extension that may be used to access this Conference Bridge. This is useful in the event that one wants to set a separate extension, having different options, to access the same Bridge.";
-	tooltips['meetme'] .en[8] = "<B>Quiet Mode:</B> This option enables Quiet mode.  If this option is checked, all users entering this conference will be marked as quiet, and will be in Listen-Only mode.";
+	tooltips['meetme'] .en[8] = "<B>Quiet Mode:</B> Do not play enter/leave sounds";
 	tooltips['meetme'] .en[9] = "<B>Wait for Market User:</B> If this option is set, then users joining the conference will not be able to speak to one-another until the marked user has joined the conference.";
 	tooltips['meetme'] .en[10] = "<B>Set Marked User:</B> This option sets the person that enters the bridge using this extension as Marked.  This option works in conjunction with the obove \"Wait for marked user\" option.";
 	tooltips['meetme'] .en[11] = "<B>Record Conference:</B> Record this conference in a WAV format. Default filename is meetme-conf-rec-${Conference Number}-${UNIQUEID}.";
@@ -66,8 +71,8 @@ function show_tooltip(event){
 	tooltips['voicemail'] .en[6] = "<B>Maximum Message Time:</B> This select box sets the maximum duration of a voicemail message. Message recording will not occur for times greater than this amount.";
 	tooltips['voicemail'] .en[7] = "<B>Minimum message Time:</B> This select box sets the minimum duration of a voicemail message. Messages below this threshold will be automatically deleted.";
 	tooltips['voicemail'] .en[8] = "<B>Advanced:</B> Show/Hide Advanced Voicemail configuration options.";
-	tooltips['voicemail'] .en[9] = "<B>Dail 'O' for Operator:</B> Checking this option enables callers entering the voicemail application to dial '0' to back out of the application and be sent to a voicemenu or operator.";
-	tooltips['voicemail'] .en[10] = "<B>Message Format:</B> This selection box controls the format in which messages are stored on the system and delivered by e-mail.";
+	tooltips['voicemail'] .en[9] = "<B>Dail 'O' for Operator:</B> Checking this option enables callers entering the voicemail application to dial '0' to back out of the application and be sent to a voicemenu or operator.<BR><BR><B>Note:</B>You have to configure an Operator Extension from the 'Options' panel.";
+	tooltips['voicemail'] .en[10] = "<B>Attach Format:</B> This selection box controls the format in which messages are delivered by e-mail.";
 	tooltips['voicemail'] .en[11] = "<B>Allow Users to Review:</B> Checking this option allows the caller leaving the voicemail the opportunity to review their recorded message before it is submitted as a voicemail message.";
 	tooltips['voicemail'] .en[12] = "<B>Play Envelope:</B> Selecting this option causes Asterisk not to play introductions about each message when accessing them from the voicemail application.";
 	tooltips['voicemail'] .en[13] = "<B> Max Greeting:</B> Defining this option sets a maximum time for a users's voicemail away message.";
@@ -177,6 +182,50 @@ function show_tooltip(event){
 	tooltips['sip_general'].en[79] = "<B>Implementation: </B>Jitterbuffer implementation, used on the receiving side of a SIP channel. Two implementations are currenlty available - \'fixed\' (with size always equals to jbmaxsize) and \'adaptive\' (with variable size, actually the new jb of IAX2)";
 
 
+// Tooltips for IAX_General (iax_general)
+	tooltips['iax_general']= new Object;
+	tooltips['iax_general'].en = new Array;
+	tooltips['iax_general'].en[0] = "<B>Bind Port:</B> ";
+	tooltips['iax_general'].en[1] = "<B>Bind Address:</B> ";
+	tooltips['iax_general'].en[2] = "<B>IAX1 Compatibility:</B> ";
+	tooltips['iax_general'].en[3] = "<B>No Checksums:</B> ";
+	tooltips['iax_general'].en[4] = "<B>Delay Reject:</B> ";
+	tooltips['iax_general'].en[5] = "<B>ADSI</B> ";
+	tooltips['iax_general'].en[6] = "<B>AMA Flags:</B> ";
+	tooltips['iax_general'].en[7] = "<B>Accountcode:</B> ";
+	tooltips['iax_general'].en[8] = "<B>Music On Hold Interpret:</B> ";
+	tooltips['iax_general'].en[9] = "<B>Music On Hold Suggest:</B> ";
+	tooltips['iax_general'].en[10] = "<B>Language:</B> ";
+	tooltips['iax_general'].en[11] = "<B>Bandwidth:</B> ";
+	tooltips['iax_general'].en[12] = "<B>Enable Jitter Buffer:</B> ";
+	tooltips['iax_general'].en[13] = "<B>Force Jitter Buffer:</B> ";
+	tooltips['iax_general'].en[14] = "<B>Drop Count:</B> ";
+	tooltips['iax_general'].en[15] = "<B>Max Jitter Buffer:</B> ";
+	tooltips['iax_general'].en[16] = "<B>Max Interpolation Frames:</B> ";
+	tooltips['iax_general'].en[17] = "<B>Resync Threshold:</B> ";
+	tooltips['iax_general'].en[18] = "<B>Max Excess Buffer:</B> ";
+	tooltips['iax_general'].en[19] = "<B>Min Excess Buffer:</B> ";
+	tooltips['iax_general'].en[20] = "<B>Jitter Shrink Rate:</B> ";
+	tooltips['iax_general'].en[21] = "<B>Trunk Freq:</B> ";
+	tooltips['iax_general'].en[22] = "<B>Trunk Time Stamps:</B> ";
+	tooltips['iax_general'].en[23] = "<B>Min Reg Expire:</B> ";
+	tooltips['iax_general'].en[24] = "<B>Max Reg Expire:</B> ";
+	tooltips['iax_general'].en[25] = "<B>IAX ThreadCount:</B> ";
+	tooltips['iax_general'].en[26] = "<B>IAX Max ThreadCount:</B> ";
+	tooltips['iax_general'].en[27] = "<B>Register:</B> ";
+	tooltips['iax_general'].en[28] = "<B>Reg Context:</B> ";
+	tooltips['iax_general'].en[29] = "<B>Auto Kill:</B> ";
+	tooltips['iax_general'].en[30] = "<B>Authentication Debugging:</B> ";
+	tooltips['iax_general'].en[31] = "<B>Codec Priority:</B> ";
+	tooltips['iax_general'].en[32] = "<B>Type of Service:</B> ";
+	tooltips['iax_general'].en[33] = "<B>Cache Friends:</B> ";
+	tooltips['iax_general'].en[34] = "<B>Send Registry Updates:</B> ";
+	tooltips['iax_general'].en[35] = "<B>Auto-Expire Friends:</B> ";
+	tooltips['iax_general'].en[36] = "<B>Ignore Expired Peers:</B> ";
+	tooltips['iax_general'].en[37] = "<B>Disallowed Codecs:</B> ";
+	tooltips['iax_general'].en[38] = "<B>Allowed Codecs:</B> ";
+
+
 	// Tooltips for Options (options)
 	tooltips['options']= new Object;
 	tooltips['options'].en = new Array;
@@ -257,3 +306,12 @@ function show_tooltip(event){
 	tooltips['graph']= new Object;
 	tooltips['graph'].en = new Array;
 	tooltips['graph'].en[0] = "<B>CPU Usage:</B> Real-Time Updating Graph For CPU Usage";
+
+
+//	Tooltips for http_options.html in english
+	tooltips['http_options']= new Object;
+	tooltips['http_options'].en = new Array;
+
+	tooltips['http_options'].en[0] = "" ;
+	tooltips['http_options'].en[1] = "<B>Bind IP:</B> GUI will be available only on this IP address, if not sure please enter the LAN IP address. If you want the GUI to be available on both LAN & WAN interfaces - enter 0.0.0.0" ;
+	tooltips['http_options'].en[2] = "<B>Port:</B> Please enter the port number on which you want to access the GUI. If not sure enter 80." ;

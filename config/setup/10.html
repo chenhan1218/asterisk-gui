@@ -59,6 +59,19 @@ function isloggedin(originalRequest){
 
 	if ( originalRequest.responseText.match("Pong") ) {
 		parent.astmanEngine.pollEvents();
+		var f1 = function(){
+			_$('msg_div').style.display = 'none';
+			parent.$('back').disabled = false;
+			parent.$('next').disabled = false;
+		};
+		var reloadConfig = function(){
+			parent.$('back').disabled = true;
+			parent.$('next').disabled = true;
+			var uri = parent.build_action('renamecat', 0, "","", "", "");
+			var r = "action=updateconfig&reload=yes&srcfilename=" + encodeURIComponent("extensions.conf") + "&dstfilename=" + encodeURIComponent("extensions.conf") + uri;
+			parent.makerequest("","",r, setTimeout(f1,2000));
+		};
+		reloadConfig();
 	}
 }
 
@@ -90,6 +103,18 @@ function isloggedin(originalRequest){
 		<div class="subheading">
 		Congratulations You have sucessfully configured your Asterisk installation<BR>
 		Click Next to proceed to the User Interface</div>
+
+		<BR><BR>
+		<div id="msg_div" class="subheading">
+			<BR><BR>
+			<TABLE border=0 cellpadding=0 cellspacing=3 align=center>
+			<TR>    <TD><img src=../images/loading.gif></TD>
+				<TD valign=middle align=center>
+					&nbsp;&nbsp;<font color="bd0e12"><span id="msg_div_span">Activating Changes ...</span></font>
+				</TD>
+			</TR>
+			</TABLE> 
+		</div>
 	<!--  this page -->
 	</td>
 	</tr>
