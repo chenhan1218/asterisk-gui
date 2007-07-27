@@ -29,7 +29,6 @@
 <SCRIPT>
 
 var rawman_url;
-var zapcallbacks = new Object;
 var asterisk_guitools = "asterisk_guitools";
 var cats = new Array();
 
@@ -39,6 +38,7 @@ function localinit(){
 	parent.$('next').disabled = true;
 	parent.$('back').disabled = true;
 	rawman_url = parent.rawman_url ;
+	asterisk_rawmanPath = parent.rawman_url ;
 	ping();
 }
 
@@ -144,32 +144,32 @@ function installguitools(){
 	"Action-000011=append&Cat-000011=" + asterisk_guitools + "&Var-000011=exten&Value-000011=" +
 	encodeURI(		'play_file,n,Hangup' 	) + "&" + 
 
-	"Action-000012=append&Cat-000012=" + asterisk_guitools + "&Var-000012=hasbeensetup&Value-000012=" + 'N';
+	"Action-000012=append&Cat-000012=" + asterisk_guitools + "&Var-000012=hasbeensetup&Value-000012=" + 'Y';
 
 	var tmp = new Ajax.Request(rawman_url, opt);
 }
 
 function scan_zapteldevices(){
-	parent.astmanEngine.run_tool(asterisk_guiZapscan, onSuccess = function() { 
-		parent.astmanEngine.config2list("zapscan.conf", _$('zapchan'), new Array(), zapcallbacks);
-		}
-	);
+	parent.astmanEngine.run_tool(asterisk_guiZapscan, onSuccess=function(){ config2json('zapscan.conf',1,zapscan_conf_loaded); });
 	return;
 }
 
-zapcallbacks.format = function(t) {
-	if (t.fieldbyname['port'] == 'fxo'){
-		parent.fxoports.push(t.name);
-		return "Analog(FXS) Port #" + t.name;
-	}
-	if (t.fieldbyname['port'] == 'fxs'){
-		parent.fxsports.push(t.name);
-		return "Analog(FXO) Port #" + t.name;
-	}
-	return null;
-}
+zapscan_conf_loaded = function(c){
+	var _zapchan = _$('zapchan') ;
 
-zapcallbacks.loaded = function(){
+	for( var d in c ){
+		if ( c.hasOwnProperty(d) && c[d]['port']) {
+			if( c[d]['port'] == 'fxo' ){
+				parent.fxoports.push(d);
+				ASTGUI.selectbox.append(_zapchan,"Analog(FXS) Port #" + d, d);
+			}
+			if( c[d]['port'] == 'fxs' ){
+				parent.fxsports.push(d);
+				ASTGUI.selectbox.append(_zapchan,"Analog(FXO) Port #" + d, d);
+			}
+		}
+	}
+
 	for(var x=0; x< _$('zapchan').length ; x++){
 		_$('zapscan_info').innerHTML+= _$('zapchan').options[x].text + "<BR>";
 	}
@@ -182,9 +182,10 @@ zapcallbacks.loaded = function(){
 	_$('loginform').style.display = "none";
 	_$('zapinfo').style.display = "";
 	parent.$('next').disabled = false;
-	parent.$('next').onclick = function(){	 window.location.href="3.html"; };
+	parent.$('next').onclick = function(){  window.location.href="2.html"; };
 	_$('menu').style.display = "";
 }
+
 
 function showResponse(originalRequest){
 	_$('status_message').style.display="none";

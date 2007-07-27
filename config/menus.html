@@ -1,5 +1,5 @@
 <!--
- * Asterisk-GUI	-	an Asterisk configuration interface
+ * Asterisk-GUI -       an Asterisk configuration interface
  *
  * Create/Manage IVR Menus
  *
@@ -297,6 +297,7 @@ function add_newstep(){
 	}
 
 	if( _nsa.value != "Answer" && _nsa.value != "GotoDirecotry" && _nsa.value != "Busy" && _nsa.value != "Hangup" && _nsa.value != "Congestion" && !_nsv .value ){
+		
 		if( _nsa.value.toLowerCase() == "dialringgroup" ){
 			if(!_$('rgrp').options.length ){
 				gui_alert("No Ring Groups exist. <BR> Please create a Ring Group before selecting this option.");
@@ -305,6 +306,7 @@ function add_newstep(){
 			}
 			return;
 		}
+
 		gui_alert("Please enter a value for '" + _nsa.value +"'");
 		_nsv.focus();
 		return;
@@ -1044,16 +1046,15 @@ extencallbacks.loaded = function() {
 	var opt = { method: 'get', asynchronous: true,
 		onComplete: function(originalRequest){
 			var sndfiles = originalRequest.responseText.split("\n") ;
-			var opt_temp = document.createElement('option');
-			var ie; if(document.attachEvent){ ie=1;}else{ie=0;}
 			var el = _$('combosel_sounds');
-			var h = opt_temp.cloneNode(true);
+			var h = document.createElement('option');
 			h.text = "Default Sounds"  ;
 			h.value = ""  ;
 			h.style.fontWeight = "bold";
-			if(ie){el.add(h);} else{ el.add(h,null);}
+			ASTGUI.selectbox.append_option(el,h);
 
 			var file_name;
+			var listof_DefaultSounds = {};
 			for( var i =0 ; i < sndfiles.length ; i++){
 				if( typeof sndfiles[i] == "undefined"  || sndfiles[i] == "" ){
 					continue;
@@ -1062,10 +1063,12 @@ extencallbacks.loaded = function() {
 				if( sndfiles[i] == "" ){ continue; }
 				file_name = sndfiles[i].stripTags() ;
 				file_name = file_name.replace(/\..*/,""); /* Replace .ulaw .gsm .whatever with nothing so its just the sound file */
-				h = opt_temp.cloneNode(true);
-				h.text = file_name  ;
-				h.value = asterisk_Sounds_path + file_name  ;
-				if(ie){el.add(h);} else{ el.add(h,null);}
+				listof_DefaultSounds[file_name] = true;
+			}
+			for(var i in listof_DefaultSounds){
+				if( listof_DefaultSounds.hasOwnProperty(i) ){ 
+					ASTGUI.selectbox.append(el , i, i);
+				}
 			}
 			load_recordedfiles();
 		},
@@ -1225,7 +1228,7 @@ function free_mem(){
 					<option value="GotoMenu">Goto Menu</option>
 					<option value="GotoDirecotry">Goto Directory</option>
 					<option value="GotoExtension">Goto Extension</option>
-					<option value="GotoTimeBasedRule">Goto TimeBasedRule</option>
+					<!--<option value="GotoTimeBasedRule">Goto TimeBasedRule</option>-->
 					<option value="DialRingGroup">Dial RingGroup</option>
 					<option value="Hangup">Hangup</option>
 				</select>&nbsp;

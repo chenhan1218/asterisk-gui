@@ -177,6 +177,19 @@ var ASTGUI = { // the idea is to eventually move all the global variables and fu
 			}
 		},
 
+		getApp: function(q){
+			var y = ASTGUI.parseContextLine.getAction(q);
+			return y.split('(')[0];
+		},
+
+		getArgs: function(q){
+			var y = ASTGUI.parseContextLine.getAction(q);
+			if( y.charAt(y.length-1) ==')' ){ y = y.substr(0, (y.length-1) ); }
+			var t = y.split('(');
+			t.splice(0,1);
+			return t.join('(');
+		},
+
 		getAction: function(q){ // q can be the the whole contextLine or just 'parseContextLine.read(contextline)[1]'
 			var t = q.split(',');
 			t.splice(0,2);
@@ -396,8 +409,9 @@ function showdiv_statusmessage(){
 	_hs.borderWidth= "1px";
 	_hs.borderColor= "#7E5538";
 	_hs.borderStyle= "solid";
-	h.innerHTML = '<BR><BR><TABLE border=0 cellpadding=0 cellspacing=3 align=center><TR><TD><img src=images/loading.gif></TD>'+
-			'<TD valign=middle align=center>&nbsp;&nbsp;<div id=message_text></div></TD></TR></TABLE> ';
+	h.innerHTML = '<BR><BR><TABLE border=0 cellpadding=0 cellspacing=3 align=center>' +
+			'<TR><TD><img src="/static/config/images/loading.gif"></TD>' +
+			'<TD valign=middle align=center>&nbsp;&nbsp;<div id=message_text></div></TD></TR></TABLE>';
 	document.body.appendChild(h);
 }
 
@@ -1041,8 +1055,14 @@ function save_item(box) {
 				return;
 			}
 		}
-		uri = box.engine.fields2changes(box.widgets, box.stored_config, cattmp);
-		if (uri.length) {
+		var treq;
+		if(isIE){
+			treq = box.engine.fields2changes(box.widgets, box.stored_config, cattmp, true);
+		}else{
+			uri = box.engine.fields2changes(box.widgets, box.stored_config, cattmp);
+		}
+
+		if (uri.length || (isIE && !!treq['act_1']) ) {
 			if (box.callbacks.format) {
 				tmp = box.callbacks.format(box.stored_config.catbyname[cattmp.catname]);
 				box.options[box.selectedIndex].value = cattmp.catname;
@@ -1068,18 +1088,34 @@ function save_item(box) {
 					box.remove(box.selectedIndex);
 				}
 			}
+		}
+
+		if (uri.length) {
 			opt.parameters="action=updateconfig&srcfilename=" + encodeURIComponent(box.config_file) + "&dstfilename=" + encodeURIComponent(box.config_file) + uri;
 			temp = new Ajax.Request(box.engine.url, opt);
 		}
-	}
-	if (!uri.length) {
-		if (!box.callbacks.savechanges || !box.callbacks.savechanges()) {
-			 gui_feedback('No changes made!','green');
+
+		if ( isIE && !!treq['act_1'] ) {
+			var pre_uri = "action=updateconfig&srcfilename=" + encodeURIComponent(box.config_file) + "&dstfilename=" + encodeURIComponent(box.config_file);
+			var start_sqreqs = function(st){
+				var f = treq[ 'act_' + st ];
+				if(f){ makerequest("","",pre_uri + f, start_sqreqs(st-1)); }else{ opt.onSuccess(); }
+			};
+			var e = 0;
+			for (var r in treq) { if( treq.hasOwnProperty(r) ){ e++; }}
+			start_sqreqs(e);
 		}
-		if (box.widgets['save']){  box.widgets['save'].disabled = true; }
-		if (box.widgets['cancel']) { box.widgets['cancel'].disabled = true; }
+
+		if(!uri || (isIE && !treq['act_1'])  ){
+			if (!box.callbacks.savechanges || !box.callbacks.savechanges()) {
+				gui_feedback('No changes made!','green');
+			}
+			if (box.widgets['save']){  box.widgets['save'].disabled = true; }
+			if (box.widgets['cancel']){ box.widgets['cancel'].disabled = true; }
+		}
 	}
 }
+
 
 function ast_true(s){
 	if ( s == 'yes' || s == 'true' || s == 'y' || s == 't' || s == '1' || s == 'on' ){
@@ -1354,13 +1390,39 @@ function Astman() {
 		callback(msgs, userdata);
 	};
 
-	this.fields2changes = function(widgets, config, cattmp) {
+	this.fields2changes = function(widgets, config, cattmp, chop_changes) {
 		var thevalue;
 		var changes="";
 		var count = 0;
 		var override=0;
 		var tmp;
 		var cat;
+		var chopped_changes={};
+		chopped_changes.current_batch = 1 ;
+		chopped_changes.current_batch_actionnumber = 0;
+		chopped_changes.actions = {};
+		chopped_changes.getacn = function(nc){
+			return this.current_batch_actionnumber;
+		};
+		chopped_changes.addNewChange = function(nc){
+			var t = 'act_' + this.current_batch;
+			if(!this.current_batch_actionnumber){
+				this.actions[t] = nc;
+			}else{
+				this.actions[t] = this.actions[t] + nc;
+			}
+			if( this.current_batch_actionnumber == 5 ){
+				this.current_batch++;
+				this.current_batch_actionnumber = 0;
+			}else{
+				this.current_batch_actionnumber++;
+			}
+		};
+		chopped_changes.build_action = function(a,x,b,c,d,e){
+			var z = this.getacn();
+			var nc = e?build_action(a, z, b, c, d, e):build_action(a, z, b, c, d) ;
+			this.addNewChange(nc);
+		};
 		
 		tmp = cattmp.catname.split(']');
 		if (tmp.length > 1)
@@ -1372,8 +1434,14 @@ function Astman() {
 			if (cat.name != widgets['name'].value) {
 				if (cat.name.length) {
 					changes += build_action('renamecat', count++, cat.name, "", widgets['name'].value);
+					if(chop_changes){
+						chopped_changes.build_action('renamecat', count++, cat.name, "", widgets['name'].value);
+					}
 				} else {
 					changes += build_action('newcat', count++, widgets['name'].value, "", "");
+					if(chop_changes){
+						chopped_changes.build_action('newcat', count++, widgets['name'].value, "", "");
+					}
 					override = 1;
 				}
 				cat.name = widgets['name'].value;
@@ -1410,8 +1478,12 @@ function Astman() {
 								cat.fieldbyname[src] = widgets[x].value;
 							else
 								cat[src] = widgets[x].value;
-							if (cat.fieldbyname)
+							if (cat.fieldbyname){
 								changes += build_action('update', count++, cat.name, src, cat.fieldbyname[src]);
+								if(chop_changes){
+									chopped_changes.build_action('update', count++, cat.name, src, cat.fieldbyname[src]);
+								}
+							}
 						}
 					}
 				} else if (widgets[x].type == 'checkbox') {
@@ -1425,8 +1497,12 @@ function Astman() {
 							cat.fieldbyname[src] = 'no';
 						else
 							cat[src] = 'no';
-						if (cat.fieldbyname)
+						if (cat.fieldbyname){
 							changes += build_action('update', count++, cat.name, src, cat.fieldbyname[src]);
+							if(chop_changes){
+								chopped_changes.build_action('update', count++, cat.name, src, cat.fieldbyname[src]);
+							}
+						}
 					}
 				} else if (widgets[x].options && widgets[x].multiple && widgets[x].splitchar) {
 					var answers = new Array;
@@ -1436,8 +1512,12 @@ function Astman() {
 					}
 					if (cat.fieldbyname) {
 						cat.fieldbyname[src] = answers.join(widgets[x].splitchar);
-						if (thevalue != cat.fieldbyname[src])
+						if (thevalue != cat.fieldbyname[src]){
 							changes += build_action('update', count++, cat.name, src, cat.fieldbyname[src]);
+							if(chop_changes){
+								chopped_changes.build_action('update', count++, cat.name, src, cat.fieldbyname[src]);
+							}
+						}
 					} else
 						cat[src] = answers.join(widgets[x].splitchar);
 				} else if (override || (widgets[x].value != thevalue)) {
@@ -1445,16 +1525,27 @@ function Astman() {
 						cat.fieldbyname[src] = widgets[x].value;
 						if( !widgets[x].value && !widgets[x].hasAttribute('allowblank') ){
 							changes += build_action('delete', count++, cat.name, src, "", thevalue);
+							if(chop_changes){
+								chopped_changes.build_action('delete', count++, cat.name, src, "", thevalue);
+							}
 						}else{
 							changes += build_action('update', count++, cat.name, src, cat.fieldbyname[src]);
+							if(chop_changes){
+								chopped_changes.build_action('update', count++, cat.name, src, cat.fieldbyname[src]);
+							}
 						}
 					} else
 						cat[src] = widgets[src].value;
 				}
 			}
 		}}
+
+		if(chop_changes){
+			return chopped_changes.actions;
+		}
 		return changes;
 	};
+
 	
 	this.cat2fields = function(widgets, cat) {
 		var thevalue;
@@ -1812,100 +1903,50 @@ function Astman() {
 /* Extension handling below */
 	var specialcontext = "default";
 
-	Special = Class.create();
-	Special.prototype = {
-		initialize: function(name, macro, label) {
-			this.name = name;
-			this.macro = macro;
-			this.label = label;
-		}
-	};
-	
-	Extension = Class.create();
-	Extension.prototype = {
-		initialize: function(priority, label, app, appdata) {
-			this.priority = priority;
-			this.label = label;
-			this.app = app;
-			this.appdata = appdata;
-		}
-	}
-	
-	specials = new Array;
-	specials.push(
-		new Special("VoiceMailMain", null, "Check Voicemail"),
-		new Special("MeetMe", null, "Conference Bridge"),
-		new Special("Queue", null, "Call Queue")
-	);
-
 	function app2label(app) {
-		var appo;
-		if ((appo = findapp(app)))
-			return appo.label;
+		var apps = {}
+		apps["VoiceMailMain"] = "Check Voicemail";
+		apps["MeetMe"] = "Conference Bridge";
+		apps["Queue"] = "Call Queue";
+
+		if( apps[app] )return apps[app];
 		return "Custom";
 	};
-	
-	function findapp(app) {
-		for (x=0;x<specials.length;x++) {
-			if (specials[x].name.toLowerCase() == app.toLowerCase())
-				return specials[x];
-		}
-		return null;
-	}
-	
+
 	function format_extension(box, t, x, multipriority) {
-		var tmp, lbl;
-		var exten, app, rest, args, label, priority;
-		if ((t.names[x] != 'exten'))
+		var priority, exten, app, args, label ;
+
+		if ( t.names[x] != 'exten' )
 			return null;
-		tmp = t.fields[x].split(',');
-		priority = tmp[1];
+		var this_line = t.fields[x];
 
-		// if it is a Voicemenu alias .. return "extension -- Voicemenu"
-		if ( tmp[2].match("Goto") ){
-
-			if( tmp[2].match("voicemenu-custom-") ) { lbl = "Voice Menu"; }
-			if( tmp[2].match("ringroups-custom") ) { lbl = "Ring Group"; }
-
-			t.subfields[x]['context'] = t.name;
-			t.subfields[x]['name'] = tmp[0];
-			t.subfields[x]['app'] = "Goto";
-			t.subfields[x]['label'] = lbl;
-			t.subfields[x]['args'] = "";
-			t.subfields[x]['priority'] = priority;
-
-			box.calcname = tmp[0];
-			box.calccontext = t.name;
-			box.calcpriority = priority;
-			return tmp[0] + " -- " + lbl ;
-		}
-		//
-
-		if (!multipriority && (tmp[1] != '1'))
-			return null;
-		exten = tmp[0];
-		tmp.splice(0,2);
-		rest = tmp.join(',');
-		tmp = rest.split('(');
-		if (!tmp[0])
-			return null;
-		app = tmp[0];
+		priority = ASTGUI.parseContextLine.getPriority(this_line);
+		exten = ASTGUI.parseContextLine.getExten(this_line);
+		app = ASTGUI.parseContextLine.getApp(this_line);
+		args = ASTGUI.parseContextLine.getArgs(this_line);
 		label = app2label(app);
-		tmp.splice(0,1);
-		args = tmp.join('(');
-		
-		tmp = args.split(')');
-		if ((tmp.length > 1) && (!tmp[tmp.length-1].length))
-			tmp.splice(tmp.length-1, 1);
-		args = tmp.join(')');
-		
+
+		if (!multipriority && ( priority != '1'))
+			return null;
+
 		t.subfields[x]['context'] = t.name;
 		t.subfields[x]['name'] = exten;
 		t.subfields[x]['app'] = app;
 		t.subfields[x]['label'] = label;
 		t.subfields[x]['args'] = args;
 		t.subfields[x]['priority'] = priority;
-		
+
+		if( app.toLowerCase() == "goto" && args.match("voicemenu-custom-") ){
+			label = "Voice Menu";
+			t.subfields[x]['label'] = label;
+			t.subfields[x]['args'] = "";
+		}
+		if( app.toLowerCase() == "goto" && args.match("ringroups-custom") ){
+			label = "Ring Group";
+			t.subfields[x]['label'] = label;
+			t.subfields[x]['args'] = "";
+		}
+
 		if (priority == 'n') {
 			if ((box.calcname == exten) && (box.calccontext == t.name))
 				box.calcpriority++;
@@ -1914,11 +1955,13 @@ function Astman() {
 		}else if(priority != 's'){
 			box.calcpriority = priority;
 		}
+
 		t.subfields[x]['realpriority'] = box.calcpriority;
 		box.calcname = exten;
 		box.calccontext = t.name;
 		return exten + " -- " + label;
-	}	
+	}
+
 
 function merge_users(e, u) { // read u and add into e according to sort order
 	merge_extensions(e, u);
@@ -1933,7 +1976,6 @@ function merge_extensions(u, e) { // read e and add into u according to sort ord
 		opt_new.value = 'reserved';
 		//if( navigator.userAgent.indexOf("Firefox") != -1 ){ opt_new.disabled = true; }
 		opt_new.style.color = "#ABABAB";
-
 		// Now decide where to add in u, and add it to u
 		var add = 0;
 		for ( var g=0; g < u.options.length  ; g++) {
@@ -1946,5 +1988,4 @@ function merge_extensions(u, e) { // read e and add into u according to sort ord
 		if ( add ==0 ){ ASTGUI.selectbox.append_option(u,opt_new);}
 	}
 }
-
 
