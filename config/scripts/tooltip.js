@@ -38,7 +38,9 @@ function show_tooltip(event){
 	tooltips['users'] .en[18] = "<B>Agent Login Extension:</B> Extension to be dialed for the Agents to Login to the Specific Queue. <br> This is an extension that all the Agents can Call to Login to their specified Queues. ";
 	tooltips['users'] .en[19] = "<B>Agent Callback Login Extension:</B> Extension to be dialed for the Agents to Login to the Queues they are apart of.<br> Same as Agent Login Extension, except you do not have to remain on the line. ";
 	tooltips['users'] .en[20] = "<B>Agent Logout</B><BR><LI> To logout of <b>Agent Login</b> Hangup your phone. <LI>To Logout of <b>Agent Callback Login</b> Dial the same extension used to login, specify your extension and password when prompted, and hit # when asked for your callback extension. This will successfully log you out of all queues you are apart of.";
-	
+	tooltips['users'] .en[21] = "<B>Can Reinvite:</B> This option can be used to tell the Asterisk server whethere or not to issue a reinvite to the client. ";
+	tooltips['users'] .en[22] = "<B>NAT:</B> Try this setting when Asterisk is on a public IP, communicating with devices hidden behind a NAT device (broadband router). If you have one-way audio problems, you usually have problems with your NAT configuration or your firewall's support of SIP+RTP ports.";
+	tooltips['users'] .en[23] = "<B>DTMFMode:</B> Set default dtmfmode for sending DTMF. Default: rfc2833 <BR><B>Other options:</B><BR>info : SIP INFO messages<BR>inband : Inband audio (requires 64 kbit codec -alaw, ulaw)<BR>auto : Use rfc2833 if offered, inband otherwise";
 	tooltips['users'] .en[99] = "<B>Phone Serial:</B> Enter the serial number of a Polycom phone to enable phone provisioning." ;
 
 // Tooltips for Conferencing (meetme)
