@@ -35,6 +35,10 @@ var cats = new Array();
 function localinit(){
 	parent.fxoports = [];
 	parent.fxsports = [];
+	if(!parent.$('next')) {
+		alert("You cannot access the pages directly, use install.html instead.");
+		return false;
+	}
 	parent.$('next').disabled = true;
 	parent.$('back').disabled = true;
 	rawman_url = parent.rawman_url ;
@@ -182,7 +186,7 @@ zapscan_conf_loaded = function(c){
 	_$('loginform').style.display = "none";
 	_$('zapinfo').style.display = "";
 	parent.$('next').disabled = false;
-	parent.$('next').onclick = function(){  window.location.href="2.html"; };
+	parent.$('next').onclick = function(){  window.location.href="3.html"; };
 	_$('menu').style.display = "";
 }
 
