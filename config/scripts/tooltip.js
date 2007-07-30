@@ -89,7 +89,7 @@ function show_tooltip(event){
 	tooltips['queues'].en[3] = "<B>Agents:</B> This selection shows all Users defined as Agents in their User conf.  Checking a User here makes them a member of the current Queue.";
 	tooltips['queues'].en[4] = "<B>Advanced:</B> Advanced Queue Configuration Options";
 	tooltips['queues'].en[5] = "<B>Timeout:</B> This option defines the time in seconds that an Agent's phone rings before the next Agent is rung, i.e. \"15\" ";
-	tooltips['queues'].en[6] = "<B>Wrapup Time:</B> After a successful call, time time in seconds that an Agent remains free before another call is sent to them. Default is 0, which is No Delay.";
+	tooltips['queues'].en[6] = "<B>Wrapup Time:</B> After a successful call, time in seconds that an Agent remains free before another call is sent to them. Default is 0, which is No Delay.";
 	tooltips['queues'].en[7] = "<B>AutoFill</B> Defining this option causes the Queue, when multiple calls are in it at the same time, to push them to Agents simultaneously.  Thus, instead of completing one call to an Agent at a time, the Queue will complete as many calls simultaneously to the available Agents.";
 	tooltips['queues'].en[8] = "<B> AutoPause:</B> Enabling this option pauses an Agent if they fail to answer a call.";
 	tooltips['queues'].en[9] = "<B> MaxLen:</B> This option sets the maximum number of callers that may wait in a Queue. Default is 0, Unlimited.";
