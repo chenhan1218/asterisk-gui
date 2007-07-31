@@ -1936,6 +1936,10 @@ function Astman() {
 		t.subfields[x]['args'] = args;
 		t.subfields[x]['priority'] = priority;
 
+		if(t.subfields[x]['name'] == 'o'){
+			label = "Operator";
+			t.subfields[x]['label'] = label;
+		}
 		if( app.toLowerCase() == "goto" && args.match("voicemenu-custom-") ){
 			label = "Voice Menu";
 			t.subfields[x]['label'] = label;

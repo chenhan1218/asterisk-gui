@@ -123,6 +123,7 @@ function format_step(this_step){
 	if( temp[2].match("Goto") && !temp[2].match("voicemenu-")  ){
 		var tmp = temp[2].split('(');
 		var tmp1 = tmp[1].split('|');
+		if( tmp1[1] == 'o' ){return "Goto 'Operator'";}
 		return "Goto Exten '"+ tmp1[1] + "'";
 	}
 	
@@ -148,6 +149,7 @@ function load_extensions(my_field_options){
 		var newoption = document.createElement("option"); 
 		newoption.text = extensions_array[x] ; 
 		newoption.value = extensions_array[x] ;
+		if(extensions_array[x] == 'o'){ newoption.text = "Operator" ; }
 		_mo.options.add(newoption);
 	}
 }
