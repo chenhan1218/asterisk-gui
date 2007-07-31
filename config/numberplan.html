@@ -29,7 +29,7 @@ var trunkcallbacks = { };
 var trunks_desc = { };
 var numplan_callbacks = { };
 var numberplansdata = { };
-var fieldnames = ['cancel', 'delete', 'include', 'name', 'new', 'plancomment', 'save'];
+var fieldnames = ['cancel', 'delete', 'include', 'name', 'new', 'plancomment', 'save', 'parked'];
 
 //var default_numberplan = 0;
 var isnewrule ;
@@ -38,6 +38,16 @@ var pattern_beingedited ;
 var pattern_beingedited_priority ;
 var np_oldselect;
 
+function update_parkedcalls() {
+	if(_$("parked").checked) {
+		var uri = build_action('append', 0, _$('extensions').value, "include", "parkedcalls");   	
+		makerequest('u', 'extensions.conf', uri, function(t) { return true;});
+	} 
+	if(!_$("parked").checked) {
+		var uri = build_action('delete', 0, _$('extensions').value, "include", "", "parkedcalls");   	
+		makerequest('u', 'extensions.conf', uri, function(t) { return true;});
+	}
+}
 function basicpattern(){
 	iscustom = false;
 	_$('define_advanced').style.display="none";
@@ -614,6 +624,7 @@ function free_mem( ){
 		<CENTER><select id="extensions" class="input9" style="z-index:2"></select>&nbsp;&nbsp;
 			<a href="#" class="splbutton" onclick="newnumberplan()" tip="en,callingrules,0">new</a>&nbsp;&nbsp;
 			<a href="#" class="splbutton" onclick="delete_numberplan()"  tip="en,callingrules,1">delete</a>
+			<input class="splbutton" type="checkbox" tip="en,callingrules,10" id="parked" onChange="update_parkedcalls();">Allow Parked Calls</input> 
 			<input id='new' value='New' type="button"  style="display:none">
 			<input id='delete' value='Delete' type="button"  style="display:none">
 			

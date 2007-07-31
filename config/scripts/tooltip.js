@@ -281,6 +281,7 @@ function show_tooltip(event){
 	tooltips['callingrules'].en[7] = "<B>Dialing Rules:</B> Ex: If the number begins with <I>'256'</I> and followed by <I>7</I> digits <i>or more</I>";
 	tooltips['callingrules'].en[8] = "<B>Custom Pattern:</B> Ex:  _91NXXNXXXXXX ";
 	tooltips['callingrules'].en[9] = "Ex: Strip <i>1</i> digits from the front and prepend <i>256</i> before dialing";
+	tooltips['callingrules'].en[10] = "Parked Calls: Check if you want to be able to access the parking lot from this Number Plan";
 
 	// Tooltips for Incoming Calls (incoming)
 	tooltips['incoming']= new Object;

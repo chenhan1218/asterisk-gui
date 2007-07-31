@@ -22,8 +22,6 @@ Todo
 * Directory management - A printable sheet of users and numbers
   (For the time being you can create an IVR and use the directory option )
 
-* Agent logout Extension
-
 *  it would be very usefull, to define the max time a client can be in the queue.. so we can put a voice telling "Please leva a meesage we will cal you back" in a vm..   or something like that :) -- killfill on irc
 
 * Finish multiple language support (lang.js) 
@@ -55,3 +53,5 @@ Completed
 * Make the GUI resolution independent - request from BSD_tech
 
 * Initial support for Bandwidth.com
+
+* Agent logout Extension
