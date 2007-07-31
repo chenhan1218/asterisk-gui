@@ -34,8 +34,6 @@ Todo
 
 * Add full support for bandwidth.com through the service providers page 
 
-* To fix call parking, give it an option to allow if the user wants people to be able to access the parking lot per numberplan
-
 * Ability to download config backup files and restore them via file uploads
 
 Completed
@@ -55,3 +53,5 @@ Completed
 * Initial support for Bandwidth.com
 
 * Agent logout Extension
+
+* To fix call parking, give it an option to allow if the user wants people to be able to access the parking lot per numberplan
