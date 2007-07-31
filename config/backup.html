@@ -28,7 +28,7 @@ function localajaxinit() {
 	setWindowTitle("Backup");
 	showdiv_statusmessage();
 
-	parent.astmanEngine.run_tool(asterisk_guiListFiles + " " + asterisk_ConfigBkpPath, callback = function() { 
+	parent.astmanEngine.run_tool(asterisk_guiListFiles + " " + asterisk_ConfigBkpPath + " time", callback = function() { 
 		var opt = { method: 'get', asynchronous: true,
 			onComplete: function(originalRequest){
 				showlist_of_files(originalRequest.responseText);
