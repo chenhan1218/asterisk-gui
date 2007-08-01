@@ -90,6 +90,8 @@ callbacks.newcategory = function() {
 	var x;
 	var _devices = _$('devices');
 	gen = _devices.stored_config.catbyname['general'];
+	gen.fieldbyname['allow'] = 'all';
+	gen.fieldbyname['disallow'] = 'all';
 	tmp = objcopy(gen);
 	if (gen){
 		x = gen.fieldbyname['userbase'];
@@ -316,6 +318,7 @@ CODECSETTINGS = {
 
 	update_div_setordercodecs:function(){
 		_$('disallowed').innerHTML=""; _$('allowed').innerHTML="";
+		if( _$('disallow').value == "all" && _$('allow').value =="all" ){ return true;}
 		if( _$('disallow').value == "all" ){
 			this.selectbox_add(_$("disallowed"), "ulaw");
 			this.selectbox_add(_$("disallowed"), "alaw");
