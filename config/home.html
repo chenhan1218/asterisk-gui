@@ -64,6 +64,11 @@ function localinit() {
 
 function loggedOn() {
 	if ((parent.loggedon == 1) && (localloggedon == 1)){ return; }
+	if(!parent.eventeater.pingstatus){
+		parent.eventeater.pingstatus = true;
+		parent.pingevery(60);
+	}
+
 	if(_$('secret').value=="password"){
 		parent.loggedon = 1;
 		localloggedon = 1;
@@ -78,11 +83,6 @@ function loggedOn() {
 
 	if( parent.asterisk_guitools_inextconf == 0){
 		checkessentials();
-	}
-
-	if(!parent.eventeater.pingstatus){
-		parent.eventeater.pingstatus = true;
-		parent.pingevery(60);
 	}
 
 	parent.setLoggedOn(1);
