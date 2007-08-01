@@ -15,7 +15,7 @@ Todo
 
 * Call Forwarding
 
-* CDR support
+* CDR Configuration page from patch http://bugs.digium.com/view.php?id=10306 (bbryant)
 
 * Label/Tag/Name Analog Channels for presentation in GUI
 
@@ -36,6 +36,8 @@ Todo
 
 * Ability to download config backup files and restore them via file uploads
 
+* Add the GUI version string inside extensions.conf, so the setup wizard can decide if it needs to update the guitools context.
+
 Completed
 ----------
 * Operator Extension
@@ -55,3 +57,5 @@ Completed
 * Agent logout Extension
 
 * To fix call parking, give it an option to allow if the user wants people to be able to access the parking lot per numberplan
+
+* CDR support (Reader) (Thanks bbryant)

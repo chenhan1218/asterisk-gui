@@ -1,0 +1,180 @@
+<script type="text/javascript" src="scripts/prototype.js"></script>
+<script type="text/javascript" src="scripts/astman.js"></script>
+<link href="stylesheets/schwing.css" media="all" rel="Stylesheet" type="text/css" />
+<style type="text/css">
+	#page_header {
+		font-size : 12px;
+		padding : 4px 6px 4px 6px;
+		border-style : solid none solid none;
+		border-top-color : #BDC7E7;
+		border-bottom-color : #182052;
+		border-width : 1px 0px 1px 0px;
+		background-color : #ef8700;
+		margin-bottom: 10px;
+		color : #ffffff;
+	}
+
+	.header {
+		color: #6b79a5;
+		font-family: Arial;
+		font-weight: bold;
+		font-size: 25px;
+	}
+
+
+	#tr0 {
+		background-color: #efaa50;
+		color: white;
+		font-weight: bold;
+	}
+
+	#tr1 {
+		background-color: #6b79a5;
+		color: white;
+		font-weight: bold
+	}
+
+	#tr2 {
+		background-color: white;
+		color: black;
+		text-decoration: underline;
+	}
+
+	#tr0 td, #tr1 td, #tr2 td {
+		font-size: xx-small;
+	}
+
+	#cdr_content {
+		overflow: scroll;
+	}
+
+	.info {
+		font-size: small;
+		color: #6b79a5;
+	}
+</style>
+<script type="text/javascript">
+//<![CDATA[
+	var backend = "cvs";
+	var records = [];
+	var viewCount = 10;
+	var offset = 0;
+	var fields = [
+		"",
+		"Account Code", "Source", "Destination", "Dest. Context",
+		"Caller ID", "Channel", "Dest. Channel", "Last app.",
+		"Last data", "Start time", "Answer Time", "End Time",
+		"Duration", "Billable seconds", "Disposition", "AMA flags", 
+		"Unique ID", "Log userfield"
+	];
+
+	function nextPage() {
+		if (records.length > offset + viewCount)
+			offset += viewCount;
+		loadRecords();
+	}
+
+	function prevPage() {
+		if (offset) offset -= viewCount;
+		if (offset < 0) offset = 0;
+		loadRecords();
+	}
+
+	function loadRecords() {
+		var c = viewCount;
+
+		clearContent();
+
+		_$("info").innerHTML = "Viewing " + (offset+1) + "-" + (offset+viewCount) + " of " + records.length;
+
+		var tr = document.createElement("tr");
+		tr.id = "tr2";
+
+		for(var i=0;i<=records[offset].length;i++) {
+			var td = document.createElement("td");
+			td.appendChild(document.createTextNode(fields[i]));
+			tr.appendChild(td);
+		}
+
+		_$("cdr_content").appendChild(tr);
+
+		for(var i=0;c--&&isset(records[i+offset]);i++) {
+			var tr = document.createElement("tr");
+			tr.id = "tr"+(i%2);
+			var r = records[i+offset];
+			
+			for(var j=-1;j<r.length;j++) {
+				var td = document.createElement("td");
+				if (j < 0)
+					var l = offset+i+1;
+				else
+					var l = r[j].toString().replace(/^[\"]{1}/, "").replace(/[\"]{1}$/, "");
+				td.appendChild(document.createTextNode(l));
+				tr.appendChild(td);
+			}
+
+			_$("cdr_content").appendChild(tr);
+		}
+	}
+
+	function clearContent() {
+		while(_$("cdr_content").childNodes.length) {
+			_$("cdr_content").removeChild(
+				_$("cdr_content").childNodes[0]
+			);
+		}
+	}
+
+	window.onload = function() {
+		setWindowTitle("CDR viewer (" + backend + ")");
+		parent.loadscreen(this);
+
+		config2json("cdr.conf", 1, function(config) {
+			if (isset(config.enable) && !ast_true(config.enable))
+				this.location.href = "cdr_conf.html?needssetup";
+		});
+
+		parent.astmanEngine.run_tool("sh " + asterisk_scriptsFolder + "mastercsvexists", function (){
+			new Ajax.Request("/asterisk/static/Master.csv", {
+				method : "get",
+				asynchronous : true,
+				onComplete : function(c) {
+					records = c.responseText.split("\n");
+					for(var i=0;i<records.length;i++)
+						records[i] = records[i].split(",");
+					loadRecords();
+				},
+				onFailure : function() {
+					gui_alert("Sorry, it appears that you're not using > version 1.4 of asterisk, " +
+							  "or you're on an appliance. Only configuring CDRs is available at this time.");
+					this.location.href = "cdr_conf.html";
+				},
+			});
+		});
+	}
+//]]>
+</script>
+<body>
+  <div id="page_header">
+    <span style="margin-left: 4px"><strong>CDR viewer</strong></span>&nbsp;
+	<img src="images/refresh.png" alt=" Refresh " onclick="javascript: this.location.href=this.location.href" />
+  </div>
+  <div class="header">
+    CDR viewer
+    <a href="#" onclick="javascript: prevPage();">&lt;&lt; prev</a>
+    <a href="#" onclick="javascript: nextPage();">next &gt;&gt;</a>
+  </div>
+  <div style="float: right; font-size: medium; color: #6b79a5;">
+    View:
+    <select tip="en,cdr,0" onchange="javascript: viewCount=parseInt(this.value);loadRecords();">
+      <option value="10">10</option>
+      <option value="25">25</option>
+      <option value="50">50</option>
+      <option value="100">100</option>
+    </select>
+  </div> 
+  <div id="info" class="info"></div><div class="info"> (most recent first) <a href="cdr_conf.html" target="_self">Configure CDRs</a></div>
+  <div style="width: 500px; position: relative; left: 10px; height: 320px; overflow: auto;" id="cdr_content_container">
+    <table id="cdr_content"></table>
+  </div>
+</body>

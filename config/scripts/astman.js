@@ -43,6 +43,38 @@ var TIMERULES_CATEGORY = 'timebasedrules';
 var isIE = false;
 if(document.attachEvent){ isIE= true; }
 
+/* Some useful functions */
+function isset(obj) {
+	if (typeof obj != "object")
+		return (typeof obj != "undefined");
+	for (var i in obj)
+		return true;
+	return false;
+}
+
+function trim(str) {
+	return str.replace(/^[\s]+/, "").replace(/[\s]+$/, "");
+}
+
+Array.prototype.contains = function(str) {
+	for (var i in this)
+		if(str == this[i])
+			return true;
+	return false;
+}
+
+function ast_true(str) {
+	return [
+		"yes", "true", "y", "t", "1", "on"
+	].contains(trim(str.toLowerCase()));
+}
+
+function ast_false(str) {
+	return [
+		"no", "false", "n", "f", "0", "off"
+	].contains(trim(str.toLowerCase()));
+}
+
 var ASTGUI = { // the idea is to eventually move all the global variables and functions into this one object so that the global name space is not as cluttered as it is now.
 	dialog : {
 		load_iframe : function(msg){

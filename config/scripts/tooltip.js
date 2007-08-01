@@ -318,3 +318,9 @@ function show_tooltip(event){
 	tooltips['http_options'].en[0] = "" ;
 	tooltips['http_options'].en[1] = "<B>Bind IP:</B> GUI will be available only on this IP address, if not sure please enter the LAN IP address. If you want the GUI to be available on all interfaces - enter 0.0.0.0" ;
 	tooltips['http_options'].en[2] = "<B>Port:</B> Please enter the port number on which you want to access the GUI." ;
+
+
+// 	Tooltips for the CDR reader page.
+	tooltips['cdr'] = new Object;
+	tooltips['cdr'].en = new Array;
+	tooltips['cdr'].en[0] = "<B>View:</B> Select how many call detail records to read at once.." ;
