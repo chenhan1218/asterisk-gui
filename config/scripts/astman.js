@@ -75,6 +75,19 @@ function ast_false(str) {
 	].contains(trim(str.toLowerCase()));
 }
 
+String.prototype.beginsWith = function(a){
+	//return this.length>=a.length && this.substring(0,a.length)==a
+	return this.indexOf(a)==0;
+};
+
+String.prototype.endsWith=function(a){
+	return this.length>=a.length&&this.substring(this.length-a.length)==a
+};
+
+String.prototype.contains=function(a){
+	return this.indexOf(a)!=-1;
+};
+
 var ASTGUI = { // the idea is to eventually move all the global variables and functions into this one object so that the global name space is not as cluttered as it is now.
 	dialog : {
 		load_iframe : function(msg){
@@ -187,6 +200,21 @@ var ASTGUI = { // the idea is to eventually move all the global variables and fu
 		if(isIE){return document.body.clientHeight;}else{return window.innerHeight;}
 	},
 
+	alignBbelowA: function(a,b){
+		var tmp_left = a.offsetLeft;
+		var tmp_top = a.offsetTop + a.offsetHeight;
+		var tmp_parent = a;
+
+		while(tmp_parent.offsetParent != document.body){
+			tmp_parent = tmp_parent.offsetParent;
+			tmp_left += tmp_parent.offsetLeft;
+			tmp_top += tmp_parent.offsetTop;
+		}
+
+		b.style.left = tmp_left;
+		b.style.top = tmp_top + 1;
+	},
+
 	parseContextLine: {
 		read: function(q){
 			var v = q.indexOf("=");
@@ -265,6 +293,81 @@ var ASTGUI = { // the idea is to eventually move all the global variables and fu
 		clear: function(el){
 			el.options.length = 0;
 		}
+	},
+
+	COMBOBOX: function (a,w){		// Usage - ASTGUI.COMBOBOX.call( element , OptionsArray, width(Optional)  );
+		// this.comboDiv - the div element created
+		// this.comboOptions - the array of options
+		var k = document.createElement('DIV');
+		var BoldBinA = function(a,b){
+			if(b==''){return a;}
+			var position = a.toLowerCase().indexOf( b.toLowerCase() ) ;
+			if (position == -1){ return a; }
+			var c = a.substr( position , b.length );
+			return  a.replace( c , "<B>" + c + "</B>" , "" );
+		};
+	
+		var creatediv = function(){
+			ASTGUI.events.add( this, 'blur' , cleanupDiv ) ;
+			var u = this;
+			var q = k.cloneNode(false);
+				q.className = "comboMainDiv";
+				if(w){q.style.width = w; }
+			u.comboDiv = q;
+	
+			var selectOption = function(event){
+				var f = ASTGUI.events.getTarget(event);
+				u.value = f.getAttribute( 'actualvalue' );
+				q.style.display = "none";
+				q.parentNode.removeChild(q);
+				delete u.comboDiv;
+				u.blur();
+			};
+	
+			ASTGUI.events.add( q , 'click' , selectOption ) ;
+			q.style.display = "none";
+			document.body.appendChild(q);
+			ASTGUI.alignBbelowA(u,q);
+			updateDivAndShow.call(this);
+		};
+	
+		var updateDivAndShow = function(){
+			var t = this.comboDiv; 
+			var srchStng = this.value.toLowerCase();
+			var z = this.comboOptions;
+			var y;
+			var matched =0;
+	
+			ASTGUI.domActions.removeAllChilds(t);
+			for (var r =0; r < z.length; r++){
+				if( z[r].toLowerCase().contains(srchStng) || srchStng == '' ){
+					y = k.cloneNode(false);
+					y.innerHTML = BoldBinA( z[r] , srchStng) ;
+					y.setAttribute( 'actualvalue', z[r] );
+					t.appendChild(y);
+					matched++;
+				}
+			}
+			if(matched){ t.style.display = "";}
+		};
+	
+		var cleanupDiv = function(){
+			var y = this;
+			var sf = function(){
+				if(y.comboDiv){
+					var q = y.comboDiv;
+					q.parentNode.removeChild(q);
+					delete y.comboDiv;
+					ASTGUI.events.remove( y, 'blur' , cleanupDiv ) ;
+					y.blur();
+				}
+			};
+			setTimeout( sf, 300 );
+		};
+	
+		this.comboOptions = a.sort();
+		ASTGUI.events.add( this, 'focus' , creatediv ) ;
+		ASTGUI.events.add( this, 'keyup' , updateDivAndShow ) ;
 	}
 
 }; // AstGUI
