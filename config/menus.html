@@ -56,7 +56,7 @@ var keys = new Array('0','1','2','3','4','5','6','7','8','9','*','#','t','i');
 var extensions_array = new Array;
 var answer_call_string = "s,1,Answer";
 var localextenlength ;
-
+var LISTOFSOUNDS = [];
 
 function format_step(this_step){
 	var temp = this_step.split(',');
@@ -310,6 +310,7 @@ function add_newstep(){
 	var _vmv = _$('vmenus').value ;
 	var _nsa = _$('newstep_action');
 	var _nsv = _$('newstep_var') ;
+	var _nss = _$('newstep_sounds');
 
 	if( !_nsa.value ){
 		gui_alert("Please select an action for this step");
@@ -317,8 +318,11 @@ function add_newstep(){
 		return;
 	}
 
+	if( _nsa.value== "Background"  || _nsa.value== "Playback" ){
+		_nsv.value = _nss.value;
+	}
+
 	if( _nsa.value != "Answer" && _nsa.value != "GotoDirecotry" && _nsa.value != "Busy" && _nsa.value != "Hangup" && _nsa.value != "Congestion" && !_nsv .value ){
-		
 		if( _nsa.value.toLowerCase() == "dialringgroup" ){
 			if(!_$('rgrp').options.length ){
 				gui_alert("No Ring Groups exist. <BR> Please create a Ring Group before selecting this option.");
@@ -327,7 +331,6 @@ function add_newstep(){
 			}
 			return;
 		}
-
 		gui_alert("Please enter a value for '" + _nsa.value +"'");
 		_nsv.focus();
 		return;
@@ -428,10 +431,11 @@ function add_newstep(){
 			gui_feedback('New step added !','blue');
 			update_updown();
 			_nsv.value = "";
+			_nss.value="";
 			_nsv.style.display = "none" ;
+			_nss.style.display = "none" ;
 			_$('add_newstep_extensions').style.display = "none";
 			_$('add_newstep_menus').style.display = "none";
-			_$('combodiv_sounds').style.display = "none" ;
 			_nsvd = _$('newstep_var_digit'); 
 			_nsvd.value= "";
 			_nsvd.style.display= "none" ;
@@ -730,21 +734,22 @@ function update_newstep_var(){
 	var _nsa = _$('newstep_action');
 	var _ane = _$('add_newstep_extensions') ;
 	var _anm = _$('add_newstep_menus') ;
+	var _nss = _$('newstep_sounds');
 
 	_nsv.value = "";
 	_nsv.style.display = "none";
 	_$('newstep_var_digit').style.display= "none" ;
-	_$('combodiv_sounds').style.display = "none" ;
 	_ane.style.display = "none";
 	_anm.style.display = "none";
 	_$('tbr').style.display = "none";
 	_$('rgrp').style.display = "none";
+	_nss.style.display = "none";
+	_nss.value = "";
 
         if( _nsa.value== "" || _nsa.value== "Answer"  || _nsa.value== "Hangup" || _nsa.value== "GotoDirecotry" || _nsa.value== "Busy" || _nsa.value== "Congestion" ){
 
         }else if( _nsa.value== "Background"  || _nsa.value== "Playback" ){
-                _nsv.style.display = "";
-                _nsv.size=24;
+		_nss.style.display = "";
         }else if( _nsa.value== "Authenticate"  || _nsa.value== "DigitTimeout"  || _nsa.value== "ResponseTimeout" ||  _nsa.value== "Wait"  ||  _nsa.value== "WaitExten"  || _nsa.value== "DISA"){
                 _$('newstep_var_digit').style.display= "" ;
         }else if(_nsa.value== "GotoMenu"  ){
@@ -816,6 +821,7 @@ function select_vmenu(){
 	_$('deletestep').disabled = true;
 	_$('delete').disabled = false;
 	_$('newstep_action').disabled = false;
+	_$('newstep_sounds').disabled = false;
 	_$('newstep_var').disabled = false;
 	_$('keypressoptions').style.display = "";
 	_$('stepDown').disabled = true;
@@ -941,6 +947,7 @@ menuscallbacks.oncategorydelete =function(){
 	_$('steps').options.length =0;
 	_$('newstep_action').disabled = true;
 	_$('newstep_var').disabled = true;
+	_$('newstep_sounds').disabled = true;
 	_$('addstep').disabled = true;
 	_$('b_ShowAddStep').disabled = true;
 	_$('steps').disabled = true;
@@ -987,6 +994,7 @@ menuscallbacks.newcategory = function(t) {
 	_allowexten.disabled = false;
 	_$('newstep_action').disabled = true;
 	_$('newstep_var').disabled = true;
+	_$('newstep_sounds').disabled = true;
 	_$('addstep').disabled = true;
 	_$('b_ShowAddStep').disabled = true;
 	_steps.disabled = true;
@@ -1072,13 +1080,6 @@ extencallbacks.loaded = function() {
 	var opt = { method: 'get', asynchronous: true,
 		onComplete: function(originalRequest){
 			var sndfiles = originalRequest.responseText.split("\n") ;
-			var el = _$('combosel_sounds');
-			var h = document.createElement('option');
-			h.text = "Default Sounds"  ;
-			h.value = ""  ;
-			h.style.fontWeight = "bold";
-			ASTGUI.selectbox.append_option(el,h);
-
 			var file_name;
 			var listof_DefaultSounds = {};
 			for( var i =0 ; i < sndfiles.length ; i++){
@@ -1093,7 +1094,7 @@ extencallbacks.loaded = function() {
 			}
 			for(var i in listof_DefaultSounds){
 				if( listof_DefaultSounds.hasOwnProperty(i) ){ 
-					ASTGUI.selectbox.append(el , i, i);
+					LISTOFSOUNDS.push(i);
 				}
 			}
 			load_recordedfiles();
@@ -1112,15 +1113,6 @@ function load_recordedfiles(){
 		onComplete: function(originalRequest){
 			// Add Recorded Voiemenus to the list of sound files
 			var recfiles = originalRequest.responseText.split("\n") ;
-			New_OPTION = document.createElement('option');
-			New_OPTION.text = "Recorded Voicemenus"  ;
-			New_OPTION.value = ""  ;
-			New_OPTION.style.fontWeight = "bold";
-			try {
-				_$('combosel_sounds').add(New_OPTION, null); // W3C way
-			}catch(ex) {
-				_$('combosel_sounds').add(New_OPTION); // IE way
-			}
 			var file_name;
 			for( var i =0 ; i < recfiles.length ; i++){
 				if( typeof recfiles[i] == "undefined"  || recfiles[i] == "" ){
@@ -1130,15 +1122,10 @@ function load_recordedfiles(){
 				if( recfiles[i] == "" ){ continue; }
 				file_name = recfiles[i].stripTags() ;
 				file_name = file_name.substr(0,(file_name.length - 4) ) ;
-				New_OPTION = document.createElement('option');
-				New_OPTION.text =  file_name  ;
-				New_OPTION.value = asterisk_menusRecord_path + file_name ;
-				try {
-					_$('combosel_sounds').add(New_OPTION, null); // W3C way
-				}catch(ex) {
-					_$('combosel_sounds').add(New_OPTION); // IE way
-				}
+				LISTOFSOUNDS.push("record/" + file_name);
 			}
+			console.log("1097");
+			ASTGUI.COMBOBOX.call(  _$('newstep_sounds') , LISTOFSOUNDS, 400 );
 			parent.astmanEngine.config2list("users.conf", _$('users'), new Array(), usercallbacks);
 		},
 		onFailure: function(t) { alert("Config Error: " + t.status + ": " + t.statusText); }
@@ -1210,7 +1197,6 @@ function show_addStep(){
 
 function hide_addStep(){
 	_$('bg_transparent').style.display="none" ;
-	_$('combodiv_sounds').style.display="none" ;
 	_$('NewStep_Content').style.display="none" ;
 }
 </script>
@@ -1335,6 +1321,7 @@ function hide_addStep(){
 			<option value="Hangup">Hangup</option>
 		</select>&nbsp;
 		<input type=text id="newstep_var" style="display:none" size=4 disabled class="input8">
+		<input type=text id="newstep_sounds" style="display:none" size=24 disabled class="input9">
 		<select id='add_newstep_extensions' style="display:none" onChange=" $('newstep_var').value = $('add_newstep_extensions').value;"   class="input8"></select>
 		<select id='add_newstep_menus' style="display:none" onChange=" $('newstep_var').value = $('add_newstep_menus').value;"   class="input8"></select>
 		<select style="display:none" id="tbr" class="input8" onChange=" $('newstep_var').value = $('tbr').value;"></select>
@@ -1347,10 +1334,6 @@ function hide_addStep(){
 	</tr>
 	</table>
 </div>
-<div id="combodiv_sounds" STYLE="display:none;z-index:101">
-	<select size=10 id="combosel_sounds" style="font-family: Verdana, Arial, Helvetica, Sans-Serif;font-size: 11px;" class="input8"></select>
-</div>
-<SCRIPT LANGUAGE="JavaScript">combo_box('newstep_var', "combodiv_sounds","combosel_sounds"); </SCRIPT>
 <div id="bg_transparent" STYLE="display:none; position: absolute; left: 0; top: 24; width:100%; height:100%;  background-color:#EFEFEF; -moz-opacity:.50;opacity:.50; border-width: 1px; border-color: #EFEFEF; border-style: solid; z-index:4">
 </div>
 </body>
