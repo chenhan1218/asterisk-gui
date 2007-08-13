@@ -123,13 +123,23 @@
 			var r = records[i+offset];
 			
 			for(var j=-1;j<r.length;j++) {
+	
+				if(r[(j + 4)])	
+					var dest_context = (r[j + 4].toString().replace(/^[\"]{1}/, "").replace(/[\"]{1}$/, "")) ? r[j + 4].toString().replace(/^[\"]{1}/, "").replace(/[\"]{1}$/, "") : 'none';
+				if(dest_context == "asterisk_guitools") {
+					j += fields.length-3;
+					/* go to next cdr record, which is exact 21 csvs away, so count the csv field names, and subtract 3, since we only added 4, and started with -1 */
+					continue;
+				} 
 				var td = document.createElement("td");
-				if (j < 0)
+				if (j < 0) {
 					var l = offset+i+1;
-				else
+				} else {
 					var l = r[j].toString().replace(/^[\"]{1}/, "").replace(/[\"]{1}$/, "");
+				}
 				td.appendChild(document.createTextNode(l));
 				tr.appendChild(td);
+
 			}
 
 			d.appendChild(tr);
