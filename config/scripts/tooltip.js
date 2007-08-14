@@ -324,3 +324,8 @@ function show_tooltip(event){
 	tooltips['cdr'] = new Object;
 	tooltips['cdr'].en = new Array;
 	tooltips['cdr'].en[0] = "<B>View:</B> Select how many call detail records to read at once.." ;
+
+	tooltips['sample'] = new Object;
+	tooltips['sample'].en = new Array;
+	tooltips['sample'].en[0] = "<b>Button Click:</b> Click this button to go to another tab, this is a tooltip example";
+
