@@ -7,6 +7,7 @@
  *
  * Mark Spencer <markster@digium.com>
  * Pari Nannapaneni <pari@digium.com>
+ * Brandon Kruse <bkruse@digium.com>
  *
  * See http://www.asterisk.org for more information about
  * the Asterisk project. Please do not directly contact
@@ -27,17 +28,20 @@
 var origwidth;
 var widgets = {};
 var provwidgets = {};
+var spanwidgets = {};
 var callbacks = new Object;
 var phonecallbacks = new Object;
 var providercallbacks = new Object;
+var digitalcallbacks = new Object;
 var globalvars = new Object;
 var fieldnames =[ 'disallow','allow','callerid','cancel','contact','context','delete','dialformat','fromdomain','fromuser','group','hasexten','hasiax','hassip','host','insecure',
-		'name','new','port','provider','registeriax','registersip','save','secret','trunkname','trunkstyleanalog','trunkstylecustomvoip',
+		'name','new','port','provider','registeriax','registersip','save','secret','trunkname','trunkstyleanalog','trunkstylecustomvoip', 'trunkstyledigital',
 		'trunkstylevoip','username','zapchan'];
 var provfieldnames = ['providerdesc', 'providerlogo'];
 var isnewtrunk;
 var dids_array = [];
 var old_trunkname;
+var has_spans;
 var used_fxos = {};
 used_fxos.oldvalue = "";
 used_fxos.newvalue = "";
@@ -112,6 +116,7 @@ callbacks.cancelnewcategory = function(){
 	ASTGUI.events.remove( _$('trunkstyleanalog') , 'click' , activateanalogvoip );
 	ASTGUI.events.remove( _$('trunkstylevoip') , 'click' , activateanalogvoip );
 	ASTGUI.events.remove( _$('trunkstylecustomvoip') , 'click' , activateanalogvoip );
+	ASTGUI.events.remove( _$('trunkstyledigital') , 'click' , activateanalogvoip );
 	hideSPdetails();
 }
 
@@ -126,7 +131,7 @@ callbacks.loaded = function() {
 	ASTGUI.events.add( _$('new') , "click", showSPdetails ) ;
 	loadServiceProvidersintotable();
 	preparemenus();
-	parent.loadscreen(this);
+	parent.astmanEngine.config2list("ztscan.conf", _$('spans'), new Array(), digitalcallbacks);
 }
 
 callbacks.postselect = function(){
@@ -169,6 +174,7 @@ callbacks.beforeSaving = function(){
 	var _tsv = _$('trunkstylevoip');
 	var _tsa = _$('trunkstyleanalog');
 	var _tscv = _$('trunkstylecustomvoip');
+	var _dig = _$('trunkstyledigital');
 	var _cv_un = _$('customvoip_username');
 	var _name = _$('name')  ;
 	var _dvcs_v = _$('devices').value ;
@@ -426,11 +432,51 @@ callbacks.newcategory = function() {
 	ASTGUI.events.add( _$('trunkstyleanalog') , 'click' , activateanalogvoip );
 	ASTGUI.events.add( _$('trunkstylevoip') , 'click' , activateanalogvoip );
 	ASTGUI.events.add( _$('trunkstylecustomvoip') , 'click' , activateanalogvoip );
+	ASTGUI.events.add( _$('trunkstyledigital'), 'click', activateanalogvoip );
 
 	return tmp;
 }
 
 callbacks.identifier = "extension";
+
+function isInt(x) {
+	var y=parseInt(x);
+	if (isNaN(y)) return false;
+		return x==y && x.toString()==y.toString();
+} 
+
+digitalcallbacks.format = function(t) { 
+
+	if(t.name == "general") {
+		if(t.fieldbyname['continue'] == "no") {
+			has_spans = 0;
+			if(t.fieldbyname['error'].match('No Spans Found')) {
+				_$('digital_click_txt').innerHTML = "Click Here to go to the Digital Card setup Wizard";
+				_$('digital_click_txt').style.display = "";
+				ASTGUI.events.add(_$('digital_click_txt'), 'click', function() { window.location.href = "digital.html" } );
+					
+				return "No Spans/Cards Found";
+			}
+		} else {
+			if(t.fieldbyname['continue'] == "yes")
+				return null;
+		}
+	}
+	
+	var mode = (t.fieldbyname['totchans'] > 25) ? "E1" : "T1";
+	return "span: " + t.name + " Mode: " + mode;
+}
+
+digitalcallbacks.loaded = function() {
+	
+	var spans = _$('spans').stored_config.catbyname['general'].fieldbyname['totalspans'];
+	if(spans > 0)
+		has_spans = 1;
+
+	parent.loadscreen(this);
+	return true;
+
+}
 
 phonecallbacks.format = function(t) {
 	if (t.fieldbyname['port'] == 'fxs')
@@ -439,6 +485,7 @@ phonecallbacks.format = function(t) {
 }
 
 phonecallbacks.loaded = function() {
+	parent.astmanEngine.config2list("zapata.conf", _$('spans'), spanwidgets, digitalcallbacks);
 	parent.astmanEngine.config2list("providers.conf", _$('provider'), provwidgets, providercallbacks);
 }
 
@@ -489,10 +536,21 @@ function activateanalogvoip() {
 		_$('voip').style.height =350;
 	}else if (_$('trunkstylecustomvoip').checked) {
 		_$('customvoip').style.display = "" ;
+	}else if (_$('trunkstyledigital').checked) {
+		_$('digital').style.display = "" ;
+		_$('digital').style.height = 350;
+		_$('spans').style.display  = "";
+		//	_$('digital').innerHTML = "";
+		//	_$('digital_click').innerHTML = "No Spans Found. Click Here to go to the Digital Card setup Wizard";
+		//	_$('digital_click').style.display = "";
+		//	ASTGUI.events.add(_$('digital_click'), 'click', function() { window.location.href = "digital.html" } );
+		//check_digital();
 	}
+
 }
 
 function localajaxinit() {
+	parent.astmanEngine.run_tool(asterisk_guiZtscan, onSuccess = function() { return true; }); 
 	ASTGUI.events.add(document, 'mouseover', show_tooltip);
 
 	ASTGUI.events.add( _$('customvoip_name') , 'change' , function(){ _$('trunkname').value = _$('customvoip_name').value; } );
@@ -589,6 +647,9 @@ function addrow_totable(sp_text, sp_value){
 		break;
 	case "voip":
 		newCell2.innerHTML =  "Voip";
+		break;
+	case "digital":
+		newCell2.innerHTML = "Digital";
 		break;
 	default : 
 		newCell2.innerHTML =  "?";
@@ -1006,6 +1067,7 @@ function advanced_cancel(){
 		<LABEL FOR="trunkstyleanalog"><input name='trunkstyle' type='radio' id='trunkstyleanalog' value='analog'>Analog</LABEL><BR>
 		<LABEL FOR="trunkstylevoip"><input name='trunkstyle' type='radio' id='trunkstylevoip' value='voip'>VoIP</LABEL><BR>
 		<LABEL FOR="trunkstylecustomvoip"><input name='trunkstyle' type='radio' id='trunkstylecustomvoip' value='customvoip'>Custom VoIP</LABEL>
+		<LABEL FOR="trunkstyledigital"><input name='trunkstyle' type='radio' id='trunkstyledigital' tip="en,trunks,5" value='digital'>(BETA!) Digital Cards(T1/E1/J1)</LABEL>
 	</fieldset>
 	<div id="div_providername" style="display:none">
 		<BR><BR><B>Provider Name:</B><BR><input id="name" size=10 class='input8'>
@@ -1023,6 +1085,15 @@ function advanced_cancel(){
 		</td>
 	</tr>
 	<tr><td colspan='2' style='width:80px' valign='top' align='center'></td></tr>
+	</table>
+</div>
+<div id='digital' style='height:0;overflow:hidden' align="center">
+	<table align="center">
+		<td style='width:120px' valign='top' class='field_text' tip="en,trunks,5">Spans:</td>
+		<td style='width:120px;display:none;color:#0000FF' valign='top' id='digital_click_txt' class='field_text' tip="en,trunks,5"></td>
+		<br><br>
+		<td><select size='12' style="display:none" id='spans' style='width:240px' class='input8'><option name="blah" value="blah"></option></select></td>
+	</tr>
 	</table>
 </div>
 <div id='voip' style='height:0;overflow:hidden' align="center">

@@ -1,0 +1,48 @@
+<!--
+ * Asterisk-GUI	-	an Asterisk configuration interface
+ *
+ * Digital Card Setup / Detection 
+ *
+ * Copyright (C) 2006-2007, Digium, Inc.
+ *
+ * Brandon Kruse <bkruse@digium.com>
+ *
+ * See http://www.asterisk.org for more information about
+ * the Asterisk project. Please do not directly contact
+ * any of the maintainers of this project for assistance;
+ * the project provides a web site, mailing lists and IRC
+ * channels for your use.
+ *
+ * This program is free software, distributed under the terms of
+ * the GNU General Public License Version 2. See the LICENSE file
+ * at the top of the source tree.
+ *
+-->
+<script src="scripts/prototype.js"></script>
+<script src="scripts/astman.js"></script>
+<link href="stylesheets/schwing.css" media="all" rel="Stylesheet" type="text/css" />
+<script>
+
+function localajaxinit() {
+	var adjust_toScreen = function(){
+		var i = ASTGUI.displayHeight();
+		_$('cli_output').style.height = (i -60);
+	}
+	top._$('mainscreen').width= 798;
+	ASTGUI.events.add( window , 'resize', adjust_toScreen);
+	setWindowTitle("Digital Setup Wizard");
+	parent.loadscreen(this);
+	alert("this page is a placeholder for the beginning of the digital card wizard");
+}
+
+</script>
+<body id="foo" onload="localajaxinit()"  bgcolor="#FFFFFF" onunload="resetmainscreen();">
+<div style="font-size : 12px; padding : 4px 6px 4px 6px; border-style : solid none solid none; border-top-color : #BDC7E7; border-bottom-color : #182052; border-width : 1px 0px 1px 0px; background-color : #ef8700; color : #ffffff;">
+	<span style="margin-left: 4px;font-weight:bold;">Digital Card Configuration Wizard Placeholder</span>
+	<span style="cursor: pointer; cursor: hand;" onclick="window.location.href=window.location.href;" >&nbsp;<img src="images/refresh.png" title=" Refresh " border=0 >&nbsp;</span>
+	&nbsp;&nbsp;
+</div>
+<div style="padding : 0px 0px 0px 0px;">
+<div style="padding : 0px 1px 0px 2px; height:444px;width= 797px; overflow :auto; font-size : 12px;" id="cli_output"></div><BR>
+</div>
+</body>

@@ -255,6 +255,7 @@ function show_tooltip(event){
 	tooltips['trunks'].en[2] = "<B>Lines:</B> Individual lines of the PBX Ex: Analog Port #3: The third analog port of the PBX.";
 	tooltips['trunks'].en[3] = "<B>Username:</B> The username for your account with the provider - please contact your provider if you do not know it.";
 	tooltips['trunks'].en[4] = "<B>Password:</B> The password for your account with the provider - please contact your provider if you do not know it.";
+	tooltips['trunks'].en[5] = "<B>Digital Cards:</B> Digital Card trunking setup includes TExxxx based cards. Anything that is based from zaptel.conf and zapata.conf is readily availible to be configured as a trunk.";
 	 
 	// Tooltips for Voicemenus (menus)
 	tooltips['menus']= new Object;
