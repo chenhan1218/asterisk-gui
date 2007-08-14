@@ -9,9 +9,11 @@
 #
 # This program is free software, distributed under the terms of
 # the GNU General Public License
+#
+# Added support for ztscan 8/8/07 - Brandon Kruse <bkruse@digium.com>
 
 ifeq ($(PBX_ZAPTEL),1)
-TOOLS:=zapscan.bin
+TOOLS:=zapscan.bin ztscan
 endif
 
 all: $(TOOLS)
@@ -19,7 +21,13 @@ all: $(TOOLS)
 zapscan.bin: zapscan.o
 	$(CC) -o $@ $^
 
+ztscan.bin: ztscan.o
+	$(CC) -o $@ $^
+
 zapscan.o: CFLAGS+=$(ZAPTEL_INCLUDE) $(ASTCFLAGS)
+
+ztscan.o: CFLAGS+=$(ZAPTEL_INCLUDE) $(ASTCFLAGS)
+
 
 install:
 ifeq ($(PBX_ZAPTEL),1)
@@ -28,10 +36,14 @@ ifeq ($(PBX_ZAPTEL),1)
 	$(INSTALL) -m 755 zapscan.bin /sbin
 	$(INSTALL) -m 755 zapscan $(ASTSBINDIR)
 	$(INSTALL) -m 755 zapscan /sbin	
+	$(INSTALL) -m 755 ztscan /sbin	
+	$(INSTALL) -m 755 ztscan $(ASTSBINDIR)
+	
 endif
 
 clean: 
 	rm -f zapscan.o
 	rm -f zapscan.bin
+	rm -f ztscan
 
 .PHONY: all install clean
