@@ -20,29 +20,163 @@
 -->
 <script src="scripts/prototype.js"></script>
 <script src="scripts/astman.js"></script>
+<script src="scripts/tooltip.js"></script>
 <link href="stylesheets/schwing.css" media="all" rel="Stylesheet" type="text/css" />
 <script>
 
-function localajaxinit() {
-	var adjust_toScreen = function(){
-		var i = ASTGUI.displayHeight();
-		_$('cli_output').style.height = (i -60);
+var sysinfocallbacks = new Object;
+var tabs = new Array('tab1', 'tab2', 'tab3');
+var divs_tohide = new Array('osversion_div', 'uptime_div', 'asterisk_div', 'today_div','hostname_div','ifconfig_div','df_div','memory_div');
+var has_spans = 0; /* Count of our spans we have, incrementing each time. */
+var total_spans = 0; /* Count of our spans that ztscan.conf says we have */
+
+/* This page is based off of sample.html, the gui tutorial on writing a page */
+
+/* Function used in the GUI to show and hide the different tabs we defined, pretty basic. */
+function show_window(x){
+	for(i=0; i < tabs.length ; i++){
+		_$(tabs[i]).className = "tab";
 	}
-	top._$('mainscreen').width= 798;
-	ASTGUI.events.add( window , 'resize', adjust_toScreen);
+	_$(tabs[x]).className = "tabselected";
+	_$(tabs[x]).blur();
+
+	/* Traverse through the tabs to see which one we want to display. */
+	if(divs_tohide[x]) {
+		var divs_toshow = new Array(divs_tohide[x]);
+		/* Here we will declare divs to show as whatever element in the array is the tab we want to show! */
+	} else { 
+		return false;
+		/* We did not find the tab that we were called to show. */
+	}
+
+	/* Here we will hide all of our divs that we do not want to show, and then show our last div. */
+	for(var i=0; i < divs_tohide.length; i++ ) {
+		_$(divs_tohide[i]).style.display = "none";
+	}
+	for(var i=0; i < divs_toshow.length; i++ ) {
+		_$(divs_toshow[i]).style.display = "";
+	}
+
+	return true;
+}
+
+function isInt(x) {
+	var y=parseInt(x);
+	if (isNaN(y)) return false;
+		return x==y && x.toString()==y.toString();
+} 
+
+function digitalparse(n) { 
+
+	var l, h;
+	for( l in n ){	if(n.hasOwnProperty(l)){
+		if( l =='general') { 
+			if(n[l]['continue'] == "no") {
+				_$('error_txt').style.display="";
+				_$('error_txt').innerHTML="<br><br>Problem Detecting/No Cards(or spans) Found!<br><br>  Error: " + n[l]['error'];		
+				has_spans=0;
+				return false;
+			}
+			if(n[l]['continue'] == "yes") {
+				total_spans = n[l]['totalspans'];
+			}
+		} 
+
+//		if ( n[l]['context'] && unescape(n[l]['context']) == asterisk_guiTDPrefix + l ) { // ignore trunks in users.conf
+//			continue;
+//		}
+//
+//		if( !n[l]['trunkstyle'] ){ // all entries from users.conf other than trunks
+//			UserExtensions.push(l);
+//			if( n[l]['hassip']=='yes'){
+//				LISTOFCHANNELS['SIP/' + l] = {};
+//				LISTOFCHANNELS['SIP/' + l]['ChannelName'] = 'SIP/' + l + " -- " + n[l]['fullname'];
+//			}
+//			if( n[l]['hasiax']=='yes'){
+//				LISTOFCHANNELS['IAX2/' + l] = {};
+//				LISTOFCHANNELS['IAX2/' + l]['ChannelName'] = 'IAX2/' + l + " -- " + n[l]['fullname'];
+//			}
+//			if( n[l]['zapchan'] ){
+//				var m = n[l]['zapchan'];
+//				if( LISTOFCHANNELS[ 'Zap/' + m ] ){
+//					LISTOFCHANNELS['Zap/'+m]['ChannelName'] = "Analog Phone -- " + n[l]['fullname'];
+//				}
+//			}
+//
+//			ASTGUI.selectbox.append(el, l + " -- " + n[l]['fullname'] , 'Voicemail(' + l + ',b)');
+//		}
+	}}
+
+	alert("just did parentloadd screen");
+	_$('status_message').style.display='none';
+
+	return "span: " + t.name + " Mode: " + mode;
+}
+
+function update_sysinfo(){
+	parent.astmanEngine.run_tool(asterisk_guiSysInfo , onSuccess = function() {
+			_$('status_message').style.display='none';
+			getsysinfohtml();
+		}
+	);
+	return;
+}
+
+function getsysinfohtml(){
+	var opt = {
+		method: 'get',
+		asynchronous: true,
+		onComplete: function(originalRequest){
+			_$('sysinfohtml').innerHTML = originalRequest.responseText;
+			_$('osversion').innerHTML = _$('si_uname').innerHTML;
+			_$('uptime').innerHTML = _$('si_uptime').innerHTML.replace(/load average/, "<BR>Load Average");
+			_$('asterisk').innerHTML =_$('si_astver').innerHTML + "<BR>" + "Asterisk GUI-version " + asterisk_guiversion.substr(1) ;
+			_$('today').innerHTML = _$('si_date').innerHTML;
+			_$('hostname').innerHTML =_$('si_hostname').innerHTML;
+			_$('ifconfig').innerHTML =_$('si_ifconfig').innerHTML;
+			_$('diskusage').innerHTML = _$('si_du').innerHTML;
+			_$('memoryusage').innerHTML =_$('si_free').innerHTML;
+
+			var divs_toshow = new Array('osversion_div', 'uptime_div', 'asterisk_div', 'today_div','hostname_div');
+			for(var i=0; i < divs_toshow.length; i++ ){ _$(divs_toshow[i]).style.display = ""; }
+
+			document.getElementById(tabs[0]).className = "tabselected";
+		},
+		onFailure: function(t) {
+			_$('status_message').style.display='none';
+			gui_alert("Config Error: " + t.status + ": " + t.statusText);
+		}
+	};
+	opt.parameters="";
+	var tmp = new Ajax.Request(asterisk_guiSysInfo_output , opt);
+	return true;
+}
+
+
+function localajaxinit() {
+	ASTGUI.events.add(document, 'mouseover', show_tooltip);
+	showdiv_statusmessage();
+	_$('status_message').style.display="block";
+	setTimeout("_$('status_message').style.display='none'", 2000);
+	_$('message_text').innerHTML = "Detecting Digital Cards ... (Beta)";
 	setWindowTitle("Digital Setup Wizard");
 	parent.loadscreen(this);
-	alert("this page is a placeholder for the beginning of the digital card wizard");
+	parent.astmanEngine.run_tool(asterisk_guiZtscan, onSuccess = function() { config2json("ztscan.conf", 1, digitalparse); }); 
+}
+
+function free_mem(){
+	if( navigator.userAgent.indexOf("MSIE") == -1 ){ return true; }
+	try{
+		purge( document.body );
+	} catch(e){ }
 }
 
 </script>
-<body id="foo" onload="localajaxinit()"  bgcolor="#FFFFFF" onunload="resetmainscreen();">
-<div style="font-size : 12px; padding : 4px 6px 4px 6px; border-style : solid none solid none; border-top-color : #BDC7E7; border-bottom-color : #182052; border-width : 1px 0px 1px 0px; background-color : #ef8700; color : #ffffff;">
-	<span style="margin-left: 4px;font-weight:bold;">Digital Card Configuration Wizard Placeholder</span>
+<body id="foo" onload="localajaxinit()"  bgcolor="#FFFFFF">
+<div class="mainScreenTitleBar">
+	<span style="margin-left: 4px;font-weight:bold;">Digital Card Configuration Wizard (Beta)</span>
 	<span style="cursor: pointer; cursor: hand;" onclick="window.location.href=window.location.href;" >&nbsp;<img src="images/refresh.png" title=" Refresh " border=0 >&nbsp;</span>
-	&nbsp;&nbsp;
 </div>
-<div style="padding : 0px 0px 0px 0px;">
-<div style="padding : 0px 1px 0px 2px; height:444px;width= 797px; overflow :auto; font-size : 12px;" id="cli_output"></div><BR>
-</div>
+<select size='12' style="display:none" id='spans'><option name="blah" value="blah"></option></select>
+<center><font id="error_txt" valign="left" style="display:none"></font></center>
 </body>
