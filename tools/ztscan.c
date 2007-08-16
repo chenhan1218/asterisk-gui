@@ -78,7 +78,7 @@ static char *getalarms(int span, int err)
 		return NULL;
 	}
 	/* If this is not a digital card, skip it. */
-	if(s[span].totalchannels != 24 || s[span].totalchannels != 31) 
+	if(s[span].totalchans != 24 || s[span].totalchans != 31) 
 		return NULL;
 
 	strcpy(alarms, "");
