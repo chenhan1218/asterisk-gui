@@ -1,47 +1,22 @@
 <!--
- * Asterisk-GUI -       an Asterisk configuration interface
+ * Configuration for IVR (Interactive Voice Menus)
  *
- * Create/Manage IVR Menus
- *
- * Copyright (C) 2006-2007, Digium, Inc.
+ * Copyright (C) 2006 - 2007, Digium, Inc.
  *
  * Mark Spencer <markster@digium.com>
  * Pari Nannapaneni <pari@digium.com>
  *
- * See http://www.asterisk.org for more information about
- * the Asterisk project. Please do not directly contact
- * any of the maintainers of this project for assistance;
- * the project provides a web site, mailing lists and IRC
- * channels for your use.
+ * All Rights Reserved.
  *
- * This program is free software, distributed under the terms of
- * the GNU General Public License Version 2. See the LICENSE file
- * at the top of the source tree.
+ * Distribution of this file is subject to the license
+ * agreement you accepted when obtained and/or activated
+ * the Digium product containing this file.
  *
 -->
 <script src="scripts/prototype.js"></script>
 <script src="scripts/astman.js"></script>
 <script src="scripts/tooltip.js"></script>
 <link href="stylesheets/schwing.css" media="all" rel="Stylesheet" type="text/css" />
-<style type="text/css">
-	.page_header {
-		font-size : 12px;
-		padding : 4px 6px 4px 6px;
-		border-style : solid none solid none;
-		border-top-color : #BDC7E7;
-		border-bottom-color : #182052;
-		border-width : 1px 0px 1px 0px;
-		background-color : #ef8700;
-		margin-bottom: 10px;
-		color : #ffffff;
-	}
-
-	.VoiceMenuMainTable{
-		border : 0;
-		width	: 750px; 
-		font-size: 11px;
-	}
-</style>
 <script>
 var widgets = {};
 var adstatus;
@@ -56,7 +31,7 @@ var keys = new Array('0','1','2','3','4','5','6','7','8','9','*','#','t','i');
 var extensions_array = new Array;
 var answer_call_string = "s,1,Answer";
 var localextenlength ;
-var LISTOFSOUNDS = [];
+
 
 function format_step(this_step){
 	var temp = this_step.split(',');
@@ -142,7 +117,6 @@ function format_step(this_step){
 	if( temp[2].match("Goto") && !temp[2].match("voicemenu-")  ){
 		var tmp = temp[2].split('(');
 		var tmp1 = tmp[1].split('|');
-		if( tmp1[1] == 'o' ){return "Goto 'Operator'";}
 		return "Goto Exten '"+ tmp1[1] + "'";
 	}
 	
@@ -168,7 +142,6 @@ function load_extensions(my_field_options){
 		var newoption = document.createElement("option"); 
 		newoption.text = extensions_array[x] ; 
 		newoption.value = extensions_array[x] ;
-		if(extensions_array[x] == 'o'){ newoption.text = "Operator" ; }
 		_mo.options.add(newoption);
 	}
 }
@@ -310,7 +283,6 @@ function add_newstep(){
 	var _vmv = _$('vmenus').value ;
 	var _nsa = _$('newstep_action');
 	var _nsv = _$('newstep_var') ;
-	var _nss = _$('newstep_sounds');
 
 	if( !_nsa.value ){
 		gui_alert("Please select an action for this step");
@@ -318,11 +290,8 @@ function add_newstep(){
 		return;
 	}
 
-	if( _nsa.value== "Background"  || _nsa.value== "Playback" ){
-		_nsv.value = _nss.value;
-	}
-
 	if( _nsa.value != "Answer" && _nsa.value != "GotoDirecotry" && _nsa.value != "Busy" && _nsa.value != "Hangup" && _nsa.value != "Congestion" && !_nsv .value ){
+		
 		if( _nsa.value.toLowerCase() == "dialringgroup" ){
 			if(!_$('rgrp').options.length ){
 				gui_alert("No Ring Groups exist. <BR> Please create a Ring Group before selecting this option.");
@@ -331,6 +300,7 @@ function add_newstep(){
 			}
 			return;
 		}
+
 		gui_alert("Please enter a value for '" + _nsa.value +"'");
 		_nsv.focus();
 		return;
@@ -410,7 +380,6 @@ function add_newstep(){
 	makerequest('u','extensions.conf', uri,
 		function(t){
 			setTimeout(function(){ _$('status_message').style.display = 'none'; },sc_displaytime);
-			hide_addStep();
 			// if request successfull then add this to the steps select box
 			var newoption = document.createElement("option"); 
 			newoption.text = format_step(action_string ); 
@@ -431,11 +400,10 @@ function add_newstep(){
 			gui_feedback('New step added !','blue');
 			update_updown();
 			_nsv.value = "";
-			_nss.value="";
 			_nsv.style.display = "none" ;
-			_nss.style.display = "none" ;
 			_$('add_newstep_extensions').style.display = "none";
 			_$('add_newstep_menus').style.display = "none";
+			_$('combodiv_sounds').style.display = "none" ;
 			_nsvd = _$('newstep_var_digit'); 
 			_nsvd.value= "";
 			_nsvd.style.display= "none" ;
@@ -734,22 +702,21 @@ function update_newstep_var(){
 	var _nsa = _$('newstep_action');
 	var _ane = _$('add_newstep_extensions') ;
 	var _anm = _$('add_newstep_menus') ;
-	var _nss = _$('newstep_sounds');
 
 	_nsv.value = "";
 	_nsv.style.display = "none";
 	_$('newstep_var_digit').style.display= "none" ;
+	_$('combodiv_sounds').style.display = "none" ;
 	_ane.style.display = "none";
 	_anm.style.display = "none";
 	_$('tbr').style.display = "none";
 	_$('rgrp').style.display = "none";
-	_nss.style.display = "none";
-	_nss.value = "";
 
         if( _nsa.value== "" || _nsa.value== "Answer"  || _nsa.value== "Hangup" || _nsa.value== "GotoDirecotry" || _nsa.value== "Busy" || _nsa.value== "Congestion" ){
 
         }else if( _nsa.value== "Background"  || _nsa.value== "Playback" ){
-		_nss.style.display = "";
+                _nsv.style.display = "";
+                _nsv.size= 12;
         }else if( _nsa.value== "Authenticate"  || _nsa.value== "DigitTimeout"  || _nsa.value== "ResponseTimeout" ||  _nsa.value== "Wait"  ||  _nsa.value== "WaitExten"  || _nsa.value== "DISA"){
                 _$('newstep_var_digit').style.display= "" ;
         }else if(_nsa.value== "GotoMenu"  ){
@@ -814,14 +781,12 @@ function select_vmenu(){
 	}
 
 	_steps.disabled = false;
-	_$('b_ShowAddStep').disabled = false;
 	_$('addstep').disabled = false;
 	_$('allowexten').disabled = false;
 	_$('comment').disabled = false;
 	_$('deletestep').disabled = true;
 	_$('delete').disabled = false;
 	_$('newstep_action').disabled = false;
-	_$('newstep_sounds').disabled = false;
 	_$('newstep_var').disabled = false;
 	_$('keypressoptions').style.display = "";
 	_$('stepDown').disabled = true;
@@ -947,9 +912,7 @@ menuscallbacks.oncategorydelete =function(){
 	_$('steps').options.length =0;
 	_$('newstep_action').disabled = true;
 	_$('newstep_var').disabled = true;
-	_$('newstep_sounds').disabled = true;
 	_$('addstep').disabled = true;
-	_$('b_ShowAddStep').disabled = true;
 	_$('steps').disabled = true;
 	_$('stepUp').disabled = true;
 	_$('stepDown').disabled = true;
@@ -994,9 +957,7 @@ menuscallbacks.newcategory = function(t) {
 	_allowexten.disabled = false;
 	_$('newstep_action').disabled = true;
 	_$('newstep_var').disabled = true;
-	_$('newstep_sounds').disabled = true;
 	_$('addstep').disabled = true;
-	_$('b_ShowAddStep').disabled = true;
 	_steps.disabled = true;
 	//  4. Reset Comment
 	_$('keypressoptions').style.display = "";
@@ -1009,7 +970,6 @@ menuscallbacks.newcategory = function(t) {
 
 
 function localajaxinit() {
-	parent._$('mainscreen').width= 798;
 	ASTGUI.events.add(document, 'mouseover', show_tooltip);
 	showdiv_statusmessage();
 	setWindowTitle("Voice Menus");
@@ -1080,6 +1040,13 @@ extencallbacks.loaded = function() {
 	var opt = { method: 'get', asynchronous: true,
 		onComplete: function(originalRequest){
 			var sndfiles = originalRequest.responseText.split("\n") ;
+			var el = _$('combosel_sounds');
+			var h = document.createElement('option');
+			h.text = "Default Sounds"  ;
+			h.value = ""  ;
+			h.style.fontWeight = "bold";
+			ASTGUI.selectbox.append_option(el,h);
+
 			var file_name;
 			var listof_DefaultSounds = {};
 			for( var i =0 ; i < sndfiles.length ; i++){
@@ -1094,7 +1061,7 @@ extencallbacks.loaded = function() {
 			}
 			for(var i in listof_DefaultSounds){
 				if( listof_DefaultSounds.hasOwnProperty(i) ){ 
-					LISTOFSOUNDS.push(i);
+					ASTGUI.selectbox.append(el , i, i);
 				}
 			}
 			load_recordedfiles();
@@ -1113,6 +1080,15 @@ function load_recordedfiles(){
 		onComplete: function(originalRequest){
 			// Add Recorded Voiemenus to the list of sound files
 			var recfiles = originalRequest.responseText.split("\n") ;
+			New_OPTION = document.createElement('option');
+			New_OPTION.text = "Recorded Voicemenus"  ;
+			New_OPTION.value = ""  ;
+			New_OPTION.style.fontWeight = "bold";
+			try {
+				_$('combosel_sounds').add(New_OPTION, null); // W3C way
+			}catch(ex) {
+				_$('combosel_sounds').add(New_OPTION); // IE way
+			}
 			var file_name;
 			for( var i =0 ; i < recfiles.length ; i++){
 				if( typeof recfiles[i] == "undefined"  || recfiles[i] == "" ){
@@ -1122,10 +1098,15 @@ function load_recordedfiles(){
 				if( recfiles[i] == "" ){ continue; }
 				file_name = recfiles[i].stripTags() ;
 				file_name = file_name.substr(0,(file_name.length - 4) ) ;
-				LISTOFSOUNDS.push("record/" + file_name);
+				New_OPTION = document.createElement('option');
+				New_OPTION.text =  file_name  ;
+				New_OPTION.value = asterisk_menusRecord_path + file_name ;
+				try {
+					_$('combosel_sounds').add(New_OPTION, null); // W3C way
+				}catch(ex) {
+					_$('combosel_sounds').add(New_OPTION); // IE way
+				}
 			}
-			console.log("1097");
-			ASTGUI.COMBOBOX.call(  _$('newstep_sounds') , LISTOFSOUNDS, 400 );
 			parent.astmanEngine.config2list("users.conf", _$('users'), new Array(), usercallbacks);
 		},
 		onFailure: function(t) { alert("Config Error: " + t.status + ": " + t.statusText); }
@@ -1179,7 +1160,6 @@ usercallbacks.loaded = function (){
 }
 
 function free_mem(){
-	parent._$('mainscreen').width= 540;
 	if( navigator.userAgent.indexOf("MSIE") == -1 ){ return true; }
 	try{
 		widgets['save'].hostselectbox = null ;
@@ -1189,29 +1169,22 @@ function free_mem(){
 		purge( document.body );
 	} catch(e){ }
 }
-
-function show_addStep(){
-	_$('bg_transparent').style.display="" ;
-	_$('NewStep_Content').style.display="" ;
-}
-
-function hide_addStep(){
-	_$('bg_transparent').style.display="none" ;
-	_$('NewStep_Content').style.display="none" ;
-}
 </script>
 <body id="foo" onload="localajaxinit()"  bgcolor="EFEFEF" onunload="free_mem()">
-<div class="page_header">
+<div class="mainscreenTitleBar">
 	<span style="margin-left: 4px;font-weight:bold;">Voice Menus Configuration</span>
 	<span style="cursor: pointer; cursor: hand;" onclick="window.location.href=window.location.href;" >&nbsp;<img src="images/refresh.png" title=" Refresh " border=0 >&nbsp;</span>
 </div>
 <div class="mainscreenContentBox" id="userscontent">
-<table class="VoiceMenuMainTable" align="left">
+<table class="mainscreenTable" align="center">
+	<tr valign="top">
+		<td colspan='2'> Voice Menus: </td>
+	</tr>
 	<tr valign="top">
 		<td>	<select size="25" id="vmenus" style="width:180px;" class="input10"><option>Loading...</option></select>	</td>
-		<td valign=top align="right" width=560 height=415>
+		<td valign=top align="right" width=346 height=415>
 			<select id='extensions' style='display:none;width:0px;height:0px'></select><select id='users' style='display:none;width:0px;height:0px'></select><select id='recorded_files' style='display:none;width:0px;height:0px'></select>
-			<table align="center" width="560">
+			<table align="center" width="346">
 			<tr>
 				<td width="50" align=left class="field_text" tip="en,menus,0">Name:</td>
 				<td align=left class="field_text">
@@ -1219,36 +1192,72 @@ function hide_addStep(){
 					<span tip="en,menus,5">
 					Extension: <input id="alias_exten"  onKeyUp="enable_savecancel()"  size=4 disabled class="input8" tip="en,menus,5">
 					</span>
-					&nbsp;&nbsp;&nbsp;&nbsp;
-					<label FOR="allowexten"  tip="en,menus,3">
-					<input type=checkbox id=allowexten disabled onclick="enable_savecancel()"> Allow Dialing other Extensions?
-					</label>
 				</td>
 			</tr>
 			<tr>	<td class="field_text"  tip="en,menus,1">Steps:<BR>
 					<input  style='width:45'  type="button" id="stepUp" value="Up" disabled onClick="step_up()" class="buttonbold"><BR><BR>
 					<input  style='width:45' type="button" id="stepDown" value="Down" disabled onClick="step_down()" class="buttonbold">
 				</td>
-				<td><select id='steps' size=8  style="width:550px;" onClick="step_onselect()" disabled class="input8"></select></td>
+				<td rowspan=2><select id='steps' size=5  style="width:280px;" onClick="step_onselect()" disabled class="input8"></select></td>
 			</tr>
-
-			<tr>	<td> </td>
-				<td class="field_text">
-				<input type=button style='width:105' id='b_ShowAddStep' onclick="show_addStep()"  value="Add new Step" disabled  class="buttonbold">
-				&nbsp;<input type=button style='width:140' id='deletestep' onclick="delete_step()"  value="Delete selected Step" disabled  class="buttonbold">
-				</td>
-			</tr>
-			<tr>	<td colspan=2 height=25></td></tr>
+			<tr><td colspan=2 class="field_text" height=4  tip="en,menus,2"></td></tr>
+			<tr><td colspan=2 class="field_text"  tip="en,menus,2">Add a new Step:</td></tr>
 			<tr><td colspan=2>
-				<div>
+
+				<NOBR>
+				<select id='newstep_action' disabled onChange="update_newstep_var()" class="input8">
+					<option value=""> -- Select --</option>
+					<option value="Answer">Answer</option>
+					<option value="Authenticate">Authenticate</option>
+					<option value="Background">Background</option>
+					<option value="Busy">Busy Tone</option>
+					<option value="Congestion">Congestion</option>
+					<!-- <option value="SetMusicOnHold">SetMusicOnHold</option> -->
+					<option value="DigitTimeout">DigitTimeout</option>
+					<option value="DISA">DISA</option>
+					<option value="ResponseTimeout">ResponseTimeout</option>
+					<option value="Playback">Playback</option>
+					<option value="Wait">Wait</option>
+					<option value="WaitExten">WaitExten</option>
+					<option value="GotoMenu">Goto Menu</option>
+					<option value="GotoDirecotry">Goto Directory</option>
+					<option value="GotoExtension">Goto Extension</option>
+					<!--<option value="GotoTimeBasedRule">Goto TimeBasedRule</option>-->
+					<option value="DialRingGroup">Dial RingGroup</option>
+					<option value="Hangup">Hangup</option>
+				</select>&nbsp;
+				<input type=text id="newstep_var" style="display:none" size=4 disabled class="input8">
+				<select id='add_newstep_extensions' style="display:none"   onChange=" $('newstep_var').value = $('add_newstep_extensions').value;"   class="input8"></select>
+				<select id='add_newstep_menus' style="display:none"    onChange=" $('newstep_var').value = $('add_newstep_menus').value;"   class="input8"></select>
+				<div id="combodiv_sounds">
+					<select size=5 id="combosel_sounds" style="font-family: Verdana, Arial, Helvetica, Sans-Serif;font-size: 11px;" class="input8"></select>
+				</div>
+				<select style="display:none" id="tbr" class="input8" onChange=" $('newstep_var').value = $('tbr').value;"></select>
+				<select style="display:none" id="rgrp" class="input8" onChange=" $('newstep_var').value = $('rgrp').value;"></select>
+				<input type=text id="newstep_var_digit" size=3 style="display:none;" onChange=" $('newstep_var').value = $('newstep_var_digit').value;"  pattern='^\d*$' class="input8">&nbsp;
+				<SCRIPT LANGUAGE="JavaScript">combo_box('newstep_var', "combodiv_sounds","combosel_sounds"); </SCRIPT>
+				<input type=button style='width:45' id='addstep' onclick="add_newstep()"  value="Add" disabled  class="buttonbold">
+				&nbsp;<input type=button style='width:50' id='deletestep' onclick="delete_step()"  value="Delete" disabled  class="buttonbold">
+				</NOBR>
+			</td>
+			</tr>
+			<tr>
+				<td colspan=2 class="field_text" tip="en,menus,3">
+				<label FOR="allowexten"  tip="en,menus,3">
+					&nbsp;<input type=checkbox id=allowexten disabled onclick="enable_savecancel()"> Dial other Extensions?
+				</label>&nbsp;</td>
+			</tr>
+			<tr>	<td colspan=2 height=6></td></tr>
+			<tr>	<td colspan=2 class="field_text"  tip="en,menus,4">'Keypress' Events</td>	</tr>
+			<tr><td colspan=2>
+				<div  style="width=340px;">
 					<table cellpadding=3 cellspacing=0 width="100%">
 					<TR bgcolor='#B8B8B8'>
 						<TD width=35 class="field_text">Key</TD><TD class="field_text">Action</TD>
-						<TD width=440 class="field_text" tip="en,menus,4" align=center><B>'Keypress' Events</B></TD>
 					</TR>
 					</table>
 				</div>
-				<div id="keypressoptions" style="height:190px;overflow :auto;display :none;">
+				<div id="keypressoptions" style="height:155px;width=340px; overflow :auto;display :none;">
 					<table cellpadding=3 cellspacing=0 width="100%">
 					<script>
 					for (var k=0; k< keys.length; k++){
@@ -1284,56 +1293,5 @@ function hide_addStep(){
 	</td>
 	</tr>
 </table>
-</div>
-<div id="NewStep_Content" STYLE="display:none; position: absolute; left: 40; top: 64; width:580; height:60;  background-color:#F4EFE5;   border-width: 1px; border-color: #7E5538; border-style: solid; z-index:100">
-	<table width="100%" cellpadding=0 cellspacing=0  onmousedown="ASTGUI.startDrag(event , 'NewStep_Content');">
-	<TR bgcolor="#7E5538"  style="background-image:url('images/title_gradient.gif');">
-		<TD tip="en,menus,2"><font color="#FFFFFF">&nbsp;&nbsp;<B>Add a new Step:</B></FONT></TD>
-		<TD Height="20" align="right" style="cursor: move">
-			<A href="#" onclick="hide_addStep();" style="color:#FFFFFF; font-size: 12px; font-weight:bold;">X</A>
-		</TD>
-		<TD width=4></TD>
-	</TR>
-	</table>
-	<table cellpadding=2 cellspacing=2 border=0 width="100%" align="center">
-	<tr>	<td colspan=2 class="field_text" align=center height=40 valign=middle>
-		<NOBR>
-		Add new Step: 
-		<select id='newstep_action' disabled onChange="update_newstep_var()" class="input8">
-			<option value=""> -- Select --</option>
-			<option value="Answer">Answer</option>
-			<option value="Authenticate">Authenticate</option>
-			<option value="Background">Background</option>
-			<option value="Busy">Busy Tone</option>
-			<option value="Congestion">Congestion</option>
-			<!-- <option value="SetMusicOnHold">SetMusicOnHold</option> -->
-			<option value="DigitTimeout">DigitTimeout</option>
-			<option value="DISA">DISA</option>
-			<option value="ResponseTimeout">ResponseTimeout</option>
-			<option value="Playback">Playback</option>
-			<option value="Wait">Wait</option>
-			<option value="WaitExten">WaitExten</option>
-			<option value="GotoMenu">Goto Menu</option>
-			<option value="GotoDirecotry">Goto Directory</option>
-			<option value="GotoExtension">Goto Extension</option>
-			<!--<option value="GotoTimeBasedRule">Goto TimeBasedRule</option>-->
-			<option value="DialRingGroup">Dial RingGroup</option>
-			<option value="Hangup">Hangup</option>
-		</select>&nbsp;
-		<input type=text id="newstep_var" style="display:none" size=4 disabled class="input8">
-		<input type=text id="newstep_sounds" style="display:none" size=24 disabled class="input9">
-		<select id='add_newstep_extensions' style="display:none" onChange=" $('newstep_var').value = $('add_newstep_extensions').value;"   class="input8"></select>
-		<select id='add_newstep_menus' style="display:none" onChange=" $('newstep_var').value = $('add_newstep_menus').value;"   class="input8"></select>
-		<select style="display:none" id="tbr" class="input8" onChange=" $('newstep_var').value = $('tbr').value;"></select>
-		<select style="display:none" id="rgrp" class="input8" onChange=" $('newstep_var').value = $('rgrp').value;"></select>
-		<input type=text id="newstep_var_digit" size=3 style="display:none;" onChange=" $('newstep_var').value = $('newstep_var_digit').value;"  pattern='^\d*$' class="input8">&nbsp;
-		<input type=button style='width:45' id='addstep' onclick="add_newstep()"  value="Add" disabled  class="buttonbold">
-		<input type=button style='width:55' onclick="hide_addStep()"  value="Cancel" class="buttonbold">
-		</NOBR>
-		</td>
-	</tr>
-	</table>
-</div>
-<div id="bg_transparent" STYLE="display:none; position: absolute; left: 0; top: 24; width:100%; height:100%;  background-color:#EFEFEF; -moz-opacity:.50;opacity:.50; border-width: 1px; border-color: #EFEFEF; border-style: solid; z-index:4">
 </div>
 </body>
