@@ -77,6 +77,10 @@ static char *getalarms(int span, int err)
 			fprintf(stderr, "Unable to get span info on span %d: %s\n", span, strerror(errno)); 
 		return NULL;
 	}
+	/* If this is not a digital card, skip it. */
+	if(s[span].totalchannels != 24 || s[span].totalchannels != 31) 
+		return NULL;
+
 	strcpy(alarms, "");
 	if (s[span].alarms > 0) {
 		if (s[span].alarms & ZT_ALARM_BLUE)
