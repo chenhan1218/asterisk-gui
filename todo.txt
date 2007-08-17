@@ -7,6 +7,9 @@ IRC:  #asterisk-gui on freenode
 
 Todo
 ----- 
+* Part Of Digital Card Dectection: On cfgbasic.html load, parse for ztscan.conf to see if isnew=1 is set in any context's, and alert the user
+saying that they have no analog or digital hardware, and redirect to the setup page for each. 
+
 * Voicemail Groups
 
 * Option to configure the default context 'disa' for DISA

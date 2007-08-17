@@ -79,6 +79,11 @@ function digitalparse(n) {
 			}
 			if(n[l]['continue'] == "yes") {
 				total_spans = n[l]['totalspans'];
+				has_spans=1;
+				_$('error_txt').style.display="";
+				_$('error_txt').innerHTML="<br><br>We Found " + n[l]['totalspans'] + " Spans!";		
+
+				return true
 			}
 		} 
 

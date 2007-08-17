@@ -32,7 +32,6 @@ var spanwidgets = {};
 var callbacks = new Object;
 var phonecallbacks = new Object;
 var providercallbacks = new Object;
-var digitalcallbacks = new Object;
 var globalvars = new Object;
 var fieldnames =[ 'disallow','allow','callerid','cancel','contact','context','delete','dialformat','fromdomain','fromuser','group','hasexten','hasiax','hassip','host','insecure',
 		'name','new','port','provider','registeriax','registersip','save','secret','trunkname','trunkstyleanalog','trunkstylecustomvoip', 'trunkstyledigital',
@@ -41,7 +40,8 @@ var provfieldnames = ['providerdesc', 'providerlogo'];
 var isnewtrunk;
 var dids_array = [];
 var old_trunkname;
-var has_spans;
+var has_spans = 0;
+var has_digital = 0;
 var used_fxos = {};
 used_fxos.oldvalue = "";
 used_fxos.newvalue = "";
@@ -131,7 +131,17 @@ callbacks.loaded = function() {
 	ASTGUI.events.add( _$('new') , "click", showSPdetails ) ;
 	loadServiceProvidersintotable();
 	preparemenus();
-	parent.astmanEngine.config2list("ztscan.conf", _$('spans'), new Array(), digitalcallbacks);
+	//parent.astmanEngine.config2list("ztscan.conf", _$('spans'), new Array(), digitalcallbacks);
+	/* If ztscan is not installed, the config file will not be generated. */
+	if(!config2json("ztscan.conf", 1, digitalparse)) {
+			has_digital = 0; /* ztscan.conf was NOT found */
+			has_spans = 0; /* no ztscan.conf, we cannot have spans. */
+			_$('digital_click_txt').style.display="";
+			_$('digital_click_txt').innerHTML="<br><br>No Config File Found, either ztscan is not installed/built properly<br>or it has not been run";		
+			ASTGUI.events.add(_$('digital_click_txt'), 'click', function() { window.location.href = "digital.html" } );
+	}
+	parent.loadscreen(this);
+	/* our callbacks are finished, providers are loaded into table, display the screen. */
 }
 
 callbacks.postselect = function(){
@@ -445,35 +455,33 @@ function isInt(x) {
 		return x==y && x.toString()==y.toString();
 } 
 
-digitalcallbacks.format = function(t) { 
+function digitalparse(n) { 
 
-	if(t.name == "general") {
-		if(t.fieldbyname['continue'] == "no") {
-			has_spans = 0;
-			if(t.fieldbyname['error'].match('No Spans Found')) {
-				_$('digital_click_txt').innerHTML = "Click Here to go to the Digital Card setup Wizard";
-				_$('digital_click_txt').style.display = "";
+	var l, h;
+	for( l in n ){	if(n.hasOwnProperty(l)){
+		if( l =='general') { 
+			if(n[l]['continue'] == "no") {
+				has_digital = 0; /* ztscan.conf was NOT found */
+				has_spans = 0; /* no ztscan.conf, we cannot have spans. */
+				_$('spans').style.display = "none";
+				_$('digital_click_txt').style.display="";
+				_$('digital_click_txt').innerHTML="<br><br>Problem Detecting: <br>Reason: No Cards/Spans Found!<br><br>  Error: " + n[l]['error'];		
 				ASTGUI.events.add(_$('digital_click_txt'), 'click', function() { window.location.href = "digital.html" } );
-					
-				return "No Spans/Cards Found";
+				return false;
 			}
-		} else {
-			if(t.fieldbyname['continue'] == "yes")
-				return null;
-		}
-	}
-	
-	var mode = (t.fieldbyname['totchans'] > 25) ? "E1" : "T1";
-	return "span: " + t.name + " Mode: " + mode;
-}
+			if(n[l]['continue'] == "yes") {
+				has_digital = 1;
+				has_spans = n[l]['totalspans'];
+				_$('spans').style.display = "none";
+				_$('digital_click_txt').style.display="";
+				_$('digital_click_txt').innerHTML="<br><br>We Detected " + has_spans + " Spans in your computer!<br><br> Click Here to go to the Digital Card setup Wizard";		
+				ASTGUI.events.add(_$('digital_click_txt'), 'click', function() { window.location.href = "digital.html" } );
+				/* Set digital detection as true, and our total spans to the has_spans variable (setting it from the previous 0 value) */
+				
+			}
+		} 
 
-digitalcallbacks.loaded = function() {
-	
-	var spans = _$('spans').stored_config.catbyname['general'].fieldbyname['totalspans'];
-	if(spans > 0)
-		has_spans = 1;
-
-	parent.loadscreen(this);
+	}}
 	return true;
 
 }
@@ -485,7 +493,6 @@ phonecallbacks.format = function(t) {
 }
 
 phonecallbacks.loaded = function() {
-	parent.astmanEngine.config2list("zapata.conf", _$('spans'), spanwidgets, digitalcallbacks);
 	parent.astmanEngine.config2list("providers.conf", _$('provider'), provwidgets, providercallbacks);
 }
 
@@ -539,12 +546,6 @@ function activateanalogvoip() {
 	}else if (_$('trunkstyledigital').checked) {
 		_$('digital').style.display = "" ;
 		_$('digital').style.height = 350;
-		_$('spans').style.display  = "";
-		//	_$('digital').innerHTML = "";
-		//	_$('digital_click').innerHTML = "No Spans Found. Click Here to go to the Digital Card setup Wizard";
-		//	_$('digital_click').style.display = "";
-		//	ASTGUI.events.add(_$('digital_click'), 'click', function() { window.location.href = "digital.html" } );
-		//check_digital();
 	}
 
 }
@@ -1089,7 +1090,7 @@ function advanced_cancel(){
 </div>
 <div id='digital' style='height:0;overflow:hidden' align="center">
 	<table align="center">
-		<td style='width:120px' valign='top' class='field_text' tip="en,trunks,5">Spans:</td>
+		<td style='width:20px' valign='top' class='field_text' tip="en,trunks,5">Spans:</td>
 		<td><select size='12' style="display:none" id='spans' style='width:240px' class='input8'><option name="blah" value="blah"></option></select></td>
 		<td style='display:none;color:#0000FF' valign='bottom' id='digital_click_txt' class='field_text' tip="en,trunks,5"></td>
 	</tr>
