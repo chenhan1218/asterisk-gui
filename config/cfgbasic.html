@@ -33,6 +33,16 @@ var tooltip_default = "Move the mouse over to a field to see tooltips";
 var asterisk_guitools_inextconf = 0;
 eventeater.pingstatus = false;
 var keepPinging;
+var has_digital = 0;
+var int_handle;
+var MainScreenPanels = [];
+var newMSpanel = function(s){
+	var r = {};
+	r.PanelName = s[0];
+	r.FileName = s[1];
+	r.PanelDesc = s[2];
+	MainScreenPanels.push(r);
+};
 
 
 function fit_toScreen(){
@@ -231,7 +241,40 @@ function show_Acctooltip(tip){
 
 }
 
+function check_digital(n) {
+
+	var l, h;
+	for( l in n ){	if(n.hasOwnProperty(l)){
+		if( l =='general') { 
+			if(n[l]['continue'] == "no") {
+				has_digital = 0; /* ztscan.conf was NOT found */
+				/* Maybe check to see if isnew is set to one, then redirect them on a setup wizard about modprobing the drivers and what not */
+				return false;
+			}
+			if(n[l]['continue'] == "yes") {
+				has_digital = 1;
+				var tot_spans = n[l]['totalspans'];
+				if(n[l]['isnew'] == "yes") {
+					_$('status_message').style.display="block";
+					_$('status_message').innerHTML = '<TABLE border=0 cellpadding=0 cellspacing=4 align=center>' +
+		                        '<TR><TD><img src="/asterisk/static/config/images/loading.gif"></TD>' +
+		                        '<TD><div id=message_text></div></TD></TR></TABLE>';
+
+					_$('message_text').innerHTML = "Time: <div id='counter'>10</div> Digital Cards Detected! Total Spans: " + tot_spans + "<BR><A href=\"#\" class=\"splbutton\" onclick=\"_$('status_message').style.display='none'; _$('mainscreen').src = 'digital.html';\">Click Here</A><br>To go to the Digital Card Setup Wizard <br>";
+					setTimeout("_$('status_message').style.display='none';", 10000);
+					int_handle = setInterval("_$('counter').innerHTML = (_$('counter').innerHTML - 1);", 1000);
+					setTimeout("clearInterval(int_handle);", 10000);
+					return true;
+				}
+			}
+		} 
+
+	}}
+	return true;
+
+}
 function registerajax() {
+	showdiv_statusmessage();
 	fit_toScreen();
 	ASTGUI.events.add( window , 'resize', fit_toScreen );
 	pao();
@@ -239,6 +282,11 @@ function registerajax() {
 	astmanEngine.setURL(asterisk_rawmanPath );
 
 	createpanels();
+	/* If ztscan is not installed, the config file will not be generated. */
+	if(!config2json("ztscan.conf", 1, check_digital)) {
+			has_digital = 0; /* ztscan.conf was NOT found */
+	}
+	
 	_$('mainscreen').src = "home.html" ;
 	if( navigator.userAgent.indexOf("MSIE") != -1 || navigator.userAgent.indexOf("Konqueror") != -1 || navigator.userAgent.indexOf("Safari") != -1 ){
 		gui_feedback(browser_alert, 'green');
