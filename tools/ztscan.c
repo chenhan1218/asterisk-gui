@@ -39,16 +39,22 @@
 #include <zaptel/zaptel.h>
 #include <zaptel/tonezone.h>
 #endif
+#define CONFIG_FILE "/etc/asterisk/ztscan.conf"
 
 static int debug = 0;
-
+static char *filename = CONFIG_FILE;
+static char *cf;
 static int ctl = -1;
+static int lineno = 0;
+static int isnew = -1;
 
 /* Great, now for the ztscan specific functions and vars */
 
 int scanspans();
 int show_help();
 static char *getalarms(int span, int secondround);
+static char *readline();
+static void trim(char *buf);
 char *facs[] = { "esf,b8zs", "d4,ami", "cas,ami", "ccs,hdb3", "ccs,crc4,hdb3", 0};
 static ZT_SPANINFO s[ZT_MAX_SPANS];
 
@@ -59,6 +65,32 @@ int show_help()
 {
 	printf("Usage: ztscan\tDesc: Scans for spans, then writes them to ztscan.conf, for the GUI to parse and setup\n");
 	return 0;
+}
+
+/* Helper function for readline */
+static void trim(char *buf)
+{
+	/* Trim off trailing spaces, tabs, etc */
+	while(strlen(buf) && (buf[strlen(buf) -1] < 33))
+		buf[strlen(buf) -1] = '\0';
+}
+
+/* Basic function used to parse files. */
+static char *readline(FILE *conf)
+{
+	static char buf[256];
+	char *c;
+	do {
+		if (!fgets(buf, sizeof(buf), conf)) 
+			return NULL;
+		/* Strip comments */
+		c = strchr(buf, '#');
+		if (c)
+			*c = '\0';
+		trim(buf);
+		lineno++;
+	} while (!strlen(buf));
+	return buf;
 }
 
 /* Function that accesses returns the information about a specific span, using /dev/zap/ctl ioctl */
@@ -78,7 +110,7 @@ static char *getalarms(int span, int err)
 		return NULL;
 	}
 	/* If this is not a digital card, skip it. */
-	if(s[span].totalchans != 24 || s[span].totalchans != 31) 
+	if(s[span].totalchans <= 23 || s[span].totalchans >= 32) 
 		return NULL;
 
 	strcpy(alarms, "");
@@ -120,7 +152,8 @@ int scanspans() {
 	int res = -1;
 	int hasgeneral = 0;
 	char *ret;
-	FILE *conf = fopen("/etc/asterisk/ztscan.conf", "w");
+	FILE *conf_check = fopen(CONFIG_FILE, "r");
+	FILE *conf = fopen(CONFIG_FILE, "w");
 	s[span].spanno = span;
 
 	if(!ctl) {
@@ -135,6 +168,10 @@ int scanspans() {
 		return 0;
 	}
 
+	if(!conf_check) {
+		/* ztscan.conf did not previously exist.  */
+		isnew = 1;
+	}
 	if(!conf) {
 		printf("cannot open config file /etc/asterisk/ztscan.conf for writing\n");
 		exit(1);
@@ -145,7 +182,7 @@ int scanspans() {
 		ret = getalarms(x, 0);	
 		if(ret) {
 			if(hasgeneral != 1) {
-				fprintf(conf, "[general]\ntotalspans=%d\ncontinue=yes\n\n", s[x].totalspans);
+				fprintf(conf, "[general]\ntotalspans=%d\ncontinue=yes\nisnew=%s\n", s[x].totalspans, (isnew == 1) ? "yes" : "no");
 				hasgeneral++;
 			}
 
