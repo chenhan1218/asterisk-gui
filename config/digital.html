@@ -82,8 +82,11 @@ function digitalparse(n) {
 				has_spans=1;
 				_$('error_txt').style.display="";
 				_$('error_txt').innerHTML="<br><br>We Found " + n[l]['totalspans'] + " Spans!";		
-
-				return true
+				if(n[l]['isnew'] == "yes") {
+					var uri = build_action('update', 0, 'general', 'isnew', 'no', '');
+			                makerequest('u','ztscan.conf', uri, function(t){ } );
+				}
+				return true;
 			}
 		} 
 
