@@ -1235,7 +1235,7 @@ function free_mem(){
 				<select style="display:none" id="tbr" class="input8" onChange=" $('newstep_var').value = $('tbr').value;"></select>
 				<select style="display:none" id="rgrp" class="input8" onChange=" $('newstep_var').value = $('rgrp').value;"></select>
 				<input type=text id="newstep_var_digit" size=3 style="display:none;" onChange=" $('newstep_var').value = $('newstep_var_digit').value;"  pattern='^\d*$' class="input8">&nbsp;
-				<SCRIPT LANGUAGE="JavaScript">combo_box('newstep_var', "combodiv_sounds","combosel_sounds"); </SCRIPT>
+				<SCRIPT LANGUAGE="JavaScript">ASTGUI.COMBOBOX.call('newstep_var', "combodiv_sounds","combosel_sounds"); </SCRIPT>
 				<input type=button style='width:45' id='addstep' onclick="add_newstep()"  value="Add" disabled  class="buttonbold">
 				&nbsp;<input type=button style='width:50' id='deletestep' onclick="delete_step()"  value="Delete" disabled  class="buttonbold">
 				</NOBR>
