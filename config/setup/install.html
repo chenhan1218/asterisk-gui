@@ -37,6 +37,17 @@ var localextenlength;
 var keepPinging;
 var started_pinging = 0;
 
+/* Logoff and redirect user */
+function log_red() {
+	makerequest("","","action=logoff", function(t){ window.location.href="../cfgbasic.html"; } );
+}
+
+/* Make sure the user has proper permissions */
+function check_auth() {
+	makerequest("", "", "action=command&command=http%20show%20status", function(t) { t = t.split("\n"); if(t[1].search("Message: Permission Denied")) { 
+	alert("Your Permissions are not setup Correctly\nPlease add the proper read/write permissions in manager.conf\nClick OK when the changes are made.\n\nExample User:\n\n[kruz]\nsecret = blah\npermit = 127.0.0.1/255.0.0.0\nread = system,call,log,verbose,command,agent,user,config\nwrite = system,call,log,verbose,command,agent,user,config"); log_red(); return false;} else { return true; }})
+
+}
 function pingevery(a){
 	keepPinging = setInterval( makeping, a*250 );
 }
@@ -50,6 +61,7 @@ function localinit(){
 	asterisk_rawmanPath = "../" + asterisk_rawmanPath;
 	astmanEngine = new Astman();
 	astmanEngine.setURL(asterisk_rawmanPath);
+	if(!check_auth()) { return false; }
 	_$('mainscreen').src="1.html";
 }
 
