@@ -69,7 +69,7 @@ function localinit(){
 	asterisk_rawmanPath = "../" + asterisk_rawmanPath;
 	astmanEngine = new Astman();
 	astmanEngine.setURL(asterisk_rawmanPath);
-	if(!check_auth()) { return false; }
+	check_auth();
 	_$('mainscreen').src="1.html";
 }
 
