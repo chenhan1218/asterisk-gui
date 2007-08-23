@@ -44,10 +44,18 @@ function log_red() {
 
 /* Make sure the user has proper permissions */
 function check_auth() {
-	makerequest("", "", "action=command&command=http%20show%20status", function(t) { t = t.split("\n"); if(t[1].search("Message: Permission Denied")) { 
-	alert("Your Permissions are not setup Correctly\nPlease add the proper read/write permissions in manager.conf\nClick OK when the changes are made.\n\nExample User:\n\n[kruz]\nsecret = blah\npermit = 127.0.0.1/255.0.0.0\nread = system,call,log,verbose,command,agent,user,config\nwrite = system,call,log,verbose,command,agent,user,config"); log_red(); return false;} else { return true; }})
+	makerequest('g',"users.conf",'', function(t){
+	var response = t.split("\n");
+	if(response[1].match("Message: Permission denied")) {
+		alert("Your Permissions are not setup Correctly\nPlease add the proper read/write permissions in manager.conf\nClick OK when the changes are made.\n\nExample User:\n\n[kruz]\nsecret = blah\npermit = 127.0.0.1/255.0.0.0\nread = system,call,log,verbose,command,agent,user,config\nwrite = system,call,log,verbose,command,agent,user,config"); 
+		log_red(); 
+		return false;
+	} else { 
+		return true; 
+	}});
 
 }
+
 function pingevery(a){
 	keepPinging = setInterval( makeping, a*250 );
 }
