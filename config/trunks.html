@@ -953,6 +953,10 @@ function showSPdetails(){
 	_$('cancel').disabled = false;
 	_$('userscontent').style.display = "block";
 	_$('bg_transparent').style.display ='';
+	/* Make our default option VOIP (service providers) */
+	_$('trunkstylevoip').click();
+	_$('provider').options[0].selected = true;
+	_$('provider').click();
 	if ( isnewtrunk == 0){
 		_$('trunkstyleanalog').disabled = true;
 		_$('trunkstylevoip').disabled = true;
