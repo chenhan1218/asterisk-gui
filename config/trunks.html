@@ -579,6 +579,9 @@ function localajaxinit() {
 
 	var _trunkstylecustomvoip = _$('trunkstylecustomvoip');
 	_trunkstylecustomvoip.onclick = null;
+	
+	var _trunkstyledigital = _$('trunkstyledigital');
+	_trunkstyledigital.onclick = null;
 
 	ASTGUI.events.add( _$('custom_trunkname') , 'change' , function(){ 
 		_$('name').value = _$('custom_trunkname').value;
@@ -960,6 +963,7 @@ function showSPdetails(){
 		_$('trunkstyleanalog').disabled = true;
 		_$('trunkstylevoip').disabled = true;
 		_$('trunkstylecustomvoip').disabled = true;
+		_$('trunkstyledigital').disabled = true;
 		_$('provider').disabled = true;
 	}
 }
