@@ -147,8 +147,8 @@ callbacks.loaded = function() {
 callbacks.postselect = function(){
 	if( _$('trunkstylecustomvoip').checked ){
 		// Custom VOIP
-		var tmp = $('trunkname').value.split("Custom - ")  ;
-		_$('customvoip_name').value = tmp[1];
+		var tmp = _$('trunkname').value.split("Custom - ")  ;
+		_$('customvoip_name').value = (tmp[1]) ? tmp[1] : (_$('trunkname').value) ? _$('trunkname').value : "No Comment/Trunk Name Set";
 		_$('customvoip_username').value = _$('username').value;
 		_$('customvoip_secret').value = _$('secret').value;
 		_$('customvoip_protocol').selectedIndex = ( _$('hassip').value  == "yes" ) ? 1 : 0;
