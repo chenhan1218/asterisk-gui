@@ -297,6 +297,7 @@ var ASTGUI = { // the idea is to eventually move all the global variables and fu
 	},
 
 	COMBOBOX: function (a,w){		// Usage - ASTGUI.COMBOBOX.call( element , OptionsArray, width(Optional)  );
+		// a is the element, not the element ID. eg: _$('element_name') not 'element_name'
 		// this.comboDiv - the div element created
 		// this.comboOptions - the array of options
 		var k = document.createElement('DIV');
@@ -366,9 +367,6 @@ var ASTGUI = { // the idea is to eventually move all the global variables and fu
 			setTimeout( sf, 300 );
 		};
 	
-		this.comboOptions = a.sort();
-		ASTGUI.events.add( this, 'focus' , creatediv ) ;
-		ASTGUI.events.add( this, 'keyup' , updateDivAndShow ) ;
 	}
 
 }; // AstGUI

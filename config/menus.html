@@ -290,7 +290,7 @@ function add_newstep(){
 		return;
 	}
 
-	if( _nsa.value != "Answer" && _nsa.value != "GotoDirecotry" && _nsa.value != "Busy" && _nsa.value != "Hangup" && _nsa.value != "Congestion" && !_nsv .value ){
+	if( _nsa.value != "Answer" && _nsa.value != "GotoDirecotry" && _nsa.value != "Busy" && _nsa.value != "Hangup" && _nsa.value != "Congestion" && !_nsv.value ){
 		
 		if( _nsa.value.toLowerCase() == "dialringgroup" ){
 			if(!_$('rgrp').options.length ){
@@ -702,21 +702,21 @@ function update_newstep_var(){
 	var _nsa = _$('newstep_action');
 	var _ane = _$('add_newstep_extensions') ;
 	var _anm = _$('add_newstep_menus') ;
-
+	var _cmb = _$('combodiv_sounds') ;
 	_nsv.value = "";
 	_nsv.style.display = "none";
 	_$('newstep_var_digit').style.display= "none" ;
-	_$('combodiv_sounds').style.display = "none" ;
 	_ane.style.display = "none";
 	_anm.style.display = "none";
+	_cmb.style.display = "none";
 	_$('tbr').style.display = "none";
 	_$('rgrp').style.display = "none";
 
         if( _nsa.value== "" || _nsa.value== "Answer"  || _nsa.value== "Hangup" || _nsa.value== "GotoDirecotry" || _nsa.value== "Busy" || _nsa.value== "Congestion" ){
 
         }else if( _nsa.value== "Background"  || _nsa.value== "Playback" ){
-                _nsv.style.display = "";
-                _nsv.size= 12;
+                _nsv.style.display = "none";
+		_cmb.style.display = "";
         }else if( _nsa.value== "Authenticate"  || _nsa.value== "DigitTimeout"  || _nsa.value== "ResponseTimeout" ||  _nsa.value== "Wait"  ||  _nsa.value== "WaitExten"  || _nsa.value== "DISA"){
                 _$('newstep_var_digit').style.display= "" ;
         }else if(_nsa.value== "GotoMenu"  ){
@@ -911,6 +911,7 @@ menuscallbacks.oncategorydelete =function(){
 	_$('savevmenu').disabled = true;
 	_$('steps').options.length =0;
 	_$('newstep_action').disabled = true;
+	_$('combodiv_sounds').style.display = "none";
 	_$('newstep_var').disabled = true;
 	_$('addstep').disabled = true;
 	_$('steps').disabled = true;
@@ -956,6 +957,7 @@ menuscallbacks.newcategory = function(t) {
 	_allowexten.checked = false;
 	_allowexten.disabled = false;
 	_$('newstep_action').disabled = true;
+	_$('combodiv_sounds').style.display = "none";
 	_$('newstep_var').disabled = true;
 	_$('addstep').disabled = true;
 	_steps.disabled = true;
@@ -1229,13 +1231,13 @@ function free_mem(){
 				<input type=text id="newstep_var" style="display:none" size=4 disabled class="input8">
 				<select id='add_newstep_extensions' style="display:none"   onChange=" $('newstep_var').value = $('add_newstep_extensions').value;"   class="input8"></select>
 				<select id='add_newstep_menus' style="display:none"    onChange=" $('newstep_var').value = $('add_newstep_menus').value;"   class="input8"></select>
-				<div id="combodiv_sounds">
+				<div id="combodiv_sounds" style="display:none">
 					<select size=5 id="combosel_sounds" style="font-family: Verdana, Arial, Helvetica, Sans-Serif;font-size: 11px;" class="input8"></select>
 				</div>
 				<select style="display:none" id="tbr" class="input8" onChange=" $('newstep_var').value = $('tbr').value;"></select>
 				<select style="display:none" id="rgrp" class="input8" onChange=" $('newstep_var').value = $('rgrp').value;"></select>
 				<input type=text id="newstep_var_digit" size=3 style="display:none;" onChange=" $('newstep_var').value = $('newstep_var_digit').value;"  pattern='^\d*$' class="input8">&nbsp;
-				<SCRIPT LANGUAGE="JavaScript">ASTGUI.COMBOBOX.call('newstep_var', "combodiv_sounds","combosel_sounds"); </SCRIPT>
+				<SCRIPT LANGUAGE="JavaScript">ASTGUI.COMBOBOX.call(_$('combosel_sounds'));</SCRIPT>
 				<input type=button style='width:45' id='addstep' onclick="add_newstep()"  value="Add" disabled  class="buttonbold">
 				&nbsp;<input type=button style='width:50' id='deletestep' onclick="delete_step()"  value="Delete" disabled  class="buttonbold">
 				</NOBR>
