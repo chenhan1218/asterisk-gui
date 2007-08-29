@@ -366,7 +366,9 @@ var ASTGUI = { // the idea is to eventually move all the global variables and fu
 			};
 			setTimeout( sf, 300 );
 		};
-	
+		this.comboOptions = (w) ? w.sort() : '';
+		ASTGUI.events.add( this, 'focus' , creatediv ) ;
+		ASTGUI.events.add( this, 'keyup' , updateDivAndShow ) ;
 	}
 
 }; // AstGUI
