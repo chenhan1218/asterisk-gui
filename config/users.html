@@ -29,6 +29,7 @@ var origwidth;
 var widgets = new Object;
 var callbacks = new Object;
 var extencallbacks = new Object;
+var allcodecs = new Array;
 var fieldnames = ['callwaiting' ,'cancel' ,'cid_number' ,'context' ,'delete' ,'email' ,'fullname' ,'group' ,'hasagent' ,'hasdirectory' ,'hasiax' ,'hasmanager' ,'hassip' ,'hasvoicemail' ,'host' ,'mailbox' ,'name' ,'new' ,'save' ,'secret' ,'threewaycalling' ,'vmsecret' ,'zapchan', 'registeriax', 'registersip','canreinvite','nat','dtmfmode', 'disallow','allow'];
 
 var localextenlength = 4;
@@ -264,12 +265,34 @@ function localajaxinit() {
 		widgets[fieldnames[x]] = _$(fieldnames[x]);
 		widgets[fieldnames[x]].disabled = true;
 	}
-
-	config2json('zapscan.conf', 1, analoglines_loaded ) ;
+	
+	load_codecs_fromast();
 	//parent.astmanEngine.config2list("zapscan.conf", _$('zapchan'), new Array(), phonecallbacks);
 }
 
-
+function load_codecs_fromast() {
+	
+	parent.astmanEngine.cliCommand('module show like codec_', function(resp) {
+		resp = resp.replace(/Response: Follows/, "");
+		resp = resp.replace(/Privilege: Command/, "");
+		resp = resp.replace(/--END COMMAND--/, "");
+		resp = resp.split("\n");
+		for(var i=0; resp[i] != undefined; i++) {
+			resp[i] = resp[i].split("_");
+			if(resp[i][1]) {
+				resp[i][1] = resp[i][1].split("."); 
+				if(resp[i][1][0]) {
+					if(resp[i][1][0] == "a") {
+						continue; /* codec is a_mu, alaw to mulaw direct codec/decoder, not a codec preference. */
+					}
+						allcodecs[i] = resp[i][1][0];
+				}
+			}
+		}
+		config2json('zapscan.conf', 1, analoglines_loaded ) ;
+		return true;
+	});
+}
 function free_mem(){
 	if( navigator.userAgent.indexOf("MSIE") == -1 ){ return true; }
 	try{
@@ -320,29 +343,21 @@ CODECSETTINGS = {
 		_$('disallowed').innerHTML=""; _$('allowed').innerHTML="";
 		if( _$('disallow').value == "all" && _$('allow').value =="all" ){ return true;}
 		if( _$('disallow').value == "all" ){
-			this.selectbox_add(_$("disallowed"), "ulaw");
-			this.selectbox_add(_$("disallowed"), "alaw");
-			this.selectbox_add(_$("disallowed"), "gsm");
-			this.selectbox_add(_$("disallowed"), "ilbc");
-			this.selectbox_add(_$("disallowed"), "speex");
-			this.selectbox_add(_$("disallowed"), "g726");
-			this.selectbox_add(_$("disallowed"), "adpcm");
-			this.selectbox_add(_$("disallowed"), "lpc10");
-			this.selectbox_add(_$("disallowed"), "g729");
+			for(var i=0; i < allcodecs.length; i++) { /* Add the codecs that we have installed. */
+				if(allcodecs[i]) {
+				this.selectbox_add(_$('disallowed'), allcodecs[i]);
+				}
+			}
 		}else{
 			var tmp = _$('disallow').value.split(",");
 			for(var x=0; x < tmp.length; x++){ this.selectbox_add(_$("disallowed"), tmp[x]); }
 		}
 		if(_$('allow').value =="all"){
-			this.selectbox_add(_$("allowed"), "ulaw");
-			this.selectbox_add(_$("allowed"), "alaw");
-			this.selectbox_add(_$("allowed"), "gsm");
-			this.selectbox_add(_$("allowed"), "ilbc");
-			this.selectbox_add(_$("allowed"), "speex");
-			this.selectbox_add(_$("allowed"), "g726");
-			this.selectbox_add(_$("allowed"), "adpcm");
-			this.selectbox_add(_$("allowed"), "lpc10");
-			this.selectbox_add(_$("allowed"), "g729");
+			for(var i=0; i < allcodecs.length; i++) { /* Add the codecs that we have installed. */
+				if(allcodecs[i]) {
+					this.selectbox_add(_$('allowed'), allcodecs[i]);
+				}
+			}
 		}else{
 			var tmp = _$('allow').value.split(",");
 			for(var x=0; x < tmp.length; x++){
@@ -503,7 +518,7 @@ CODECSETTINGS = {
 			</tr>
 			<tr>
 				<td onclick="CODECSETTINGS.show_codecs();" style="cursor: pointer"  class="field_text">
-					<div style="margin-left: 15px;"><I>Edit Codecs</I>
+					<div tip="en,users,24" style="margin-left: 15px;"><I>Edit Codecs</I>
 						<div style="margin-left: 15px;"><span id="codecs_text"></span></div>
 					</div>
 				</td>
