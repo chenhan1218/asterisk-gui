@@ -58,6 +58,17 @@ static void trim(char *buf);
 char *facs[] = { "esf,b8zs", "d4,ami", "cas,ami", "ccs,hdb3", "ccs,crc4,hdb3", 0};
 static ZT_SPANINFO s[ZT_MAX_SPANS];
 
+static const char *lbostr[] = {
+"0 db (CSU)/0-133 feet (DSX-1)",
+"133-266 feet (DSX-1)",
+"266-399 feet (DSX-1)",
+"399-533 feet (DSX-1)",
+"533-655 feet (DSX-1)",
+"-7.5db (CSU)",
+"-15db (CSU)",
+"-22.5db (CSU)"
+};
+
 /* Done. Lets get to work! */
 
 /* Quick function to print out usage information, this only gets called if they pass an unknown variable */
@@ -144,14 +155,61 @@ static char *getalarms(int span, int err)
 	return tmp;
 }
 
+static const char *sigtype_to_str(const int sig)
+{
+	switch (sig) {
+	case 0:
+		return "Unused";
+	case ZT_SIG_EM:
+		return "E & M";
+	case ZT_SIG_EM_E1:
+		return "E & M E1";
+	case ZT_SIG_FXSLS:
+		return "FXS Loopstart";
+	case ZT_SIG_FXSGS:
+		return "FXS Groundstart";
+	case ZT_SIG_FXSKS:
+		return "FXS Kewlstart";
+	case ZT_SIG_FXOLS:
+		return "FXO Loopstart";
+	case ZT_SIG_FXOGS:
+		return "FXO Groundstart";
+	case ZT_SIG_FXOKS:
+		return "FXO Kewlstart";
+	case ZT_SIG_CAS:
+		return "CAS / User";
+	case ZT_SIG_DACS:
+		return "DACS";
+	case ZT_SIG_DACS_RBS:
+		return "DACS w/RBS";
+	case ZT_SIG_CLEAR:
+		return "Clear channel";
+	case ZT_SIG_SLAVE:
+		return "Slave channel";
+	case ZT_SIG_HDLCRAW:
+		return "Raw HDLC";
+	case ZT_SIG_HDLCNET:
+		return "Network HDLC";
+	case ZT_SIG_HDLCFCS:
+		return "HDLC with FCS check";
+	case ZT_SIG_HARDHDLC:
+		return "Hardware assisted D-channel";
+	default:
+		return "Unknown";
+	}
+}
+
 /* function to scan for spans and return 0 for error and anything else for true */
 int scanspans() {
 
 	int span = 0;
+	int tot_spans = 0;
 	int x;
 	int res = -1;
 	int hasgeneral = 0;
 	char *ret;
+	char fac[96];
+	char lbos[96];
 	FILE *conf_check = fopen(CONFIG_FILE, "r");
 	FILE *conf = fopen(CONFIG_FILE, "w");
 	s[span].spanno = span;
@@ -185,16 +243,26 @@ int scanspans() {
 				fprintf(conf, "[general]\ntotalspans=%d\ncontinue=yes\nisnew=%s\n", s[x].totalspans, (isnew == 1) ? "yes" : "no");
 				hasgeneral++;
 			}
-
+#ifdef ZT_SPANINFO_HAS_LINECONFIG
+			snprintf(fac, sizeof(fac), "%3s/%4s", ( s[x].lineconfig & ZT_CONFIG_D4 ? "D4" : s[x].lineconfig & ZT_CONFIG_ESF ? "ESF" : s[x].lineconfig & ZT_CONFIG_CCS ? "CCS" : "CAS" ), ( s[x].lineconfig & ZT_CONFIG_AMI ? "AMI" : s[x].lineconfig & ZT_CONFIG_B8ZS ? "B8ZS" : s[x].lineconfig & ZT_CONFIG_HDB3 ? "HDB3" : "???" ));
+			snprintf(lbos, sizeof(lbos), "%s", lbostr[s[x].lbo]);
 			if(!strncmp(ret, "OK", 2)) {
-			printf("Span %d has Alarm: %s\n", x, ret);
-			fprintf(conf, "\n[%d]\nactive=yes\nalarms=%s\ndescription=%s\nname=%s\ntotchans=%d\nusedchans=%d\n", x, ret, s[x].desc, s[x].name, s[x].totalchans, s[x].numchans );
-			if(debug) 
-				printf("\n[%d]\nactive=yes\nalarms=%s\ndescription=%s\nname=%s\ntotchans=%d\nusedchans=%d\n", x, ret, s[x].desc, s[x].name, s[x].totalchans, s[x].numchans );
+				printf("Span %d has Alarm: %s\n", x, ret);
+				fprintf(conf, "\n[%d]\nactive=yes\nalarms=%s\ndescription=%s\nname=%s\ntotchans=%d\nusedchans=%d\nfac=%s\nlbo=%s\n", x, ret, s[x].desc, s[x].name, s[x].totalchans, s[x].numchans, fac, lbos);
 			} else {
-			printf("Span %d has Alarm: %s\n", x, ret);
-			fprintf(conf, "\n[%d]\nactive=no\nalarms=%s\ndescription=%s\nname=%s\ntotchans=%d\nusedchans=%d\n", x, ret, s[x].desc, s[x].name, s[x].totalchans, s[x].numchans );
+				printf("Span %d has Alarm: %s\n", x, ret);
+				fprintf(conf, "\n[%d]\nactive=no\nalarms=%s\ndescription=%s\nname=%s\ntotchans=%d\nusedchans=%d\nfac=%s\nlbo=%s\n\n", x, ret, s[x].desc, s[x].name, s[x].totalchans, s[x].numchans, fac, lbos);
 			}
+
+#else
+			if(!strncmp(ret, "OK", 2)) {
+				printf("Span %d has Alarm: %s\n", x, ret);
+				fprintf(conf, "\n[%d]\nactive=yes\nalarms=%s\ndescription=%s\nname=%s\ntotchans=%d\nusedchans=%d\nfac=NODEF\nlbo=NODEF\n", x, ret, s[x].desc, s[x].name, s[x].totalchans, s[x].numchans);
+			} else {
+				printf("Span %d has Alarm: %s\n", x, ret);
+				fprintf(conf, "\n[%d]\nactive=no\nalarms=%s\ndescription=%s\nname=%s\ntotchans=%d\nusedchans=%d\nfac=NODEF\nlbo=NODEF\n", x, ret, s[x].desc, s[x].name, s[x].totalchans, s[x].numchans );
+			}
+#endif
 		span++;
 		}
 	}
