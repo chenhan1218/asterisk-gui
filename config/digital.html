@@ -22,6 +22,51 @@
 <script src="scripts/astman.js"></script>
 <script src="scripts/tooltip.js"></script>
 <link href="stylesheets/schwing.css" media="all" rel="Stylesheet" type="text/css" />
+<style>
+	.tr0 {
+		background-color: #efaa50;
+		color: white;
+		font-weight: bold;
+	}
+
+	.tr1 {
+		background-color: #6b79a5;
+		color: white;
+		font-weight: bold
+	}
+
+	.tr2 {
+		background-color: white;
+		color: black;
+		text-decoration: underline;
+	}
+
+	.tr0 td, .tr1 td, .tr2 td {
+		font-size: xx-small;
+	}
+
+	.taglist {
+		border: 1px solid #666666;
+		margin-top:40px; margin-bottom:30px;
+	}
+	
+	.taglist tbody tr td {
+		font-family: "lucida grande", verdana, sans-serif;
+		font-size: 8pt;
+		padding: 3px 8px;
+		border-left: 1px solid #D9D9D9;
+	}
+
+	.taglist tbody tr.selected td {
+		background-color: #3d80df;
+		color: #ffffff;
+		font-weight: bold;
+		border-left: 1px solid #346DBE;
+		border-bottom: 1px solid #7DAAEA;
+	}
+
+</style>
+
 <script>
 
 var sysinfocallbacks = new Object;
@@ -29,6 +74,9 @@ var tabs = new Array('tab1', 'tab2', 'tab3');
 var divs_tohide = new Array('osversion_div', 'uptime_div', 'asterisk_div', 'today_div','hostname_div','ifconfig_div','df_div','memory_div');
 var has_spans = 0; /* Count of our spans we have, incrementing each time. */
 var total_spans = 0; /* Count of our spans that ztscan.conf says we have */
+var widgets = {};
+var fieldnames = [ 'active', 'alarms', 'description', 'name', 'totchans', 'usedchans', 'lineconfig' ]; 
+var fieldnames_proper = [ 'Out Of Alarm:', 'Alarms:', 'Card Description:', 'Card Name:', 'Total Channels:', 'Configured Channels:', 'Signalling Type(beta)' ]; 
 
 /* This page is based off of sample.html, the gui tutorial on writing a page */
 
@@ -60,6 +108,61 @@ function show_window(x){
 	return true;
 }
 
+function update_table() {
+	
+	var e = _$("cdr_content_container");
+	e.innerHTML = "";
+	var d = document.createElement("TABLE");
+	d.style.overflow = "scroll" ;
+	var tr = document.createElement("tr");
+	tr.className = "tr2";
+		for(var i=0;i<=records[offset].length;i++) {
+			var td = document.createElement("td");
+			td.appendChild(document.createTextNode(fields[i]));
+			tr.appendChild(td);
+		}
+		d.appendChild(tr);
+		for(var i=0;c--&&isset(records[i+offset]);i++) {
+			var tr = document.createElement("tr");
+			tr.className = "tr"+(i%2);
+			var r = records[i+offset];
+		
+		for(var j=-1;j<r.length;j++) {
+
+			if(r[(j + 4)])	
+				var dest_context = (r[j + 4].toString().replace(/^[\"]{1}/, "").replace(/[\"]{1}$/, "")) ? r[j + 4].toString().replace(/^[\"]{1}/, "").replace(/[\"]{1}$/, "") : 'none';
+			if(dest_context == "asterisk_guitools") {
+				j += fields.length-3;
+				/* go to next cdr record, which is exact 21 csvs away, so count the csv field names, and subtract 3, since we only added 4, and started with -1 */
+				continue;
+			} 
+			var td = document.createElement("td");
+			if (j < 0) {
+				var l = offset+i+1;
+			} else {
+				var l = r[j].toString().replace(/^[\"]{1}/, "").replace(/[\"]{1}$/, "");
+			}
+			td.appendChild(document.createTextNode(l));
+			tr.appendChild(td);
+		}
+		d.appendChild(tr);
+	}
+	e.appendChild(d);
+}
+	
+function create_table_names() {
+	var box = _$('digitalcardstable');
+	var tr = document.createElement("tr");
+	tr.className="tr1";	
+	for(var i=0; i < fieldnames_proper.length; i++) {
+		var td = document.createElement("td");
+		td.appendChild(document.createTextNode(fieldnames_proper[i]));
+		tr.appendChild(td);	
+	}
+	box.appendChild(tr);	
+	return true;
+
+}
 function isInt(x) {
 	var y=parseInt(x);
 	if (isNaN(y)) return false;
@@ -69,54 +172,55 @@ function isInt(x) {
 function digitalparse(n) { 
 
 	var l, h;
+	var box = _$('digitalcardstable');
+	var _class = 0;
 	for( l in n ){	if(n.hasOwnProperty(l)){
 		if( l =='general') { 
-			if(n[l]['continue'] == "no") {
+			if(n[l]['continue'] && n[l]['continue'] == "no") {
 				_$('error_txt').style.display="";
 				_$('error_txt').innerHTML="<br><br>Problem Detecting/No Cards(or spans) Found!<br><br>  Error: " + n[l]['error'];		
 				has_spans=0;
+				_$('tablecontainer').style.display="none";
+				_$('tablecontainer').style.visibility="none";
+
 				return false;
 			}
-			if(n[l]['continue'] == "yes") {
-				total_spans = n[l]['totalspans'];
+			if(n[l]['continue'] && n[l]['continue'] == "yes") {
+				total_spans = (n[l]['totalspans']) ? n[l]['totalspans'] : 'Unknown';
 				has_spans=1;
 				_$('error_txt').style.display="";
-				_$('error_txt').innerHTML="<br><br>We Found " + n[l]['totalspans'] + " Spans!";		
-				if(n[l]['isnew'] == "yes") {
+				_$('error_txt').innerHTML="<br><br>We Found " + total_spans + " Spans!";		
+				if(n[l]['isnew'] && n[l]['isnew'] == "yes") {
 					var uri = build_action('update', 0, 'general', 'isnew', 'no', '');
-			                makerequest('u','ztscan.conf', uri, function(t){ } );
+			                makerequest('u','ztscan.conf', uri, function(t){ return true;} );
 				}
-				return true;
+				create_table_names();
 			}
-		} 
-
-//		if ( n[l]['context'] && unescape(n[l]['context']) == asterisk_guiTDPrefix + l ) { // ignore trunks in users.conf
-//			continue;
-//		}
-//
-//		if( !n[l]['trunkstyle'] ){ // all entries from users.conf other than trunks
-//			UserExtensions.push(l);
-//			if( n[l]['hassip']=='yes'){
-//				LISTOFCHANNELS['SIP/' + l] = {};
-//				LISTOFCHANNELS['SIP/' + l]['ChannelName'] = 'SIP/' + l + " -- " + n[l]['fullname'];
-//			}
-//			if( n[l]['hasiax']=='yes'){
-//				LISTOFCHANNELS['IAX2/' + l] = {};
-//				LISTOFCHANNELS['IAX2/' + l]['ChannelName'] = 'IAX2/' + l + " -- " + n[l]['fullname'];
-//			}
-//			if( n[l]['zapchan'] ){
-//				var m = n[l]['zapchan'];
-//				if( LISTOFCHANNELS[ 'Zap/' + m ] ){
-//					LISTOFCHANNELS['Zap/'+m]['ChannelName'] = "Analog Phone -- " + n[l]['fullname'];
-//				}
-//			}
-//
-//			ASTGUI.selectbox.append(el, l + " -- " + n[l]['fullname'] , 'Voicemail(' + l + ',b)');
-//		}
+		}
+		if(isInt(l)) { 
+			var tr = document.createElement("tr");
+			if(_class == 0) {
+				tr.className = "tr0";
+				_class = 1;
+			} else {
+				tr.className = "tr1";
+				_class = 0;
+			}
+			/* if alarms is red, make cell red, else make cell green/yellow etc. */
+			for(var i=0; i < fieldnames.length; i++) {
+				var td = document.createElement("td");
+				td.appendChild(document.createTextNode(n[l][fieldnames[i]]));
+				tr.appendChild(td);	
+			}
+			box.appendChild(tr);	
+		}
 	}}
 
-	_$('status_message').style.display='none';
+	_$('tablecontainer').style.display="";
+	_$('tablecontainer').style.visibility="";
 
+
+	_$('status_message').style.display='none';
 	return "span: " + t.name + " Mode: " + mode;
 }
 
@@ -129,34 +233,28 @@ function update_sysinfo(){
 	return;
 }
 
-function getsysinfohtml(){
-	var opt = {
-		method: 'get',
-		asynchronous: true,
-		onComplete: function(originalRequest){
-			_$('sysinfohtml').innerHTML = originalRequest.responseText;
-			_$('osversion').innerHTML = _$('si_uname').innerHTML;
-			_$('uptime').innerHTML = _$('si_uptime').innerHTML.replace(/load average/, "<BR>Load Average");
-			_$('asterisk').innerHTML =_$('si_astver').innerHTML + "<BR>" + "Asterisk GUI-version " + asterisk_guiversion.substr(1) ;
-			_$('today').innerHTML = _$('si_date').innerHTML;
-			_$('hostname').innerHTML =_$('si_hostname').innerHTML;
-			_$('ifconfig').innerHTML =_$('si_ifconfig').innerHTML;
-			_$('diskusage').innerHTML = _$('si_du').innerHTML;
-			_$('memoryusage').innerHTML =_$('si_free').innerHTML;
+function loadCardsintoTable(){
+        var _spt = _$('digitalcardstable');
+        for( var i=0; i <  _spt.rows.length; ){
+                _spt.deleteRow(i);
+        }
+        var _devices = _$('devices');
 
-			var divs_toshow = new Array('osversion_div', 'uptime_div', 'asterisk_div', 'today_div','hostname_div');
-			for(var i=0; i < divs_toshow.length; i++ ){ _$(divs_toshow[i]).style.display = ""; }
+        if( _devices.length == "0" ){
+                _$('table_one').style.display="none";
+                var newRow = _spt.insertRow(-1);
+                var newCell0 = newRow.insertCell(0);
+                newCell0 .align = "center";
+                newCell0 .innerHTML = "<BR>No <I>Digital Cards</I> Found<BR><BR> Please click on the 'Scan' button<BR>To scan for Digital Cards<BR><BR>" ;
+                return true;
+        }
 
-			document.getElementById(tabs[0]).className = "tabselected";
-		},
-		onFailure: function(t) {
-			_$('status_message').style.display='none';
-			gui_alert("Config Error: " + t.status + ": " + t.statusText);
-		}
-	};
-	opt.parameters="";
-	var tmp = new Ajax.Request(asterisk_guiSysInfo_output , opt);
-	return true;
+        _$('table_one').style.display="";
+        for(i=0; i< _devices.length; i++){
+                if( _devices.options[i].text != "New Entry")
+                addrow_totable(_devices.options[i].text, _devices.options[i].value);
+        }
+
 }
 
 function load_config_tool() { 
@@ -164,7 +262,48 @@ function load_config_tool() {
 		alert("Have you properly installed ztscan to /sbin/ztscan?\n/etc/asterisk/ztscan.conf does not exist.");
 		_$('error_txt').style.display="";
 		_$('error_txt').innerHTML="<br><br>Problem Detecting/No Cards(or spans) Found!<br><br>  Error: No Config File";		
+		_$('tablecontainer').style.display="none";
 	}
+}
+
+function addrow_totable(sp_text, sp_value){
+	var _spt = _$('serviceproviderstable') ;
+	var sno = _spt.rows.length + 1;
+	var newRow = _spt.insertRow(-1);
+	newRow.id ="row" + sp_value ;
+	newRow["sp_value"] = sp_value ;
+
+	var newCell0 = newRow.insertCell(0);
+	newCell0 .innerHTML = sno ;
+	newCell0 .style.width = 40;
+
+	var newCell1 = newRow.insertCell(1);
+	newCell1 .innerHTML = sp_text ;
+	newCell1 .style.width = 200;
+
+	var newCell2 = newRow.insertCell(2);
+	switch ("digital"){
+	case "customvoip":
+		newCell2.innerHTML =  "Custom Voip";
+		break;
+	case "analog":
+		newCell2.innerHTML =  "Analog";
+		break;
+	case "voip":
+		newCell2.innerHTML =  "Voip";
+		break;
+	case "digital":
+		newCell2.innerHTML = "Digital";
+		break;
+	default : 
+		newCell2.innerHTML =  "?";
+	}
+
+	var newCell3 = newRow.insertCell(3);
+	var _span_menu = "span" + sp_value;
+	newCell3 .innerHTML = "<span class=\"downmenubutton\" id='" + "span_" + sp_value  + "' onclick=\"show_downmenu( '"+ sp_value + "');\">Options&nbsp;&nbsp;<img src=images/1.gif></span>" ;
+	newCell3 .style.width = 90;
+	newCell3 .align = "center";
 }
 
 function localajaxinit() {
@@ -174,11 +313,16 @@ function localajaxinit() {
 	setTimeout("_$('status_message').style.display='none'", 5000);
 	_$('message_text').innerHTML = "Detecting Digital Cards ... (Beta)";
 	setWindowTitle("Digital Setup Wizard");
+	parent.astmanEngine.config2list("ztscan.conf", _$('devices'), widgets, function(t) { return true; });
 	parent.loadscreen(this);
 	/* Give ztscan 4 seconds to detect and write to ztscan.conf */
 	parent.astmanEngine.run_tool(asterisk_guiZtscan, function(t) {
 		setTimeout('load_config_tool()', 4000); 
 	});
+	for (var x=0; x < fieldnames.length; x++ ) {
+		widgets[fieldnames[x]] = _$(fieldnames[x]);
+		widgets[fieldnames[x]].disabled = true;
+	}
 }
 
 function free_mem(){
@@ -194,6 +338,38 @@ function free_mem(){
 	<span style="margin-left: 4px;font-weight:bold;">Digital Card Configuration Wizard (Beta)</span>
 	<span style="cursor: pointer; cursor: hand;" onclick="window.location.href=window.location.href;" >&nbsp;<img src="images/refresh.png" title=" Refresh " border=0 >&nbsp;</span>
 </div>
-<select size='12' style="display:none" id='spans'><option name="blah" value="blah"></option></select>
 <center><font id="error_txt" valign="left" style="display:none"></font></center>
+<div id="tablecontainer" style="display:none;visibility:none">
+<select disabled size="1" id="devices" style="display:none"></select><input type='button' id='delete' value='Delete' style="display:none">
+<BR>
+<center>
+<font size="+1">Digital Card Setup</font>
+<div style="width:500;height:250; overflow :auto;">
+        <table class="taglist" id="digitalcardstable" cellpadding=2 cellspacing=1 border=0 align=center width=500></table>
+</div>
+</center>
+</div>
+<div style="display:none;visibility:hidden">
+	<tr>	<td class="field_text">Active:</td>
+		<td><input id="active" size=14  class="input8"></td>
+	</tr>
+	<tr>	<td class="field_text">Alarms:</td>
+		<td><input id="alarms" size=14  class="input8"></td>
+	</tr>
+	<tr>	<td class="field_text">Description:</td>
+		<td><input  id="description" size=14 class="input8"></td>
+	</tr>
+	<tr>	<td class="field_text">Name:</td>
+		<td><input type="text" id="name" size=14 class="input8"></td>
+	</tr>
+	<tr>	<td class="field_text">Total Channels:</td>
+		<td><input type="text" id="totchans" size=14 class="input8"></td>
+	</tr>
+	<tr>	<td class="field_text">Used Channels:</td>
+		<td><input type="text" id="usedchans" size=14 class="input8"></td>
+	</tr>
+	<tr>	<td class="field_text">Line Config:</td>
+		<td><input type="text" id="lineconfig" size=14 class="input8"></td>
+	</tr>
+</div>
 </body>
