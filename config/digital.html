@@ -215,7 +215,7 @@ function digitalparse(n) {
 			/* if alarms is red, make cell red, else make cell green/yellow etc. */
 			for(var i=0; i < fieldnames.length; i++) {
 				var td = document.createElement("td");
-				if(fieldnames[i] == 'lbo' || n[l][fieldnames[i]] == "NODEF") {
+				if(fieldnames[i] == 'lbo' && n[l][fieldnames[i]] == "NODEF") {
 					old_zap = 1;	
 					td.appendChild(document.createTextNode("N/A"));
 					td.tip="en,digital,2";
