@@ -175,6 +175,10 @@ function run_zt_and_restart() {
 	gui_alert("This is a place holder, if you see this its probably because you need to run ztcfg, and running it is not in this page yet.");
 }
 
+function option_clicked(a) {
+	/* place holder for the option clicked callback for the event. */
+	return true;
+}
 function digitalparse(n) { 
 
 	var l, h;
@@ -218,7 +222,6 @@ function digitalparse(n) {
 				if(fieldnames[i] == 'lbo' && n[l][fieldnames[i]] == "NODEF") {
 					old_zap = 1;	
 					td.appendChild(document.createTextNode("N/A"));
-					td.tip="en,digital,2";
 					tr.appendChild(td);	
 					continue;
 				}
@@ -226,7 +229,6 @@ function digitalparse(n) {
 					if(n[l][fieldnames[i]] == "NODEF") {
 						old_zap = 1;	
 						td.appendChild(document.createTextNode("N/A"));
-						td.tip="en,digital,1";
 						tr.appendChild(td);	
 						continue;
 					}
@@ -248,6 +250,7 @@ function digitalparse(n) {
 					}
 				}
 				td.appendChild(document.createTextNode(n[l][fieldnames[i]]));
+				td.setAttribute("id", l + '-' + fieldnames[i]);
 				tr.appendChild(td);	
 			}
 			box.appendChild(tr);	
@@ -258,6 +261,8 @@ function digitalparse(n) {
 		parent._$('tooltip').innerHTML = "<B>Framing/Coding/Line Build Out:</B><br>To see this requires rev: 2986 of the 1.4 branch of zaptel.";
 	}
 
+	add_events_all(); /* add out event listeners for onclick to change them. */
+	//ASTGUI.events.add( _$(l + '-' + fieldnames[i]), 'click', option_clicked);
 	_$('tablecontainer').style.display="";
 	_$('tablecontainer').style.visibility="";
 
@@ -266,6 +271,9 @@ function digitalparse(n) {
 	return true;
 }
 
+function add_events_all() {
+	/* get all elements by type span-field eg 1-fac then add event for click */
+}
 function update_sysinfo(){
 	parent.astmanEngine.run_tool(asterisk_guiSysInfo , onSuccess = function() {
 			_$('status_message').style.display='none';
