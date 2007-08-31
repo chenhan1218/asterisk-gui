@@ -327,7 +327,13 @@ function show_tooltip(event){
 	tooltips['cdr'].en = new Array;
 	tooltips['cdr'].en[0] = "<B>View:</B> Select how many call detail records to read at once.." ;
 
+//	Tooltips for the sample development page.
 	tooltips['sample'] = new Object;
 	tooltips['sample'].en = new Array;
 	tooltips['sample'].en[0] = "<b>Button Click:</b> Click this button to go to another tab, this is a tooltip example";
 
+//	Tooltips for the Digital Card page.
+	tooltips['digital'] = new Object;
+	tooltips['digital'].en = new Array;
+	tooltips['digital'].en[0] = "<B>Framing/Coding:</B> To see this requires rev: 2986 of the 1.4 branch of zaptel.";
+	tooltips['digital'].en[1] = "<B>Line Build Out:</B> To see this requires rev: 2986 of the 1.4 branch of zaptel.";

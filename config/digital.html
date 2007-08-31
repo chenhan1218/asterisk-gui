@@ -74,9 +74,10 @@ var tabs = new Array('tab1', 'tab2', 'tab3');
 var divs_tohide = new Array('osversion_div', 'uptime_div', 'asterisk_div', 'today_div','hostname_div','ifconfig_div','df_div','memory_div');
 var has_spans = 0; /* Count of our spans we have, incrementing each time. */
 var total_spans = 0; /* Count of our spans that ztscan.conf says we have */
+var old_zap = 0;
 var widgets = {};
-var fieldnames = [ 'active', 'alarms', 'description', 'name', 'totchans', 'usedchans', 'lineconfig' ]; 
-var fieldnames_proper = [ 'Out Of Alarm:', 'Alarms:', 'Card Description:', 'Card Name:', 'Total Channels:', 'Configured Channels:', 'Signalling Type(beta)' ]; 
+var fieldnames = [ 'active', 'alarms', 'description', 'name', 'totchans', 'fac', 'lbo' ]; 
+var fieldnames_proper = [ 'Out Of Alarm:', 'Alarms:', 'Card Description:', 'Card Name:', 'Total Channels:', 'Framing/Coding', 'Line Build Out' ]; 
 
 /* This page is based off of sample.html, the gui tutorial on writing a page */
 
@@ -169,6 +170,11 @@ function isInt(x) {
 		return x==y && x.toString()==y.toString();
 } 
 
+function run_zt_and_restart() {
+	/* this function will run ztcfg and reload the page. */
+	gui_alert("This is a place holder, if you see this its probably because you need to run ztcfg, and running it is not in this page yet.");
+}
+
 function digitalparse(n) { 
 
 	var l, h;
@@ -209,19 +215,55 @@ function digitalparse(n) {
 			/* if alarms is red, make cell red, else make cell green/yellow etc. */
 			for(var i=0; i < fieldnames.length; i++) {
 				var td = document.createElement("td");
+				if(fieldnames[i] == 'lbo' || n[l][fieldnames[i]] == "NODEF") {
+					old_zap = 1;	
+					td.appendChild(document.createTextNode("N/A"));
+					td.tip="en,digital,2";
+					tr.appendChild(td);	
+					continue;
+				}
+				if(fieldnames[i] == 'fac') {
+					if(n[l][fieldnames[i]] == "NODEF") {
+						old_zap = 1;	
+						td.appendChild(document.createTextNode("N/A"));
+						td.tip="en,digital,1";
+						tr.appendChild(td);	
+						continue;
+					}
+					var framing = n[l][fieldnames[i]].split("/");
+					if(framing[0] == "ESF" || framing[0] == "D4") {
+						td.appendChild(document.createTextNode(n[l][fieldnames[i]] + " (T1)"));
+						tr.appendChild(td);	
+						continue;
+					} else {
+						td.appendChild(document.createTextNode(n[l][fieldnames[i]] + " (E1)"));
+						tr.appendChild(td);	
+						continue;
+					}
+				}
+				if(fieldnames[i] == 'alarms') {
+					if(n[l][fieldnames[i]] == "UNCONFIGURED") {
+						gui_alert("Span " + (i+1) + " is unconfigured, running ztscan.");
+						run_zt_and_restart();
+					}
+				}
 				td.appendChild(document.createTextNode(n[l][fieldnames[i]]));
 				tr.appendChild(td);	
 			}
 			box.appendChild(tr);	
 		}
 	}}
+	if(old_zap == 1) {	
+		gui_alert("To have the ability to see your cards current configuration/framing/coding/line build out, please install rev: 2986 or higher of the 1.4 branch of zaptel!");
+		parent._$('tooltip').innerHTML = "<B>Framing/Coding/Line Build Out:</B><br>To see this requires rev: 2986 of the 1.4 branch of zaptel.";
+	}
 
 	_$('tablecontainer').style.display="";
 	_$('tablecontainer').style.visibility="";
 
 
 	_$('status_message').style.display='none';
-	return "span: " + t.name + " Mode: " + mode;
+	return true;
 }
 
 function update_sysinfo(){
@@ -368,8 +410,12 @@ function free_mem(){
 	<tr>	<td class="field_text">Used Channels:</td>
 		<td><input type="text" id="usedchans" size=14 class="input8"></td>
 	</tr>
-	<tr>	<td class="field_text">Line Config:</td>
-		<td><input type="text" id="lineconfig" size=14 class="input8"></td>
+	<tr>	<td class="field_text">Framing/Coding:</td>
+		<td><input type="text" id="fac" size=14 class="input8"></td>
 	</tr>
+	<tr>	<td class="field_text">Line Build Out:</td>
+		<td><input type="text" id="lbo" size=14 class="input8"></td>
+	</tr>
+
 </div>
 </body>
