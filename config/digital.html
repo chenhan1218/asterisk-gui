@@ -70,6 +70,7 @@
 <script>
 
 var sysinfocallbacks = new Object;
+var zt_cb = new Object;
 var tabs = new Array('tab1', 'tab2', 'tab3');
 var divs_tohide = new Array('osversion_div', 'uptime_div', 'asterisk_div', 'today_div','hostname_div','ifconfig_div','df_div','memory_div');
 var has_spans = 0; /* Count of our spans we have, incrementing each time. */
@@ -77,6 +78,7 @@ var total_spans = 0; /* Count of our spans that ztscan.conf says we have */
 var old_zap = 0;
 var widgets = {};
 var fieldnames = [ 'active', 'alarms', 'description', 'name', 'totchans', 'fac', 'lbo' ]; 
+var fieldnames_clickable = [ 'active', 'fac', 'lbo' ]; 
 var fieldnames_proper = [ 'Out Of Alarm:', 'Alarms:', 'Card Description:', 'Card Name:', 'Total Channels:', 'Framing/Coding', 'Line Build Out' ]; 
 
 /* This page is based off of sample.html, the gui tutorial on writing a page */
@@ -108,6 +110,15 @@ function show_window(x){
 
 	return true;
 }
+
+zt_cb.format = function(t) { 
+	return t.fieldbyname['active']; 
+};
+
+zt_cb.loaded = function() { 
+	loadCardsintoTable();
+	return true;
+};
 
 function update_table() {
 	
@@ -177,6 +188,7 @@ function run_zt_and_restart() {
 
 function option_clicked(a) {
 	/* place holder for the option clicked callback for the event. */
+	alert(a);
 	return true;
 }
 function digitalparse(n) { 
@@ -198,8 +210,6 @@ function digitalparse(n) {
 			if(n[l]['continue'] && n[l]['continue'] == "yes") {
 				total_spans = (n[l]['totalspans']) ? n[l]['totalspans'] : 'Unknown';
 				has_spans=1;
-				_$('error_txt').style.display="";
-				_$('error_txt').innerHTML="<br><br>We Found " + total_spans + " Spans!";		
 				if(n[l]['isnew'] && n[l]['isnew'] == "yes") {
 					var uri = build_action('update', 0, 'general', 'isnew', 'no', '');
 			                makerequest('u','ztscan.conf', uri, function(t){ return true;} );
@@ -235,10 +245,12 @@ function digitalparse(n) {
 					var framing = n[l][fieldnames[i]].split("/");
 					if(framing[0] == "ESF" || framing[0] == "D4") {
 						td.appendChild(document.createTextNode(n[l][fieldnames[i]] + " (T1)"));
+						td.setAttribute("id", l + '-' + fieldnames[i]);
 						tr.appendChild(td);	
 						continue;
 					} else {
 						td.appendChild(document.createTextNode(n[l][fieldnames[i]] + " (E1)"));
+						td.setAttribute("id", l + '-' + fieldnames[i]);
 						tr.appendChild(td);	
 						continue;
 					}
@@ -261,19 +273,150 @@ function digitalparse(n) {
 		parent._$('tooltip').innerHTML = "<B>Framing/Coding/Line Build Out:</B><br>To see this requires rev: 2986 of the 1.4 branch of zaptel.";
 	}
 
-	add_events_all(); /* add out event listeners for onclick to change them. */
-	//ASTGUI.events.add( _$(l + '-' + fieldnames[i]), 'click', option_clicked);
 	_$('tablecontainer').style.display="";
 	_$('tablecontainer').style.visibility="";
 
 
 	_$('status_message').style.display='none';
+
 	return true;
 }
 
-function add_events_all() {
-	/* get all elements by type span-field eg 1-fac then add event for click */
+function addrow_totable(span_txt, span_value) {
+	var _spt = _$('spanTable') ;
+	var sno = _spt.rows.length + 1;
+	var newRow = _spt.insertRow(-1);
+	newRow.id ="row" + span_value ;
+	newRow["span_value"] = span_value ;
+
+	var newCell0 = newRow.insertCell(0);
+	newCell0.innerHTML = sno;
+	newCell0.style.width = 40;
+
+	var newCell1 = newRow.insertCell(1);
+	var dev_iq = (_$('devices').stored_config.catbyname[span_value].fieldbyname['fac']) ? _$('devices').stored_config.catbyname[span_value].fieldbyname['fac'] : 'N/A';
+	var tmp = dev_iq.split("/");
+	if(tmp[0] == "ESF" || tmp[0] == "D4" && tmp[0] != "N/A") {
+		_$('id_type').innerHTML = "(T1)";
+	} else { 
+		_$('id_type').innerHTML = "(E1)";
+	}
+	newCell1.innerHTML = dev_iq;
+
+	var newCell2 = newRow.insertCell(2);
+	newCell2.innerHTML = "AHHHH";
+	newCell2.align = "center";
+	newCell2.style.width = 50;
+
+	var newCell3 = newRow.insertCell(3);
+	newCell3.innerHTML = "<span class=\"downmenubutton\" id='" + "span_" + span_value  + "' onclick=\"show_downmenu( '"+ span_value + "');\">Options&nbsp;&nbsp;<img src=images/1.gif></span>" ;
+	newCell3.style.width = 90;
+	newCell3.align = "center";
+
+	return true;
 }
+
+function preparemenus(){
+	var menu_div = document.getElementById('mymenu') ;
+	menu_div.style.width="80";
+	menu_div.style.borderColor = "#eee #bbb #bbb #ddd";
+	ASTGUI.events.add( document.body , "click", function(){ _$('mymenu').style.display="none"; } );
+
+	var menuitem1 = document.createElement('div');
+	menuitem1.innerHTML = "Edit" ;
+	menuitem1.onclick =  function(){ hide_mymenu( ); editSP( this.parentNode.sp_value) };
+	menuitem1.onmouseover= function(){  
+		document.getElementById('row'+this.parentNode.sp_value ).style.backgroundColor='#F6E7B6';   
+		this.style.backgroundColor='#EFEFEF';  
+	};
+	menuitem1.onmouseout=function(){  
+		document.getElementById('row'+this.parentNode.sp_value ).style.backgroundColor='#FFFFFF';  
+		this.style.backgroundColor='#FFFFFF';  
+	};
+	menu_div.appendChild(menuitem1);
+
+	var menuitem2 = document.createElement('div');
+	menuitem2.innerHTML = "Framing/Coding" ;
+
+	menuitem2.onclick =  function(){
+		var _devices = _$('devices');
+		for(var i=0; i< _devices.length; i++){
+			if( this.parentNode.sp_value == _devices.options[i].value ){
+				_devices.selectitem(i);
+				break;
+			}
+		}
+	};
+	menuitem2.onmouseover= function(){ 
+		document.getElementById('row'+this.parentNode.sp_value ).style.backgroundColor='#F6E7B6';   
+		this.style.backgroundColor='#EFEFEF'; 
+	};
+	menuitem2.onmouseout=function(){ 
+		document.getElementById('row'+this.parentNode.sp_value ).style.backgroundColor='#FFFFFF';  
+		this.style.backgroundColor='#FFFFFF'; 
+	};
+	menu_div.appendChild(menuitem2);
+
+	var menuitem4 = document.createElement('div');
+	menuitem4.innerHTML = "Advanced" ;
+	menuitem4.onclick =  function(){  
+		alert("advanced");
+		var _devices = _$('devices');
+ 		for(var i=0; i< _devices.length; i++){
+			if( this.parentNode.sp_value == _devices.options[i].value ){
+				_devices.selectitem(i);
+				_$('bg_transparent').style.display = "";
+				_$('custom_trunkname').value = _$('name').value ;
+				_$('advanced_content').style.display = "";  
+				break;
+			}
+		}
+	};
+	menuitem4.onmouseover= function(){ 
+		document.getElementById('row'+this.parentNode.sp_value ).style.backgroundColor='#F6E7B6';   
+		this.style.backgroundColor='#EFEFEF'; 
+	};
+	menuitem4.onmouseout=function(){ 
+		document.getElementById('row'+this.parentNode.sp_value ).style.backgroundColor='#FFFFFF';  
+		this.style.backgroundColor='#FFFFFF'; 
+	};
+	menu_div.appendChild(menuitem4);
+
+	var menuitem3 = document.createElement('div');
+	menuitem3.innerHTML = "Delete" ;
+	menuitem3.onclick =  function(){  hide_mymenu( );  deleteSP( this.parentNode.sp_value );  };
+	menuitem3.onmouseover= function(){ 
+		document.getElementById('row'+this.parentNode.sp_value ).style.backgroundColor='#F6E7B6';   
+		this.style.backgroundColor='#EFEFEF'; 
+	};
+	menuitem3.onmouseout=function(){ 
+		document.getElementById('row'+this.parentNode.sp_value ).style.backgroundColor='#FFFFFF';  
+		this.style.backgroundColor='#FFFFFF'; 
+	};
+	menu_div.appendChild(menuitem3);
+
+}
+
+function show_downmenu( a ) {
+	var menu = document.getElementById('mymenu');
+	menu.sp_value = "";
+	menu.sp_value = a ;
+	
+	var tmp_left = _$("span_"+a).offsetLeft;
+	var tmp_top = _$("span_"+a).offsetTop + _$("span_"+a).offsetHeight;
+	var tmp_parent = _$("span_"+a);
+	while(tmp_parent.offsetParent != document.body){
+		tmp_parent = tmp_parent.offsetParent;
+		tmp_left += tmp_parent.offsetLeft;
+		tmp_top += tmp_parent.offsetTop;
+	}
+
+	menu.style.top =tmp_top ;
+	menu.style.left = tmp_left ;
+	setTimeout( function(){ _$('mymenu').style.display=""; } , 100 );
+}
+
+
 function update_sysinfo(){
 	parent.astmanEngine.run_tool(asterisk_guiSysInfo , onSuccess = function() {
 			_$('status_message').style.display='none';
@@ -284,8 +427,8 @@ function update_sysinfo(){
 }
 
 function loadCardsintoTable(){
-        var _spt = _$('digitalcardstable');
-        for( var i=0; i <  _spt.rows.length; ){
+        var _spt = _$('spanTable');
+        for( var i=0; i <  _spt.rows.length; i++){
                 _spt.deleteRow(i);
         }
         var _devices = _$('devices');
@@ -300,10 +443,10 @@ function loadCardsintoTable(){
         }
 
         _$('table_one').style.display="";
-        for(i=0; i< _devices.length; i++){
-                if( _devices.options[i].text != "New Entry")
-                addrow_totable(_devices.options[i].text, _devices.options[i].value);
+        for(var x=0; x < _devices.length; x++){
+               	addrow_totable(_devices.options[x].text, _devices.options[x].value);
         }
+	return true;
 
 }
 
@@ -316,46 +459,6 @@ function load_config_tool() {
 	}
 }
 
-function addrow_totable(sp_text, sp_value){
-	var _spt = _$('serviceproviderstable') ;
-	var sno = _spt.rows.length + 1;
-	var newRow = _spt.insertRow(-1);
-	newRow.id ="row" + sp_value ;
-	newRow["sp_value"] = sp_value ;
-
-	var newCell0 = newRow.insertCell(0);
-	newCell0 .innerHTML = sno ;
-	newCell0 .style.width = 40;
-
-	var newCell1 = newRow.insertCell(1);
-	newCell1 .innerHTML = sp_text ;
-	newCell1 .style.width = 200;
-
-	var newCell2 = newRow.insertCell(2);
-	switch ("digital"){
-	case "customvoip":
-		newCell2.innerHTML =  "Custom Voip";
-		break;
-	case "analog":
-		newCell2.innerHTML =  "Analog";
-		break;
-	case "voip":
-		newCell2.innerHTML =  "Voip";
-		break;
-	case "digital":
-		newCell2.innerHTML = "Digital";
-		break;
-	default : 
-		newCell2.innerHTML =  "?";
-	}
-
-	var newCell3 = newRow.insertCell(3);
-	var _span_menu = "span" + sp_value;
-	newCell3 .innerHTML = "<span class=\"downmenubutton\" id='" + "span_" + sp_value  + "' onclick=\"show_downmenu( '"+ sp_value + "');\">Options&nbsp;&nbsp;<img src=images/1.gif></span>" ;
-	newCell3 .style.width = 90;
-	newCell3 .align = "center";
-}
-
 function localajaxinit() {
 	ASTGUI.events.add(document, 'mouseover', show_tooltip);
 	showdiv_statusmessage();
@@ -363,7 +466,7 @@ function localajaxinit() {
 	setTimeout("_$('status_message').style.display='none'", 5000);
 	_$('message_text').innerHTML = "Detecting Digital Cards ... (Beta)";
 	setWindowTitle("Digital Setup Wizard");
-	parent.astmanEngine.config2list("ztscan.conf", _$('devices'), widgets, function(t) { return true; });
+	parent.astmanEngine.config2list("ztscan.conf", _$('devices'), widgets, zt_cb);
 	parent.loadscreen(this);
 	/* Give ztscan 4 seconds to detect and write to ztscan.conf */
 	parent.astmanEngine.run_tool(asterisk_guiZtscan, function(t) {
@@ -397,8 +500,19 @@ function free_mem(){
 <div style="width:500;height:250; overflow :auto;">
         <table class="taglist" id="digitalcardstable" cellpadding=2 cellspacing=1 border=0 align=center width=500></table>
 </div>
+<table class="table_black" cellpadding=2 cellspacing=2 border=0 align=center width=500 id="table_one">
+	<tr>	<td width=20>Span</td>
+		<td width="80">Framing/Coding</td>
+		<td id="id_type"></td>
+		<td width="90" align="center"></td>
+	</tr>
+</table>
+<div id="spanTable_div" style="height:430px;width=100%; overflow :auto; padding : 0px 0px 0px 0px;">
+<table id="spanTable" cellpadding=2 cellspacing=1 border=0 align=center width=500 bgcolor="#DEDEDE"></table>
+</div>
 </center>
 </div>
+<div id="mymenu" class="mymenu" style="display:none"></div>
 <div style="display:none;visibility:hidden">
 	<tr>	<td class="field_text">Active:</td>
 		<td><input id="active" size=14  class="input8"></td>
