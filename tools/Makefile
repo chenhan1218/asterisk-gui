@@ -33,10 +33,7 @@ install:
 ifeq ($(PBX_ZAPTEL),1)
 	mkdir -p $(ASTSBINDIR)
 	$(INSTALL) -m 755 zapscan.bin $(ASTSBINDIR)
-	$(INSTALL) -m 755 zapscan.bin /sbin
 	$(INSTALL) -m 755 zapscan $(ASTSBINDIR)
-	$(INSTALL) -m 755 zapscan /sbin	
-	$(INSTALL) -m 755 ztscan /sbin	
 	$(INSTALL) -m 755 ztscan $(ASTSBINDIR)
 	
 endif

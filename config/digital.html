@@ -452,10 +452,13 @@ function loadCardsintoTable(){
 
 function load_config_tool() { 
 	if(!config2json("ztscan.conf", 1, digitalparse)) {
-		alert("Have you properly installed ztscan to /sbin/ztscan?\n/etc/asterisk/ztscan.conf does not exist.");
+		alert("Have you properly installed ztscan?\n/etc/asterisk/ztscan.conf does not exist.");
 		_$('error_txt').style.display="";
 		_$('error_txt').innerHTML="<br><br>Problem Detecting/No Cards(or spans) Found!<br><br>  Error: No Config File";		
 		_$('tablecontainer').style.display="none";
+	} else {
+		/* Our config file was found....we can parse the options into widgets and _$('devices') */
+		parent.astmanEngine.config2list("ztscan.conf", _$('devices'), widgets, zt_cb);
 	}
 }
 
@@ -466,7 +469,6 @@ function localajaxinit() {
 	setTimeout("_$('status_message').style.display='none'", 5000);
 	_$('message_text').innerHTML = "Detecting Digital Cards ... (Beta)";
 	setWindowTitle("Digital Setup Wizard");
-	parent.astmanEngine.config2list("ztscan.conf", _$('devices'), widgets, zt_cb);
 	parent.loadscreen(this);
 	/* Give ztscan 4 seconds to detect and write to ztscan.conf */
 	parent.astmanEngine.run_tool(asterisk_guiZtscan, function(t) {
