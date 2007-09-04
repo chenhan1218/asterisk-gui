@@ -337,3 +337,10 @@ function show_tooltip(event){
 	tooltips['digital'].en = new Array;
 	tooltips['digital'].en[0] = "<B>Framing/Coding:</B> To see this requires rev: 2986 of the 1.4 branch of zaptel.";
 	tooltips['digital'].en[1] = "<B>Line Build Out:</B> To see this requires rev: 2986 of the 1.4 branch of zaptel.";
+	tooltips['digital'].en['Out Of Alarm:'] = "<B>Alarm:</B>This setting allows the user to see if the span is currently in the alarm state of 'OK' and useable";
+	tooltips['digital'].en['Alarms:'] = "<B>Alarms:</B>This allows the user to see the currently alarm status of the span";
+	tooltips['digital'].en['Card Description:'] = "<B>Card Description:</B> This allows the user to check the description of the Digital Card.<br>(Often times will display the card type (4xx,2xx,1xx))";
+	tooltips['digital'].en['Card Name:'] = "<B>Card Name:</B> Official name of the card, often displaying the total spans, card number, and current span.";
+	tooltips['digital'].en['Total Channels:'] = "<B>Total Channels:</B> This is the count of the TOTAL channels availible on a particular span, not just the configured ones.";
+	tooltips['digital'].en['Framing/Coding:'] = "<B>Framing/Coding:</B> Drop down box for enabling the changing of Framing/Coding. The first option is your current Framing/Coding";
+	tooltips['digital'].en['Line Build Out:'] = "<B>Line Build Out:</B> The current LBO (Line Build Out) of the span.";

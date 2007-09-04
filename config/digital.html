@@ -65,6 +65,51 @@
 		border-bottom: 1px solid #7DAAEA;
 	}
 
+        .navcontainer{
+                margin: 5px 10px 5px 10px;
+        }
+
+        .navlist
+        {
+        margin: 0;
+        padding: 0 0 20px 10px;
+        border-bottom: 1px solid #000;
+        }
+
+        .navlist ul, .navlist li
+        {
+        margin: 0;
+        padding: 0;
+        display: inline;
+        list-style-type: none;
+        }
+
+        .navlist a:link, .navlist a:visited
+        {
+        float: left;
+        line-height: 14px;
+        font-weight: bold;
+        margin: 0 10px 4px 10px;
+        text-decoration: none;
+        color: #999;
+        font-size: 120%;
+        font-family : Verdana, Arial, Helvetica, sans-serif;
+        }
+
+        .navlist a.current:link , .navlist a.current:visited , .navlist a.current:hover
+        {
+        border-bottom: 4px solid #000;
+        padding-bottom: 2px;
+        background: transparent;
+        color: #000;
+        }
+
+        .navlist a:hover {
+                color: #CC0000;
+                cursor: pointer;
+        }
+
+
 </style>
 
 <script>
@@ -79,7 +124,7 @@ var old_zap = 0;
 var widgets = {};
 var fieldnames = [ 'active', 'alarms', 'description', 'name', 'totchans', 'fac', 'lbo' ]; 
 var fieldnames_clickable = [ 'active', 'fac', 'lbo' ]; 
-var fieldnames_proper = [ 'Out Of Alarm:', 'Alarms:', 'Card Description:', 'Card Name:', 'Total Channels:', 'Framing/Coding', 'Line Build Out' ]; 
+var fieldnames_proper = [ 'Out Of Alarm:', 'Alarms:', 'Card Description:', 'Card Name:', 'Total Channels:', 'Framing/Coding:', 'Line Build Out:' ]; 
 
 /* This page is based off of sample.html, the gui tutorial on writing a page */
 
@@ -161,7 +206,18 @@ function update_table() {
 	}
 	e.appendChild(d);
 }
-	
+
+function refresh_alarms() {
+	_$('status_message').style.display="block";
+	setTimeout("_$('status_message').style.display='none'", 5000);
+	_$('message_text').innerHTML = "Re-Detecting Digital Cards and Alarms... ";
+	/* Give ztscan 4 seconds to detect and write to ztscan.conf */
+	parent.astmanEngine.run_tool(asterisk_guiZtscan, function(t) {
+		setTimeout('load_config_tool()', 4000); 
+	});
+
+}	
+
 function create_table_names() {
 	var box = _$('digitalcardstable');
 	var tr = document.createElement("tr");
@@ -169,6 +225,7 @@ function create_table_names() {
 	for(var i=0; i < fieldnames_proper.length; i++) {
 		var td = document.createElement("td");
 		td.appendChild(document.createTextNode(fieldnames_proper[i]));
+		td.setAttribute("tip", 'en,digital,'+fieldnames_proper[i]);
 		tr.appendChild(td);	
 	}
 	box.appendChild(tr);	
@@ -260,7 +317,20 @@ function digitalparse(n) {
 						gui_alert("Span " + (i+1) + " is unconfigured, running ztscan.");
 						run_zt_and_restart();
 					}
+					switch(n[l][fieldnames[i]]) {
+						case "OK":
+							td.setAttribute("style", 'color:green');
+							td.style.color == "green";
+							break;
+						case "YEL/REC":
+							td.setAttribute("style", 'color:yellow');
+							break;
+						default:
+							td.setAttribute("style", 'color:red');
+							break;
+					}
 				}
+					
 				td.appendChild(document.createTextNode(n[l][fieldnames[i]]));
 				td.setAttribute("id", l + '-' + fieldnames[i]);
 				tr.appendChild(td);	
@@ -275,179 +345,36 @@ function digitalparse(n) {
 
 	_$('tablecontainer').style.display="";
 	_$('tablecontainer').style.visibility="";
-
-
 	_$('status_message').style.display='none';
+	_$('save_changes_id').style.display="";
 
 	return true;
 }
 
-function addrow_totable(span_txt, span_value) {
-	var _spt = _$('spanTable') ;
-	var sno = _spt.rows.length + 1;
-	var newRow = _spt.insertRow(-1);
-	newRow.id ="row" + span_value ;
-	newRow["span_value"] = span_value ;
-
-	var newCell0 = newRow.insertCell(0);
-	newCell0.innerHTML = sno;
-	newCell0.style.width = 40;
-
-	var newCell1 = newRow.insertCell(1);
-	var dev_iq = (_$('devices').stored_config.catbyname[span_value].fieldbyname['fac']) ? _$('devices').stored_config.catbyname[span_value].fieldbyname['fac'] : 'N/A';
-	var tmp = dev_iq.split("/");
-	if(tmp[0] == "ESF" || tmp[0] == "D4" && tmp[0] != "N/A") {
-		_$('id_type').innerHTML = "(T1)";
-	} else { 
-		_$('id_type').innerHTML = "(E1)";
-	}
-	newCell1.innerHTML = dev_iq;
-
-	var newCell2 = newRow.insertCell(2);
-	newCell2.innerHTML = "AHHHH";
-	newCell2.align = "center";
-	newCell2.style.width = 50;
-
-	var newCell3 = newRow.insertCell(3);
-	newCell3.innerHTML = "<span class=\"downmenubutton\" id='" + "span_" + span_value  + "' onclick=\"show_downmenu( '"+ span_value + "');\">Options&nbsp;&nbsp;<img src=images/1.gif></span>" ;
-	newCell3.style.width = 90;
-	newCell3.align = "center";
+function save_changes() {
+	/* function to grab the values of fields, and call the bash script to apply the changes and run ztcfg */
+	_$('status_message').style.display="block";
+	_$('status_message').innerHTML = '<TABLE border=0 cellpadding=0 cellspacing=4 align=center><TR><TD><img src="/asterisk/static/config/images/loading.gif"></TD><TD><div id=message_text></div></TD></TR></TABLE>';
+	_$('message_text').innerHTML = "Time: <div id='counter'>10</div>Are you sure you want to apply settings to zaptel.conf and restart zaptel? (run ztcfg)<BR>1. <A href=\"#\" class=\"splbutton\" onclick=\"_$('status_message').style.display='none'; get_params_and_ztcfg();\">Yes</A><br>2. <A href=\"#\" class=\"splbutton\" onclick=\"_$('status_message').style.display='none'; gui_feedback('You Chose not to save your settings.', 'red');>No<br></a>";
+	setTimeout("_$('status_message').style.display='none';", 10000);
+	int_handle = setInterval("_$('counter').innerHTML = (_$('counter').innerHTML - 1);", 1000);
+	setTimeout("clearInterval(int_handle);", 10000);
 
 	return true;
 }
 
-function preparemenus(){
-	var menu_div = document.getElementById('mymenu') ;
-	menu_div.style.width="80";
-	menu_div.style.borderColor = "#eee #bbb #bbb #ddd";
-	ASTGUI.events.add( document.body , "click", function(){ _$('mymenu').style.display="none"; } );
-
-	var menuitem1 = document.createElement('div');
-	menuitem1.innerHTML = "Edit" ;
-	menuitem1.onclick =  function(){ hide_mymenu( ); editSP( this.parentNode.sp_value) };
-	menuitem1.onmouseover= function(){  
-		document.getElementById('row'+this.parentNode.sp_value ).style.backgroundColor='#F6E7B6';   
-		this.style.backgroundColor='#EFEFEF';  
-	};
-	menuitem1.onmouseout=function(){  
-		document.getElementById('row'+this.parentNode.sp_value ).style.backgroundColor='#FFFFFF';  
-		this.style.backgroundColor='#FFFFFF';  
-	};
-	menu_div.appendChild(menuitem1);
-
-	var menuitem2 = document.createElement('div');
-	menuitem2.innerHTML = "Framing/Coding" ;
-
-	menuitem2.onclick =  function(){
-		var _devices = _$('devices');
-		for(var i=0; i< _devices.length; i++){
-			if( this.parentNode.sp_value == _devices.options[i].value ){
-				_devices.selectitem(i);
-				break;
-			}
-		}
-	};
-	menuitem2.onmouseover= function(){ 
-		document.getElementById('row'+this.parentNode.sp_value ).style.backgroundColor='#F6E7B6';   
-		this.style.backgroundColor='#EFEFEF'; 
-	};
-	menuitem2.onmouseout=function(){ 
-		document.getElementById('row'+this.parentNode.sp_value ).style.backgroundColor='#FFFFFF';  
-		this.style.backgroundColor='#FFFFFF'; 
-	};
-	menu_div.appendChild(menuitem2);
-
-	var menuitem4 = document.createElement('div');
-	menuitem4.innerHTML = "Advanced" ;
-	menuitem4.onclick =  function(){  
-		alert("advanced");
-		var _devices = _$('devices');
- 		for(var i=0; i< _devices.length; i++){
-			if( this.parentNode.sp_value == _devices.options[i].value ){
-				_devices.selectitem(i);
-				_$('bg_transparent').style.display = "";
-				_$('custom_trunkname').value = _$('name').value ;
-				_$('advanced_content').style.display = "";  
-				break;
-			}
-		}
-	};
-	menuitem4.onmouseover= function(){ 
-		document.getElementById('row'+this.parentNode.sp_value ).style.backgroundColor='#F6E7B6';   
-		this.style.backgroundColor='#EFEFEF'; 
-	};
-	menuitem4.onmouseout=function(){ 
-		document.getElementById('row'+this.parentNode.sp_value ).style.backgroundColor='#FFFFFF';  
-		this.style.backgroundColor='#FFFFFF'; 
-	};
-	menu_div.appendChild(menuitem4);
-
-	var menuitem3 = document.createElement('div');
-	menuitem3.innerHTML = "Delete" ;
-	menuitem3.onclick =  function(){  hide_mymenu( );  deleteSP( this.parentNode.sp_value );  };
-	menuitem3.onmouseover= function(){ 
-		document.getElementById('row'+this.parentNode.sp_value ).style.backgroundColor='#F6E7B6';   
-		this.style.backgroundColor='#EFEFEF'; 
-	};
-	menuitem3.onmouseout=function(){ 
-		document.getElementById('row'+this.parentNode.sp_value ).style.backgroundColor='#FFFFFF';  
-		this.style.backgroundColor='#FFFFFF'; 
-	};
-	menu_div.appendChild(menuitem3);
-
-}
-
-function show_downmenu( a ) {
-	var menu = document.getElementById('mymenu');
-	menu.sp_value = "";
-	menu.sp_value = a ;
-	
-	var tmp_left = _$("span_"+a).offsetLeft;
-	var tmp_top = _$("span_"+a).offsetTop + _$("span_"+a).offsetHeight;
-	var tmp_parent = _$("span_"+a);
-	while(tmp_parent.offsetParent != document.body){
-		tmp_parent = tmp_parent.offsetParent;
-		tmp_left += tmp_parent.offsetLeft;
-		tmp_top += tmp_parent.offsetTop;
-	}
-
-	menu.style.top =tmp_top ;
-	menu.style.left = tmp_left ;
-	setTimeout( function(){ _$('mymenu').style.display=""; } , 100 );
-}
-
-
-function update_sysinfo(){
-	parent.astmanEngine.run_tool(asterisk_guiSysInfo , onSuccess = function() {
-			_$('status_message').style.display='none';
-			getsysinfohtml();
-		}
-	);
-	return;
-}
-
-function loadCardsintoTable(){
-        var _spt = _$('spanTable');
-        for( var i=0; i <  _spt.rows.length; i++){
-                _spt.deleteRow(i);
-        }
-        var _devices = _$('devices');
-
-        if( _devices.length == "0" ){
-                _$('table_one').style.display="none";
-                var newRow = _spt.insertRow(-1);
-                var newCell0 = newRow.insertCell(0);
-                newCell0 .align = "center";
-                newCell0 .innerHTML = "<BR>No <I>Digital Cards</I> Found<BR><BR> Please click on the 'Scan' button<BR>To scan for Digital Cards<BR><BR>" ;
-                return true;
-        }
-
-        _$('table_one').style.display="";
-        for(var x=0; x < _devices.length; x++){
-               	addrow_totable(_devices.options[x].text, _devices.options[x].value);
-        }
+function backup_zap() {
+	alert("this is being worked on...");
 	return true;
+	/* function to grab the values of fields, and call the bash script to apply the changes and run ztcfg */
+	_$('status_message').style.display="block";
+	_$('status_message').innerHTML = '<TABLE border=0 cellpadding=0 cellspacing=4 align=center><TR><TD><img src="/asterisk/static/config/images/loading.gif"></TD><TD><div id=message_text></div></TD></TR></TABLE>';
+	_$('message_text').innerHTML = "Time: <div id='counter'>10</div>Are you sure you want to apply settings to zaptel.conf and restart zaptel? (run ztcfg)<BR>1. <A href=\"#\" class=\"splbutton\" onclick=\"_$('status_message').style.display='none'; get_params_and_ztcfg();\">Yes</A><br>2. <A href=\"#\" class=\"splbutton\" onclick=\"_$('status_message').style.display='none'; gui_feedback('You Chose not to save your settings.', 'red');>No<br></a>";
+	setTimeout("_$('status_message').style.display='none';", 10000);
+	int_handle = setInterval("_$('counter').innerHTML = (_$('counter').innerHTML - 1);", 1000);
+	setTimeout("clearInterval(int_handle);", 10000);
 
+	return true;
 }
 
 function load_config_tool() { 
@@ -478,6 +405,7 @@ function localajaxinit() {
 		widgets[fieldnames[x]] = _$(fieldnames[x]);
 		widgets[fieldnames[x]].disabled = true;
 	}
+	parent._$('tooltip').innerHTML = "The <b>Digital</b> Page is for setting up options equivilent to the options in zaptel.conf. Click \'Save Changes\' to apply the settings recorded here and restart zaptel (ztcfg)";
 }
 
 function free_mem(){
@@ -498,22 +426,26 @@ function free_mem(){
 <select disabled size="1" id="devices" style="display:none"></select><input type='button' id='delete' value='Delete' style="display:none">
 <BR>
 <center>
-<font size="+1">Digital Card Setup</font>
+<font size="+1">Digital Card Setup</font><br>
+<span style="cursor: pointer; cursor: hand;" onclick="refresh_alarms();" >&nbsp;Click to refresh alarms.&nbsp;<img src="images/refresh.png" title=" Refresh " border=0 ></span>
 <div style="width:500;height:250; overflow :auto;">
         <table class="taglist" id="digitalcardstable" cellpadding=2 cellspacing=1 border=0 align=center width=500></table>
 </div>
-<table class="table_black" cellpadding=2 cellspacing=2 border=0 align=center width=500 id="table_one">
-	<tr>	<td width=20>Span</td>
-		<td width="80">Framing/Coding</td>
-		<td id="id_type"></td>
-		<td width="90" align="center"></td>
-	</tr>
-</table>
-<div id="spanTable_div" style="height:430px;width=100%; overflow :auto; padding : 0px 0px 0px 0px;">
-<table id="spanTable" cellpadding=2 cellspacing=1 border=0 align=center width=500 bgcolor="#DEDEDE"></table>
+<div id="save_changes_id">
+<span type='button' onclick="save_changes();" class="downmenubutton" value='Save Changes'>Save Changes</span>
+</div>
+<br><br>
+__________________________________________________________________________________________________
+<br>
+<div><fieldset  style="width: 190px;">
+<legend>&nbsp;Options&nbsp;</legend>
+<br>
+<ul class="navlist">
+	<li><span type='button' onclick="backup_zap();" class="downmenubutton" value='Backup Zaptel'>Backup Zaptel Config</span></li>
+</ul>
+</div>
 </div>
 </center>
-</div>
 <div id="mymenu" class="mymenu" style="display:none"></div>
 <div style="display:none;visibility:hidden">
 	<tr>	<td class="field_text">Active:</td>
