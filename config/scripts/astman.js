@@ -38,6 +38,7 @@ var asterisk_rawmanPath = "../../rawman" ;
 var asterisk_guiConfigFile = "guipreferences.conf"; // will be created in asterisk_configfolder, if the file does not exist 
 var asterisk_configfolder = "/etc/asterisk/";
 var asterisk_guiListFiles = "sh " + asterisk_scriptsFolder + "listfiles" ;
+var asterisk_zaptelConfig = "/etc/zaptel.conf";
 
 var asterisk_guiTDPrefix = "DID_";
 var TIMERULES_CATEGORY = 'timebasedrules';

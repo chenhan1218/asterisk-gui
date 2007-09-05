@@ -121,6 +121,7 @@ var divs_tohide = new Array('osversion_div', 'uptime_div', 'asterisk_div', 'toda
 var has_spans = 0; /* Count of our spans we have, incrementing each time. */
 var total_spans = 0; /* Count of our spans that ztscan.conf says we have */
 var old_zap = 0;
+var isrefresh = 0;
 var widgets = {};
 var fieldnames = [ 'active', 'alarms', 'description', 'name', 'totchans', 'fac', 'lbo' ]; 
 var fieldnames_clickable = [ 'active', 'fac', 'lbo' ]; 
@@ -212,6 +213,7 @@ function refresh_alarms() {
 	setTimeout("_$('status_message').style.display='none'", 5000);
 	_$('message_text').innerHTML = "Re-Detecting Digital Cards and Alarms... ";
 	/* Give ztscan 4 seconds to detect and write to ztscan.conf */
+	isrefresh = 1;
 	parent.astmanEngine.run_tool(asterisk_guiZtscan, function(t) {
 		setTimeout('load_config_tool()', 4000); 
 	});
@@ -248,10 +250,14 @@ function option_clicked(a) {
 	alert(a);
 	return true;
 }
+
 function digitalparse(n) { 
 
 	var l, h;
 	var box = _$('digitalcardstable');
+	if(isrefresh == 1) {
+		box.innerHTML = "";
+	}
 	var _class = 0;
 	for( l in n ){	if(n.hasOwnProperty(l)){
 		if( l =='general') { 
@@ -363,13 +369,23 @@ function save_changes() {
 	return true;
 }
 
+/* here we will actually backup zaptel.conf to the user defined setting. */
+function backup_zap_real() {
+	var _zc = _$('zap_conf_name').value;
+	var zap_conf = "zaptel.conf.bak";
+	if(!_zc.length) {
+		gui_alert("Not Backup Config Specified! Defaulting to zaptel.conf.bak");
+	} else {
+		zap_conf = _zc;
+	}
+	parent.astmanEngine.run_tool("cp " + asterisk_zaptelConfig + " /etc/" + zap_conf, callback = function(t) { return true; });
+}
+
 function backup_zap() {
-	alert("this is being worked on...");
-	return true;
 	/* function to grab the values of fields, and call the bash script to apply the changes and run ztcfg */
 	_$('status_message').style.display="block";
 	_$('status_message').innerHTML = '<TABLE border=0 cellpadding=0 cellspacing=4 align=center><TR><TD><img src="/asterisk/static/config/images/loading.gif"></TD><TD><div id=message_text></div></TD></TR></TABLE>';
-	_$('message_text').innerHTML = "Time: <div id='counter'>10</div>Are you sure you want to apply settings to zaptel.conf and restart zaptel? (run ztcfg)<BR>1. <A href=\"#\" class=\"splbutton\" onclick=\"_$('status_message').style.display='none'; get_params_and_ztcfg();\">Yes</A><br>2. <A href=\"#\" class=\"splbutton\" onclick=\"_$('status_message').style.display='none'; gui_feedback('You Chose not to save your settings.', 'red');>No<br></a>";
+	_$('message_text').innerHTML = "Time: <div id='counter'>10</div>Backup zaptel.conf to /etc/<input id=\"zap_conf_name\" width=\"15\" value=\"zaptel.conf.bak\" class=\"input8\"></input><BR>1. <A href=\"#\" class=\"splbutton\" onclick=\"_$('status_message').style.display='none'; backup_zap_real();\">Yes</A><br>2. <A href=\"#\" class=\"splbutton\" onclick=\"_$('status_message').style.display='none'; gui_feedback('You Chose not to save your settings.', 'red');>No<br></a>";
 	setTimeout("_$('status_message').style.display='none';", 10000);
 	int_handle = setInterval("_$('counter').innerHTML = (_$('counter').innerHTML - 1);", 1000);
 	setTimeout("clearInterval(int_handle);", 10000);
