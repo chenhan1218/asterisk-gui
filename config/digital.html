@@ -40,8 +40,15 @@
 		color: black;
 		text-decoration: underline;
 	}
+	
+	.tr3 {
+		background-color: red;
+		color: black;
+		text-decoration: underline;
+	}
 
-	.tr0 td, .tr1 td, .tr2 td {
+
+	.tr0 td, .tr1 td, .tr2 td, .tr3 td {
 		font-size: xx-small;
 	}
 
@@ -116,6 +123,7 @@
 
 var sysinfocallbacks = new Object;
 var zt_cb = new Object;
+var SPANS = new Object;
 var tabs = new Array('tab1', 'tab2', 'tab3');
 var divs_tohide = new Array('osversion_div', 'uptime_div', 'asterisk_div', 'today_div','hostname_div','ifconfig_div','df_div','memory_div');
 var has_spans = 0; /* Count of our spans we have, incrementing each time. */
@@ -126,6 +134,8 @@ var widgets = {};
 var fieldnames = [ 'active', 'alarms', 'description', 'name', 'totchans', 'fac', 'lbo' ]; 
 var fieldnames_clickable = [ 'active', 'fac', 'lbo' ]; 
 var fieldnames_proper = [ 'Out Of Alarm:', 'Alarms:', 'Card Description:', 'Card Name:', 'Total Channels:', 'Framing/Coding:', 'Line Build Out:' ]; 
+var fieldnames_zap_opts = [ 'loadzone', 'defaultzone'];
+var framing_and_coding = [ "esf,b8zs", "d4,ami", "cas,ami", "ccs,hdb3", "ccs,crc4,hdb3"];
 
 /* This page is based off of sample.html, the gui tutorial on writing a page */
 
@@ -234,6 +244,24 @@ function create_table_names() {
 	return true;
 
 }
+
+function create_table_options() {
+	return true;
+	/* I am not sure what I want to do here yet, whether give the user the option to configure all zaptel.conf related stuff...or not */
+	var box = _$('digitalcardstable');
+	var tr = document.createElement("tr");
+	tr.className="tr3";	
+	for(var i=0; i < fieldnames_zap_opts.length; i++) {
+		var td = document.createElement("td");
+		td.appendChild(document.createTextNode(fieldnames_zap_opts[i]));
+		td.setAttribute("id", fieldnames_zap_opts[i]);
+		tr.appendChild(td);	
+	}
+	box.appendChild(tr);	
+	return true;
+
+}
+
 function isInt(x) {
 	var y=parseInt(x);
 	if (isNaN(y)) return false;
@@ -256,6 +284,7 @@ function digitalparse(n) {
 	var l, h;
 	var box = _$('digitalcardstable');
 	if(isrefresh == 1) {
+		/* We want to reset our table, so that we do not append to it. */
 		box.innerHTML = "";
 	}
 	var _class = 0;
@@ -272,6 +301,9 @@ function digitalparse(n) {
 			}
 			if(n[l]['continue'] && n[l]['continue'] == "yes") {
 				total_spans = (n[l]['totalspans']) ? n[l]['totalspans'] : 'Unknown';
+				for(var z=1; z < total_spans; z++) {
+					SPANS[z] = new Array();
+				}
 				has_spans=1;
 				if(n[l]['isnew'] && n[l]['isnew'] == "yes") {
 					var uri = build_action('update', 0, 'general', 'isnew', 'no', '');
@@ -332,7 +364,7 @@ function digitalparse(n) {
 							td.setAttribute("style", 'color:yellow');
 							break;
 						default:
-							td.setAttribute("style", 'color:red');
+							td.className = "tr3";
 							break;
 					}
 				}
@@ -349,14 +381,37 @@ function digitalparse(n) {
 		parent._$('tooltip').innerHTML = "<B>Framing/Coding/Line Build Out:</B><br>To see this requires rev: 2986 of the 1.4 branch of zaptel.";
 	}
 
+	create_table_options(); /* create zaptel.conf general options */
 	_$('tablecontainer').style.display="";
 	_$('tablecontainer').style.visibility="";
 	_$('status_message').style.display='none';
 	_$('save_changes_id').style.display="";
+	append_selectboxes();
 
 	return true;
 }
 
+function append_selectboxes() {
+	for(var i=1; i < (total_spans + 1); i++ ){
+		for(var x=0; x < fieldnames_clickable.length; x++) {
+			if(fieldnames_clickable[x] == "fac") {
+				var tmp_sel = "";
+				for(var y=0; y < framing_and_coding.length; y++) {
+					tmp_sel += '<option value='+framing_and_coding[y]+'>'
+					tmp_sel += framing_and_coding[y];
+					tmp_sel += '</option>'
+				}
+				tmp_sel += '</select>';
+				var tmp_id = i+'-'+fieldnames_clickable[x];
+				var ofid = _$(tmp_id);
+				if(ofid) {
+					ofid.innerHTML = '<select class="input9" id="'+i+'-'+fieldnames_clickable[x]+'-sel">'+tmp_sel;
+				}
+			}
+		}
+	}	
+	return true;
+}
 function save_changes() {
 	/* function to grab the values of fields, and call the bash script to apply the changes and run ztcfg */
 	_$('status_message').style.display="block";
