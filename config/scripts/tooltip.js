@@ -344,3 +344,4 @@ function show_tooltip(event){
 	tooltips['digital'].en['Total Channels:'] = "<B>Total Channels:</B> This is the count of the TOTAL channels availible on a particular span, not just the configured ones.";
 	tooltips['digital'].en['Framing/Coding:'] = "<B>Framing/Coding:</B> Drop down box for enabling the changing of Framing/Coding. The first option is your current Framing/Coding";
 	tooltips['digital'].en['Line Build Out:'] = "<B>Line Build Out:</B> The current LBO (Line Build Out) of the span.";
+	tooltips['digital'].en['Sync Source:'] = "<B>Sync Source:</B> Your Zaptel Sync Source. Can be one of any spans, or 0 for non master";

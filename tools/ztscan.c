@@ -248,19 +248,19 @@ int scanspans() {
 			snprintf(lbos, sizeof(lbos), "%s", lbostr[s[x].lbo]);
 			if(!strncmp(ret, "OK", 2)) {
 				printf("Span %d has Alarm: %s\n", x, ret);
-				fprintf(conf, "\n[%d]\nactive=yes\nalarms=%s\ndescription=%s\nname=%s\ntotchans=%d\nusedchans=%d\nfac=%s\nlbo=%s\n", x, ret, s[x].desc, s[x].name, s[x].totalchans, s[x].numchans, fac, lbos);
+				fprintf(conf, "\n[%d]\nactive=yes\nalarms=%s\ndescription=%s\nname=%s\ntotchans=%d\nusedchans=%d\nfac=%s\nlbo=%s\nsyncsrc=%d\n", x, ret, s[x].desc, s[x].name, s[x].totalchans, s[x].numchans, fac, lbos, s[x].syncsrc);
 			} else {
 				printf("Span %d has Alarm: %s\n", x, ret);
-				fprintf(conf, "\n[%d]\nactive=no\nalarms=%s\ndescription=%s\nname=%s\ntotchans=%d\nusedchans=%d\nfac=%s\nlbo=%s\n\n", x, ret, s[x].desc, s[x].name, s[x].totalchans, s[x].numchans, fac, lbos);
+				fprintf(conf, "\n[%d]\nactive=no\nalarms=%s\ndescription=%s\nname=%s\ntotchans=%d\nusedchans=%d\nfac=%s\nlbo=%s\nsyncsrc=%d\n", x, ret, s[x].desc, s[x].name, s[x].totalchans, s[x].numchans, fac, lbos, s[x].syncsrc);
 			}
 
 #else
 			if(!strncmp(ret, "OK", 2)) {
 				printf("Span %d has Alarm: %s\n", x, ret);
-				fprintf(conf, "\n[%d]\nactive=yes\nalarms=%s\ndescription=%s\nname=%s\ntotchans=%d\nusedchans=%d\nfac=NODEF\nlbo=NODEF\n", x, ret, s[x].desc, s[x].name, s[x].totalchans, s[x].numchans);
+				fprintf(conf, "\n[%d]\nactive=yes\nalarms=%s\ndescription=%s\nname=%s\ntotchans=%d\nusedchans=%d\nfac=NODEF\nlbo=NODEF\nsyncsrc=%d\n", x, ret, s[x].desc, s[x].name, s[x].totalchans, s[x].numchans, s[x].syncsrc);
 			} else {
 				printf("Span %d has Alarm: %s\n", x, ret);
-				fprintf(conf, "\n[%d]\nactive=no\nalarms=%s\ndescription=%s\nname=%s\ntotchans=%d\nusedchans=%d\nfac=NODEF\nlbo=NODEF\n", x, ret, s[x].desc, s[x].name, s[x].totalchans, s[x].numchans );
+				fprintf(conf, "\n[%d]\nactive=no\nalarms=%s\ndescription=%s\nname=%s\ntotchans=%d\nusedchans=%d\nfac=NODEF\nlbo=NODEF\nsyncsrc=%d\n", x, ret, s[x].desc, s[x].name, s[x].totalchans, s[x].numchans, s[x].syncsrc);
 			}
 #endif
 		span++;
