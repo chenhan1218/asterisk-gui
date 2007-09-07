@@ -42,5 +42,8 @@ clean:
 	rm -f zapscan.o
 	rm -f zapscan.bin
 	rm -f ztscan
+	rm -f /sbin/zapscan.bin
+	rm -f /sbin/zapscan
+	rm -f /sbin/ztscan
 
 .PHONY: all install clean
