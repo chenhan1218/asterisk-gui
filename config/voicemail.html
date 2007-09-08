@@ -34,7 +34,7 @@ var callbacks = new Object;
 var usercallbacks = new Object;
 var voicemailcallbacks = new Object;
 var localextenlength;
-var vmfields = ['attach' ,'attachfmt' ,'cancel' ,'emailonly' ,'envelope' ,'maxgreet' ,'maxmessage' ,'maxmsg' ,'minmessage' ,'operator' ,'review' ,'save' ,'saycid' ,'sayduration'];
+var vmfields = ['attach' ,'attachfmt' ,'cancel' ,'deletevoicemail' ,'envelope' ,'maxgreet' ,'maxmessage' ,'maxmsg' ,'minmessage' ,'operator' ,'review' ,'save' ,'saycid' ,'sayduration'];
 
 var fields = new Array('name');
 
@@ -123,7 +123,7 @@ callbacks.newsubitem = function() {
 }
 
 callbacks.postselect = function(box, val) {
-	var fields_to_disable  = new Array('attach', 'saycid', 'sayduration', 'emailonly', 'maxmsg', 'maxmessage', 'minmessage', 'operator', 'attachfmt', 'review', 'envelope', 'maxgreet');
+	var fields_to_disable  = new Array('attach', 'saycid', 'sayduration', 'deletevoicemail', 'maxmsg', 'maxmessage', 'minmessage', 'operator', 'attachfmt', 'review', 'envelope', 'maxgreet');
 	parent.$('tooltip').innerHTML = parent.tooltip_default ; 
 	if( box.selectedIndex == -1)
 		return true;
@@ -388,7 +388,7 @@ function free_mem( ){
 			<div>	<fieldset  style="width: 225px;">
 				<legend>&nbsp;Playback Options:&nbsp;</legend>
 				<table align='center' cellpadding=1 cellspacing=0 border=0 width=270>
-				<tr>	<td><input type='checkbox' id='emailonly'></td>
+				<tr>	<td><input type='checkbox' id='deletevoicemail'></td>
 					<td class="field_text" tip="en,voicemail,4">Send messages by e-mail only</td>
 				</tr>
 
