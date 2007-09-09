@@ -435,11 +435,15 @@ function delete_rule(f,y){
 function form_updatevalues(f){
 	_$('id_rulename').value = timebasedrules[f].rulename;
 
-	_$('startime_hour').selectedIndex = parseInt(timebasedrules[f].ruleconditons.fromhour);
-	_$('startime_minute').selectedIndex = parseInt(timebasedrules[f].ruleconditons.fromminutes);
+	var fh = timebasedrules[f].ruleconditons.fromhour;
+	var fm = timebasedrules[f].ruleconditons.fromminutes;
+	var th = timebasedrules[f].ruleconditons.tohour;
+	var tm = timebasedrules[f].ruleconditons.tominutes;
 
-	_$('endtime_hour').selectedIndex = parseInt(timebasedrules[f].ruleconditons.tohour);
-	_$('endtime_minute').selectedIndex = parseInt(timebasedrules[f].ruleconditons.tominutes);
+	_$('startime_hour').selectedIndex = fh;
+	_$('startime_minute').selectedIndex = fm;
+	_$('endtime_hour').selectedIndex = th;
+	_$('endtime_minute').selectedIndex = tm;
 
 	var find_index = function(el,val){
 		for(var t=0; t< el.options.length; t++){
