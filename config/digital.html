@@ -336,10 +336,10 @@ function digitalparse(n) {
 				_class = 0;
 			}
 			/* if alarms is red, make cell red, else make cell green/yellow etc. */
+			SPANS[l].en = new Array;
 			for(var i=0; i < fieldnames.length; i++) {
 				var td = document.createElement("td");
 				/* save our information for global use... */
-				SPANS[l].en = new Array;
 				SPANS[l].en[fieldnames[i]] = n[l][fieldnames[i]];
 				/* dumb hack because we cannot use multidimentional arrays */
 				if(fieldnames[i] == 'lbo' && n[l][fieldnames[i]] == "NODEF") {
@@ -472,21 +472,25 @@ function append_selectboxes() {
 
 /* function to select the proper framing/coding || lbo and sync source as specified */
 function select_correct_index() {
+	var find_index = function(el,val,sec) {
+		for(var t=0; t < el.options.length; t++) {
+			if(sec == 'fac') {
+				var l = val.toLowerCase();
+				l = l.replace('/', ',');
+				if(el.options[t].value == l) { el.selectedIndex = t; return; }
+			} else {
+				if(el.options[t].value == val) { el.selectedIndex = t; return; }
+			}
+		}
+	}
+
 	for(var i=1; i < (total_spans + 1); i++ ){
 		for(var x=0; x < fieldnames_clickable.length; x++) {
 			var tmp_id = i+'-'+fieldnames_clickable[x]+'-sel';
-			var ofid = _$(tmp_id);
-			if(ofid) {
-				for(var w=0; w < fieldnames.length; w++) {
-				alert(ofid.options[w].value + SPAN[i].en['fac']);
-					if(ofid.options[w].value.length) {
-						if(ofid.options[w].value == SPAN[i].en['fac'])
-							alert("zomgz");
-					}
-				}
+			find_index(_$(tmp_id), SPANS[i].en[fieldnames_clickable[x]], fieldnames_clickable[x]);
 			}
 		}
-	}	
+	return true;
 }
 function save_changes() {
 	/* function to grab the values of fields, and call the bash script to apply the changes and run ztcfg */

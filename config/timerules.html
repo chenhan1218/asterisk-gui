@@ -446,6 +446,7 @@ function form_updatevalues(f){
 	_$('endtime_minute').selectedIndex = tm;
 
 	var find_index = function(el,val){
+		alert("el is " + el + " val is " + val);
 		for(var t=0; t< el.options.length; t++){
 			if( el.options[t].value == val){ el.selectedIndex = t; return; }
 		}
