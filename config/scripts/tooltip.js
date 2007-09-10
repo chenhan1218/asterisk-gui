@@ -42,6 +42,7 @@ function show_tooltip(event){
 	tooltips['users'] .en[22] = "<B>NAT:</B> Try this setting when Asterisk is on a public IP, communicating with devices hidden behind a NAT device (broadband router). If you have one-way audio problems, you usually have problems with your NAT configuration or your firewall's support of SIP+RTP ports.";
 	tooltips['users'] .en[23] = "<B>DTMFMode:</B> Set default dtmfmode for sending DTMF. Default: rfc2833 <BR><B>Other options:</B><BR>info : SIP INFO messages<BR>inband : Inband audio (requires 64 kbit codec -alaw, ulaw)<BR>auto : Use rfc2833 if offered, inband otherwise";
 	tooltips['users'] .en[24] = "<B>Codecs:</B> Click to select the codecs that asterisk has to offer, for the particular user.";
+	tooltips['users'] .en[25] = "<B>Email Only:</B> Send Voicemail to email only, do not store in the mailbox.";
 	tooltips['users'] .en[99] = "<B>Phone Serial:</B> Enter the serial number of a Polycom phone to enable phone provisioning." ;
 
 // Tooltips for Conferencing (meetme)

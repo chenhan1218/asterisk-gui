@@ -30,7 +30,7 @@ var widgets = new Object;
 var callbacks = new Object;
 var extencallbacks = new Object;
 var allcodecs = new Array;
-var fieldnames = ['callwaiting' ,'cancel' ,'cid_number' ,'context' ,'delete' ,'email' ,'fullname' ,'group' ,'hasagent' ,'hasdirectory' ,'hasiax' ,'hasmanager' ,'hassip' ,'hasvoicemail' ,'host' ,'mailbox' ,'name' ,'new' ,'save' ,'secret' ,'threewaycalling' ,'vmsecret' ,'zapchan', 'registeriax', 'registersip','canreinvite','nat','dtmfmode', 'disallow','allow'];
+var fieldnames = ['callwaiting' ,'cancel' ,'cid_number' ,'context' ,'delete' ,'email' ,'fullname' ,'group' ,'hasagent' ,'hasdirectory' ,'hasiax' ,'hasmanager' ,'hassip' ,'hasvoicemail' ,'deletevoicemail' ,'host' ,'mailbox' ,'name' ,'new' ,'save' ,'secret' ,'threewaycalling' ,'vmsecret' ,'zapchan', 'registeriax', 'registersip','canreinvite','nat','dtmfmode', 'disallow','allow'];
 
 var localextenlength = 4;
 var allow_aliasextns = "no";
@@ -190,6 +190,8 @@ callbacks.postselect = function(box, val) {
 			return true;
 		}
 	}
+	showhide();
+	/* check to see if we need to display out email/voicemail settings. */
 	_$('codecs_text').innerHTML = 'disallow: '+ _$('disallow').value + ' <BR> allow:' + _$('allow').value ;
 }
 
@@ -432,7 +434,20 @@ CODECSETTINGS = {
 	}
 }
 
-
+function showhide() {
+	var t = _$('hasvoicemail');
+	var fields_z = ['deletevoicemail', 'deletevoicemail_2', 'deletevoicemail_3']
+	if(t.checked) {
+		for(var x=0; x < fields_z.length; x++) {
+			_$(fields_z[x]).style.display="";
+		}
+	} else {
+		for(var x=0; x < fields_z.length; x++) {
+			_$(fields_z[x]).style.display="none";
+		}
+	}
+	return true;	
+}
 </script>
 <body id="foo" onload="localajaxinit()"  bgcolor="#EFEFEF" onunload="free_mem()">
 <div class="mainscreenTitleBar">
@@ -470,11 +485,15 @@ CODECSETTINGS = {
 					<legend>&nbsp;Extension Options:&nbsp;</legend>
 				<table align='center' width=270 cellpadding=1 cellspacing=1>
 				<tr>
-					<td width=40 align=right><input type='checkbox' id='hasvoicemail'></td>
+					<td width=40 align=right><input onClick="showhide();" type='checkbox' id='hasvoicemail'></td>
 					<td class="field_text" tip="en,users,8">Voicemail</td>
 
 					<td align=right><input type='checkbox' id='hasdirectory'></td>
 					<td class="field_text" tip="en,users,9">In Directory</td>
+				</tr>
+				<tr id='deletevoicemail_3' style="display:none">
+					<td width=40 align=right><input style="display:none" type='checkbox' id='deletevoicemail'></td>
+					<td style="display:none" id='deletevoicemail_2' class="field_text" tip="en,users,25">Email Only</td>
 				</tr>
 				<tr>
 					<td align=right><input type='checkbox' id='hassip'></td>
