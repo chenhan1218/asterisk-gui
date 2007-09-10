@@ -137,8 +137,8 @@ var fieldnames_proper = [ 'Alarms:', 'Sync Source:', 'Card Description:', 'Total
 var fieldnames_zap_opts = [ 'loadzone', 'defaultzone'];
 
 /* Our select boxes for framing/coding and line build out */
-var framing_and_coding = [ "esf,b8zs", "d4,ami", "cas,ami", "ccs,hdb3", "ccs,crc4,hdb3"];
-var framing_and_coding_nice = [ "ESF/B8ZS", "D4/AMI", "CAS/AMI", "CCS/HDB3", "CCS/CRC4/HDB3"];
+var framing_and_coding = [ "esf,b8zs", "d4,ami", "cas,ami", "ccs,hdb3", "ccs,crc4,hdb3", "fxoks", "fxols", "fxsks", "fxsls"];
+var framing_and_coding_nice = [ "ESF/B8ZS", "D4/AMI", "CAS/AMI", "CCS/HDB3", "CCS/CRC4/HDB3", "FXOKS", "FXOLS", "FXSKS", "FXSLS"];
 
 /* _______________________________________________________ */
 
@@ -274,16 +274,54 @@ function isInt(x) {
 	var y=parseInt(x);
 	if (isNaN(y)) return false;
 		return x==y && x.toString()==y.toString();
+}
+
+function build_span_config(span) {
+	return "yay";
 } 
 
 function run_zt_and_restart() {
 	/* this function will run ztcfg and reload the page. */
+	parent.needs_reloadzap = 1;
 	gui_feedback("Save Completed.", 'blue');
 	
 }
 
 function get_params_and_ztcfg() {
 	/* this function will get all the values out of all the fields, build a zaptel.conf file, then write it and run ztcfg */
+	parent.needs_reloadzap = 1;
+	var dchans = 0;
+	var bchans = 1;
+	var ZAPTEL = new Object;
+	for(var i=1; i < (total_spans + 1); i++ ){
+		var arr = (i - 1);
+		ZAPTEL[i] = new Object;
+		ZAPTEL[i].en = new Array;
+		for(var x=0; x < fieldnames_clickable.length; x++) {
+			var tmp_id = i+'-'+fieldnames_clickable[x]+'-sel';
+			var tmp_b = _$(tmp_id);
+			ZAPTEL[i].en[fieldnames_clickable[x]] = tmp_b.options[tmp_b.selectedIndex].value;
+		}
+		/*	switch(val) {
+				case "fxoks":
+				case "fxols":
+				case "fxsks":
+				case "fxsls":
+					break;
+				case "esf,b8zs":
+				case "d4,ami":
+					alert("esf/b8zs or something");
+					break;
+				case "cas,ami":
+				case "ccs,hdb3":
+				case "css,crc4,hdb3":
+					break;
+			}
+		*/
+
+	}
+	alert(ZAPTEL);
+
 	gui_alert("This is a place holder, if you see this its probably because you need to run ztcfg, and running it is not in this page yet.");
 }
 
@@ -338,7 +376,7 @@ function digitalparse(n) {
 			/* if alarms is red, make cell red, else make cell green/yellow etc. */
 			SPANS[l].en = new Array;
 			for(var i=0; i < fieldnames.length; i++) {
-				var td = document.createElement("td");
+			var td = document.createElement("td");
 				/* save our information for global use... */
 				SPANS[l].en[fieldnames[i]] = n[l][fieldnames[i]];
 				/* dumb hack because we cannot use multidimentional arrays */
