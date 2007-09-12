@@ -59,7 +59,7 @@ function add_extension(a){
 
 function delete_extension(a){
 	// delete extension 'a' in extensions.conf
-	var uri = build_action('delete', 0, specialcontext ,'exten', '',a+',1,Answer(); 
+	var uri = build_action('delete', 0, specialcontext ,'exten', '',a+',1,Answer()'); 
 	uri += build_action('delete', 1, specialcontext ,'exten', '',a+',1,Queue(${EXTEN})'); 
 	makerequest('u','extensions.conf', uri, function(t){return true;});
 }
