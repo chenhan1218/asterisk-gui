@@ -436,6 +436,7 @@ callbacks.newcategory = function() {
 	_$('analog').style.display="none";
 	_$('voip').style.display="none";
 	_$('customvoip').style.display="none";
+	_$('digital').style.display="none";
 	_$('userscontent_title').innerHTML = "Add Service Provider";
 	isnewtrunk = 1;
 
@@ -514,6 +515,7 @@ function activateanalogvoip() {
 	_zcal.innerHTML ="";
 	_$('customvoip').style.display = "none" ;
 	_$('voip').style.display= "none";
+	_$('digital').style.display="none";
 	var disablestring;
 
 	if (_$('trunkstyleanalog').checked) {
