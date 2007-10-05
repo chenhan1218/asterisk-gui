@@ -135,6 +135,7 @@ var isrefresh = 0;
 var widgets = {};
 var zap_settings = [ 'switchtype', 'signalling', 'echocancel', 'echocancelwhenbridged', 'rxgain', 'txgain', 'group' ]; 
 var fieldnames_clickable = [ 'fac', 'lbo', 'syncsrc', 'totchans' ]; 
+var fieldnames_clickable_zap = [ 'fac', 'syncsrc', 'totchans' ]; 
 var fieldnames = [ 'alarms', 'syncsrc', 'description', 'totchans', 'fac', 'lbo' ]; 
 var fieldnames_proper = [ 'Alarms:', 'Sync Source:', 'Card Description:', 'Total Channels:', 'Framing/Coding:', 'Options:' ]; 
 var fieldnames_zap_opts = [ 'loadzone', 'defaultzone'];
@@ -409,10 +410,10 @@ function get_params_and_ztcfg() {
 	for(var i=1; i <= total_spans; i++ ){
 		ZAPTEL[i] = new Object;
 		ZAPTEL[i].en = new Array;
-		for(var x=0; x < fieldnames_clickable.length; x++) {
-			var tmp_id = i+'-'+fieldnames_clickable[x]+'-sel';
+		for(var x=0; x < fieldnames_clickable_zap.length; x++) {
+			var tmp_id = i+'-'+fieldnames_clickable_zap[x]+'-sel';
 			var tmp_b = _$(tmp_id);
-			ZAPTEL[i].en[fieldnames_clickable[x]] = tmp_b.options[tmp_b.selectedIndex].value;
+			ZAPTEL[i].en[fieldnames_clickable_zap[x]] = tmp_b.options[tmp_b.selectedIndex].value;
 		//	alert("showing val for span " + i + " for val: " + fieldnames_clickable[x] + " is : " + ZAPTEL[i].en[fieldnames_clickable[x]]);
 		}
 		ZAPTEL[i].en['config'] = "span="+i+","+ZAPTEL[i].en['syncsrc']+","+ZAPTEL[i].en['lbo']+","+ZAPTEL[i].en['fac'];
