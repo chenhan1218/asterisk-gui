@@ -199,6 +199,30 @@ static const char *sigtype_to_str(const int sig)
 	}
 }
 
+/* function to parse the configuration file for continue = yes/no */
+int parse_value(FILE *conf, char var[10]) {
+
+	char val[96];
+	char *var_pt, *sep, *val_pt = val;
+	
+	var_pt = strdup(var);
+
+	while(!feof(conf)) {
+		if(fgets(val_pt, sizeof(val) - 1, conf)) {
+			if(!strncasecmp(val_pt, var_pt, strlen(var))) {
+				sep = strsep(&val_pt, "=");
+				sep = strsep(&val_pt, "=");
+				if(!strncmp(sep, "yes", strlen("yes"))) {
+					return 1;
+				} else {
+					return 0;
+				}
+			}
+		}
+	}
+	return 0;
+}
+
 /* function to scan for spans and return 0 for error and anything else for true */
 int scanspans() {
 
@@ -227,8 +251,12 @@ int scanspans() {
 	}
 
 	if(!conf_check) {
-		/* ztscan.conf did not previously exist.  */
 		isnew = 1;
+	} else {
+		if(parse_value(conf_check, "continue")) {
+			/* ztscan.conf did not previously exist.  */
+			isnew = 1;
+		}
 	}
 	if(!conf) {
 		printf("cannot open config file /etc/asterisk/ztscan.conf for writing\n");
@@ -273,24 +301,6 @@ int scanspans() {
 	if(conf) 
 		fclose(conf);
 	return 1;
-}
-
-static int reloadmodules(char *type) 
-{
-
-	system("for i in `lsmod | grep zap| sed 's/,/ /g'`; do rmmod $i >> /dev/null; done; rmmod zaptel"); /* this is a horrible hack :[ */
-	if(!strcmp(type, "e1")) {
-		if(debug)
-			printf("Setting modules into e1\n");
-		system("modprobe zaptel; modprobe zttranscode; modprobe wct4xxp t1e1override=1; modprobe wcte11xp t1e1override=1; modprobe wct1xxp t1e1override=1; ztcfg");
-		/*XXX rmmod and modprobe with e1 settings */
-	} 
-	if(!strcmp(type, "t1")) {
-		if(debug)
-			printf("Setting modules into t1\n");
-		system("modprobe zaptel; modprobe zttranscode; modprobe wct4xxp t1e1override=0; modprobe wcte11xp t1e1override=0; modprobe wct1xxp t1e1override=0; ztcfg");
-	}
-	return 1;	
 }
 
 int main(int argc, char *argv[])

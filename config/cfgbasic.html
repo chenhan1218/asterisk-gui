@@ -45,6 +45,34 @@ var newMSpanel = function(s){
 	MainScreenPanels.push(r);
 };
 
+function updateMainScreenPanels(){
+	MainScreenPanels = [];
+	newMSpanel( ["Home", "home.html", "Asterisk Configuration Panel - Please click on a panel to manage related features"]);
+	newMSpanel( ["Users", "users.html", "Users is a short cut for quickly adding and removing all the necessary configuration components for any new phone."]);
+	newMSpanel( ["Conferencing", "meetme.html", "MeetMe conference bridging allow quick, ad-hoc conferences with or without security."]);
+	newMSpanel( ["Voicemail", "voicemail.html", "General settings for voicemail"]);
+	newMSpanel( ["Call Queues", "queues.html", "Call queues allow calls to be sequenced to one or more agents."]);
+	newMSpanel( ["Service Providers", "trunks.html", "Service Providers are outbound lines used to allow the system to make calls to the real world.  Trunks can be VoIP lines or traditional telephony lines."]);
+	newMSpanel( ["Digital Config(beta)", "digital.html", "Digital Configuration and setup allow the user to detect all digital cards (t1/e1/j1) and configure them. The user can access each individual line property, and also set each line as a trunk."]);
+	newMSpanel( ["mISDN Configuration", "misdn.html", "mISDN configuration from the asterisk GUI"]);
+	newMSpanel( ["Calling Rules", "numberplan.html", "The Calling Rules define dialing permissions and least cost routing rules."]);
+	newMSpanel( ["Incoming Calls", "incoming.html", "Define how your incoming calls should be handled & configure DID (Direct inward Dialing)"]);
+	newMSpanel( ["Voice Menus", "menus.html", "Menus allow for more efficient routing of calls from incoming callers. Also known as IVR (Interactive Voice Response) menus or Digital Receptionist"]);
+	newMSpanel( ["Time Based Rules", "timerules.html", "define call routing rules based on date and time"]);
+	newMSpanel( ["Call Parking", "callparking.html", "configure call parking features"]);
+	newMSpanel( ["Ring Groups", "ringgroups.html", "define RingGroups to dial more than one extension"]);
+	newMSpanel( ["Record a Menu", "record.html", "Allows you to record custom voicemenus over a phone"]);
+	newMSpanel( ["Active Channels", "status.html", "Monitor active channels."]);
+	newMSpanel( ["Graphs", "graphs.html", "View Graphs of your System Information."]);
+	newMSpanel( ["System Info", "sysinfo.html", "System Information."]);
+	newMSpanel( ["Asterisk Logs", "syslog.html", "Asterisk Log messages."]);
+	// newpanel( ["CDR Configuration", "cdr_conf.html", "CDR Engine Configuration."]); // Uncomment when cdr_conf.html is finished, there are still some errors. 
+	newMSpanel( ["CDR Reader", "cdr.html", "Read all your call records from Asterisk."]);
+	newMSpanel( ["File Editor", "feditor.html", "Edit Asterisk Config Files"]);
+	newMSpanel( ["Asterisk CLI", "cli.html", "Asterisk Command Line Interface"]);
+	newMSpanel( ["Backup", "backup.html", "Backup Management."]);
+	newMSpanel( ["Options", "localexts.html", "Admin Settings"]);
+}
 
 function fit_toScreen(){
 	var t = ASTGUI.displayHeight();
