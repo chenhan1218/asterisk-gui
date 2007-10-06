@@ -123,7 +123,9 @@ function showtable(){ // navigates through the SPANS object and presents as a ta
 		newCell2.innerHTML =  SPANS[span]['fac'];
 
 		var newCell3 = newRow.insertCell(3);
-		newCell3.innerHTML = String(SPANS[span]['usedchans']) + "/" + String(SPANS[span]['totchans']);
+		var type = (SPANS[span]['totchans'] <= 24) ? "T1" : "E1";
+		SPANS[span]['type'] = type;
+		newCell3.innerHTML = String(SPANS[span]['usedchans']) + "/" + String(SPANS[span]['totchans']) + " " + type;
 		newCell3.align = "center";
 
 
