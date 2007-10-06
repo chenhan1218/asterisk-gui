@@ -11,7 +11,7 @@ ZTCFG_OUTPUT="/var/lib/asterisk/static-http/config/ztcfg_output.html"
 
 # Note: Changing modules requires sed
 if [ $(which sed) == "" ] ; then
-	error_out("Sed not installed, needed to reload modules, you can do it manually by forcing the modules in via t1e1override")
+	error_out "Sed not installed, needed to reload modules, you can do it manually by forcing the modules in via t1e1override"
 fi
 
 case ${1} in
@@ -28,17 +28,15 @@ case ${1} in
 				$(modprobe zaptel; modprobe zttranscode; modprobe wct4xxp t1e1override=1; modprobe wcte11xp t1e1override=1; modprobe wct1xxp t1e1override=1; ztcfg)
 			;;
 			*)
-				error_out("No mode to change specified!")
+				error_out "No mode to change specified"
 			;;
 		esac	
 		;;
 	applysettings)	
 		# Split based on ||| delimeter, and apply to zaptel.
-		blob=`echo ${2} | sed 's/|||/\n/g'`
-		mv ${ZAPCONF} ${ZAPCONF}.b4editzap
-		cmd=`zapscan`
-		echo "${blob}" >> /etc/zaptel.conf
-		ztcfg -vv 2> $ZTCFG_OUTPUT
+		FILENAME="/etc/asterisk/applyzap.conf"
+		grep -v "\[general\]" ${FILENAME} > ${ZAPCONF} 
+		ztcfg -vv > $ZTCFG_OUTPUT
 		;;
 esac
 
