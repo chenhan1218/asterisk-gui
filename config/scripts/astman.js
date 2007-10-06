@@ -195,6 +195,10 @@ var ASTGUI = { // the idea is to eventually move all the global variables and fu
 	domActions: {
 		removeAllChilds: function(x){
 			while(x.firstChild){ x.removeChild(x.firstChild); }
+		},
+
+		clear_table: function(h){
+			for( var i=0; i <  h.rows.length; ){ _bft.deleteRow(i); }
 		}
 	},
 
@@ -465,17 +469,18 @@ function purge(d) {
     }
 }
 
+function isInt(x) {
+	var y=parseInt(x);
+	if (isNaN(y)) return false;
+	return x==y && x.toString()==y.toString();
+}
 
 function config2json(a, b, c){		// a is filename (string) , b is 0 or 1 , c is callback function
 	makerequest('g',a,'', function(t){
-	var response = t.split("\n");
-	if(response[1].match("Message: Config file not found")) {
-		//alert( "Asterisk says it cannot find a required config file (" + a + ") \n!" );
-		return false;
-	}
-	var f = toJSO(t, b) ;  c(f) ;
+		var response = t.split("\n");
+		if( response[1].toLowerCase().match("config file not found") ){ c("ERROR: CONFIG FILE NOT FOUND"); }
+		var f = toJSO(t, b) ;  c(f) ;
 	});
-	return true; /* If our previous case of config file not found does not return already, we must have found the config file */
 }
 
 function toJSO(z, p){

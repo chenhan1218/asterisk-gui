@@ -22,888 +22,190 @@
 <script src="scripts/astman.js"></script>
 <script src="scripts/tooltip.js"></script>
 <link href="stylesheets/schwing.css" media="all" rel="Stylesheet" type="text/css" />
+
 <style>
-	.tr0 {
-		background-color: #efaa50;
-		color: white;
-		font-weight: bold;
-	}
-
-	.tr1 {
-		background-color: #6b79a5;
-		color: white;
-		font-weight: bold
-	}
-
-	.tr2 {
-		background-color: white;
-		color: black;
-		text-decoration: underline;
-	}
-	
-	.tr3 {
-		background-color: red;
-		color: black;
-		text-decoration: underline;
-	}
-
-
-	.tr0 td, .tr1 td, .tr2 td, .tr3 td {
-		font-size: xx-small;
-	}
 
 	.taglist {
 		border: 1px solid #666666;
-		margin-top:40px; margin-bottom:30px;
-	}
-	
-	.taglist tbody tr td {
-		font-family: "lucida grande", verdana, sans-serif;
-		font-size: 8pt;
-		padding: 3px 8px;
-		border-left: 1px solid #D9D9D9;
+		margin-top:10px;
+		margin-bottom:30px;
+		max-width: 745;
 	}
 
-	.taglist tbody tr.selected td {
-		background-color: #3d80df;
-		color: #ffffff;
-		font-weight: bold;
-		border-left: 1px solid #346DBE;
-		border-bottom: 1px solid #7DAAEA;
+	.taglist tr.frow {
+		background-color: #6b79a5;
 	}
 
-        .navcontainer{
-                margin: 5px 10px 5px 10px;
-        }
+	.taglist tr.even {
+		background-color: #DFDFDF;
+	}
 
-        .navlist
-        {
-        margin: 0;
-        padding: 0 0 20px 10px;
-        border-bottom: 1px solid #000;
-        }
+	.taglist tr.odd{
+		background-color: #FFFFFF;
+	}
 
-        .navlist ul, .navlist li
-        {
-        margin: 0;
-        padding: 0;
-        display: inline;
-        list-style-type: none;
-        }
-
-        .navlist a:link, .navlist a:visited
-        {
-        float: left;
-        line-height: 14px;
-        font-weight: bold;
-        margin: 0 10px 4px 10px;
-        text-decoration: none;
-        color: #999;
-        font-size: 120%;
-        font-family : Verdana, Arial, Helvetica, sans-serif;
-        }
-
-        .navlist a.current:link , .navlist a.current:visited , .navlist a.current:hover
-        {
-        border-bottom: 4px solid #000;
-        padding-bottom: 2px;
-        background: transparent;
-        color: #000;
-        }
-
-        .navlist a:hover {
-                color: #CC0000;
-                cursor: pointer;
-        }
-
-
+	.taglist tr.even:hover, .taglist tr.odd:hover {
+		background-color: #a8b6e5;
+	}
 </style>
 
 <script>
+var SPANS = {};
 
-var sysinfocallbacks = new Object;
-var zt_cb = new Object;
-var SPANS = new Object;
-var callbacks = new Object;
-var allchans_var = new Array;
-var tabs = new Array('tab1', 'tab2', 'tab3');
-var divs_tohide = new Array('osversion_div', 'uptime_div', 'asterisk_div', 'today_div','hostname_div','ifconfig_div','df_div','memory_div');
-var has_spans = 0; /* Count of our spans we have, incrementing each time. */
-var total_spans = 0; /* Count of our spans that ztscan.conf says we have */
-var old_zap = 0;
-var isrefresh = 0;
-var widgets = {};
-var zap_settings = [ 'switchtype', 'signalling', 'echocancel', 'echocancelwhenbridged', 'rxgain', 'txgain', 'group' ]; 
-var fieldnames_clickable = [ 'fac', 'lbo', 'syncsrc', 'totchans' ]; 
-var fieldnames_clickable_zap = [ 'fac', 'syncsrc', 'totchans' ]; 
-var fieldnames = [ 'alarms', 'syncsrc', 'description', 'totchans', 'fac', 'lbo' ]; 
-var fieldnames_proper = [ 'Alarms:', 'Sync Source:', 'Card Description:', 'Total Channels:', 'Framing/Coding:', 'Options:' ]; 
-var fieldnames_zap_opts = [ 'loadzone', 'defaultzone'];
-
-/* Our select boxes for framing/coding and line build out */
-var framing_and_coding = [ "esf,b8zs", "d4,ami", "cas,ami", "ccs,hdb3", "ccs,crc4,hdb3"];
-var framing_and_coding_nice = [ "ESF/B8ZS", "D4/AMI", "CAS/AMI", "CCS/HDB3", "CCS/CRC4/HDB3"];
-/* _______________________________________________________ */
-
-var pri_and_cb = ["pri", "fxoks", "fxsks", "fxols", "fxols"]
-var pri_and_cb_nice = ["PRI", "FXOKS", "FXSKS", "FXOLS", "FXOLS"];
-
-var line_build_out = [ 0, 1, 2, 3, 4, 5, 6, 7];
-var line_build_out_nice = [ "0 db (CSU)/0-133 feet (DSX-1)", "133-266 feet (DSX-1)", "266-399 feet (DSX-1)", "399-533 feet (DSX-1)", "533-655 feet (DSX-1)", "-7.5db (CSU)", "-15db (CSU)", "-22.5db (CSU)" ];
-
-/* This page is based off of sample.html, the gui tutorial on writing a page */
-
-/* Function used in the GUI to show and hide the different tabs we defined, pretty basic. */
-function show_window(x){
-	for(i=0; i < tabs.length ; i++){
-		_$(tabs[i]).className = "tab";
-	}
-	_$(tabs[x]).className = "tabselected";
-	_$(tabs[x]).blur();
-
-	/* Traverse through the tabs to see which one we want to display. */
-	if(divs_tohide[x]) {
-		var divs_toshow = new Array(divs_tohide[x]);
-		/* Here we will declare divs to show as whatever element in the array is the tab we want to show! */
-	} else { 
-		return false;
-		/* We did not find the tab that we were called to show. */
-	}
-
-	/* Here we will hide all of our divs that we do not want to show, and then show our last div. */
-	for(var i=0; i < divs_tohide.length; i++ ) {
-		_$(divs_tohide[i]).style.display = "none";
-	}
-	for(var i=0; i < divs_toshow.length; i++ ) {
-		_$(divs_toshow[i]).style.display = "";
-	}
-
-	return true;
-}
-
-zt_cb.format = function(t) { 
-	return t.fieldbyname['alarms']; 
-};
-
-zt_cb.loaded = function() { 
-	loadCardsintoTable();
-	return true;
-};
-
-callbacks.format = function(t) {
-	if ((t.name == 'general')){
-		if (t.fieldbyname['allow_aliasextns'] && t.fieldbyname['allow_aliasextns'].length){
-			allow_aliasextns =  t.fieldbyname['allow_aliasextns'] ;
-		}else{
-			allow_aliasextns = 'no' ;
-		}
-		return null;
-	}
-	if ( t.fieldbyname['context'] == asterisk_guiTDPrefix + t.name )
-		return null;
-	if (t.fieldbyname['fullname'] && t.fieldbyname['fullname'].length) {
-		return t.name + " -- " + t.fieldbyname['fullname'];
-	} else
-		return t.name;
-}
-
-callbacks.savechanges = function(){
-	saveuserdetails();
-}
-
-callbacks.cancelnewcategory = function(){
-	hideuserdetails();
-}
-
-callbacks.cancelchanges = function(){
-	hideuserdetails();
-}
-
-
-callbacks.loaded = function() {
-	_$('devices').contentEditable = 'true';
-	_$('devices').disabled = 0;
-	//_$('new').addEventListener("click", showuserdetails, false);
-	ASTGUI.events.add( _$('new') , "click", showuserdetails );
-	//parent.astmanEngine.pollEvents();
-	loadusersintotable();
-}
-
-callbacks.sortfunc = function(a,b) {
-	return (a.name < b.name) ? -1 : 1;
-}
-
-callbacks.checkparams = function(box) {
-	_$('mailbox').value = _$('name').value;
-	_$('group').value = '';
-	return false;
-}
-
-callbacks.newcategory = function() {
-	var nar = [];
-	var _devices = _$('devices') ;
-	var _exten = _$('extensions') ;
- 
-	for( var f=0; f < _devices.options.length ; f++ ){ nar.push( _devices.options[f].innerHTML.split(' -- ')[0]) ; }
-	for( f=0; f < _exten.options.length ; f++ ){ nar.push( _exten.options[f].innerHTML.split(' -- ')[0]) ; }
-	nar.sort();
-
-	var tmp = null;
-	var x = 6000;
-	if (_$('devices').stored_config.catbyname['general'])
-		tmp = objcopy(_$('devices').stored_config.catbyname['general']);
-	if (tmp) { x = parseInt( tmp.fieldbyname['userbase'],10); }
-	for( f=0; f < nar.length ; f++ ){
-		if( x < parseInt(nar[f]) ){ break; } x++;
-	}
-
-	tmp.name = x;
-	return tmp;
-}
-callbacks.identifier = "extension";
-callbacks.beforeSaving = function(){
-	if(!_$('fullname').value.length){
-		alert("Sorry, a User Name must be specified !");
-		_$('fullname').focus();
-		return false;
-	}
-	// check whether the extension entered matches with any of the - voicemail, queue, voicemenu, conference extensions
-	for(var k=0; k< _$('extensions').length; k++ ){
-		var tmp = _$('extensions').options[k].innerHTML.split(' -- '); 
-		if( tmp[0] ==  $('name').value   ){
-			alert("Sorry, an entry named " + _$('name').value + " already exists!");
-			return false;
-		}
-	}
-
-	if(allow_aliasextns == "no"){	// check whether the selected analog line is assigned to another user extension
-		var tmp_usedanaloglines = [] ;
-		for ( var i=1; i < _$('devices').stored_config.categories.length ; i++){
-			if ( _$('devices').stored_config.categories[i] != null ){
-			if ( _$('devices').stored_config.categories[i].fieldbyname['zapchan'] && _$('devices').stored_config.categories[i].fieldbyname.zapchan.length && _$('devices').stored_config.categories[i].name != _$('devices').value )
-				tmp_usedanaloglines.push(_$('devices').stored_config.categories[i].fieldbyname.zapchan);
-			}
-		}
-		if ( InArray(tmp_usedanaloglines,_$('zapchan').value)){
-			alert("This Analog Phone has already been assigned to another user extension.\n Please select a different Phone");
-			return false;
-		}
-	}
-
-	return true;
-}
-
-callbacks.postselect = function(box, val) {
-	if (adstatus == "hidden") {
-		adstatus = "shown";
-		 togglefeatures() ;
-	}
-	if( box.selectedIndex == -1)
-		return true;
-}
-function update_table() {
-	
-	var e = _$("cdr_content_container");
-	e.innerHTML = "";
-	var d = document.createElement("TABLE");
-	d.style.overflow = "scroll" ;
-	var tr = document.createElement("tr");
-	tr.className = "tr2";
-		for(var i=0;i<=records[offset].length;i++) {
-			var td = document.createElement("td");
-			td.appendChild(document.createTextNode(fields[i]));
-			tr.appendChild(td);
-		}
-		d.appendChild(tr);
-		for(var i=0;c--&&isset(records[i+offset]);i++) {
-			var tr = document.createElement("tr");
-			tr.className = "tr"+(i%2);
-			var r = records[i+offset];
-		
-		for(var j=-1;j<r.length;j++) {
-
-			if(r[(j + 4)])	
-				var dest_context = (r[j + 4].toString().replace(/^[\"]{1}/, "").replace(/[\"]{1}$/, "")) ? r[j + 4].toString().replace(/^[\"]{1}/, "").replace(/[\"]{1}$/, "") : 'none';
-			if(dest_context == "asterisk_guitools") {
-				j += fields.length-3;
-				/* go to next cdr record, which is exact 21 csvs away, so count the csv field names, and subtract 3, since we only added 4, and started with -1 */
-				continue;
-			} 
-			var td = document.createElement("td");
-			if (j < 0) {
-				var l = offset+i+1;
-			} else {
-				var l = r[j].toString().replace(/^[\"]{1}/, "").replace(/[\"]{1}$/, "");
-			}
-			td.appendChild(document.createTextNode(l));
-			tr.appendChild(td);
-		}
-		d.appendChild(tr);
-	}
-	e.appendChild(d);
-}
-
-function refresh_alarms() {
-	_$('status_message').style.display="block";
-	setTimeout("_$('status_message').style.display='none'", 5000);
-	_$('message_text').innerHTML = "Re-Detecting Digital Cards and Alarms... ";
-	/* Give ztscan 4 seconds to detect and write to ztscan.conf */
-	isrefresh = 1;
-	parent.astmanEngine.run_tool(asterisk_guiZtscan, function(t) {
-		setTimeout('load_config_tool()', 4000); 
-	});
-
-}	
-
-function create_table_names() {
-	var box = _$('digitalcardstable');
-	var tr = document.createElement("tr");
-	tr.className="tr1";	
-	for(var i=0; i < fieldnames_proper.length; i++) {
-		var td = document.createElement("td");
-		td.appendChild(document.createTextNode(fieldnames_proper[i]));
-		td.setAttribute("tip", 'en,digital,'+fieldnames_proper[i]);
-		tr.appendChild(td);	
-	}
-	box.appendChild(tr);	
-	return true;
-
-}
-
-function create_table_options() {
-	return true;
-	/* I am not sure what I want to do here yet, whether give the user the option to configure all zaptel.conf related stuff...or not */
-	var box = _$('digitalcardstable');
-	var tr = document.createElement("tr");
-	tr.className="tr3";	
-	for(var i=0; i < fieldnames_zap_opts.length; i++) {
-		var td = document.createElement("td");
-		td.appendChild(document.createTextNode(fieldnames_zap_opts[i]));
-		td.setAttribute("id", fieldnames_zap_opts[i]);
-		tr.appendChild(td);	
-	}
-	box.appendChild(tr);	
-	return true;
-
-}
-
-function isInt(x) {
-	var y=parseInt(x);
-	if (isNaN(y)) return false;
-		return x==y && x.toString()==y.toString();
-}
-
-function run_zt_and_restart() {
-	/* this function will run ztcfg and reload the page. */
-	parent.needs_reloadzap = 1;
-	gui_feedback("Save Completed.", 'blue');
-	
-}
-
-function get_params_and_ztcfg() {
-	/* this function will get all the values out of all the fields, build a zaptel.conf file, then write it and run ztcfg */
-	parent.needs_reloadzap = 1;
-	var ZAPTEL = new Object;
-	var CONFIG = new String;
-	var highest = 1;
-	/* our variable for building our zaptel config. */
-	for(var i=1; i <= total_spans; i++ ){
-		ZAPTEL[i] = new Object;
-		ZAPTEL[i].en = new Array;
-		for(var x=0; x < fieldnames_clickable_zap.length; x++) {
-			var tmp_id = i+'-'+fieldnames_clickable_zap[x]+'-sel';
-			var tmp_b = _$(tmp_id);
-			ZAPTEL[i].en[fieldnames_clickable_zap[x]] = tmp_b.options[tmp_b.selectedIndex].value;
-		//	alert("showing val for span " + i + " for val: " + fieldnames_clickable[x] + " is : " + ZAPTEL[i].en[fieldnames_clickable[x]]);
-		}
-		ZAPTEL[i].en['config'] = "span="+i+","+ZAPTEL[i].en['syncsrc']+","+ZAPTEL[i].en['lbo']+","+ZAPTEL[i].en['fac'];
-	}
-	for(var i=1; i <= total_spans; i++ ){
-		switch(ZAPTEL[i].en['fac']) {
-				case "fxoks":
-				case "fxols":
-				case "fxsks":
-				case "fxsls":
-					//ZAPTEL[i].en['config'] += "\n
-					/* we are currently not dealing with fxo/fxs, just pri */
-					break;
-				case "esf,b8zs":
-				case "d4,ami":
-					ZAPTEL[i].en['type'] = "t1";
-					ZAPTEL[i].en['bchan'] = "bchan="+highest+"-"+(highest + 22);
-					highest = (highest + 22);
-					ZAPTEL[i].en['dchan'] = "dchan="+(highest+1);
-					highest += 2;
-					break;
-				case "cas,ami":
-				case "ccs,hdb3":
-				case "css,crc4,hdb3":
-					ZAPTEL[i].en['type'] = "e1";
-					var tmp_b = highest+'-'+(highest + 14);
-					highest += 14;
-					var tmp_d = (highest + 1);
-					highest += 3;
-					tmp_b += ","+(highest - 1)+'-'+(highest + 13);
-					highest += 14;
-					ZAPTEL[i].en['bchan'] = "bchan="+tmp_b;
-					ZAPTEL[i].en['dchan'] = "dchan="+tmp_d;
-					break;
-			}
-	}
-
-	ZAPTEL['general'] = new Object;
-	ZAPTEL['general'].en = new Array;
-	ZAPTEL['general'].en['loadzone'] += "\nloadzone=us";
-	ZAPTEL['general'].en['defaultzone'] += "\ndefaultzone=us";
-	/* XXX Need to make this dynamic */
-	build_and_ztcfg(ZAPTEL);
-}
-
-function StringBuffer() { 
-	this.buffer = []; 
-} 
-
-StringBuffer.prototype.append = function append(string) { 
-	this.buffer.push(string); 
-	return this; 
-}; 
-
-StringBuffer.prototype.toString = function toString() { 
-	return this.buffer.join(""); 
-}; 
-
-var buf = new StringBuffer();
-
-function build_and_ztcfg(ZAPTEL) {
-
-	var zaptel_string = new StringBuffer;
-	/* this could get crazy building this config.... */
-	zaptel_string.append(ZAPTEL['general'].en['loadzone'] + "\n\n|||" + ZAPTEL['general'].en['defaultzone']);
-
-	parent.astmanEngine.run_tool(asterisk_guiEditZap + " " + '\'' + zaptel_string.toString() + '\'', callback = function() { return true; }); 
-	
-}
-
-function read_errors() {
-	var opt = { method: 'get', asynchronous: true,
-		onComplete: function(originalRequest){
-			alert("ztcfg output: " + originalRequest);
-		},
-		onFailure: function(t) { alert("Config Error: " + t.status + ": " + t.statusText); }
-	};
-	var tmp = new Ajax.Request(asterisk_guiZtcfg_output, opt);
-	opt.parameters="";
-	return true;
-
-}
-function option_clicked(a) {
-	/* place holder for the option clicked callback for the event. */
-	alert(a);
-	return true;
-}
-
-function digitalparse(n) { 
-
-	var l, h;
-	var box = _$('digitalcardstable');
-	if(isrefresh == 1) {
-		/* We want to reset our table, so that we do not append to it. */
-		box.innerHTML = "";
-	}
-	var _class = 0;
-	for( l in n ){	if(n.hasOwnProperty(l)){
-		if( l =='general') { 
-			if(n[l]['continue'] && n[l]['continue'] == "no") {
-				_$('error_txt').style.display="";
-				_$('error_txt').innerHTML="<br><br>Problem Detecting/No Cards(or spans) Found!<br><br>  Error: " + n[l]['error'];		
-				has_spans=0;
-				_$('tablecontainer').style.display="none";
-				_$('tablecontainer').style.visibility="none";
-
-				return false;
-			}
-			if(n[l]['continue'] && n[l]['continue'] == "yes") {
-				total_spans = (n[l]['totalspans']) ? n[l]['totalspans'] : 'Unknown';
-				for(var z=0; z < total_spans; z++) {
-					SPANS[(1 + z)] = new Object;
-				}
-				has_spans=1;
-				if(n[l]['isnew'] && n[l]['isnew'] == "yes") {
-					var uri = build_action('update', 0, 'general', 'isnew', 'no', '');
-			                makerequest('u','ztscan.conf', uri, function(t){ return true;} );
-				}
-				create_table_names();
-			}
-		}
-		if(isInt(l)) { 
-			var tr = document.createElement("tr");
-			if(_class == 0) {
-				tr.className = "tr0";
-				_class = 1;
-			} else {
-				tr.className = "tr1";
-				_class = 0;
-			}
-			/* if alarms is red, make cell red, else make cell green/yellow etc. */
-			SPANS[l].en = new Array;
-			for(var i=0; i < fieldnames.length; i++) {
-			var td = document.createElement("td");
-				/* save our information for global use... */
-				SPANS[l].en[fieldnames[i]] = n[l][fieldnames[i]];
-				/* dumb hack because we cannot use multidimentional arrays */
-				if(fieldnames[i] == 'lbo' && n[l][fieldnames[i]] == "NODEF") {
-					old_zap = 1;	
-					td.appendChild(document.createTextNode("N/A"));
-					tr.appendChild(td);	
-					continue;
-				}
-				if(fieldnames[i] == 'fac') {
-					if(n[l][fieldnames[i]] == "NODEF") {
-						old_zap = 1;	
-						td.appendChild(document.createTextNode("N/A"));
-						tr.appendChild(td);	
-						continue;
-					}
-					var framing = n[l][fieldnames[i]].split("/");
-					if(framing[0] == "ESF" || framing[0] == "D4") {
-						td.appendChild(document.createTextNode(n[l][fieldnames[i]] + " (T1)"));
-						td.setAttribute("id", l + '-' + fieldnames[i]);
-						tr.appendChild(td);	
-						continue;
-					} else {
-						td.appendChild(document.createTextNode(n[l][fieldnames[i]] + " (E1)"));
-						td.setAttribute("id", l + '-' + fieldnames[i]);
-						tr.appendChild(td);	
-						continue;
-					}
-				}
-				if(fieldnames[i] == 'alarms') {
-					if(n[l][fieldnames[i]] == "UNCONFIGURED") {
-						gui_alert("Span " + (i+1) + " is unconfigured, running ztscan.");
-						run_zt_and_restart();
-					}
-					switch(n[l][fieldnames[i]]) {
-						case "OK":
-							td.setAttribute("style", 'color:green');
-							td.style.color == "green";
-							break;
-						case "YEL/REC":
-							td.setAttribute("style", 'color:yellow');
-							break;
-						default:
-							td.className = "tr3";
-							break;
-					}
-				}
-				if(fieldnames[i] == 'totchans') {
-					allchans_var[i] = parseInt(n[l][fieldnames[i]]);
-					if(allchans_var[i] > 1 && allchans_var[i] < 30) {
-						n[l][fieldnames[i]] = "24 / T1";
-					} else {
-						n[l][fieldnames[i]] = "31 / E1";
-					}
-				}
-				td.appendChild(document.createTextNode(n[l][fieldnames[i]]));
-				td.setAttribute("id", l + '-' + fieldnames[i]);
-				tr.appendChild(td);	
-			}
-			box.appendChild(tr);	
-		}
-	}}
-	if(old_zap == 1) {	
-		gui_alert("To have the ability to see your cards current configuration/framing/coding/line build out, please install rev: 2986 or higher of the 1.4 branch of zaptel!");
-		parent._$('tooltip').innerHTML = "<B>Framing/Coding/Line Build Out:</B><br>To see this requires rev: 2986 of the 1.4 branch of zaptel.";
-	}
-
-	create_table_options(); /* create zaptel.conf general options */
-	_$('tablecontainer').style.display="";
-	_$('tablecontainer').style.visibility="";
-	_$('status_message').style.display='none';
-	_$('save_changes_id').style.display="";
-	append_selectboxes();
-
-	return true;
-}
-
-function addoptions_totable(){
-	for(var i=0; i < total_spans; i++) {
-		var span = (i + 1);
-		var thediv = _$(span + '-lbo');
-		thediv.className = "downmenubutton";
-		thediv.innerHTML = "<span id='" + "span_" + span  + "' onclick=\"editspan( '"+ span + "');\">Options&nbsp;&nbsp;<img src=images/1.gif></span>";
-		thediv.style.width = 120;
-		thediv.align = "center";
-		thediv["sp_value"] = span;
-	}
-}
-
-function hide_mymenu( ) {
+function hide_mymenu(){
 	document.getElementById('mymenu').style.display="none"; 
 }
 
-function editspan(a) {
-	_$('spansettings').style.display = "";
-	_$('bg_transparent').style.display = "";
-} 
+function preparemenus(){
+	/*
+	var menu_div = document.getElementById('mymenu') ;
+	menu_div.style.width="80";
+	menu_div.style.borderColor = "#eee #bbb #bbb #ddd";
+	ASTGUI.events.add( document.body , "click", function(){ _$('mymenu').style.display="none"; } );
 
-function save_this(a) {
-	alert("saving changes?");
+	var menuitem1 = document.createElement('div');
+	menuitem1.innerHTML = "Edit" ;
+	menuitem1.onclick =  function(){ hide_mymenu( ); editSP( this.parentNode.sp_value) };
+	menuitem1.onmouseover= function(){  
+		document.getElementById('row'+this.parentNode.sp_value ).style.backgroundColor='#F6E7B6';   
+		this.style.backgroundColor='#EFEFEF';  
+	};
+	menuitem1.onmouseout=function(){  
+		document.getElementById('row'+this.parentNode.sp_value ).style.backgroundColor='#FFFFFF';  
+		this.style.backgroundColor='#FFFFFF';  
+	};
+	menu_div.appendChild(menuitem1);
+	*/
 }
 
-function savespandetails() {
-	hideuserdetails();
-	save_this();
+
+function showtable(){ // navigates through the SPANS object and presents as a table to the user
+	var tbl = _$('digitalcardstable') ;
+
+	var add_fRow = function(){
+		var newRow = tbl.insertRow(-1);
+		newRow.className = "frow";
+
+		var newCell0 = newRow.insertCell(0);
+		newCell0.innerHTML = "SPAN";
+
+		var newCell1 = newRow.insertCell(1);
+		newCell1.innerHTML = "ALARMS";
+
+		var newCell2 = newRow.insertCell(2);
+		newCell2.innerHTML =  "Framing/Coding";
+
+		var newCell3 = newRow.insertCell(3);
+		newCell3.innerHTML = "channels<BR>Used/Total" ;
+		newCell3.align = "center";
+
+		var newCell4 = newRow.insertCell(4);
+		newCell4.innerHTML = "" ;
+	};
+
+	var addrow_totable = function(span){
+		var sno = tbl.rows.length + 1;
+		var newRow = tbl.insertRow(-1);
+		newRow.className = ((tbl.rows.length)%2==1)?"odd":"even";
+
+		newRow.id ="row" + span ;
+		newRow["span_value"] = span;
+
+		var newCell0 = newRow.insertCell(0);
+		newCell0.innerHTML = SPANS[span]['description'] + "&nbsp;&nbsp;";
+		newCell0.align = "center";
+	
+		var newCell1 = newRow.insertCell(1);
+		newCell1.innerHTML = SPANS[span]['alarms'];
+		newCell1.align = "center";
+
+		var newCell2 = newRow.insertCell(2);
+		newCell2.innerHTML =  SPANS[span]['fac'];
+
+		var newCell3 = newRow.insertCell(3);
+		newCell3.innerHTML = String(SPANS[span]['usedchans']) + "/" + String(SPANS[span]['totchans']);
+		newCell3.align = "center";
+
+
+		var newCell4 = newRow.insertCell(4);
+		newCell4.innerHTML = "Edit" ;
+		newCell4.style.width = 90;
+		newCell4.align = "center";
+	};
+
+	ASTGUI.domActions.clear_table(tbl);
+	add_fRow();
+	for( var k in SPANS ){ if( SPANS.hasOwnProperty(k) ){ addrow_totable(k); } }
+
 }
-function hidespandetails() {
-	_$('spansettings').style.display = "none";
-	_$('bg_transparent').style.display = "none";
-}
 
-function append_selectboxes() {
-	for(var i=1; i < (total_spans + 1); i++ ){
-		for(var x=0; x < fieldnames_clickable.length; x++) {
-			if(fieldnames_clickable[x] == "fac") {
-				var tmp_sel = "";
-				for(var y=0; y < framing_and_coding.length; y++) {
-					tmp_sel += '<option value='+framing_and_coding[y]+'>'
-					tmp_sel += framing_and_coding_nice[y];
-					tmp_sel += '</option>'
-				}
-				tmp_sel += '</select>';
-				var tmp_id = i+'-'+fieldnames_clickable[x];
-				var ofid = _$(tmp_id);
-				if(ofid) {
-					ofid.innerHTML = '<select style="font-family: Verdana, Arial, Helvetica, Sans-Serif;" id="'+i+'-'+fieldnames_clickable[x]+'-sel">'+tmp_sel;
+function digitalparse(n){
+	if( n == "ERROR: CONFIG FILE NOT FOUND"){
+		alert("Please check if ztscan is installed ? \n\n /etc/asterisk/ztscan.conf not found");
+		gui_feedback("Problem detecting digital cards. No Cards/Spans found !! <BR>  No Config File");
+		//_$('tablecontainer').style.display="none";
+		return false;
+	}
+
+	for( var l in n ){ if(n.hasOwnProperty(l)){
+		if( l =='general') { 
+			if(n[l]['continue'] && n[l]['continue'] == "no") {
+				alert("Problem Detecting/No Cards(or spans) Found! \n\n Error: " + n[l]['error']);
+				gui_feedback("Problem detecting digital cards. No Cards/Spans found !!");
+				//_$('tablecontainer').style.display="none";
+				return false;
+			}
+			if(n[l]['continue'] && n[l]['continue'] == "yes") {
+				//var t = (n[l]['totalspans']) ? n[l]['totalspans'] : 'Unknown';
+				if(n[l]['isnew'] && n[l]['isnew'] == "yes") {
+					var uri = build_action('update', 0, 'general', 'isnew', 'no', '');
+					makerequest('u','ztscan.conf', uri, function(t){ return true;} );
 				}
 			}
-			if(fieldnames_clickable[x] == "lbo") {
-				var tmp_sel = "";
-				for(var y=0; y < line_build_out.length; y++) {
-					tmp_sel += '<option value='+line_build_out[y]+'>'
-					tmp_sel += line_build_out_nice[y];
-					tmp_sel += '</option>'
-				}
-				tmp_sel += '</select>';
-				var tmp_id = i+'-'+fieldnames_clickable[x];
-				var ofid = _$(tmp_id);
-				if(ofid) {
-					ofid.innerHTML = '<select style="font-family: Verdana, Arial, Helvetica, Sans-Serif;" id="'+i+'-'+fieldnames_clickable[x]+'-sel">'+tmp_sel;
-				}
-
-			}
-			if(fieldnames_clickable[x] == "syncsrc") {
-				var tmp_sel = "<option value='0'>0</option>";
-				var ll = (parseInt(total_spans) + 1);
-				for(var y=1; y < ll; y++) {
-					tmp_sel += '<option value='+y+'>'
-					tmp_sel += y;
-					tmp_sel += '</option>'
-				}
-				tmp_sel += '</select>';
-				var tmp_id = i+'-'+fieldnames_clickable[x];
-				var ofid = _$(tmp_id);
-				if(ofid) {
-					ofid.innerHTML = '<select style="font-family: Verdana, Arial, Helvetica, Sans-Serif;" id="'+i+'-'+fieldnames_clickable[x]+'-sel">'+tmp_sel;
-				}
-
-			}
-			if(fieldnames_clickable[x] == "totchans") {
-				var tmp_sel = "";
-				for(var y=0; y < pri_and_cb.length; y++) {
-					tmp_sel += '<option value='+pri_and_cb[y]+'>'
-					tmp_sel += pri_and_cb_nice[y];
-					tmp_sel += '</option>'
-				}
-				tmp_sel += '</select>';
-				var tmp_id = i+'-'+fieldnames_clickable[x];
-				var ofid = _$(tmp_id);
-				if(ofid) {
-					ofid.innerHTML = '<select style="font-family: Verdana, Arial, Helvetica, Sans-Serif;" id="'+i+'-'+fieldnames_clickable[x]+'-sel">'+tmp_sel;
-				}
-
-			}
-
+			continue;
 		}
-	}	
-	addoptions_totable();
-	select_correct_index();
-	return true;
+		SPANS[l] = {};
+		for( var k in n[l] ){ if(n[l].hasOwnProperty(k)){ SPANS[l][k] = n[l][k]; }}
+	}}
+	showtable();
 }
 
-/* function to select the proper framing/coding || lbo and sync source as specified */
-function select_correct_index() {
-	var find_index = function(el,val,sec) {
-		for(var t=0; t < el.options.length; t++) {
-			if(sec == 'fac') {
-				var l = val.toLowerCase();
-				l = l.replace('/', ',');
-				if(el.options[t].value == l) { el.selectedIndex = t; break; }
-			} else {
-				if(el.options[t].value == val) { el.selectedIndex = t; break; }
-			}
-		}
-	}
-
-	for(var i=1; i < (total_spans + 1); i++ ){
-		for(var x=0; x < fieldnames_clickable.length; x++) {
-			var tmp_id = i+'-'+fieldnames_clickable[x]+'-sel';
-			if(tmp_id) {
-				find_index(_$(tmp_id), SPANS[i].en[fieldnames_clickable[x]], fieldnames_clickable[x]);
-			}
-		}
-	}
-}
-function save_changes() {
-	/* function to grab the values of fields, and call the bash script to apply the changes and run ztcfg */
-	_$('status_message').style.display="block";
-	_$('status_message').innerHTML = '<TABLE border=0 cellpadding=0 cellspacing=4 align=center><TR><TD><img src="/asterisk/static/config/images/loading.gif"></TD><TD><div id=message_text></div></TD></TR></TABLE>';
-	_$('message_text').innerHTML = "Time: <div id='counter'>10</div>Are you sure you want to apply settings to zaptel.conf and restart zaptel? (run ztcfg)<BR>1. <A href=\"#\" class=\"splbutton\" onclick=\"_$('status_message').style.display='none'; get_params_and_ztcfg();\">Yes</A><br>2. <A href=\"#\" class=\"splbutton\" onclick=\"_$('status_message').style.display='none'; gui_feedback('You Chose not to save your settings.', 'red');>No<br></a>";
-	setTimeout("_$('status_message').style.display='none';", 10000);
-	int_handle = setInterval("_$('counter').innerHTML = (_$('counter').innerHTML - 1);", 1000);
-	setTimeout("clearInterval(int_handle);", 10000);
-
-	return true;
-}
-
-/* here we will actually backup zaptel.conf to the user defined setting. */
-function backup_zap_real() {
-	var _zc = _$('zap_conf_name').value;
-	var zap_conf = "zaptel.conf.bak";
-	if(!_zc.length) {
-		gui_alert("Not Backup Config Specified! Defaulting to zaptel.conf.bak");
-	} else {
-		zap_conf = _zc;
-	}
-	parent.astmanEngine.run_tool("cp " + asterisk_zaptelConfig + " /etc/" + zap_conf, callback = function(t) { return true; });
-}
-
-function backup_zap() {
-	/* function to grab the values of fields, and call the bash script to apply the changes and run ztcfg */
-	_$('status_message').style.display="block";
-	_$('status_message').innerHTML = '<TABLE border=0 cellpadding=0 cellspacing=4 align=center><TR><TD><img src="/asterisk/static/config/images/loading.gif"></TD><TD><div id=message_text></div></TD></TR></TABLE>';
-	_$('message_text').innerHTML = "Time: <div id='counter'>10</div>Backup zaptel.conf to /etc/<input id=\"zap_conf_name\" width=\"15\" value=\"zaptel.conf.bak\" class=\"input8\"></input><BR>1. <A href=\"#\" class=\"splbutton\" onclick=\"_$('status_message').style.display='none'; backup_zap_real();\">Yes</A><br>2. <A href=\"#\" class=\"splbutton\" onclick=\"_$('status_message').style.display='none'; gui_feedback('You Chose not to save your settings.', 'red');>No<br></a>";
-	setTimeout("_$('status_message').style.display='none';", 10000);
-	int_handle = setInterval("_$('counter').innerHTML = (_$('counter').innerHTML - 1);", 1000);
-	setTimeout("clearInterval(int_handle);", 10000);
-
-	return true;
-}
-
-function load_config_tool() { 
-	if(!config2json("ztscan.conf", 1, digitalparse)) {
-		alert("Have you properly installed ztscan?\n/etc/asterisk/ztscan.conf does not exist.");
-		_$('error_txt').style.display="";
-		_$('error_txt').innerHTML="<br><br>Problem Detecting/No Cards(or spans) Found!<br><br>  Error: No Config File";		
-		_$('tablecontainer').style.display="none";
-	} else {
-		/* Our config file was found....we can parse the options into widgets and _$('devices') */
-		parent.astmanEngine.config2list("ztscan.conf", _$('devices'), widgets, zt_cb);
-	}
-}
-
-function localajaxinit() {
-	ASTGUI.events.add(document, 'mouseover', show_tooltip);
-	showdiv_statusmessage();
-	_$('status_message').style.display="block";
-	setTimeout("_$('status_message').style.display='none'", 1000);
-	_$('message_text').innerHTML = "Detecting Digital Cards ... (Beta)";
+function localajaxinit(){
 	setWindowTitle("Digital Setup Wizard");
+	top._$('mainscreen').width= 798;
+	showdiv_statusmessage(); // create status message dialog
+	_$('message_text').innerHTML = "Detecting Digital Cards ... (Beta)";
+	_$('status_message').style.display="block";
+	setTimeout(function(){ _$('status_message').style.display='none';}, 1000);
+
 	parent.loadscreen(this);
-	/* Give ztscan 4 seconds to detect and write to ztscan.conf */
-	parent.astmanEngine.run_tool(asterisk_guiZtscan, function(t) {
-		setTimeout('load_config_tool()', 500); 
+	parent.astmanEngine.run_tool(asterisk_guiZtscan, function(t) { // run ztscan and then try loading ztscan.conf
+		setTimeout( function(){ config2json("ztscan.conf", 1, digitalparse); } , 700); // leave some time for ztscan to generate ztscan.conf
 	});
-	for (var x=0; x < fieldnames.length; x++ ) {
-		widgets[fieldnames[x]] = _$(fieldnames[x]);
-		widgets[fieldnames[x]].disabled = true;
-	}
-	parent._$('tooltip').innerHTML = "The <b>Digital</b> Page is for setting up options equivilent to the options in zaptel.conf. Click \'Save Changes\' to apply the settings recorded here and restart zaptel (ztcfg)";
+
 }
 
-function free_mem(){
-	if( navigator.userAgent.indexOf("MSIE") == -1 ){ return true; }
-	try{
-		purge( document.body );
-	} catch(e){ }
-}
+function resetmainscreen(){ top._$('mainscreen').width= 540; }
 
 </script>
-<body id="foo" onload="localajaxinit()"  bgcolor="#FFFFFF">
-<div class="mainScreenTitleBar">
+<body onload="localajaxinit()" onunload="resetmainscreen()" bgcolor="#FFFFFF">
+
+<div style="font-size : 12px; padding : 4px 6px 4px 6px; border-style : solid none solid none; border-top-color : #BDC7E7; border-bottom-color : #182052; border-width : 1px 0px 1px 0px; background-color : #ef8700; color : #ffffff;">
 	<span style="margin-left: 4px;font-weight:bold;">Digital Card Configuration Wizard (Beta)</span>
 	<span style="cursor: pointer; cursor: hand;" onclick="window.location.href=window.location.href;" >&nbsp;<img src="images/refresh.png" title=" Refresh " border=0 >&nbsp;</span>
 </div>
-<center><font id="error_txt" valign="left" style="display:none"></font></center>
-<div id="tablecontainer" style="display:none;visibility:none">
-<select disabled size="1" id="devices" style="display:none"></select><input type='button' id='delete' value='Delete' style="display:none">
-<BR>
-<center>
-<font size="+1">Digital Card Setup</font><br>
-<span style="cursor: pointer; cursor: hand;" onclick="refresh_alarms();" >&nbsp;Click to refresh alarms.&nbsp;<img src="images/refresh.png" title=" Refresh " border=0 ></span>
-<div style="width:535;height:250;overflow:auto;">
-        <table class="taglist" id="digitalcardstable" cellpadding=2 cellspacing=1 border=0 align=center width=535></table>
-</div>
-<div id="save_changes_id">
-<span type='button' onclick="save_changes();" class="downmenubutton" value='Save Changes'>Save Changes</span>
-</div>
-__________________________________________________________________________________________________
-<br>
-<div><fieldset  style="width: 190px;">
-<legend>&nbsp;Options&nbsp;</legend>
-<br>
-<ul class="navlist">
-	<li><span type='button' onclick="backup_zap();" class="downmenubutton" value='Backup Zaptel'>Backup Zaptel Config</span></li>
-</ul>
-</div>
-</div>
-</center>
-<div id="mymenu" class="mymenu" style="display:none"></div>
-<td valign=top align=center>
-<div ID="spansettings"  STYLE="display:none; position: absolute; left: 240; top: 40; width:530; height:250;  background-color:#F4EFE5;   border-width: 1px; border-color: #7E5538; border-style: solid; z-index:5">
-	<table width="100%" cellpadding=0 cellspacing=0  onmousedown="ASTGUI.startDrag(event , 'spansettings');">
-			<TR bgcolor="#7E5538" >
-				<TD Height="20" align="right" style="cursor: move">
-					<A href="#" onclick="$('cancel').click();"><font style="color:#FFFFFF; font-size: 12px; font-weight:bold;">X</font></A>
-				</TD>
-				<TD width=4></TD>
-			</TR>
-		</table>
 
-	<TABLE cellpadding=0 cellspacing=2 border=0 class="spandetails">
-	<tr>	<td class="field_text">Alarms:</td>
-		<td><input id="alarms" size=14  class="input8"></td>
-	</tr>
-	<tr>	<td class="field_text">Description:</td>
-		<td><input  id="description" size=14 class="input8"></td>
-	</tr>
-	<tr>	<td class="field_text">Name:</td>
-		<td><input type="text" id="name" size=14 class="input8"></td>
-	</tr>
-	<tr>	<td class="field_text">Total Channels:</td>
-		<td><input type="text" id="totchans" size=14 class="input8"></td>
-	</tr>
-	<tr>	<td class="field_text">Used Channels:</td>
-		<td><input type="text" id="usedchans" size=14 class="input8"></td>
-	</tr>
-	<tr>	<td class="field_text">Framing/Coding:</td>
-		<td><input type="text" id="fac" size=14 class="input8"></td>
-	</tr>
-	<tr>	<td class="field_text">Line Build Out:</td>
-		<td><input type="text" id="lbo" size=14 class="input8"></td>
-	</tr>
-	<tr>	<td class="field_text">Sync Source:</td>
-		<td><input type="text" id="syncsrc" size=14 class="input8"></td>
-	</tr>
-	<tr>	<td colspan=4 align=center>
-		<input type='button' id='save' value='Save'  onclick="save_this(this);" class="buttonbold">&nbsp;&nbsp;
-		<input type='button' id='cancel' value='Cancel' onclick="hidespandetails();" class="buttonbold">
-	</td>
-	</tr>
-	</table>
-	</div>
-</td>
+<center><font size="+1">Digital Card Setup</font></center>
+
+<div style="overflow:auto;left:40">
+	<table class="taglist" id="digitalcardstable" cellpadding=5 cellspacing=1 border=0 align=center></table>
 </div>
-</body>
+
+<div id="mymenu" class="mymenu" style="display:none"></div>
 <div id="bg_transparent" STYLE="display:none; position: absolute; left: 0; top: 0; width:100%; height:100%;  background-color:#FFFFFF; filter:alpha(opacity=50); -moz-opacity:.50;opacity:.50; border-width: 0px; z-index:4">
 </div>
+
+
+
+</body>
 </html>
