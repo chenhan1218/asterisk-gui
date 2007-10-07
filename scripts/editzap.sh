@@ -9,11 +9,6 @@
 ZAPCONF="/etc/zaptel.conf"
 ZTCFG_OUTPUT="/var/lib/asterisk/static-http/config/ztcfg_output.html"
 
-# Note: Changing modules requires sed
-if [ $(which sed) == "" ] ; then
-	error_out "Sed not installed, needed to reload modules, you can do it manually by forcing the modules in via t1e1override"
-fi
-
 case ${1} in
 	changemodes)
 		type=${2}
