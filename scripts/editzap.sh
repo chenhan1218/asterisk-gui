@@ -31,7 +31,7 @@ case ${1} in
 		# Split based on ||| delimeter, and apply to zaptel.
 		FILENAME="/etc/asterisk/applyzap.conf"
 		grep -v "\[general\]" ${FILENAME} > ${ZAPCONF} 
-		ztcfg -vv > $ZTCFG_OUTPUT
+		ztcfg -vv 2> $ZTCFG_OUTPUT
 		;;
 esac
 
