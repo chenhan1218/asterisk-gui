@@ -73,6 +73,8 @@ function editSPAN(l){ // show values for SPAN l in the edit_span dialog box
 	ASTGUI.selectbox.selectOption( _$('editspan_fac') , SPANS[l]['fac'] );
 	_$('editspan_channels').innerHTML = String(SPANS[l]['usedchans']) + "/" + String(SPANS[l]['totchans']);
 	//_$('editspan_signalling')
+	// _$('editspan_switchtype')
+	// _$('editspan_loadzone')
 
 	_$('edit_span').style.display = "";
 	_$('bg_transparent').style.display = "";
@@ -237,11 +239,20 @@ function updateZaptel(){
 			firstpart = "span";
 			secondpart = k;
 			uri += build_action('append', c, context, firstpart, secondpart ); c++;
-			tmp = totalchans + Number(SPANS[k]['totchans']);
 			tmp2 = (totalchans)? ",":"";
-			dchanstring += tmp2 + String(tmp) ;
-			bchanstring += tmp2 + String(totalchans+1) + "-" + String(tmp-1);
-			totalchans = tmp;
+
+			if(SPANS[k]['totchans'] <= 24){
+				tmp = totalchans + Number(SPANS[k]['totchans']);
+				dchanstring += tmp2 + String(tmp) ;
+				bchanstring += tmp2 + String(totalchans+1) + "-" + String(tmp-1);
+				totalchans = tmp;
+			}else{ // take first 15 as b-channels, then a d channel and then take the next 15 as bchannels
+				tmp = totalchans + Number(15);
+				bchanstring += tmp2 + String(totalchans+1) + "-" + String(tmp);
+				dchanstring += tmp2 + String(totalchans+16) ;
+				bchanstring += "," + String(tmp+2) + "-" + String(tmp+16);
+				totalchans = tmp + Number(16);
+			}
 		}}
 	};
 	add_lines();
@@ -252,7 +263,7 @@ function updateZaptel(){
 	uri += build_action('append', c, context, 'defaultzone', 'us'); c++;
 
 	makerequest('u', "applyzap.conf", uri , function(t) {
-
+		
 	});
 
 }
@@ -320,6 +331,38 @@ function updateZaptel(){
 			<option value="fxoks">FXOKS</option>
 			<option value="fxsks">FXSKS</option>
 			<option value="fxols">FXOLS</option>
+			</select>
+		</TD>
+	</TR>
+	<TR>	<TD align="right">Switch Type</TD>
+		<TD>	<select id="editspan_switchtype">
+				<option value="national">National ISDN 2 (default)</option>
+				<option value="dms100">Nortel DMS100</option>
+				<option value="4ess">AT&T 4ESS</option>
+				<option value="5ess">Lucent 5ESS</option>
+				<option value="euroisdn">EuroISDN</option>
+				<option value="ni1">Old National ISDN 1</option>
+				<option value="qsig">Q.SIG</option>
+			</select>
+		</TD>
+	</TR>
+
+	<TR>	<TD align="right">LoadZone</TD>
+		<TD>	<select id="editspan_loadzone">
+				<option value="us">us</option>
+				<option value="us-old">us-old</option>
+				<option value="gr">gr</option>
+				<option value="it">it</option>
+				<option value="fr">fr</option>
+				<option value="de">de</option>
+				<option value="uk">uk</option>
+				<option value="fi">fi</option>
+				<option value="jp">jp</option>
+				<option value="sp">sp</option>
+				<option value="hu">hu</option>
+				<option value="lt">lt</option>
+				<option value="pl">pl</option>
+				<option value="pl">pl</option>
 			</select>
 		</TD>
 	</TR>
