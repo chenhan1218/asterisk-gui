@@ -240,7 +240,6 @@ function updateZaptel(){
 			/* XXX Timing source for card is being set to zero? */
 			/* LBO is being set to 0 */
 			secondpart = k + "," + "0,0," + SPANS[k]['fac'].toLowerCase().replace("/", ",");
-			alert(secondpart);
 			uri += build_action('append', c, context, firstpart, secondpart ); c++;
 			tmp2 = (totalchans)? ",":"";
 
