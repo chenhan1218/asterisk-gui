@@ -34,6 +34,7 @@
 
 	.taglist tr.frow {
 		background-color: #6b79a5;
+		color: #CED7EF;
 	}
 
 	.taglist tr.even {
@@ -52,12 +53,39 @@
 <script>
 var SPANS = {};
 
+var framing_and_coding = {
+	"ESF/B8ZS": "esf,b8zs",
+	"D4/AMI": "d4,ami",
+	"CAS/AMI": "cas,ami",
+	"CCS/HDB3": "ccs,hdb3",
+	"CCS/CRC4/HDB3": "ccs,crc4,hdb3"
+};
+
 function hide_mymenu(){
 	document.getElementById('mymenu').style.display="none"; 
 }
 
+
+function editSPAN(l){ // show values for SPAN l in the edit_span dialog box
+
+	_$('editspan_SPAN').innerHTML = SPANS[l]['description'];
+	_$('editspan_ALARMS').innerHTML = SPANS[l]['alarms'];
+	ASTGUI.selectbox.selectOption( _$('editspan_fac') , SPANS[l]['fac'] );
+	_$('editspan_channels').innerHTML = String(SPANS[l]['usedchans']) + "/" + String(SPANS[l]['totchans']);
+	//_$('editspan_signalling')
+
+	_$('edit_span').style.display = "";
+	_$('bg_transparent').style.display = "";
+
+}
+
+function canelSpanInfo(){
+	_$('edit_span').style.display = "none";
+	_$('bg_transparent').style.display = "none";
+}
+
+
 function preparemenus(){
-	/*
 	var menu_div = document.getElementById('mymenu') ;
 	menu_div.style.width="80";
 	menu_div.style.borderColor = "#eee #bbb #bbb #ddd";
@@ -65,17 +93,20 @@ function preparemenus(){
 
 	var menuitem1 = document.createElement('div');
 	menuitem1.innerHTML = "Edit" ;
-	menuitem1.onclick =  function(){ hide_mymenu( ); editSP( this.parentNode.sp_value) };
-	menuitem1.onmouseover= function(){  
-		document.getElementById('row'+this.parentNode.sp_value ).style.backgroundColor='#F6E7B6';   
-		this.style.backgroundColor='#EFEFEF';  
-	};
-	menuitem1.onmouseout=function(){  
-		document.getElementById('row'+this.parentNode.sp_value ).style.backgroundColor='#FFFFFF';  
-		this.style.backgroundColor='#FFFFFF';  
+	menuitem1.onclick =  function(){ 
+		hide_mymenu( ); 
+		editSPAN( this.parentNode.span_value) ;
 	};
 	menu_div.appendChild(menuitem1);
-	*/
+}
+
+
+function show_downmenu( s ) {
+	var b = document.getElementById('mymenu');
+	var a = _$("span_"+s);
+	b.span_value = s ;
+	ASTGUI.alignBbelowA(a,b);
+	setTimeout( function(){ b.style.display=""; } , 100 );
 }
 
 
@@ -123,21 +154,22 @@ function showtable(){ // navigates through the SPANS object and presents as a ta
 		newCell2.innerHTML =  SPANS[span]['fac'];
 
 		var newCell3 = newRow.insertCell(3);
-		var type = (SPANS[span]['totchans'] <= 24) ? "T1" : "E1";
-		SPANS[span]['type'] = type;
-		newCell3.innerHTML = String(SPANS[span]['usedchans']) + "/" + String(SPANS[span]['totchans']) + " " + type;
+		newCell3.innerHTML = String(SPANS[span]['usedchans'])+"/"+String(SPANS[span]['totchans'])+" ("+SPANS[k]['type']+")";
 		newCell3.align = "center";
 
-
 		var newCell4 = newRow.insertCell(4);
-		newCell4.innerHTML = "Edit" ;
+		newCell4.innerHTML = "<span class=\"downmenubutton\" id='" + "span_" + span + "'  onclick=\"show_downmenu( '"+ span + "');\">Options&nbsp;&nbsp;<img src=images/1.gif></span>" ;
 		newCell4.style.width = 90;
 		newCell4.align = "center";
 	};
 
 	ASTGUI.domActions.clear_table(tbl);
 	add_fRow();
-	for( var k in SPANS ){ if( SPANS.hasOwnProperty(k) ){ addrow_totable(k); } }
+	for( var k in SPANS ){ if( SPANS.hasOwnProperty(k) ){ 
+		var type = (SPANS[k]['totchans'] <= 24) ? "T1" : "E1";
+		SPANS[k]['type'] = type;
+		addrow_totable(k); 
+	}}
 
 }
 
@@ -179,6 +211,7 @@ function localajaxinit(){
 	_$('message_text').innerHTML = "Detecting Digital Cards ... (Beta)";
 	_$('status_message').style.display="block";
 	setTimeout(function(){ _$('status_message').style.display='none';}, 1000);
+	preparemenus();
 
 	parent.loadscreen(this);
 	parent.astmanEngine.run_tool(asterisk_guiZtscan, function(t) { // run ztscan and then try loading ztscan.conf
@@ -188,6 +221,42 @@ function localajaxinit(){
 }
 
 function resetmainscreen(){ top._$('mainscreen').width= 540; }
+function reloadpage(){window.location.href="digital.html";}
+
+
+function updateZaptel(){ 
+// navigate through the SPANS object and save it to the applyzap.conf, 
+// then call a script which will generate zaptel.conf from it and asks the user to restart his machine
+	var c = 0, bchanstring = '', dchanstring = '', context = 'general' ;
+	var uri = build_action('delcat', c, context,"", ""); c++;
+	    uri += build_action('newcat', c , context, "", ""); c++;
+
+	var add_lines = function(){
+		var totalchans = 0, firstpart , secondpart, tmp, tmp2 ;
+		for( var k in SPANS ){ if( SPANS.hasOwnProperty(k) ){
+			firstpart = "span";
+			secondpart = k;
+			uri += build_action('append', c, context, firstpart, secondpart ); c++;
+			tmp = totalchans + Number(SPANS[k]['totchans']);
+			tmp2 = (totalchans)? ",":"";
+			dchanstring += tmp2 + String(tmp) ;
+			bchanstring += tmp2 + String(totalchans+1) + "-" + String(tmp-1);
+			totalchans = tmp;
+		}}
+	};
+	add_lines();
+
+	uri += build_action('append', c, context, 'bchan', bchanstring); c++;
+	uri += build_action('append', c, context, 'dchan', dchanstring); c++;
+	uri += build_action('append', c, context, 'loadzone', 'us'); c++;
+	uri += build_action('append', c, context, 'defaultzone', 'us'); c++;
+
+	makerequest('u', "applyzap.conf", uri , function(t) {
+
+	});
+
+}
+
 
 </script>
 <body onload="localajaxinit()" onunload="resetmainscreen()" bgcolor="#FFFFFF">
@@ -201,13 +270,65 @@ function resetmainscreen(){ top._$('mainscreen').width= 540; }
 
 <div style="overflow:auto;left:40">
 	<table class="taglist" id="digitalcardstable" cellpadding=5 cellspacing=1 border=0 align=center></table>
+	<table align=center border=0>
+		<tr>
+			<td>
+				<input type="button" value="Apply Changes" onclick="updateZaptel()"> &nbsp;&nbsp;
+				<input type="button" value="Cancel" onclick="reloadpage()">
+			</td>
+		</tr>
+	</table>
 </div>
 
 <div id="mymenu" class="mymenu" style="display:none"></div>
 <div id="bg_transparent" STYLE="display:none; position: absolute; left: 0; top: 0; width:100%; height:100%;  background-color:#FFFFFF; filter:alpha(opacity=50); -moz-opacity:.50;opacity:.50; border-width: 0px; z-index:4">
 </div>
 
-
+<div id="edit_span" STYLE="display:none; position: absolute; left: 30; top: 40; width:500; height:290;  background-color:#F4EFE5;   border-width: 1px; border-color: #7E5538; border-style: solid; z-index:5">
+	<table width="100%" cellpadding=0 cellspacing=0  onmousedown="ASTGUI.startDrag(event , 'edit_span');">
+	<TR bgcolor="#7E5538"  style="background-image:url('images/title_gradient.gif');">
+		<TD Height="20" align="right" style="cursor: move">
+			<A href="#" onclick="$('cancel_a').click();"><font style="color:#FFFFFF; font-size: 12px; font-weight:bold;">X</font></A>
+		</TD>
+		<TD width=4></TD>
+	</TR>
+	</table>
+	<TABLE	align=center cellpadding=2 cellspacing=2 border=0>
+	<TR>	<TD align="right">SPAN:</TD>
+		<TD><span id="editspan_SPAN"></span></TD>
+	</TR>
+	<TR>	<TD align="right">ALARMS:</TD>
+		<TD><span id="editspan_ALARMS"></span></TD>
+	</TR>
+	<TR>	<TD align="right">Framing/Coding:</TD>
+		<TD>	<select id="editspan_fac">
+			<option value="ESF/B8ZS">ESF/B8ZS</option>
+			<option value="D4/AMI">D4/AMI</option>
+			<option value="CAS/AMI">CAS/AMI</option>
+			<option value="CCS/HDB3">CCS/HDB3</option>
+			<option value="CCS/CRC4/HDB3">CCS/CRC4/HDB3</option>
+			</select>
+		</TD>
+	</TR>
+	<TR>	<TD align="right">Channels:</TD>
+		<TD><span id="editspan_channels"></span></TD>
+	</TR>
+	<TR>	<TD align="right">Signalling</TD>
+		<TD>	<select id="editspan_signalling">
+			<option value="pri">PRI</option>
+			<option value="fxoks">FXOKS</option>
+			<option value="fxsks">FXSKS</option>
+			<option value="fxols">FXOLS</option>
+			</select>
+		</TD>
+	</TR>
+	<TR>	<TD colspan=2 align=center height=50 valign=middle>  
+			<input type="button" id="save_a" value="Update" onclick="updateSpanInfo();">&nbsp;&nbsp;
+			<input type="button" id="cancel_a" value="Cancel" onclick="canelSpanInfo();">
+		</TD>
+	</TR>
+	</TABLE>
+</div>
 
 </body>
 </html>

@@ -298,6 +298,11 @@ var ASTGUI = { // the idea is to eventually move all the global variables and fu
 	
 		clear: function(el){
 			el.options.length = 0;
+		},
+
+		selectOption: function(el, opt){
+			el.selectedIndex = -1;
+			for (var x=0; x < el.options.length; x++) { if (el.options[x].value == opt){ el.selectedIndex = x; } }
 		}
 	},
 
