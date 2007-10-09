@@ -88,9 +88,18 @@ function editSPAN(l){ // show values for SPAN l in the edit_span dialog box
 	_$('editspan_SPAN').innerHTML = SPANS[l]['description'];
 	_$('editspan_ALARMS').innerHTML = SPANS[l]['alarms'];
 	ASTGUI.selectbox.selectOption( _$('editspan_fac') , SPANS[l]['fac'] );
-	_$('editspan_channels').innerHTML = String(SPANS[l]['usedchans']) + "/" + String(SPANS[l]['totchans']);
-	//_$('editspan_signalling')
-	// _$('editspan_switchtype')
+	_$('editspan_channels').innerHTML = String(SPANS[l]['usedchans']) + "/" + String(SPANS[l]['totchans']) + " ("+SPANS[l]['type']+")";
+
+	if( SPANS[l]['signalling'] ){
+		ASTGUI.selectbox.selectOption( _$('editspan_signalling') , SPANS[l]['signalling'] );
+	}else{
+		_$('editspan_signalling').selectedIndex = -1 ; 
+	}
+	if(SPANS[l]['switchtype']){
+		ASTGUI.selectbox.selectOption( _$('editspan_switchtype') , SPANS[l]['switchtype'] );
+	}else{
+		_$('editspan_switchtype').selectedIndex = -1 ;
+	}
 	// _$('editspan_loadzone')
 
 	_$('edit_span').style.display = "";
@@ -205,7 +214,7 @@ function digitalparse(n){
 	for( var l in n ){ if(n.hasOwnProperty(l)){
 		if( l =='general') { 
 			if(n[l]['continue'] && n[l]['continue'] == "no") {
-				_$('errmsg').innerHTML = "Problem Detecting/No Cards(or spans) Found! \n\n Error: " + n[l]['error'];
+				_$('errmsg').innerHTML = "No digital Cards detected (found 0 spans)! <BR> Error: " + n[l]['error'];
 				_$('errmsg').style.display = '';
 				_$('div_digitalcardstable').style.display = 'none';
 				gui_feedback("No Cards/Spans found !!");
@@ -224,8 +233,33 @@ function digitalparse(n){
 		SPANS[l] = {};
 		for( var k in n[l] ){ if(n[l].hasOwnProperty(k)){ SPANS[l][k] = n[l][k]; }}
 	}}
+	config2json("users.conf", 1, usersparse);
+	
+}
+
+function usersparse(n){ // read users.conf and load switchtype, signalling, zapchan into the SPANS object
+	if( n == "ERROR: CONFIG FILE NOT FOUND"){
+		_$('errmsg').innerHTML = "/etc/asterisk/users.conf not found";
+		_$('errmsg').style.display = '';
+		_$('div_digitalcardstable').style.display = 'none';
+		gui_feedback("No Users File found !!");
+		//_$('tablecontainer').style.display="none";
+		return false;
+	}
+	var abcd = function(){
+		var tmp;
+		for( var l in n ){ if(n.hasOwnProperty(l)){
+			if( l.beginsWith('span_')) {
+				tmp = l.split('span_')[1];
+				if (!SPANS[tmp]){SPANS[tmp] = {};}
+				for( var k in n[l] ){ if(n[l].hasOwnProperty(k)){ SPANS[tmp][k] = n[l][k]; }}
+			}
+		}}
+	};
+	abcd();
 	showtable();
 }
+
 
 function localajaxinit(){
 	setWindowTitle("Digital Setup Wizard");
@@ -240,12 +274,11 @@ function localajaxinit(){
 	parent.astmanEngine.run_tool(asterisk_guiZtscan, function(t) { // run ztscan and then try loading ztscan.conf
 		setTimeout( function(){ config2json("ztscan.conf", 1, digitalparse); } , 700); // leave some time for ztscan to generate ztscan.conf
 	});
-
 }
 
 function resetmainscreen(){ top._$('mainscreen').width= 540; }
-function reloadpage(){window.location.href="digital.html";}
 
+function reloadpage(){window.location.href="digital.html";}
 
 function updateZaptel(){ 
 // navigate through the SPANS object and save it to the applyzap.conf, 
