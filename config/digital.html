@@ -315,7 +315,7 @@ function updateZaptel(){
 
 	uri += build_action('append', c, context, 'bchan', bchanstring); c++;
 	uri += build_action('append', c, context, 'dchan', dchanstring); c++;
-	uri += build_action('append', c, context, 'loadzone', 'us'); c++;
+	uri += build_action('append', c, context, 'loadzone', _$(editspan_loadzone).value); c++;
 	uri += build_action('append', c, context, 'defaultzone', 'us'); c++;
 
 	makerequest('u', "applyzap.conf", uri , function(t) {
@@ -324,6 +324,12 @@ function updateZaptel(){
 
 }
 
+function showhideswitch() {
+	var _sig = _$('editspan_signalling').value.substr(0,2);
+	var _st = _$('signalling_container');
+	if(_sig == "fx") { _st.style.display = 'none'; } else { _st.style.display = ''; }
+	return true;
+}
 
 </script>
 <body onload="localajaxinit()" onunload="resetmainscreen()"  bgcolor="#EFEFEF">
@@ -352,7 +358,7 @@ function updateZaptel(){
 <div id="bg_transparent" STYLE="display:none; position: absolute; left: 0; top: 0; width:100%; height:100%;  background-color:#FFFFFF; filter:alpha(opacity=50); -moz-opacity:.50;opacity:.50; border-width: 0px; z-index:4">
 </div>
 
-<div id="edit_span" STYLE="display:none; position: absolute; left: 30; top: 40; width:500; height:290;  background-color:#F4EFE5;   border-width: 1px; border-color: #7E5538; border-style: solid; z-index:5">
+<div id="edit_span" STYLE="display:none; position: absolute; left: 30; top: 40; width:500; height:310;  background-color:#F4EFE5;   border-width: 1px; border-color: #7E5538; border-style: solid; z-index:5">
 	<table width="100%" cellpadding=0 cellspacing=0  onmousedown="ASTGUI.startDrag(event , 'edit_span');">
 	<TR bgcolor="#7E5538"  style="background-image:url('images/title_gradient.gif');">
 		<TD Height="20" align="right" style="cursor: move">
@@ -382,16 +388,17 @@ function updateZaptel(){
 		<TD><span id="editspan_channels"></span></TD>
 	</TR>
 	<TR>	<TD align="right">Signalling</TD>
-		<TD>	<select id="editspan_signalling">
+		<TD>	<select id="editspan_signalling" onChange="showhideswitch();">
 			<option value="pri_net">PRI - Net</option>
-			<option value="pri_cpe">PRI - Cpe</option>
+			<option value="pri_cpe">PRI - CPE</option>
 			<option value="fxoks">FXOKS</option>
 			<option value="fxsks">FXSKS</option>
 			<option value="fxols">FXOLS</option>
+			<option value="fxsls">FXSLS</option>
 			</select>
 		</TD>
 	</TR>
-	<TR>	<TD align="right">Switch Type</TD>
+	<TR id="signalling_container">	<TD align="right">Switch Type</TD>
 		<TD>	<select id="editspan_switchtype">
 				<option value="national">National ISDN 2 (default)</option>
 				<option value="dms100">Nortel DMS100</option>
@@ -403,7 +410,6 @@ function updateZaptel(){
 			</select>
 		</TD>
 	</TR>
-
 	<TR>	<TD align="right">LoadZone</TD>
 		<TD>	<select id="editspan_loadzone">
 				<option value="us">us</option>
@@ -423,6 +429,27 @@ function updateZaptel(){
 			</select>
 		</TD>
 	</TR>
+	<TR>	<TD align="right">Sync/Clock Source</TD>
+		<TD>	<select id="editspan_syncsource">
+				<option value="0">Master (0) (Set Timing)</option>
+				<option value="1">Slave (1) (Take Timing)</option>
+			</select>
+		</TD>
+	</TR>
+	<TR>	<TD align="right">Line Build Out</TD>
+		<TD>	<select id="editspan_linebuildout">
+				<option value="0">0 db (CSU)/0-133 feet (DSX-1)</option>
+				<option value="1">133-266 feet (DSX-1)</option>
+				<option value="2">266-399 feet (DSX-1)</option>
+				<option value="3">399-533 feet (DSX-1)</option>
+				<option value="4">533-655 feet (DSX-1)</option>
+				<option value="5">-7.5db (CSU)</option>
+				<option value="6">-15db (CSU)</option>
+				<option value="7">-22.5db (CSU)</option>
+			</select>
+		</TD>
+	</TR>
+	
 	<TR>	<TD colspan=2 align=center height=50 valign=middle>  
 			<input type="button" id="save_a" value="Update" onclick="updateSpanInfo();">&nbsp;&nbsp;
 			<input type="button" id="cancel_a" value="Cancel" onclick="canelSpanInfo();">
