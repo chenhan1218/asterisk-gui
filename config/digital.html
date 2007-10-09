@@ -101,7 +101,8 @@ function editSPAN(l){ // show values for SPAN l in the edit_span dialog box
 		_$('editspan_switchtype').selectedIndex = -1 ;
 	}
 	// _$('editspan_loadzone')
-
+	ASTGUI.selectbox.selectOption( _$('editspan_syncsrc') , SPANS[l]['syncsrc'] );
+	ASTGUI.selectbox.selectOption( _$('editspan_lbo') , SPANS[l]['lbo'] );
 	_$('edit_span').style.display = "";
 	_$('bg_transparent').style.display = "";
 
