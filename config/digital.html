@@ -48,6 +48,23 @@
 	.taglist tr.even:hover, .taglist tr.odd:hover {
 		background-color: #a8b6e5;
 	}
+
+	#errmsg{
+		border: 1px solid #666666;
+		margin-left:50px;
+		margin-right:50px;
+		padding : 20px 10px 20px 10px;
+		font-size: 125%;
+		text-align: center;
+		background-color:#FFFFFF;
+	}
+
+	.pageheading{
+		padding : 10px 10px 10px 10px;
+		font-size: 135%;
+		text-align: center;
+		font-weight: bold;
+	}
 </style>
 
 <script>
@@ -177,8 +194,10 @@ function showtable(){ // navigates through the SPANS object and presents as a ta
 
 function digitalparse(n){
 	if( n == "ERROR: CONFIG FILE NOT FOUND"){
-		alert("Please check if ztscan is installed ? \n\n /etc/asterisk/ztscan.conf not found");
-		gui_feedback("Problem detecting digital cards. No Cards/Spans found !! <BR>  No Config File");
+		_$('errmsg').innerHTML = "Please check if <B>ztscan</B> is installed ? <BR> /etc/asterisk/ztscan.conf not found";
+		_$('errmsg').style.display = '';
+		_$('div_digitalcardstable').style.display = 'none';
+		gui_feedback("No Cards/Spans found,  No Config File found !!");
 		//_$('tablecontainer').style.display="none";
 		return false;
 	}
@@ -186,8 +205,10 @@ function digitalparse(n){
 	for( var l in n ){ if(n.hasOwnProperty(l)){
 		if( l =='general') { 
 			if(n[l]['continue'] && n[l]['continue'] == "no") {
-				alert("Problem Detecting/No Cards(or spans) Found! \n\n Error: " + n[l]['error']);
-				gui_feedback("Problem detecting digital cards. No Cards/Spans found !!");
+				_$('errmsg').innerHTML = "Problem Detecting/No Cards(or spans) Found! \n\n Error: " + n[l]['error'];
+				_$('errmsg').style.display = '';
+				_$('div_digitalcardstable').style.display = 'none';
+				gui_feedback("No Cards/Spans found !!");
 				//_$('tablecontainer').style.display="none";
 				return false;
 			}
@@ -272,16 +293,16 @@ function updateZaptel(){
 
 
 </script>
-<body onload="localajaxinit()" onunload="resetmainscreen()" bgcolor="#FFFFFF">
+<body onload="localajaxinit()" onunload="resetmainscreen()"  bgcolor="#EFEFEF">
 
 <div style="font-size : 12px; padding : 4px 6px 4px 6px; border-style : solid none solid none; border-top-color : #BDC7E7; border-bottom-color : #182052; border-width : 1px 0px 1px 0px; background-color : #ef8700; color : #ffffff;">
 	<span style="margin-left: 4px;font-weight:bold;">Digital Card Configuration Wizard (Beta)</span>
 	<span style="cursor: pointer; cursor: hand;" onclick="window.location.href=window.location.href;" >&nbsp;<img src="images/refresh.png" title=" Refresh " border=0 >&nbsp;</span>
 </div>
 
-<center><font size="+1">Digital Card Setup</font></center>
+<div class="pageheading">Digital Card Setup</div>
 
-<div style="overflow:auto;left:40">
+<div style="overflow:auto;left:40" id="div_digitalcardstable">
 	<table class="taglist" id="digitalcardstable" cellpadding=5 cellspacing=1 border=0 align=center></table>
 	<table align=center border=0>
 		<tr>
@@ -293,6 +314,7 @@ function updateZaptel(){
 	</table>
 </div>
 
+<div id="errmsg" style="display:none"></div>
 <div id="mymenu" class="mymenu" style="display:none"></div>
 <div id="bg_transparent" STYLE="display:none; position: absolute; left: 0; top: 0; width:100%; height:100%;  background-color:#FFFFFF; filter:alpha(opacity=50); -moz-opacity:.50;opacity:.50; border-width: 0px; z-index:4">
 </div>
