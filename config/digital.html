@@ -70,14 +70,6 @@
 <script>
 var SPANS = {};
 
-var framing_and_coding = {
-	"ESF/B8ZS": "esf,b8zs",
-	"D4/AMI": "d4,ami",
-	"CAS/AMI": "cas,ami",
-	"CCS/HDB3": "ccs,hdb3",
-	"CCS/CRC4/HDB3": "ccs,crc4,hdb3"
-};
-
 function hide_mymenu(){
 	document.getElementById('mymenu').style.display="none"; 
 }
@@ -294,7 +286,7 @@ function updateZaptel(){
 			firstpart = "span";
 			/* XXX Timing source for card is being set to zero? */
 			/* LBO is being set to 0 */
-			secondpart = k + "," + "0,0," + SPANS[k]['fac'].toLowerCase().replace("/", ",");
+			secondpart = k + "," + SPANS[k]['syncsrc']  + "," + SPANS[k]['lbo'] + "," + SPANS[k]['fac'].toLowerCase().replace("/", ",");
 			uri += build_action('append', c, context, firstpart, secondpart ); c++;
 			tmp2 = (totalchans)? ",":"";
 
@@ -316,11 +308,13 @@ function updateZaptel(){
 
 	uri += build_action('append', c, context, 'bchan', bchanstring); c++;
 	uri += build_action('append', c, context, 'dchan', dchanstring); c++;
-	uri += build_action('append', c, context, 'loadzone', _$(editspan_loadzone).value); c++;
+	uri += build_action('append', c, context, 'loadzone', _$('editspan_loadzone').value); c++;
 	uri += build_action('append', c, context, 'defaultzone', 'us'); c++;
 
 	makerequest('u', "applyzap.conf", uri , function(t) {
-		
+		parent.astmanEngine.run_tool(asterisk_guiEditZap + " applysettings", function(t) { /* anything we need to do here? */ return true; });	
+		/* to run ztcfg and apply settings, you can do this call, but replace applysettings with ztcfg.
+			You can then read /var/lib/asterisk/static-http/config/ztcfg_output.html to look at ztcfg errors */
 	});
 
 }

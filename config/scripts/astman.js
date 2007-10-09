@@ -34,6 +34,7 @@ var asterisk_guiSysInfo = "sh " + asterisk_scriptsFolder + "gui_sysinfo" ;
 var asterisk_guiSysInfo_output = "./sysinfo_output.html";
 var asterisk_guiZapscan = "/sbin/zapscan.bin" ;
 var asterisk_guiZtscan = "/sbin/ztscan";
+var asterisk_guiEditZap = "sh " + asterisk_scriptsFolder + "editzap.sh";
 var asterisk_rawmanPath = "../../rawman" ;
 var asterisk_guiConfigFile = "guipreferences.conf"; // will be created in asterisk_configfolder, if the file does not exist 
 var asterisk_configfolder = "/etc/asterisk/";

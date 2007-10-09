@@ -8,6 +8,7 @@
 
 ZAPCONF="/etc/zaptel.conf"
 ZTCFG_OUTPUT="/var/lib/asterisk/static-http/config/ztcfg_output.html"
+FILENAME="/etc/asterisk/applyzap.conf"
 
 case ${1} in
 	changemodes)
@@ -29,8 +30,9 @@ case ${1} in
 		;;
 	applysettings)	
 		# Split based on ||| delimeter, and apply to zaptel.
-		FILENAME="/etc/asterisk/applyzap.conf"
 		grep -v "\[general\]" ${FILENAME} | grep -v "\;" > ${ZAPCONF} 
+		;;
+	ztcfg)
 		ztcfg -vv 2> $ZTCFG_OUTPUT
 		;;
 esac
