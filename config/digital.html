@@ -331,6 +331,19 @@ function showhideswitch() {
 	return true;
 }
 
+
+
+function updateSpanInfo(){
+	var b = String( document.getElementById('mymenu').span_value );
+	SPANS[b]['fac'] = _$('editspan_fac').value;
+	SPANS[b]['signalling'] = _$('editspan_signalling').value;
+	SPANS[b]['syncsrc'] = _$('editspan_syncsrc').value;
+	SPANS[b]['lbo'] = _$('editspan_lbo').value;
+	//SPANS[b]['loadzone'] = _$('editspan_loadzone').value;
+	canelSpanInfo();
+}
+
+
 </script>
 <body onload="localajaxinit()" onunload="resetmainscreen()"  bgcolor="#EFEFEF">
 
@@ -430,14 +443,14 @@ function showhideswitch() {
 		</TD>
 	</TR>
 	<TR>	<TD align="right">Sync/Clock Source</TD>
-		<TD>	<select id="editspan_syncsource">
+		<TD>	<select id="editspan_syncsrc">
 				<option value="0">Master (0) (Set Timing)</option>
 				<option value="1">Slave (1) (Take Timing)</option>
 			</select>
 		</TD>
 	</TR>
 	<TR>	<TD align="right">Line Build Out</TD>
-		<TD>	<select id="editspan_linebuildout">
+		<TD>	<select id="editspan_lbo">
 				<option value="0">0 db (CSU)/0-133 feet (DSX-1)</option>
 				<option value="1">133-266 feet (DSX-1)</option>
 				<option value="2">266-399 feet (DSX-1)</option>
