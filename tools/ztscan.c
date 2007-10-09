@@ -58,17 +58,6 @@ static void trim(char *buf);
 char *facs[] = { "esf,b8zs", "d4,ami", "cas,ami", "ccs,hdb3", "ccs,crc4,hdb3", 0};
 static ZT_SPANINFO s[ZT_MAX_SPANS];
 
-static const char *lbostr[] = {
-"0 db (CSU)/0-133 feet (DSX-1)",
-"133-266 feet (DSX-1)",
-"266-399 feet (DSX-1)",
-"399-533 feet (DSX-1)",
-"533-655 feet (DSX-1)",
-"-7.5db (CSU)",
-"-15db (CSU)",
-"-22.5db (CSU)"
-};
-
 /* Done. Lets get to work! */
 
 /* Quick function to print out usage information, this only gets called if they pass an unknown variable */
@@ -273,7 +262,7 @@ int scanspans() {
 			}
 #ifdef ZT_SPANINFO_HAS_LINECONFIG
 			snprintf(fac, sizeof(fac), "%3s/%4s", ( s[x].lineconfig & ZT_CONFIG_D4 ? "D4" : s[x].lineconfig & ZT_CONFIG_ESF ? "ESF" : s[x].lineconfig & ZT_CONFIG_CCS ? "CCS" : "CAS" ), ( s[x].lineconfig & ZT_CONFIG_AMI ? "AMI" : s[x].lineconfig & ZT_CONFIG_B8ZS ? "B8ZS" : s[x].lineconfig & ZT_CONFIG_HDB3 ? "HDB3" : "???" ));
-			snprintf(lbos, sizeof(lbos), "%s", lbostr[s[x].lbo]);
+			snprintf(lbos, sizeof(lbos), "%s", s[x].lbo);
 			if(!strncmp(ret, "OK", 2)) {
 				printf("Span %d has Alarm: %s\n", x, ret);
 				fprintf(conf, "\n[%d]\nactive=yes\nalarms=%s\ndescription=%s\nname=%s\ntotchans=%d\nusedchans=%d\nfac=%s\nlbo=%s\nsyncsrc=%d\n", x, ret, s[x].desc, s[x].name, s[x].totalchans, s[x].numchans, fac, lbos, s[x].syncsrc);
