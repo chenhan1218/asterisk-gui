@@ -22,7 +22,6 @@
 <script src="scripts/astman.js"></script>
 <script src="scripts/tooltip.js"></script>
 <link href="stylesheets/schwing.css" media="all" rel="Stylesheet" type="text/css" />
-
 <style>
 
 	.taglist {
@@ -66,7 +65,6 @@
 		font-weight: bold;
 	}
 </style>
-
 <script>
 var SPANS = {};
 
@@ -248,8 +246,7 @@ function usersparse(n){ // read users.conf and load switchtype, signalling, zapc
 				for( var k in n[l] ){ if(n[l].hasOwnProperty(k)){ SPANS[tmp][k] = n[l][k]; }}
 			}
 		}}
-	};
-	abcd();
+	}();
 	showtable();
 }
 
@@ -273,52 +270,6 @@ function resetmainscreen(){ top._$('mainscreen').width= 540; }
 
 function reloadpage(){window.location.href="digital.html";}
 
-function updateZaptel(){ 
-// navigate through the SPANS object and save it to the applyzap.conf, 
-// then call a script which will generate zaptel.conf from it and asks the user to restart his machine
-	var c = 0, bchanstring = '', dchanstring = '', context = 'general' ;
-	var uri = build_action('delcat', c, context,"", ""); c++;
-	    uri += build_action('newcat', c , context, "", ""); c++;
-
-	var add_lines = function(){
-		var totalchans = 0, firstpart , secondpart, tmp, tmp2 ;
-		for( var k in SPANS ){ if( SPANS.hasOwnProperty(k) ){
-			firstpart = "span";
-			/* XXX Timing source for card is being set to zero? */
-			/* LBO is being set to 0 */
-			secondpart = k + "," + SPANS[k]['syncsrc']  + "," + SPANS[k]['lbo'] + "," + SPANS[k]['fac'].toLowerCase().replace("/", ",");
-			uri += build_action('append', c, context, firstpart, secondpart ); c++;
-			tmp2 = (totalchans)? ",":"";
-
-			if(SPANS[k]['totchans'] <= 24){
-				tmp = totalchans + Number(SPANS[k]['totchans']);
-				dchanstring += tmp2 + String(tmp) ;
-				bchanstring += tmp2 + String(totalchans+1) + "-" + String(tmp-1);
-				totalchans = tmp;
-			}else{ // take first 15 as b-channels, then a d channel and then take the next 15 as bchannels
-				tmp = totalchans + Number(15);
-				bchanstring += tmp2 + String(totalchans+1) + "-" + String(tmp);
-				dchanstring += tmp2 + String(totalchans+16) ;
-				bchanstring += "," + String(tmp+2) + "-" + String(tmp+16);
-				totalchans = tmp + Number(16);
-			}
-		}}
-	};
-	add_lines();
-
-	uri += build_action('append', c, context, 'bchan', bchanstring); c++;
-	uri += build_action('append', c, context, 'dchan', dchanstring); c++;
-	uri += build_action('append', c, context, 'loadzone', _$('editspan_loadzone').value); c++;
-	uri += build_action('append', c, context, 'defaultzone', 'us'); c++;
-
-	makerequest('u', "applyzap.conf", uri , function(t) {
-		parent.astmanEngine.run_tool(asterisk_guiEditZap + " applysettings", function(t) { /* anything we need to do here? */ return true; });	
-		/* to run ztcfg and apply settings, you can do this call, but replace applysettings with ztcfg.
-			You can then read /var/lib/asterisk/static-http/config/ztcfg_output.html to look at ztcfg errors */
-	});
-
-}
-
 function showhideswitch() {
 	var _sig = _$('editspan_signalling').value.substr(0,2);
 	var _st = _$('signalling_container');
@@ -332,10 +283,87 @@ function updateSpanInfo(){
 	var b = String( document.getElementById('mymenu').span_value );
 	SPANS[b]['fac'] = _$('editspan_fac').value;
 	SPANS[b]['signalling'] = _$('editspan_signalling').value;
+	SPANS[b]['switchtype'] = _$('editspan_switchtype').value;
 	SPANS[b]['syncsrc'] = _$('editspan_syncsrc').value;
 	SPANS[b]['lbo'] = _$('editspan_lbo').value;
 	//SPANS[b]['loadzone'] = _$('editspan_loadzone').value;
 	canelSpanInfo();
+}
+
+
+
+var applySettings = {
+	generate_zaptel: function(){
+		parent.astmanEngine.run_tool(asterisk_guiEditZap + " applysettings", function(t) {
+			/* anything we need to do here? */
+			return true; 
+		});
+		/* to run ztcfg and apply settings, you can do this call, but replace applysettings with ztcfg.
+		You can then read /var/lib/asterisk/static-http/config/ztcfg_output.html to look at ztcfg errors */
+	},
+
+	updateUsersConf: function(){
+		/* update the users.conf to make sure there are corresponding [SPAN_x] contexts are updated */
+		var uri = '';
+		var add_lines = function(){
+			// for each span update span with new values of 'switchtype', 'singalling'
+			var c = 0;
+			for( var k in SPANS ){ if( SPANS.hasOwnProperty(k) ){
+				uri += build_action('delcat', c, 'span_'+ String(k) , "", ""); c++;
+				uri += build_action('newcat', c, 'span_'+ String(k) , "", ""); c++;
+				uri += build_action('update', c, 'span_'+ String(k) , "switchtype", SPANS[k]['switchtype']); c++;
+				uri += build_action('update', c, 'span_'+ String(k) , "signalling", SPANS[k]['signalling']); c++;
+			}}
+		}();
+		makerequest('u', "users.conf", uri , function(t) { applySettings.generate_zaptel(); });
+	},
+
+	updateZaptel: function(){ 
+	// navigate through the SPANS object and save it to the applyzap.conf, 
+	// then call a script which will generate zaptel.conf from it and asks the user to restart his machine
+		var uri = '';
+		var add_lines = function(){
+			var c = 0, bchanstring = '', dchanstring = '', context = 'general' ;
+			uri = build_action('delcat', c, context,"", ""); c++;
+			uri += build_action('newcat', c , context, "", ""); c++;
+			var totalchans = 0, firstpart , secondpart, tmp, tmp2 ;
+			for( var k in SPANS ){ if( SPANS.hasOwnProperty(k) ){
+				firstpart = "span";
+				/* XXX Timing source for card is being set to zero? */
+				/* LBO is being set to 0 */
+				secondpart = k + "," + SPANS[k]['syncsrc']  + "," + SPANS[k]['lbo'] + "," + SPANS[k]['fac'].toLowerCase().replace("/", ",");
+				uri += build_action('append', c, context, firstpart, secondpart ); c++;
+				tmp2 = (totalchans)? ",":"";
+	
+				if(SPANS[k]['totchans'] <= 24){
+					tmp = totalchans + Number(SPANS[k]['totchans']);
+					dchanstring += tmp2 + String(tmp) ;
+					bchanstring += tmp2 + String(totalchans+1) + "-" + String(tmp-1);
+					totalchans = tmp;
+				}else{ // take first 15 as b-channels, then a d channel and then take the next 15 as bchannels
+					tmp = totalchans + Number(15);
+					bchanstring += tmp2 + String(totalchans+1) + "-" + String(tmp);
+					dchanstring += tmp2 + String(totalchans+16) ;
+					bchanstring += "," + String(tmp+2) + "-" + String(tmp+16);
+					totalchans = tmp + Number(16);
+				}
+			}}
+
+			uri += build_action('append', c, context, 'bchan', bchanstring); c++;
+			uri += build_action('append', c, context, 'dchan', dchanstring); c++;
+			uri += build_action('append', c, context, 'loadzone', _$('editspan_loadzone').value); c++;
+			uri += build_action('append', c, context, 'defaultzone', 'us'); c++;
+		}();
+		makerequest('u', "applyzap.conf", uri , function(t) { applySettings.updateUsersConf(); });
+	}
+};
+
+
+function applyDigitalSettings(){
+ 	// write to applyzap.conf - generate new applyzap.conf
+ 	// write to users.conf - update [spans_x] contexts
+ 	// call the asterisk_guiEditZap - which will generate zaptel.conf from applyzap.conf
+	applySettings.updateZaptel();
 }
 
 
@@ -354,7 +382,7 @@ function updateSpanInfo(){
 	<table align=center border=0>
 		<tr>
 			<td>
-				<input type="button" value="Apply Changes" onclick="updateZaptel()"> &nbsp;&nbsp;
+				<input type="button" value="Apply Changes" onclick="applyDigitalSettings()"> &nbsp;&nbsp;
 				<input type="button" value="Cancel" onclick="reloadpage()">
 			</td>
 		</tr>
