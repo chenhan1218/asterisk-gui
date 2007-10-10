@@ -67,67 +67,56 @@
 </style>
 <script>
 var SPANS = {};
+var oldSpanCount = 0; // we get this from previuos applyzap.conf
+var menu ; // document.getElementById('mymenu');
 
-function hide_mymenu(){
-	document.getElementById('mymenu').style.display="none"; 
-}
-
-
-function editSPAN(l){ // show values for SPAN l in the edit_span dialog box
-
-	_$('editspan_SPAN').innerHTML = SPANS[l]['description'];
-	_$('editspan_ALARMS').innerHTML = SPANS[l]['alarms'];
-	ASTGUI.selectbox.selectOption( _$('editspan_fac') , SPANS[l]['fac'] );
-	_$('editspan_channels').innerHTML = String(SPANS[l]['usedchans']) + "/" + String(SPANS[l]['totchans']) + " ("+SPANS[l]['type']+")";
-
-	if( SPANS[l]['signalling'] ){
-		ASTGUI.selectbox.selectOption( _$('editspan_signalling') , SPANS[l]['signalling'] );
-	}else{
-		_$('editspan_signalling').selectedIndex = -1 ; 
-	}
-	if(SPANS[l]['switchtype']){
-		ASTGUI.selectbox.selectOption( _$('editspan_switchtype') , SPANS[l]['switchtype'] );
-	}else{
-		_$('editspan_switchtype').selectedIndex = -1 ;
-	}
-	// _$('editspan_loadzone')
-	ASTGUI.selectbox.selectOption( _$('editspan_syncsrc') , SPANS[l]['syncsrc'] );
-	ASTGUI.selectbox.selectOption( _$('editspan_lbo') , SPANS[l]['lbo'] );
-	_$('edit_span').style.display = "";
-	_$('bg_transparent').style.display = "";
-
-}
+function hide_mymenu(){ menu.style.display="none"; }
 
 function canelSpanInfo(){
 	_$('edit_span').style.display = "none";
 	_$('bg_transparent').style.display = "none";
 }
 
-
 function preparemenus(){
-	var menu_div = document.getElementById('mymenu') ;
-	menu_div.style.width="80";
-	menu_div.style.borderColor = "#eee #bbb #bbb #ddd";
-	ASTGUI.events.add( document.body , "click", function(){ _$('mymenu').style.display="none"; } );
+	menu.style.width="80";
+	menu.style.borderColor = "#eee #bbb #bbb #ddd";
+	ASTGUI.events.add( document.body , "click", function(){ menu.style.display="none"; } );
+
+	var editSPAN = function(l){ // show values for SPAN l in the edit_span dialog box
+		_$('editspan_SPAN').innerHTML = SPANS[l]['description'];
+		_$('editspan_ALARMS').innerHTML = SPANS[l]['alarms'];
+		ASTGUI.selectbox.selectOption( _$('editspan_fac') , SPANS[l]['fac'] );
+		_$('editspan_channels').innerHTML = String(SPANS[l]['usedchans']) + "/" + String(SPANS[l]['totchans']) + " ("+SPANS[l]['type']+")";
+	
+		if( SPANS[l]['signalling'] ){
+			ASTGUI.selectbox.selectOption( _$('editspan_signalling') , SPANS[l]['signalling'] );
+		}else{
+			_$('editspan_signalling').selectedIndex = -1 ; 
+		}
+		if(SPANS[l]['switchtype']){
+			ASTGUI.selectbox.selectOption( _$('editspan_switchtype') , SPANS[l]['switchtype'] );
+		}else{
+			_$('editspan_switchtype').selectedIndex = -1 ;
+		}
+		// _$('editspan_loadzone')
+		ASTGUI.selectbox.selectOption( _$('editspan_syncsrc') , SPANS[l]['syncsrc'] );
+		ASTGUI.selectbox.selectOption( _$('editspan_lbo') , SPANS[l]['lbo'] );
+		_$('edit_span').style.display = "";
+		_$('bg_transparent').style.display = "";
+	};
 
 	var menuitem1 = document.createElement('div');
 	menuitem1.innerHTML = "Edit" ;
-	menuitem1.onclick =  function(){ 
-		hide_mymenu( ); 
-		editSPAN( this.parentNode.span_value) ;
-	};
-	menu_div.appendChild(menuitem1);
+	menuitem1.onclick =  function(){ hide_mymenu();  editSPAN( this.parentNode.span_value); };
+	menu.appendChild(menuitem1);
 }
 
-
-function show_downmenu( s ) {
-	var b = document.getElementById('mymenu');
+function show_downmenu(s){
 	var a = _$("span_"+s);
-	b.span_value = s ;
-	ASTGUI.alignBbelowA(a,b);
-	setTimeout( function(){ b.style.display=""; } , 100 );
+	menu.span_value = s ;
+	ASTGUI.alignBbelowA(a,menu);
+	setTimeout( function(){ menu.style.display=""; } , 100 );
 }
-
 
 function showtable(){ // navigates through the SPANS object and presents as a table to the user
 	var tbl = _$('digitalcardstable') ;
@@ -192,66 +181,8 @@ function showtable(){ // navigates through the SPANS object and presents as a ta
 
 }
 
-function digitalparse(n){
-	if( n == "ERROR: CONFIG FILE NOT FOUND"){
-		_$('errmsg').innerHTML = "Please check if <B>ztscan</B> is installed ? <BR> /etc/asterisk/ztscan.conf not found";
-		_$('errmsg').style.display = '';
-		_$('div_digitalcardstable').style.display = 'none';
-		gui_feedback("No Cards/Spans found,  No Config File found !!");
-		//_$('tablecontainer').style.display="none";
-		return false;
-	}
-
-	for( var l in n ){ if(n.hasOwnProperty(l)){
-		if( l =='general') { 
-			if(n[l]['continue'] && n[l]['continue'] == "no") {
-				_$('errmsg').innerHTML = "No digital Cards detected (found 0 spans)! <BR> Error: " + n[l]['error'];
-				_$('errmsg').style.display = '';
-				_$('div_digitalcardstable').style.display = 'none';
-				gui_feedback("No Cards/Spans found !!");
-				//_$('tablecontainer').style.display="none";
-				return false;
-			}
-			if(n[l]['continue'] && n[l]['continue'] == "yes") {
-				//var t = (n[l]['totalspans']) ? n[l]['totalspans'] : 'Unknown';
-				if(n[l]['isnew'] && n[l]['isnew'] == "yes") {
-					var uri = build_action('update', 0, 'general', 'isnew', 'no', '');
-					makerequest('u','ztscan.conf', uri, function(t){ return true;} );
-				}
-			}
-			continue;
-		}
-		SPANS[l] = {};
-		for( var k in n[l] ){ if(n[l].hasOwnProperty(k)){ SPANS[l][k] = n[l][k]; }}
-	}}
-	config2json("users.conf", 1, usersparse);
-	
-}
-
-function usersparse(n){ // read users.conf and load switchtype, signalling, zapchan into the SPANS object
-	if( n == "ERROR: CONFIG FILE NOT FOUND"){
-		_$('errmsg').innerHTML = "/etc/asterisk/users.conf not found";
-		_$('errmsg').style.display = '';
-		_$('div_digitalcardstable').style.display = 'none';
-		gui_feedback("No Users File found !!");
-		//_$('tablecontainer').style.display="none";
-		return false;
-	}
-	var abcd = function(){
-		var tmp;
-		for( var l in n ){ if(n.hasOwnProperty(l)){
-			if( l.beginsWith('span_')) {
-				tmp = l.split('span_')[1];
-				if (!SPANS[tmp]){SPANS[tmp] = {};}
-				for( var k in n[l] ){ if(n[l].hasOwnProperty(k)){ SPANS[tmp][k] = n[l][k]; }}
-			}
-		}}
-	}();
-	showtable();
-}
-
-
 function localajaxinit(){
+	menu = document.getElementById('mymenu');
 	setWindowTitle("Digital Setup Wizard");
 	top._$('mainscreen').width= 798;
 	showdiv_statusmessage(); // create status message dialog
@@ -259,16 +190,113 @@ function localajaxinit(){
 	_$('status_message').style.display="block";
 	setTimeout(function(){ _$('status_message').style.display='none';}, 1000);
 	preparemenus();
-
 	parent.loadscreen(this);
-	parent.astmanEngine.run_tool(asterisk_guiZtscan, function(t) { // run ztscan and then try loading ztscan.conf
-		setTimeout( function(){ config2json("ztscan.conf", 1, digitalparse); } , 700); // leave some time for ztscan to generate ztscan.conf
-	});
+	loadConfigFiles.readApplyzap();
 }
+
+var loadConfigFiles = {
+	// read applyzap.conf (if exists) - so that the GUI knows the last configured hardware
+	// run ztscan - to detect digital cards
+	// read ztscan.conf - read spans information 
+	//   see if the number of spans in ztscan.conf matches with that from applyzap.conf 
+	//   (this way we know if any changes in digital hardware since the gui was last used)
+	// read users.conf - and read spans information
+
+	readApplyzap: function(){
+		
+		var applyZapParse = function(n){ // read applyzap.conf
+			if( ASTGUI.checkType.isString(n) &&  n=="ERROR: CONFIG FILE NOT FOUND" ){ 
+				// applyzap.conf not found - probably running this page for the first time or never had digital-cards before
+				// touch applyzap.conf - we need to have a file to be a able to write to it
+				oldSpanCount = 0;
+			}else{
+				//for(var l in n){ if(n.hasOwnProperty(l)){
+					for (var i=0; i < n['general'].length; i++){
+						if( n['general'][i].beginsWith('span=') ){ oldSpanCount++;}
+					}
+				//}}
+			}
+			console.log('old span count is ' + oldSpanCount);
+			loadConfigFiles.runZtscan(); // to next step - run ztscan and read ztscan.conf
+		};
+		config2json("applyzap.conf", 0, applyZapParse);
+	},
+
+	runZtscan: function(){
+		parent.astmanEngine.run_tool(asterisk_guiZtscan, function(t) { // run ztscan and then try loading ztscan.conf
+			setTimeout( function(){ loadConfigFiles.readZtscanConf(); } , 700); // leave some time for ztscan to generate ztscan.conf
+		});
+	},
+
+	readZtscanConf:function(){
+		var digitalparse = function(n){
+			if( n == "ERROR: CONFIG FILE NOT FOUND"){
+				_$('errmsg').innerHTML = "Please check if <B>ztscan</B> is installed ? <BR> /etc/asterisk/ztscan.conf not found";
+				_$('errmsg').style.display = '';
+				_$('div_digitalcardstable').style.display = 'none';
+				gui_feedback("No Cards/Spans found,  No Config File found !!");
+				//_$('tablecontainer').style.display="none";
+				return false;
+			}
+		
+			for( var l in n ){ if(n.hasOwnProperty(l)){
+				if( l =='general') { 
+					if(n[l]['continue'] && n[l]['continue'] == "no") {
+						_$('errmsg').innerHTML = "No digital Cards detected (found 0 spans)! <BR> Error: " + n[l]['error'];
+						_$('errmsg').style.display = '';
+						_$('div_digitalcardstable').style.display = 'none';
+						gui_feedback("No Cards/Spans found !!");
+						//_$('tablecontainer').style.display="none";
+						return false;
+					}
+					if(n[l]['continue'] && n[l]['continue'] == "yes") {
+						//var t = (n[l]['totalspans']) ? n[l]['totalspans'] : 'Unknown';
+						if(n[l]['isnew'] && n[l]['isnew'] == "yes") {
+							var uri = build_action('update', 0, 'general', 'isnew', 'no', '');
+							makerequest('u','ztscan.conf', uri, function(t){ return true;} );
+						}
+					}
+					continue;
+				}
+				SPANS[l] = {};
+				for( var k in n[l] ){ if(n[l].hasOwnProperty(k)){ SPANS[l][k] = n[l][k]; }}
+			}}
+			loadConfigFiles.checkHardwareChanges();
+		};
+		config2json("ztscan.conf", 1, digitalparse);
+	},
+
+	checkHardwareChanges: function(){
+		var usersparse = function(n){ // read users.conf and load switchtype, signalling, zapchan into the SPANS object
+			if( n == "ERROR: CONFIG FILE NOT FOUND"){
+				_$('errmsg').innerHTML = "/etc/asterisk/users.conf not found";
+				_$('errmsg').style.display = '';
+				_$('div_digitalcardstable').style.display = 'none';
+				gui_feedback("No Users File found !!");
+				//_$('tablecontainer').style.display="none";
+				return false;
+			}
+			var abcd = function(){
+				var tmp;
+				for( var l in n ){ if(n.hasOwnProperty(l)){
+					if( l.beginsWith('span_')) {
+						tmp = l.split('span_')[1];
+						if (!SPANS[tmp]){SPANS[tmp] = {};}
+						for( var k in n[l] ){ if(n[l].hasOwnProperty(k)){ SPANS[tmp][k] = n[l][k]; }}
+					}
+				}}
+			}();
+			showtable();
+		};
+		config2json("users.conf", 1, usersparse);
+	}
+};
+
+
 
 function resetmainscreen(){ top._$('mainscreen').width= 540; }
 
-function reloadpage(){window.location.href="digital.html";}
+function reloadpage(){ window.location.href="digital.html"; }
 
 function showhideswitch() {
 	var _sig = _$('editspan_signalling').value.substr(0,2);
@@ -277,10 +305,8 @@ function showhideswitch() {
 	return true;
 }
 
-
-
 function updateSpanInfo(){
-	var b = String( document.getElementById('mymenu').span_value );
+	var b = String( menu.span_value );
 	SPANS[b]['fac'] = _$('editspan_fac').value;
 	SPANS[b]['signalling'] = _$('editspan_signalling').value;
 	SPANS[b]['switchtype'] = _$('editspan_switchtype').value;
@@ -289,8 +315,6 @@ function updateSpanInfo(){
 	//SPANS[b]['loadzone'] = _$('editspan_loadzone').value;
 	canelSpanInfo();
 }
-
-
 
 var applySettings = {
 	generate_zaptel: function(){

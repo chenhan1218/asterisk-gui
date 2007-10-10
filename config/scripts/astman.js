@@ -92,6 +92,17 @@ String.prototype.contains=function(a){
 };
 
 var ASTGUI = { // the idea is to eventually move all the global variables and functions into this one object so that the global name space is not as cluttered as it is now.
+	checkType: {
+		isNull: function(a){ return a===null },
+		isString: function(a){ return typeof a=="string"; },
+		isNumber: function(a){ return typeof a=="number"; },
+		isBoolean: function(a){ return typeof a=="boolean"; },
+		isDefined: function(a){ return typeof a!="undefined" },
+		isArray: function(a){ return a instanceof Array ; },
+		isObject: function(a){ return  (typeof a=="object") && a!=null },
+		isFunction: function(a){ return typeof a=="function"; }
+	},
+
 	dialog : {
 		load_iframe : function(msg){
 			top.alertframename = "alertiframe";
