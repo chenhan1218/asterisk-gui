@@ -86,14 +86,28 @@ function preparemenus(){
 	var editSPAN = function(l){ // show values for SPAN l in the edit_span dialog box
 		_$('editspan_SPAN').innerHTML = SPANS[l]['description'];
 		_$('editspan_ALARMS').innerHTML = SPANS[l]['alarms'];
+
+		ASTGUI.selectbox.clear( _$('editspan_fac') );
+
+		if ( Number(SPANS[l]['totchans']) <= 24 ){
+			ASTGUI.selectbox.append(_$('editspan_fac'),'ESF/B8ZS', 'ESF/B8ZS');
+			ASTGUI.selectbox.append(_$('editspan_fac'),'D4/AMI', 'D4/AMI');
+		}else{
+			ASTGUI.selectbox.append(_$('editspan_fac'),'CAS/AMI', 'CAS/AMI');
+			ASTGUI.selectbox.append(_$('editspan_fac'),'CCS/HDB3', 'CCS/HDB3');
+			ASTGUI.selectbox.append(_$('editspan_fac'),'CCS/CRC4/HDB3', 'CCS/CRC4/HDB3');
+		}
+
 		ASTGUI.selectbox.selectOption( _$('editspan_fac') , SPANS[l]['fac'] );
-		_$('editspan_channels').innerHTML = String(SPANS[l]['usedchans']) + "/" + String(SPANS[l]['totchans']) + " ("+SPANS[l]['type']+")";
+
+		_$('editspan_channels').innerHTML = String(SPANS[l]['usedchans']) + "/" + String(SPANS[l]['totchans']) + " ("+SPANS[l]['spantype']+")";
 	
 		if( SPANS[l]['signalling'] ){
 			ASTGUI.selectbox.selectOption( _$('editspan_signalling') , SPANS[l]['signalling'] );
 		}else{
 			_$('editspan_signalling').selectedIndex = -1 ; 
 		}
+		disablEnable_sc();
 		if(SPANS[l]['switchtype']){
 			ASTGUI.selectbox.selectOption( _$('editspan_switchtype') , SPANS[l]['switchtype'] );
 		}else{
@@ -162,7 +176,7 @@ function showtable(){ // navigates through the SPANS object and presents as a ta
 		newCell2.innerHTML =  SPANS[span]['fac'];
 
 		var newCell3 = newRow.insertCell(3);
-		newCell3.innerHTML = String(SPANS[span]['usedchans'])+"/"+String(SPANS[span]['totchans'])+" ("+SPANS[k]['type']+")";
+		newCell3.innerHTML = String(SPANS[span]['usedchans'])+"/"+String(SPANS[span]['totchans'])+" ("+SPANS[k]['spantype']+")";
 		newCell3.align = "center";
 
 		var newCell4 = newRow.insertCell(4);
@@ -173,11 +187,7 @@ function showtable(){ // navigates through the SPANS object and presents as a ta
 
 	ASTGUI.domActions.clear_table(tbl);
 	add_fRow();
-	for( var k in SPANS ){ if( SPANS.hasOwnProperty(k) ){ 
-		var type = (SPANS[k]['totchans'] <= 24) ? "T1" : "E1";
-		SPANS[k]['type'] = type;
-		addrow_totable(k); 
-	}}
+	for( var k in SPANS ){ if( SPANS.hasOwnProperty(k) ){ addrow_totable(k); }}
 
 }
 
@@ -211,13 +221,17 @@ var loadConfigFiles = {
 				oldSpanCount = 0;
 				oldLoadZone ='us';
 			}else{
-				for (var i=0; i < n['general'].length; i++){
-					if( n['general'][i].beginsWith('span=') ){ oldSpanCount++; continue; }
-					if( n['general'][i].contains('loadzone=') ){
-						oldLoadZone = n['general'][i].split('loadzone=')[1]; 
-						ASTGUI.selectbox.selectOption( _$('loadZone') , oldLoadZone );
-						continue;
+				try{
+					for (var i=0; i < n['general'].length; i++){
+						if( n['general'][i].beginsWith('span=') ){ oldSpanCount++; continue; }
+						if( n['general'][i].contains('loadzone=') ){
+							oldLoadZone = n['general'][i].split('loadzone=')[1]; 
+							ASTGUI.selectbox.selectOption( _$('loadZone') , oldLoadZone );
+							continue;
+						}
+	
 					}
+				}catch(err){
 
 				}
 			}
@@ -263,7 +277,12 @@ var loadConfigFiles = {
 					continue;
 				}
 				SPANS[l] = {};
-				for( var k in n[l] ){ if(n[l].hasOwnProperty(k)){ SPANS[l][k] = n[l][k]; }}
+				for( var k in n[l] ){ if(n[l].hasOwnProperty(k)){ 
+					SPANS[l][k] = n[l][k];
+					if( k == 'totchans' ){
+						SPANS[l]['spantype'] = ( Number(n[l][k]) <= 24) ? "T1" : "E1";
+					}
+				}}
 			}}
 			loadConfigFiles.checkHardwareChanges();
 		};
@@ -302,10 +321,13 @@ function resetmainscreen(){ top._$('mainscreen').width= 540; }
 
 function reloadpage(){ window.location.href="digital.html"; }
 
-function showhideswitch() {
-	var _sig = _$('editspan_signalling').value.substr(0,2);
-	var _st = _$('signalling_container');
-	if(_sig == "fx") { _st.style.display = 'none'; } else { _st.style.display = ''; }
+function disablEnable_sc() {
+	if( _$('editspan_signalling').value.beginsWith('fx') ){
+		_$('editspan_switchtype').disabled =  true;
+		_$('editspan_switchtype').selectedIndex = -1;
+	}else{
+		_$('editspan_switchtype').disabled =  false;
+	}
 	return true;
 }
 
@@ -479,20 +501,13 @@ function applyDigitalSettings(){
 		<TD><span id="editspan_ALARMS"></span></TD>
 	</TR>
 	<TR>	<TD align="right">Framing/Coding:</TD>
-		<TD>	<select id="editspan_fac">
-			<option value="ESF/B8ZS">ESF/B8ZS</option>
-			<option value="D4/AMI">D4/AMI</option>
-			<option value="CAS/AMI">CAS/AMI</option>
-			<option value="CCS/HDB3">CCS/HDB3</option>
-			<option value="CCS/CRC4/HDB3">CCS/CRC4/HDB3</option>
-			</select>
-		</TD>
+		<TD>	<select id="editspan_fac"></select> </TD>
 	</TR>
 	<TR>	<TD align="right">Channels:</TD>
 		<TD><span id="editspan_channels"></span></TD>
 	</TR>
 	<TR>	<TD align="right">Signalling</TD>
-		<TD>	<select id="editspan_signalling" onChange="showhideswitch();">
+		<TD>	<select id="editspan_signalling" onChange="disablEnable_sc();">
 			<option value="pri_net">PRI - Net</option>
 			<option value="pri_cpe">PRI - CPE</option>
 			<option value="fxoks">FXOKS</option>
