@@ -27,7 +27,7 @@
 	.taglist {
 		border: 1px solid #666666;
 		margin-top:10px;
-		margin-bottom:30px;
+		margin-bottom:10px;
 		max-width: 745;
 	}
 
@@ -68,6 +68,7 @@
 <script>
 var SPANS = {};
 var oldSpanCount = 0; // we get this from previuos applyzap.conf
+var oldLoadZone;
 var menu ; // document.getElementById('mymenu');
 
 function hide_mymenu(){ menu.style.display="none"; }
@@ -98,7 +99,6 @@ function preparemenus(){
 		}else{
 			_$('editspan_switchtype').selectedIndex = -1 ;
 		}
-		// _$('editspan_loadzone')
 		ASTGUI.selectbox.selectOption( _$('editspan_syncsrc') , SPANS[l]['syncsrc'] );
 		ASTGUI.selectbox.selectOption( _$('editspan_lbo') , SPANS[l]['lbo'] );
 		_$('edit_span').style.display = "";
@@ -209,14 +209,18 @@ var loadConfigFiles = {
 				// applyzap.conf not found - probably running this page for the first time or never had digital-cards before
 				// touch applyzap.conf - we need to have a file to be a able to write to it
 				oldSpanCount = 0;
+				oldLoadZone ='us';
 			}else{
-				//for(var l in n){ if(n.hasOwnProperty(l)){
-					for (var i=0; i < n['general'].length; i++){
-						if( n['general'][i].beginsWith('span=') ){ oldSpanCount++;}
+				for (var i=0; i < n['general'].length; i++){
+					if( n['general'][i].beginsWith('span=') ){ oldSpanCount++; continue; }
+					if( n['general'][i].contains('loadzone=') ){
+						oldLoadZone = n['general'][i].split('loadzone=')[1]; 
+						ASTGUI.selectbox.selectOption( _$('loadZone') , oldLoadZone );
+						continue;
 					}
-				//}}
+
+				}
 			}
-			console.log('old span count is ' + oldSpanCount);
 			loadConfigFiles.runZtscan(); // to next step - run ztscan and read ztscan.conf
 		};
 		config2json("applyzap.conf", 0, applyZapParse);
@@ -312,7 +316,6 @@ function updateSpanInfo(){
 	SPANS[b]['switchtype'] = _$('editspan_switchtype').value;
 	SPANS[b]['syncsrc'] = _$('editspan_syncsrc').value;
 	SPANS[b]['lbo'] = _$('editspan_lbo').value;
-	//SPANS[b]['loadzone'] = _$('editspan_loadzone').value;
 	canelSpanInfo();
 }
 
@@ -331,12 +334,15 @@ var applySettings = {
 		var uri = '';
 		var add_lines = function(){
 			// for each span update span with new values of 'switchtype', 'singalling'
-			var c = 0;
+			var c = 0, d ='' ;
 			for( var k in SPANS ){ if( SPANS.hasOwnProperty(k) ){
-				uri += build_action('delcat', c, 'span_'+ String(k) , "", ""); c++;
-				uri += build_action('newcat', c, 'span_'+ String(k) , "", ""); c++;
-				uri += build_action('update', c, 'span_'+ String(k) , "switchtype", SPANS[k]['switchtype']); c++;
-				uri += build_action('update', c, 'span_'+ String(k) , "signalling", SPANS[k]['signalling']); c++;
+				d = 'span_'+ String(k);
+				uri += build_action('delcat', c, d , "", ""); c++;
+				uri += build_action('newcat', c, d , "", ""); c++;
+				uri += build_action('update', c, d , "switchtype", SPANS[k]['switchtype']); c++;
+				uri += build_action('update', c, d , "signalling", SPANS[k]['signalling']); c++;
+				uri += build_action('update', c, d , "context", asterisk_guiTDPrefix + d ); c++;
+				uri += build_action('update', c, d , "zapchan", SPANS[k]['zapchanstring'] ); c++;
 			}}
 		}();
 		makerequest('u', "users.conf", uri , function(t) { applySettings.generate_zaptel(); });
@@ -350,32 +356,43 @@ var applySettings = {
 			var c = 0, bchanstring = '', dchanstring = '', context = 'general' ;
 			uri = build_action('delcat', c, context,"", ""); c++;
 			uri += build_action('newcat', c , context, "", ""); c++;
-			var totalchans = 0, firstpart , secondpart, tmp, tmp2 ;
+			var totalchans = 0, firstpart , secondpart, tmp, tmp2 , tmp3;
 			for( var k in SPANS ){ if( SPANS.hasOwnProperty(k) ){
 				firstpart = "span";
 				/* XXX Timing source for card is being set to zero? */
 				/* LBO is being set to 0 */
 				secondpart = k + "," + SPANS[k]['syncsrc']  + "," + SPANS[k]['lbo'] + "," + SPANS[k]['fac'].toLowerCase().replace("/", ",");
 				uri += build_action('append', c, context, firstpart, secondpart ); c++;
-				tmp2 = (totalchans)? ",":"";
-	
-				if(SPANS[k]['totchans'] <= 24){
+				tmp2 = (bchanstring)? ",":"";
+
+				if ( SPANS[k]['signalling'].beginsWith('fx') ){ 
+					bchanstring += '';
+					dchanstring += '';
 					tmp = totalchans + Number(SPANS[k]['totchans']);
-					dchanstring += tmp2 + String(tmp) ;
-					bchanstring += tmp2 + String(totalchans+1) + "-" + String(tmp-1);
+					tmp3 = String(totalchans+1) + "-" + String(tmp);
 					totalchans = tmp;
-				}else{ // take first 15 as b-channels, then a d channel and then take the next 15 as bchannels
-					tmp = totalchans + Number(15);
-					bchanstring += tmp2 + String(totalchans+1) + "-" + String(tmp);
-					dchanstring += tmp2 + String(totalchans+16) ;
-					bchanstring += "," + String(tmp+2) + "-" + String(tmp+16);
-					totalchans = tmp + Number(16);
+				}else{
+					if(SPANS[k]['totchans'] <= 24){
+						tmp = totalchans + Number(SPANS[k]['totchans']);
+						dchanstring += tmp2 + String(tmp) ;
+						tmp3 = String(totalchans+1) + "-" + String(tmp-1);
+						bchanstring += tmp2 + tmp3;
+						totalchans = tmp;
+					}else{ // take first 15 as b-channels, then a d channel and then take the next 15 as bchannels
+						tmp = totalchans + Number(15);
+						tmp3 = String(totalchans+1) + "-" + String(tmp);
+						dchanstring += tmp2 + String(totalchans+16) ;
+						tmp3 += "," + String(tmp+2) + "-" + String(tmp+16);
+						bchanstring += tmp2 + tmp3;
+						totalchans = tmp + Number(16);
+					}
 				}
+				SPANS[k]['zapchanstring'] = tmp3;
 			}}
 
 			uri += build_action('append', c, context, 'bchan', bchanstring); c++;
 			uri += build_action('append', c, context, 'dchan', dchanstring); c++;
-			uri += build_action('append', c, context, 'loadzone', _$('editspan_loadzone').value); c++;
+			uri += build_action('append', c, context, 'loadzone', _$('loadZone').value); c++;
 			uri += build_action('append', c, context, 'defaultzone', 'us'); c++;
 		}();
 		makerequest('u', "applyzap.conf", uri , function(t) { applySettings.updateUsersConf(); });
@@ -403,7 +420,26 @@ function applyDigitalSettings(){
 
 <div style="overflow:auto;left:40" id="div_digitalcardstable">
 	<table class="taglist" id="digitalcardstable" cellpadding=5 cellspacing=1 border=0 align=center></table>
-	<table align=center border=0>
+	<table  cellpadding=5 cellspacing=1 align=center border=0>
+		<tr>	<td align="right">LoadZone :
+				<select id="loadZone">
+					<option value="us">us</option>
+					<option value="us-old">us-old</option>
+					<option value="gr">gr</option>
+					<option value="it">it</option>
+					<option value="fr">fr</option>
+					<option value="de">de</option>
+					<option value="uk">uk</option>
+					<option value="fi">fi</option>
+					<option value="jp">jp</option>
+					<option value="sp">sp</option>
+					<option value="hu">hu</option>
+					<option value="lt">lt</option>
+					<option value="pl">pl</option>
+					<option value="pl">pl</option>
+				</select>
+			</td>
+		</tr>
 		<tr>
 			<td>
 				<input type="button" value="Apply Changes" onclick="applyDigitalSettings()"> &nbsp;&nbsp;
@@ -467,25 +503,6 @@ function applyDigitalSettings(){
 				<option value="euroisdn">EuroISDN</option>
 				<option value="ni1">Old National ISDN 1</option>
 				<option value="qsig">Q.SIG</option>
-			</select>
-		</TD>
-	</TR>
-	<TR>	<TD align="right">LoadZone</TD>
-		<TD>	<select id="editspan_loadzone">
-				<option value="us">us</option>
-				<option value="us-old">us-old</option>
-				<option value="gr">gr</option>
-				<option value="it">it</option>
-				<option value="fr">fr</option>
-				<option value="de">de</option>
-				<option value="uk">uk</option>
-				<option value="fi">fi</option>
-				<option value="jp">jp</option>
-				<option value="sp">sp</option>
-				<option value="hu">hu</option>
-				<option value="lt">lt</option>
-				<option value="pl">pl</option>
-				<option value="pl">pl</option>
 			</select>
 		</TD>
 	</TR>
