@@ -153,7 +153,12 @@ function showtable(){ // navigates through the SPANS object and presents as a ta
 		newCell3.align = "center";
 
 		var newCell4 = newRow.insertCell(4);
-		newCell4.innerHTML = "" ;
+		newCell4.innerHTML = "Signalling" ;
+		newCell4.align = "center";
+
+		var newCell5 = newRow.insertCell(5);
+		newCell5.innerHTML = "" ;
+
 	};
 
 	var addrow_totable = function(span){
@@ -180,9 +185,14 @@ function showtable(){ // navigates through the SPANS object and presents as a ta
 		newCell3.align = "center";
 
 		var newCell4 = newRow.insertCell(4);
-		newCell4.innerHTML = "<span class=\"downmenubutton\" id='" + "span_" + span + "'  onclick=\"show_downmenu( '"+ span + "');\">Options&nbsp;&nbsp;<img src=images/1.gif></span>" ;
-		newCell4.style.width = 90;
+		newCell4.innerHTML = (SPANS[span]['signalling'])?SPANS[span]['signalling'] : "<font color=red>NOT DEFINED</font>" ;
 		newCell4.align = "center";
+
+
+		var newCell5 = newRow.insertCell(5);
+		newCell5.innerHTML = "<span class=\"downmenubutton\" id='" + "span_" + span + "'  onclick=\"show_downmenu( '"+ span + "');\">Options&nbsp;&nbsp;<img src=images/1.gif></span>" ;
+		newCell5.style.width = 90;
+		newCell5.align = "center";
 	};
 
 	ASTGUI.domActions.clear_table(tbl);
@@ -195,6 +205,11 @@ function localajaxinit(){
 	menu = document.getElementById('mymenu');
 	setWindowTitle("Digital Setup Wizard");
 	top._$('mainscreen').width= 798;
+	_$('save_b').disabled = true;
+	_$('cancel_b').disabled = true;
+
+	ASTGUI.events.add( _$('loadZone') , "change" , function(){_$('save_b').disabled = false; _$('cancel_b').disabled = false;}) ;
+
 	showdiv_statusmessage(); // create status message dialog
 	_$('message_text').innerHTML = "Detecting Digital Cards ... (Beta)";
 	_$('status_message').style.display="block";
@@ -339,12 +354,16 @@ function updateSpanInfo(){
 	SPANS[b]['syncsrc'] = _$('editspan_syncsrc').value;
 	SPANS[b]['lbo'] = _$('editspan_lbo').value;
 	canelSpanInfo();
+	_$('save_b').disabled = false;
+	_$('cancel_b').disabled = false;
 }
 
 var applySettings = {
 	generate_zaptel: function(){
 		parent.astmanEngine.run_tool(asterisk_guiEditZap + " applysettings", function(t) {
 			/* anything we need to do here? */
+			// inform the user to restart
+			window.location.href= "digital.html";
 			return true; 
 		});
 		/* to run ztcfg and apply settings, you can do this call, but replace applysettings with ztcfg.
@@ -358,7 +377,7 @@ var applySettings = {
 		var add_lines = function(){
 			// for each span update span with new values of 'switchtype', 'singalling'
 			var c = 0, d ='', e ='', f=0 ;
-			for( var k in SPANS ){ if( SPANS.hasOwnProperty(k) ){
+			for( var k in SPANS ){ if( SPANS.hasOwnProperty(k) ){ if(SPANS[k]['signalling']){
 				d = 'span_'+ String(k);
 				e = asterisk_guiTDPrefix + d ;
 				uri += build_action('delcat', c, d , "", ""); c++;
@@ -371,7 +390,7 @@ var applySettings = {
 				uri2 += build_action('delcat', f, e , "", ""); f++;
 				uri2 += build_action('newcat', f, e , "", ""); f++;
 				uri2 += build_action('update', f, e , 'include', 'default'); f++;
-			}}
+			}}}
 		}();
 		makerequest('u', "users.conf", uri , function(t) {
 			makerequest('u', "extensions.conf", uri2 , function(t) { applySettings.generate_zaptel(); });
@@ -387,14 +406,14 @@ var applySettings = {
 			uri = build_action('delcat', c, context,"", ""); c++;
 			uri += build_action('newcat', c , context, "", ""); c++;
 			var totalchans = 0, firstpart , secondpart, tmp, tmp2 , tmp3;
-			for( var k in SPANS ){ if( SPANS.hasOwnProperty(k) ){
+			for( var k in SPANS ){ if( SPANS.hasOwnProperty(k) ){ if(SPANS[k]['signalling']){
 				firstpart = "span";
 				/* XXX Timing source for card is being set to zero? */
 				/* LBO is being set to 0 */
 				secondpart = k + "," + SPANS[k]['syncsrc']  + "," + SPANS[k]['lbo'] + "," + SPANS[k]['fac'].toLowerCase().replace("/", ",");
 				uri += build_action('append', c, context, firstpart, secondpart ); c++;
 				tmp2 = (bchanstring)? ",":"";
-
+				
 				if ( SPANS[k]['signalling'].beginsWith('fx') ){ 
 					bchanstring += '';
 					dchanstring += '';
@@ -418,7 +437,7 @@ var applySettings = {
 					}
 				}
 				SPANS[k]['zapchanstring'] = tmp3;
-			}}
+			}}}
 
 			uri += build_action('append', c, context, 'bchan', bchanstring); c++;
 			uri += build_action('append', c, context, 'dchan', dchanstring); c++;
@@ -472,8 +491,8 @@ function applyDigitalSettings(){
 		</tr>
 		<tr>
 			<td>
-				<input type="button" value="Apply Changes" onclick="applyDigitalSettings()"> &nbsp;&nbsp;
-				<input type="button" value="Cancel" onclick="reloadpage()">
+				<input type="button" id="save_b" value="Apply Changes" onclick="applyDigitalSettings()"> &nbsp;&nbsp;
+				<input type="button" id="cancel_b" value="Cancel Changes" onclick="reloadpage()">
 			</td>
 		</tr>
 	</table>
