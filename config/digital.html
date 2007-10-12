@@ -376,7 +376,7 @@ var applySettings = {
 		var uri2 = '';
 		var add_lines = function(){
 			// for each span update span with new values of 'switchtype', 'singalling'
-			var c = 0, d ='', e ='', f=0 ;
+			var c = 0, d ='', e ='', f=0;
 			for( var k in SPANS ){ if( SPANS.hasOwnProperty(k) ){ if(SPANS[k]['signalling']){
 				d = 'span_'+ String(k);
 				e = asterisk_guiTDPrefix + d ;
@@ -385,8 +385,11 @@ var applySettings = {
 				uri += build_action('update', c, d , "switchtype", SPANS[k]['switchtype']); c++;
 				uri += build_action('update', c, d , "signalling", SPANS[k]['signalling']); c++;
 				uri += build_action('update', c, d , "context", e); c++;
+				uri += build_action('update', c, d , "group", String(k)); c++;
 				uri += build_action('update', c, d , "zapchan", SPANS[k]['zapchanstring'] ); c++;
 
+				uri2 += build_action('delete', f, 'globals', d, "", ""); f++;
+				uri2 += build_action('update', f, 'globals', d,'Zap/g'+String(k)); f++;
 				uri2 += build_action('delcat', f, e , "", ""); f++;
 				uri2 += build_action('newcat', f, e , "", ""); f++;
 				uri2 += build_action('update', f, e , 'include', 'default'); f++;
