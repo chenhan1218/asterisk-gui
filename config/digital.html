@@ -231,10 +231,12 @@ var loadConfigFiles = {
 		
 		var applyZapParse = function(n){ // read applyzap.conf
 			if( ASTGUI.checkType.isString(n) &&  n=="ERROR: CONFIG FILE NOT FOUND" ){ 
-				// applyzap.conf not found - probably running this page for the first time or never had digital-cards before
+				// applyzap.conf not found - probably running this page for the first time 
 				// touch applyzap.conf - we need to have a file to be a able to write to it
 				oldSpanCount = 0;
 				oldLoadZone ='us';
+				 setTimeout( function(){ parent.astmanEngine.run_tool("/bin/touch /etc/asterisk/applyzap.conf", function(){} ); } , 100);
+
 			}else{
 				try{
 					for (var i=0; i < n['general'].length; i++){
