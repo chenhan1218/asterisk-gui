@@ -566,6 +566,7 @@ function loadServiceProvidersintotable(){
 }
 
 function addrow_totable(sp_text, sp_value){
+	if(sp_value.beginsWith('span_')){return true;}
 	var _spt = _$('serviceproviderstable') ;
 	var sno = _spt.rows.length + 1;
 	var newRow = _spt.insertRow(-1);
