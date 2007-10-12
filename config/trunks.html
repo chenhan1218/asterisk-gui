@@ -28,20 +28,17 @@
 var origwidth;
 var widgets = {};
 var provwidgets = {};
-var spanwidgets = {};
 var callbacks = new Object;
 var phonecallbacks = new Object;
 var providercallbacks = new Object;
 var globalvars = new Object;
 var fieldnames =[ 'disallow','allow','callerid','cancel','contact','context','delete','dialformat','fromdomain','fromuser','group','hasexten','hasiax','hassip','host','insecure',
-		'name','new','port','provider','registeriax','registersip','save','secret','trunkname','trunkstyleanalog','trunkstylecustomvoip', 'trunkstyledigital',
+		'name','new','port','provider','registeriax','registersip','save','secret','trunkname','trunkstyleanalog','trunkstylecustomvoip',
 		'trunkstylevoip','username','zapchan'];
 var provfieldnames = ['providerdesc', 'providerlogo'];
 var isnewtrunk;
 var dids_array = [];
 var old_trunkname;
-var has_spans = 0;
-var has_digital = 0;
 var used_fxos = {};
 used_fxos.oldvalue = "";
 used_fxos.newvalue = "";
@@ -116,7 +113,6 @@ callbacks.cancelnewcategory = function(){
 	ASTGUI.events.remove( _$('trunkstyleanalog') , 'click' , activateanalogvoip );
 	ASTGUI.events.remove( _$('trunkstylevoip') , 'click' , activateanalogvoip );
 	ASTGUI.events.remove( _$('trunkstylecustomvoip') , 'click' , activateanalogvoip );
-	ASTGUI.events.remove( _$('trunkstyledigital') , 'click' , activateanalogvoip );
 	hideSPdetails();
 }
 
@@ -131,24 +127,14 @@ callbacks.loaded = function() {
 	ASTGUI.events.add( _$('new') , "click", showSPdetails ) ;
 	loadServiceProvidersintotable();
 	preparemenus();
-	//parent.astmanEngine.config2list("ztscan.conf", _$('spans'), new Array(), digitalcallbacks);
-	/* If ztscan is not installed, the config file will not be generated. */
-	if(!config2json("ztscan.conf", 1, digitalparse)) {
-			has_digital = 0; /* ztscan.conf was NOT found */
-			has_spans = 0; /* no ztscan.conf, we cannot have spans. */
-			_$('digital_click_txt').style.display="";
-			_$('digital_click_txt').innerHTML="<br><br>No Config File Found, either ztscan is not installed/built properly<br>or it has not been run";		
-			ASTGUI.events.add(_$('digital_click_txt'), 'click', function() { window.location.href = "digital.html" } );
-	}
 	parent.loadscreen(this);
-	/* our callbacks are finished, providers are loaded into table, display the screen. */
 }
 
 callbacks.postselect = function(){
 	if( _$('trunkstylecustomvoip').checked ){
 		// Custom VOIP
-		var tmp = _$('trunkname').value.split("Custom - ")  ;
-		_$('customvoip_name').value = (tmp[1]) ? tmp[1] : (_$('trunkname').value) ? _$('trunkname').value : "No Comment/Trunk Name Set";
+		var tmp = $('trunkname').value.split("Custom - ")  ;
+		_$('customvoip_name').value = tmp[1];
 		_$('customvoip_username').value = _$('username').value;
 		_$('customvoip_secret').value = _$('secret').value;
 		_$('customvoip_protocol').selectedIndex = ( _$('hassip').value  == "yes" ) ? 1 : 0;
@@ -184,7 +170,6 @@ callbacks.beforeSaving = function(){
 	var _tsv = _$('trunkstylevoip');
 	var _tsa = _$('trunkstyleanalog');
 	var _tscv = _$('trunkstylecustomvoip');
-	var _dig = _$('trunkstyledigital');
 	var _cv_un = _$('customvoip_username');
 	var _name = _$('name')  ;
 	var _dvcs_v = _$('devices').value ;
@@ -436,56 +421,17 @@ callbacks.newcategory = function() {
 	_$('analog').style.display="none";
 	_$('voip').style.display="none";
 	_$('customvoip').style.display="none";
-	_$('digital').style.display="none";
 	_$('userscontent_title').innerHTML = "Add Service Provider";
 	isnewtrunk = 1;
 
 	ASTGUI.events.add( _$('trunkstyleanalog') , 'click' , activateanalogvoip );
 	ASTGUI.events.add( _$('trunkstylevoip') , 'click' , activateanalogvoip );
 	ASTGUI.events.add( _$('trunkstylecustomvoip') , 'click' , activateanalogvoip );
-	ASTGUI.events.add( _$('trunkstyledigital'), 'click', activateanalogvoip );
 
 	return tmp;
 }
 
 callbacks.identifier = "extension";
-
-function isInt(x) {
-	var y=parseInt(x);
-	if (isNaN(y)) return false;
-		return x==y && x.toString()==y.toString();
-} 
-
-function digitalparse(n) { 
-
-	var l, h;
-	for( l in n ){	if(n.hasOwnProperty(l)){
-		if( l =='general') { 
-			if(n[l]['continue'] == "no") {
-				has_digital = 0; /* ztscan.conf was NOT found */
-				has_spans = 0; /* no ztscan.conf, we cannot have spans. */
-				_$('spans').style.display = "none";
-				_$('digital_click_txt').style.display="";
-				_$('digital_click_txt').innerHTML="<br><br>Problem Detecting: <br>Reason: No Cards/Spans Found!<br><br>  Error: " + n[l]['error'];		
-				ASTGUI.events.add(_$('digital_click_txt'), 'click', function() { window.location.href = "digital.html" } );
-				return false;
-			}
-			if(n[l]['continue'] == "yes") {
-				has_digital = 1;
-				has_spans = n[l]['totalspans'];
-				_$('spans').style.display = "none";
-				_$('digital_click_txt').style.display="";
-				_$('digital_click_txt').innerHTML="<br><br>We Detected " + has_spans + " Spans in your computer!<br><br> Click Here to go to the Digital Card setup Wizard";		
-				ASTGUI.events.add(_$('digital_click_txt'), 'click', function() { window.location.href = "digital.html" } );
-				/* Set digital detection as true, and our total spans to the has_spans variable (setting it from the previous 0 value) */
-				
-			}
-		} 
-
-	}}
-	return true;
-
-}
 
 phonecallbacks.format = function(t) {
 	if (t.fieldbyname['port'] == 'fxs')
@@ -515,7 +461,6 @@ function activateanalogvoip() {
 	_zcal.innerHTML ="";
 	_$('customvoip').style.display = "none" ;
 	_$('voip').style.display= "none";
-	_$('digital').style.display="none";
 	var disablestring;
 
 	if (_$('trunkstyleanalog').checked) {
@@ -545,15 +490,10 @@ function activateanalogvoip() {
 		_$('voip').style.height =350;
 	}else if (_$('trunkstylecustomvoip').checked) {
 		_$('customvoip').style.display = "" ;
-	}else if (_$('trunkstyledigital').checked) {
-		_$('digital').style.display = "" ;
-		_$('digital').style.height = 350;
 	}
-
 }
 
 function localajaxinit() {
-	parent.astmanEngine.run_tool(asterisk_guiZtscan, onSuccess = function() { return true; }); 
 	ASTGUI.events.add(document, 'mouseover', show_tooltip);
 
 	ASTGUI.events.add( _$('customvoip_name') , 'change' , function(){ _$('trunkname').value = _$('customvoip_name').value; } );
@@ -581,9 +521,6 @@ function localajaxinit() {
 
 	var _trunkstylecustomvoip = _$('trunkstylecustomvoip');
 	_trunkstylecustomvoip.onclick = null;
-	
-	var _trunkstyledigital = _$('trunkstyledigital');
-	_trunkstyledigital.onclick = null;
 
 	ASTGUI.events.add( _$('custom_trunkname') , 'change' , function(){ 
 		_$('name').value = _$('custom_trunkname').value;
@@ -653,9 +590,6 @@ function addrow_totable(sp_text, sp_value){
 		break;
 	case "voip":
 		newCell2.innerHTML =  "Voip";
-		break;
-	case "digital":
-		newCell2.innerHTML = "Digital";
 		break;
 	default : 
 		newCell2.innerHTML =  "?";
@@ -958,14 +892,10 @@ function showSPdetails(){
 	_$('cancel').disabled = false;
 	_$('userscontent').style.display = "block";
 	_$('bg_transparent').style.display ='';
-	/* Make our default option VOIP (service providers) */
-	_$('trunkstylevoip').click();
-	_$('provider').options[0].selected = true;
 	if ( isnewtrunk == 0){
 		_$('trunkstyleanalog').disabled = true;
 		_$('trunkstylevoip').disabled = true;
 		_$('trunkstylecustomvoip').disabled = true;
-		_$('trunkstyledigital').disabled = true;
 		_$('provider').disabled = true;
 	}
 }
@@ -1077,7 +1007,6 @@ function advanced_cancel(){
 		<LABEL FOR="trunkstyleanalog"><input name='trunkstyle' type='radio' id='trunkstyleanalog' value='analog'>Analog</LABEL><BR>
 		<LABEL FOR="trunkstylevoip"><input name='trunkstyle' type='radio' id='trunkstylevoip' value='voip'>VoIP</LABEL><BR>
 		<LABEL FOR="trunkstylecustomvoip"><input name='trunkstyle' type='radio' id='trunkstylecustomvoip' value='customvoip'>Custom VoIP</LABEL>
-		<LABEL FOR="trunkstyledigital"><input name='trunkstyle' type='radio' id='trunkstyledigital' tip="en,trunks,5" value='digital'>(BETA!) Digital Cards(T1/E1/J1)</LABEL>
 	</fieldset>
 	<div id="div_providername" style="display:none">
 		<BR><BR><B>Provider Name:</B><BR><input id="name" size=10 class='input8'>
@@ -1095,14 +1024,6 @@ function advanced_cancel(){
 		</td>
 	</tr>
 	<tr><td colspan='2' style='width:80px' valign='top' align='center'></td></tr>
-	</table>
-</div>
-<div id='digital' style='height:0;overflow:hidden' align="center">
-	<table align="center">
-		<td style='width:20px' valign='top' class='field_text' tip="en,trunks,5">Spans:</td>
-		<td><select size='12' style="display:none" id='spans' style='width:240px' class='input8'><option name="blah" value="blah"></option></select></td>
-		<td style='display:none;color:#0000FF' valign='bottom' id='digital_click_txt' class='field_text' tip="en,trunks,5"></td>
-	</tr>
 	</table>
 </div>
 <div id='voip' style='height:0;overflow:hidden' align="center">
