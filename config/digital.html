@@ -374,12 +374,14 @@ var applySettings = {
 
 	updateUsersConf: function(){
 		/* update the users.conf to make sure there are corresponding [SPAN_x] contexts are updated */
-		var uri = '';
+		
+		var uri1 = [];
 		var uri2 = '';
 		var add_lines = function(){
 			// for each span update span with new values of 'switchtype', 'singalling'
-			var c = 0, d ='', e ='', f=0;
+			var c = 0, d ='', e ='', f=0, uri = '';
 			for( var k in SPANS ){ if( SPANS.hasOwnProperty(k) ){ if(SPANS[k]['signalling']){
+				uri = '', c=0;
 				d = 'span_'+ String(k);
 				e = asterisk_guiTDPrefix + d ;
 				uri += build_action('delcat', c, d , "", ""); c++;
@@ -397,11 +399,19 @@ var applySettings = {
 				uri2 += build_action('delcat', f, e , "", ""); f++;
 				uri2 += build_action('newcat', f, e , "", ""); f++;
 				uri2 += build_action('update', f, e , 'include', 'default'); f++;
+
+				uri1.push(uri);
 			}}}
 		}();
-		makerequest('u', "users.conf", uri , function(t) {
-			makerequest('u', "extensions.conf", uri2 , function(t) { applySettings.generate_zaptel(); });
-		});
+
+		var something = function(){
+			if(uri1.length){
+				makerequest('u', "users.conf", uri1.shift() , function(t) { something(); } );
+			}else{
+				makerequest('u', "extensions.conf", uri2 , function(t) { applySettings.generate_zaptel(); });
+			}
+		};
+		something();
 	},
 
 	updateZaptel: function(){ 
