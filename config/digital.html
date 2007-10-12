@@ -365,6 +365,7 @@ var applySettings = {
 		parent.astmanEngine.run_tool(asterisk_guiEditZap + " applysettings", function(t) {
 			/* anything we need to do here? */
 			// inform the user to restart
+			alert("You need to restart your machine for these settings to take effect");
 			window.location.href= "digital.html";
 			return true; 
 		});
