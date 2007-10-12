@@ -387,6 +387,7 @@ var applySettings = {
 				uri += build_action('update', c, d , "context", e); c++;
 				uri += build_action('update', c, d , "group", String(k)); c++;
 				uri += build_action('update', c, d , "trunkname", 'Span '+String(k)); c++;
+				uri += build_action('update', c, d , "trunkstyle", 'digital'); c++;
 				uri += build_action('update', c, d , "zapchan", SPANS[k]['zapchanstring'] ); c++;
 
 				uri2 += build_action('delete', f, 'globals', d, "", ""); f++;
