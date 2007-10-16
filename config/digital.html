@@ -420,7 +420,8 @@ var applySettings = {
 	// then call a script which will generate zaptel.conf from it and asks the user to restart his machine
 		var uri = '';
 		var add_lines = function(){
-			var c = 0, bchanstring = '', dchanstring = '', context = 'general' ;
+			var fxx={};
+			var c = 0, bchanstring = '', dchanstring = '', context = 'general';
 			uri = build_action('delcat', c, context,"", ""); c++;
 			uri += build_action('newcat', c , context, "", ""); c++;
 			var totalchans = 0, firstpart , secondpart, tmp, tmp2 , tmp3;
@@ -438,6 +439,7 @@ var applySettings = {
 					tmp = totalchans + Number(SPANS[k]['totchans']);
 					tmp3 = String(totalchans+1) + "-" + String(tmp);
 					totalchans = tmp;
+					fxx[SPANS[k]['signalling']] = (fxx[SPANS[k]['signalling']])? fxx[SPANS[k]['signalling']] + "," + tmp3: tmp3 ;
 				}else{
 					if(SPANS[k]['totchans'] <= 24){
 						tmp = totalchans + Number(SPANS[k]['totchans']);
@@ -457,6 +459,9 @@ var applySettings = {
 				SPANS[k]['zapchanstring'] = tmp3;
 			}}}
 
+			for( var e in fxx ){ if(fxx.hasOwnProperty(e)){
+				uri += build_action('append', c, context, e, fxx[e]); c++;
+			}}
 			uri += build_action('append', c, context, 'bchan', bchanstring); c++;
 			uri += build_action('append', c, context, 'dchan', dchanstring); c++;
 			uri += build_action('append', c, context, 'loadzone', _$('loadZone').value); c++;
