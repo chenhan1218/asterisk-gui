@@ -73,6 +73,14 @@ var menu ; // document.getElementById('mymenu');
 
 function hide_mymenu(){ menu.style.display="none"; }
 
+function verify_priChLimit(){
+	var l = String( menu.span_value );
+	if(_$('editspan_signalling').value.beginsWith('fx')){ return true;}
+	var y = Number(_$('edit_DefinedChans').value);
+	if( Number(SPANS[l]['totchans'] ) <= 24 && y ==24){return false;}//alert("You should leave atleast 1 channel for PRI signalling");
+	if( Number(SPANS[l]['totchans'] ) > 24 && y ==31){return false;}//alert("You should leave atleast 1 channel for PRI signalling");
+	return true;
+};
 
 function calc_bchan_fxx(l){ // calculates the bchan,and fxx strings for a given span
 	var y = Number(SPANS[l]['min_ch']);
@@ -107,7 +115,13 @@ function preparemenus(){
 	ASTGUI.events.add( document.body , "click", function(){ menu.style.display="none"; } );
 	var edit_DefinedChans_changed = function(){
 		var b = String( menu.span_value );
-		SPANS[b]['definedchans'] = _$('edit_DefinedChans').value;
+		var y = Number(_$('edit_DefinedChans').value);
+		if( !verify_priChLimit() ){
+			alert("You should leave atleast one channel for signalling");
+			return true;
+		}
+
+		SPANS[b]['definedchans'] = y;
 		//_$('edit_labelReserved').innerHTML = SPANS[b]['reserved_ch'];
 		_$('edit_labelZapchan').innerHTML = calc_bchan_fxx(b);
 	};
@@ -429,6 +443,11 @@ function disablEnable_sc() {
 }
 
 function updateSpanInfo(){
+	if( !verify_priChLimit() ){
+		alert("You should leave atleast one channel for signalling");
+		return true;
+	}
+
 	var b = String( menu.span_value );
 	SPANS[b]['fac'] = _$('editspan_fac').value;
 	SPANS[b]['signalling'] = _$('editspan_signalling').value;
