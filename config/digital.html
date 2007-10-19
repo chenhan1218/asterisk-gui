@@ -87,7 +87,8 @@ function calc_bchan_fxx(l){ // calculates the bchan,and fxx strings for a given 
 	var z = Number(SPANS[l]['definedchans']);
 	if(z==1){return String(y);}
 
-	if ( SPANS[l]['signalling'].beginsWith('fx') ){
+	if( SPANS[l]['signalling'] && SPANS[l]['signalling'].beginsWith('fx') ){
+
 		return y + "-" + String(y+z-1);
 	}else{
 		if(SPANS[l]['totchans'] <= 24){ // if T1
@@ -415,7 +416,7 @@ var loadConfigFiles = {
 						if (!SPANS[tmp]){SPANS[tmp] = {};}
 						for( var k in n[l] ){ if(n[l].hasOwnProperty(k)){ 
 							SPANS[tmp][k] = n[l][k];
-							if( k=='zapchan' ){ SPANS[tmp]['definedchans'] = efgh(n[l][k]); }
+							if( k=='zapchan' || k=='fxochannels'){ SPANS[tmp]['definedchans'] = efgh(n[l][k]); }
 						}}
 					}
 				}}
@@ -444,7 +445,19 @@ function disablEnable_sc() {
 
 function updateSpanInfo(){
 	if( !verify_priChLimit() ){
-		alert("You should leave atleast one channel for signalling");
+		alert("You should leave atleast one channel for signalling.");
+		return true;
+	}
+	if(!_$('editspan_fac').value){
+		alert("Please select a Framing/Coding !");
+		return true;
+	}
+	if(!_$('editspan_signalling').value){
+		alert("Please select a signalling !");
+		return true;
+	}
+	if(_$('editspan_signalling').value.beginsWith('pri') &&  !_$('editspan_switchtype').value ){
+		alert("Please select a Switch Type !");
 		return true;
 	}
 
@@ -488,11 +501,18 @@ var applySettings = {
 				uri += build_action('newcat', c, d , "", ""); c++;
 				uri += build_action('update', c, d , "switchtype", SPANS[k]['switchtype']); c++;
 				uri += build_action('update', c, d , "signalling", SPANS[k]['signalling']); c++;
-				uri += build_action('update', c, d , "context", e); c++;
-				uri += build_action('update', c, d , "group", String(k)); c++;
 				uri += build_action('update', c, d , "trunkname", 'Span '+String(k)); c++;
 				uri += build_action('update', c, d , "trunkstyle", 'digital'); c++;
-				uri += build_action('update', c, d , "zapchan", SPANS[k]['zapchanstring'] ); c++;
+				uri += build_action('update', c, d , "context", e); c++;
+
+				if ( !SPANS[k]['signalling'].beginsWith('fxo') ){
+					uri += build_action('update', c, d , "group", String(k)); c++;
+					uri += build_action('update', c, d , "zapchan", SPANS[k]['zapchanstring'] ); c++;
+				}else{ 
+					// if fxs signalling , donot add zapchan under span_x,
+					// we would want to define zapchan under the user extension to which we want the station to be assigned to
+					uri += build_action('update', c, d , "fxochannels", SPANS[k]['zapchanstring'] ); c++;
+				}
 
 				uri2 += build_action('delete', f, 'globals', d, "", ""); f++;
 				uri2 += build_action('update', f, 'globals', d,'Zap/g'+String(k)); f++;
@@ -642,9 +662,9 @@ function applyDigitalSettings(){
 			<option value="pri_net">PRI - Net</option>
 			<option value="pri_cpe">PRI - CPE</option>
 			<option value="fxoks">FXOKS</option>
-			<option value="fxsks">FXSKS</option>
 			<option value="fxols">FXOLS</option>
-			<option value="fxsls">FXSLS</option>
+			<!--<option value="fxsks">FXSKS</option>
+			<option value="fxsls">FXSLS</option>-->
 			</select>
 		</TD>
 	</TR>
