@@ -39,12 +39,16 @@ var pattern_beingedited_priority ;
 var np_oldselect;
 
 function update_parkedcalls() {
+	var _exten = _$('extensions').innerHTML;
+	var _context = _$('extensions').value;
 	if(_$("parked").checked) {
-		var uri = build_action('append', 0, _$('extensions').value, "include", "parkedcalls");   	
+		gui_feedback("Parking lots now added for Dialplan: " + _exten + " context: " + _context, 'blue');
+		var uri = build_action('append', 0, _exten, "include", "parkedcalls");   	
 		makerequest('u', 'extensions.conf', uri, function(t) { return true;});
 	} 
 	if(!_$("parked").checked) {
-		var uri = build_action('delete', 0, _$('extensions').value, "include", "", "parkedcalls");   	
+		gui_feedback("Parking lots now deleted for Dialplan: " + _exten + " context: " + _context);
+		var uri = build_action('delete', 0, _exten, "include", "", "parkedcalls");   	
 		makerequest('u', 'extensions.conf', uri, function(t) { return true;});
 	}
 }
