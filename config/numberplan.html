@@ -551,6 +551,9 @@ function localajaxinit(){
 function trunks_loaded(b){
 	var c = b ;
 	for( var d in c ){
+		if ( c.hasOwnProperty(d) && c[d]['context'] && (c[d]['context'] == asterisk_guiTDPrefix + d ) && c[d]['fxochannels'] ) {
+			continue;
+		}
 		if ( c.hasOwnProperty(d) && c[d]['context'] && (c[d]['context'] == asterisk_guiTDPrefix + d ) ) {
 			trunks_desc[d] = new Object();
 			trunks_desc[d].comment = (c[d]['trunkname']) ? unescape(c[d]['trunkname']) : d ;

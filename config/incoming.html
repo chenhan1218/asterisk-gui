@@ -35,7 +35,8 @@ function add_toext(a,b){ // a is value, b is text
 }
 
 user_callbacks.format = function(t, x) {
-	var tmp = asterisk_guiTDPrefix + t.name ; 
+	var tmp = asterisk_guiTDPrefix + t.name ;
+	if (t.fieldbyname['fxochannels']){ return false; }
 	if ( ( t.fieldbyname['context'] == tmp ) && x == undefined ) {
 		didtrunks[tmp] = new Object();
 		didtrunks[tmp].trunkname = t.fieldbyname['trunkname'] ; 
@@ -56,6 +57,8 @@ user_callbacks.includecats = true;
 // parse all contexts in extensions.conf that look like [DID_trunk_x]
 // and show each entry in the table
 numplan_callbacks.format = function(t, x) {
+	if((typeof didtrunks[t.name] == "undefined") && t.name.contains('_span_')){ return false; }
+
 	if ((t.name == specialcontext && x != undefined )){
 		var p = format_extension( _$('extensions'), t, x)  ;
 		if ( p != null ){
