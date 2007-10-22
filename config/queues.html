@@ -43,24 +43,21 @@ var userbase;
 function rename_extension(a,b){
 	// rename extension 'a' in extensions.conf to 'b'
 	// change 'exten => a,1,Queue' in default to 'exten => b,1,Queue'
-	var uri = build_action('update', 0, specialcontext ,'exten', b+',1,Answer()', a+',1,Answer()'); 
-	uri += build_action('update', 1, specialcontext ,'exten', b+',2,Queue(${EXTEN})', a+',2,Queue(${EXTEN})'); 
+	var uri = build_action('update', 0, specialcontext ,'exten', b+',1,Queue(${EXTEN})', a+',1,Queue(${EXTEN})'); 
 	makerequest('u','extensions.conf', uri, function(t){return true;} );
 }
 
 function add_extension(a){
 	// add extension 'a' in extensions.conf 
 	// add 'exten => a,1,Queue' to default
-	var uri = build_action('append', 0, specialcontext ,'exten', a+',1,Answer()');
-	uri += build_action('append', 1, specialcontext ,'exten', a+',2,Queue(${EXTEN})'); 
+	var uri = build_action('append', 0, specialcontext ,'exten', a+',1,Queue(${EXTEN})'); 
 	makerequest('u','extensions.conf',uri, function(t){return true;} );
 
 }
 
 function delete_extension(a){
 	// delete extension 'a' in extensions.conf
-	var uri = build_action('delete', 0, specialcontext ,'exten', '',a+',1,Answer()'); 
-	uri += build_action('delete', 1, specialcontext ,'exten', '',a+',1,Queue(${EXTEN})'); 
+	var uri = build_action('delete', 0, specialcontext ,'exten', '',a+',1,Queue(${EXTEN})'); 
 	makerequest('u','extensions.conf', uri, function(t){return true;});
 }
 
