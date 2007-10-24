@@ -7,8 +7,11 @@
 # Quick script for applying zaptel settings from the GUI.
 
 ZAPCONF="/etc/zaptel.conf"
+ZAPATACONF="/etc/asterisk/zapata.conf"
 ZTCFG_OUTPUT="/var/lib/asterisk/static-http/config/ztcfg_output.html"
 FILENAME="/etc/asterisk/applyzap.conf"
+MISDNCONF="/etc/misdn-init.conf"
+MISDNFILE="/etc/asterisk/applymisdn.conf"
 
 case ${1} in
 	changemodes)
@@ -30,7 +33,15 @@ case ${1} in
 		;;
 	applysettings)	
 		# Split based on ||| delimeter, and apply to zaptel.
-		grep -v "\[general\]" ${FILENAME} | grep -v "\;" > ${ZAPCONF} 
+		if [ "${2}" == "misdn" ]
+		then
+			grep -v "\[general\]" ${MISDNFILE} | grep -v "\;" > ${MISDNCONF}
+		else
+			grep -v "\[general\]" ${FILENAME} | grep -v "\;" > ${ZAPCONF} 
+			cp -rf ${ZAPCONF} ${ZAPCONF}.zapscan # save the gui settings!
+			cp -rf ${ZAPATACONF} ${ZAPATACONF}.zapscan # save the user settings
+			zapscan
+		fi
 		;;
 	ztcfg)
 		ztcfg -vv 2> $ZTCFG_OUTPUT
