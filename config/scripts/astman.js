@@ -21,7 +21,7 @@
 
 var sc_displaytime = 1000;
 var asterisk_guipingerror = "Message: Authentication Required";
-var asterisk_guiappname =  "Asterisk GUI (Beta)";
+var asterisk_guiappname =  "Asterisk GUI";
 var asterisk_guitools = "asterisk_guitools";
 var asterisk_guitoolsversion = "0.7";
 var asterisk_guiversion = "$Revision$";

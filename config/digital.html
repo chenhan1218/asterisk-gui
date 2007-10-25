@@ -271,7 +271,7 @@ function localajaxinit(){
 	ASTGUI.events.add( _$('loadZone') , "change" , function(){_$('save_b').disabled = false; _$('cancel_b').disabled = false;}) ;
 
 	showdiv_statusmessage(); // create status message dialog
-	_$('message_text').innerHTML = "Detecting Digital Cards ... (Beta)";
+	_$('message_text').innerHTML = "Detecting Digital Cards ...";
 	_$('status_message').style.display="block";
 	setTimeout(function(){ _$('status_message').style.display='none';}, 1000);
 	preparemenus();
