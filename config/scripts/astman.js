@@ -210,7 +210,7 @@ var ASTGUI = { // the idea is to eventually move all the global variables and fu
 		},
 
 		clear_table: function(h){
-			for( var i=0; i <  h.rows.length; ){ _bft.deleteRow(i); }
+			for( var i=0; i <  h.rows.length; ){ h.deleteRow(i); }
 		}
 	},
 
