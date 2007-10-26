@@ -577,7 +577,7 @@ function showdiv_statusmessage(){
 	_hs.borderColor= "#7E5538";
 	_hs.borderStyle= "solid";
 	h.innerHTML = '<BR><BR><TABLE border=0 cellpadding=0 cellspacing=3 align=center>' +
-			'<TR><TD><img src="/asterisk/static/config/images/loading.gif"></TD>' +
+			'<TR><TD><img src="images/loading.gif"></TD>' +
 			'<TD valign=middle align=center>&nbsp;&nbsp;<div id=message_text></div></TD></TR></TABLE>';
 	document.body.appendChild(h);
 }
