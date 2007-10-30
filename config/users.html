@@ -303,7 +303,7 @@ function load_codecs_fromast() {
 		for(var i=0; resp[i] != undefined; i++) {
 			resp[i] = resp[i].split("_");
 			if(resp[i][1]) {
-				resp[i][1] = resp[i][1].split("."); 
+				resp[i][1] = resp[i][1].split(/[. ]/); 
 				if(resp[i][1][0]) {
 					if(resp[i][1][0] == "a") {
 						continue; /* codec is a_mu, alaw to mulaw direct codec/decoder, not a codec preference. */
