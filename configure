@@ -564,8 +564,6 @@ PACKAGE_VERSION=
 PACKAGE_STRING=
 PACKAGE_BUGREPORT=
 
-ac_unique_file="asterisk-gui"
-ac_unique_file="tools/zapscan.c"
 ac_subst_vars='SHELL
 PATH_SEPARATOR
 PACKAGE_NAME

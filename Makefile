@@ -111,7 +111,8 @@ HTTPURL:=http://$(HTTPBINDADDR):$(HTTPBINDPORT)/$(HTTPPREFIX)/static/config/cfgb
 HTTPSETUPURL:=http://$(HTTPBINDADDR):$(HTTPBINDPORT)/$(HTTPPREFIX)/static/config/setup/install.html
 HTTPLOCALURL:=http://127.0.0.1:$(HTTPBINDPORT)/$(HTTPPREFIX)/static/config/cfgbasic.html
 
-SUBDIRS:=tools
+#For future reference, you can have the Makefile go into the subdirectories defined and Make then
+#SUBDIRS:=tools
 SUBDIRS_CLEAN:=$(SUBDIRS:%=%-clean)
 SUBDIRS_INSTALL:=$(SUBDIRS:%=%-install)
 
