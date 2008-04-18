@@ -3,7 +3,7 @@
 #
 # Top level Makefile
 #
-# Copyright (C) 1999-2006, Digium, Inc.
+# Copyright (C) 1999-2007, Digium, Inc.
 #
 # Mark Spencer <markster@digium.com>
 #
@@ -81,23 +81,10 @@ ifeq ($(ASTSBINDIR),)
   endif
 endif
 
-ifeq ($(ASTDATADIR),)
-  ASTDATADIR:=$(ASTVARLIBDIR)
-endif
-
-HTTPDIR:=$(ASTDATADIR)/static-http
+HTTPDIR:=$(ASTVARLIBDIR)/static-http
 CONFIGDIR:=$(HTTPDIR)/config
 
 HTTPHOST?=$(shell hostname)
-
-HTTPBINDADDR?=$(shell cat $(ASTETCDIR)/http.conf  2>/dev/null | grep -v ^\; | grep bindaddr | cut -f 2 -d '=')
-ifeq ($(HTTPBINDADDR),0.0.0.0)
-  HTTPBINDADDR:=$(HTTPHOST)
-endif
-ifeq ($(HTTPBINDADDR),)
-  HTTPBINDADDR:=$(HTTPHOST)
-endif
-
 HTTPBINDPORT?=$(shell cat $(ASTETCDIR)/http.conf  2>/dev/null | grep -v ^\; | grep bindport | cut -f 2 -d '=')
 ifeq ($(HTTPBINDPORT),)
   HTTPBINDPORT:=8088
@@ -107,9 +94,7 @@ HTTPPREFIX?=$(shell echo $(HTTPPREFIXBASE) | cut -f 2 -d '=')
 ifeq ($(HTTPPREFIXBASE),)
   HTTPPREFIX:=asterisk
 endif
-HTTPURL:=http://$(HTTPBINDADDR):$(HTTPBINDPORT)/$(HTTPPREFIX)/static/config/cfgbasic.html
-HTTPSETUPURL:=http://$(HTTPBINDADDR):$(HTTPBINDPORT)/$(HTTPPREFIX)/static/config/setup/install.html
-HTTPLOCALURL:=http://127.0.0.1:$(HTTPBINDPORT)/$(HTTPPREFIX)/static/config/cfgbasic.html
+HTTPURL:=http://$(HTTPHOST):$(HTTPBINDPORT)/$(HTTPPREFIX)/static/config/cfgbasic.html
 
 #For future reference, you can have the Makefile go into the subdirectories defined and Make then
 #SUBDIRS:=tools
@@ -187,20 +172,9 @@ checkconfig:
 		exit 1; \
 	fi
 
-	@echo ""
-	@echo ""
 	@echo " --- Everything looks good ---	"
-	@echo ""
 	@echo " * GUI should be available at $(HTTPURL) "
-	@echo ""
-	@echo " * Before using the GUI, Please visit the install page at"
-	@echo " * $(HTTPSETUPURL) "
 	@echo "" 
-	@echo ""
-	@echo " * Note: If you have bindaddr=127.0.0.1 in $(ASTETCDIR)/http.conf "
-	@echo "   you will only be able to visit it from the local machine. "
-	@echo "   Example: $(HTTPLOCALURL)"
-	@echo ""
 	@echo " * The login and password should be an entry from $(ASTETCDIR)/manager.conf"
 	@echo "   which has 'config' permission in read and write.  For example:"
 	@echo ""
@@ -221,10 +195,26 @@ _install: _all $(SUBDIRS_INSTALL)
 	mkdir -p $(CONFIGDIR)/images
 	mkdir -p $(CONFIGDIR)/stylesheets
 	mkdir -p $(CONFIGDIR)/bkps
-	mkdir -p $(CONFIGDIR)/setup
-	mkdir -p $(CONFIGDIR)/graphs
 	mkdir -p $(CONFIGDIR)/scripts
 	mkdir -p $(ASTVARLIBDIR)/scripts
+	@echo "Checking For old ztscan and zapscan...."
+	@for i in zapscan.bin zapscan ; do \
+		for x in /sbin/ /usr/sbin/ ; do \
+			if [ -f $$x$$i ] ; then \
+				echo "Removing  -->  $$x$$i" ; \
+				rm -f $$x$$i ; \
+			fi ; \
+		done ; \
+	done 
+	@for i in /sbin/ztscan /usr/sbin/ztscan ; do \
+		if [ -f $$i ] ; then \
+			if [ "`strings $$i | grep 'basechan'`" = "" ] ; then \
+				echo "Removing  --> $$i" ; \
+				rm -f $$i ; \
+			fi ; \
+		fi ; \
+	done
+	@echo "Old ztscan/zapscan removal complete!"
 	@for x in gui_configs/*; do \
 		echo "$$x  -->  $(ASTETCDIR)" ; \
 		cp $$x $(ASTETCDIR)/ ; \
@@ -241,21 +231,24 @@ _install: _all $(SUBDIRS_INSTALL)
 		echo "$$x  -->  $(CONFIGDIR)/scripts/" ; \
 		$(INSTALL) -m 644 $$x $(CONFIGDIR)/scripts/ ; \
 	done
-	@for x in config/setup/*; do \
-		echo "$$x  -->  $(CONFIGDIR)/setup/" ; \
-		$(INSTALL) -m 644 $$x $(CONFIGDIR)/setup/ ; \
-	done
 	@for x in config/stylesheets/*; do \
 		echo "$$x  -->  $(CONFIGDIR)/stylesheets/" ; \
 		$(INSTALL) -m 644 $$x $(CONFIGDIR)/stylesheets/ ; \
 	done
 	@for x in config/*.html; do \
+		if [ "$$x" = "config/index.html" ]; then \
+			continue ; \
+		fi ; \
 		echo "$$x  -->  $(CONFIGDIR)" ; \
 		$(INSTALL) -m 644 $$x $(CONFIGDIR)/ ; \
 	done
-	@for x in config/graphs/*; do \
-		echo "$$x  -->  $(CONFIGDIR)/graphs" ; \
-		$(INSTALL) -m 644 $$x $(CONFIGDIR)/graphs ; \
+	@for x in config/index.html; do \
+		echo "$$x  --> $(HTTPDIR)/index.html" ; \
+		$(INSTALL) -m 644 $$x $(HTTPDIR)/index.html ; \
+	done
+	@for x in configs/providers.conf.sample; do \
+		echo "$$x  --> $(ASTETCDIR)/providers.conf" ; \
+		$(INSTALL) -m 644 $$x $(ASTETCDIR)/providers.conf ; \
 	done
 	@if [ -x /usr/sbin/asterisk-gui-post-install ]; then \
 		/usr/sbin/asterisk-gui-post-install $(DESTDIR) . ; \
@@ -304,10 +297,7 @@ uninstall:
 update: 
 	@if [ -d .svn ]; then \
 		echo "Updating from Subversion..." ; \
-		fromrev="`svn info | $(AWK) '/Revision: / {print $$2}'`"; \
 		svn update | tee update.out; \
-		torev="`svn info | $(AWK) '/Revision: / {print $$2}'`"; \
-		echo "`date`  Updated from revision $${fromrev} to $${torev}." >> update.log; \
 		rm -f .version; \
 		if [ `grep -c ^C update.out` -gt 0 ]; then \
 			echo ; echo "The following files have conflicts:" ; \

@@ -7,14 +7,10 @@ IRC:  #asterisk-gui on freenode
 
 Todo
 ----- 
-* Part Of Digital Card Dectection: On cfgbasic.html load, parse for ztscan.conf to see if isnew=1 is set in any context's, and alert the user
-saying that they have no analog or digital hardware, and redirect to the setup page for each. 
 
 * Voicemail Groups
 
 * Option to configure the default context 'disa' for DISA
-
-* Digital Cards Support
 
 * Call Forwarding
 
@@ -35,11 +31,14 @@ saying that they have no analog or digital hardware, and redirect to the setup p
 
 * In addition to build_action, if you are updating an extension, be able to easily add application specific parameteres
 
-* Add full support for bandwidth.com through the service providers page 
+* Make sure all settings and configuration for the ITSPs are included in the setup wizards service providers page
 
 * Ability to download config backup files and restore them via file uploads
 
 * Add the GUI version string inside extensions.conf, so the setup wizard can decide if it needs to update the guitools context.
+
+* Ability to instead maintain two versions of a file (eg 4.html (step 3) and trunks.html (service providers)) so just include trunks.html into the 4.html page, instead of writing it twice and fixing bugs twice.
+	The merges from their parent files (trunks.html to 4.html respectively) do not usually get changed in their Setup Wizard equivalent, and can be extremely confusing. (bkruse) (or anyone)
 
 Completed
 ----------
@@ -62,3 +61,19 @@ Completed
 * To fix call parking, give it an option to allow if the user wants people to be able to access the parking lot per numberplan
 
 * CDR support (Reader) (Thanks bbryant)
+
+* Part Of Digital Card Dectection: On cfgbasic.html load, parse for ztscan.conf to see if isnew=1 is set in any context's, and alert the user
+
+* Add full support for bandwidth.com through the service providers page (bkruse)
+
+* Add full support for NGT (bkruse)
+
+* Add full support for Voila (bkruse)
+
+* Add full support for voice pulse (bkruse)
+
+* Add full support for Simple Signal (bkruse)
+
+* Saying that they have no analog or digital hardware, and redirect to the setup page for each. 
+
+* Digital Cards Support

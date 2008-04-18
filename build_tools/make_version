@@ -21,6 +21,12 @@ elif [ -d .svn ]; then
       do
       if [ ${BRANCH} != 0 ]
 	  then
+	  if [ "${PART}" = "autotag_for_be" ] ; then
+	      continue
+	  fi
+	  if [ "${PART}" = "autotag_for_sx00i" ] ; then
+	      continue
+	  fi
 	  RESULT="${RESULT}-${PART}"
 	  break
       fi
