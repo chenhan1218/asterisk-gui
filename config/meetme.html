@@ -108,8 +108,7 @@ callbacks.loaded = function() {
 			}
 		}
 	}
-	_ext.contentEditable = 'true';
-	_ext.disabled = 0;
+	_ext.disabled = false;
 	_ext.style.height = "415px";
 	parent.loadscreen(this);
 }
@@ -341,7 +340,7 @@ function localajaxinit() {
 	ASTGUI.events.add(document, 'mouseover', show_tooltip);
 	setWindowTitle("Conferencing");
 
-	_$('extensions').contentEditable = 'false';
+	_$('extensions').disabled = true;
 	for (var x =0; x < fieldnames.length; x++) {
 		widgets[fieldnames[x]] = _$(fieldnames[x]);
 		widgets[fieldnames[x]].disabled = true;

@@ -86,8 +86,7 @@ callbacks.loaded = function() {
 			}
 		}
 	}
-	$('extensions').contentEditable = 'true';
-	$('extensions').disabled = 0;
+	$('extensions').disabled = false;
 	$('extensions').current_category = specialcontext;
 
 	ASTGUI.events.add( $('name') , 'keydown', function(){ this.oldvalue = this.value ;} );
@@ -268,7 +267,7 @@ function localajaxinit() {
 	setWindowTitle("Voicemail");
 	//$('advancedi').style.width = $('split').width - 60;
 
-	$('extensions').contentEditable = 'false';
+	$('extensions').disabled = true;
 
 	/*
 	if( navigator.userAgent.indexOf("MSIE") != -1){

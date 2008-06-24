@@ -173,8 +173,7 @@ callbacks.cancelchanges = function(){
 
 callbacks.loaded = function() {
 	var _devices = _$('devices');
-	_devices.contentEditable = 'true';
-	_devices.disabled = 0;
+	_devices.disabled = true;
 	ASTGUI.events.add( _$('new') , "click", showSPdetails ) ;
 	loadServiceProvidersintotable();
 	preparemenus();
@@ -673,7 +672,7 @@ function localajaxinit() {
 
 	ASTGUI.events.add(_$('provider'), 'click', showhidefields);
 	setWindowTitle("Service Providers");
-	_$('devices').contentEditable = 'false';
+	_$('devices').disabled = true;
 	_$('zapchan').splitchar=',';
 	var _trunkstyleanalog = _$('trunkstyleanalog') ;
 	_trunkstyleanalog.onclick = null;

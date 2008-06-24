@@ -109,8 +109,7 @@ callbacks.format = function(t) {
 	}
 }
 callbacks.loaded = function() {
-	_$('devices').contentEditable = 'true';
-	_$('devices').disabled = 0;
+	_$('devices').disabled = false;
 
 	if( _$('zapchan').options.length == 0) {
 		_$('zapchan').style.display="none";
@@ -298,7 +297,7 @@ function localajaxinit() {
 	*/
 
 	setWindowTitle("User Extensions");
-	_$('devices').contentEditable = 'false';
+	_$('devices').disabled = true;
 	for (var x =0; x < fieldnames.length; x++ ) {
 		widgets[fieldnames[x]] = _$(fieldnames[x]);
 		widgets[fieldnames[x]].disabled = true;
