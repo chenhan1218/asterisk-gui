@@ -254,7 +254,19 @@ _install: _all $(SUBDIRS_INSTALL)
 		/usr/sbin/asterisk-gui-post-install $(DESTDIR) . ; \
 	fi
 
-install: _install
+_getversion:
+	@if [ -d .svn ]; then \
+		svnrev="$(shell svnversion -n)" ; \
+		sed -i "s/var asterisk_guiversion.*/var asterisk_guiversion = \"$${svnrev}\"/" $(CONFIGDIR)/scripts/astman.js ; \
+		echo "Set GUI Svn Revision --> $${svnrev}" ; \
+	else \
+		svnrev="$(shell echo "Unknown - $(shell basename `pwd`)")" ; \
+		sed -i "s/var asterisk_guiversion.*/var asterisk_guiversion = \"$${svnrev}\"/" $(CONFIGDIR)/scripts/astman.js ; \
+		echo "Not under version control";  \
+		echo "Set GUI Revision to current directory --> $${svnrev}" ; \
+	fi
+
+install: _install _getversion
 	@echo " +---- Asterisk GUI Installation Complete ---+"
 	@echo " +                                           +"
 	@echo " +    YOU MUST READ THE SECURITY DOCUMENT    +"
