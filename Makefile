@@ -195,8 +195,7 @@ _install: _all $(SUBDIRS_INSTALL)
 	mkdir -p $(CONFIGDIR)/images
 	mkdir -p $(CONFIGDIR)/stylesheets
 	mkdir -p $(CONFIGDIR)/bkps
-	mkdir -p $(CONFIGDIR)/js
-	mkdir -p $(ASTVARLIBDIR)/gui_backups
+	mkdir -p $(CONFIGDIR)/scripts
 	mkdir -p $(ASTVARLIBDIR)/scripts
 	@echo "Checking For old ztscan and zapscan...."
 	@for i in zapscan.bin zapscan ; do \
@@ -228,9 +227,9 @@ _install: _all $(SUBDIRS_INSTALL)
 		echo "$$x  -->  $(CONFIGDIR)/images/" ; \
 		$(INSTALL) -m 644 $$x $(CONFIGDIR)/images/ ; \
 	done
-	@for x in config/js/*; do \
-		echo "$$x  -->  $(CONFIGDIR)/js/" ; \
-		$(INSTALL) -m 644 $$x $(CONFIGDIR)/js/ ; \
+	@for x in config/scripts/*; do \
+		echo "$$x  -->  $(CONFIGDIR)/scripts/" ; \
+		$(INSTALL) -m 644 $$x $(CONFIGDIR)/scripts/ ; \
 	done
 	@for x in config/stylesheets/*; do \
 		echo "$$x  -->  $(CONFIGDIR)/stylesheets/" ; \
@@ -246,6 +245,10 @@ _install: _all $(SUBDIRS_INSTALL)
 	@for x in config/index.html; do \
 		echo "$$x  --> $(HTTPDIR)/index.html" ; \
 		$(INSTALL) -m 644 $$x $(HTTPDIR)/index.html ; \
+	done
+	@for x in configs/providers.conf.sample; do \
+		echo "$$x  --> $(ASTETCDIR)/providers.conf" ; \
+		$(INSTALL) -m 644 $$x $(ASTETCDIR)/providers.conf ; \
 	done
 	@if [ -x /usr/sbin/asterisk-gui-post-install ]; then \
 		/usr/sbin/asterisk-gui-post-install $(DESTDIR) . ; \
