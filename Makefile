@@ -256,7 +256,7 @@ _install: _all $(SUBDIRS_INSTALL)
 
 _getversion:
 	@if [ -d .svn ]; then \
-		svnrev="$(shell svnversion -n)" ; \
+		svnrev="$(shell svnversion -n .)" ; \
 		sed -i "s/var asterisk_guiversion.*/var asterisk_guiversion = \"$${svnrev}\"/" $(CONFIGDIR)/scripts/astman.js ; \
 		echo "Set GUI Svn Revision --> $${svnrev}" ; \
 	else \
