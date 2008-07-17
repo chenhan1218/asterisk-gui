@@ -259,8 +259,8 @@ function returnpanels(){
 	//newpanel( ["GUI Access", "http_options.html", "GUI Access settings."]);
 	newpanel( ["Backup", "backup.html", "Backup Management."]);
 	/*
-	if( (asterisk_guirPath && !asterisk_guiANOW) || ( !asterisk_guirPath && !asterisk_guiANOW) ){ // if is BE 
-	newpanel( ["Provisioning", "provisioning.html", "Settings related to Polycom auto provisioning."]);
+	if( (asterisk_guirPath && !asterisk_guiANOW) || ( !asterisk_guirPath && !asterisk_guiANOW) ){ // if is BE
+		newpanel( ["Provisioning", "provisioning.html", "Settings related to Polycom auto provisioning."]);
 	}
 	*/
 	newpanel( ["Options", "localexts.html", "Admin Settings"]);
@@ -322,11 +322,10 @@ function registerajax() {
 	astmanEngine.setURL(asterisk_rawmanPath );
 	createpanels();
 	var links_str = "";
-	if(asterisk_guirPath){ links_str += '<a href="#" onclick="system_link()">System Configuration</a><BR>'; }
+	links_str += '<a href="#" onclick="system_link()">System Configuration</a><BR>';
 	links_str += '<a target="_extern" href="http://www.digium.com/en/company/profile/">About Digium</a>&nbsp;|&nbsp;';
-	if(asterisk_guiANOW){ links_str += '<a target="_extern" href="http://www.asterisknow.org/bugs">Report a Bug</a>&nbsp;|&nbsp;'
+	links_str += '<a target="_extern" href="http://www.asterisknow.org/bugs">Report a Bug</a>&nbsp;|&nbsp;'
 		+ '<a target="_extern" href="http://www.asterisknow.org/help">Help</a>&nbsp;' ;
-	}
 	_$('linksToshow').innerHTML = links_str;
 	_$('mainscreen').src = "home.html" ;
 	if( navigator.userAgent.indexOf("MSIE") != -1 || navigator.userAgent.indexOf("Konqueror") != -1 || navigator.userAgent.indexOf("Safari") != -1 ){
