@@ -1,9 +1,0 @@
-#!/bin/sh
-
-if [ -f ${1}/.version ]; then
-	cat ${1}/.version
-elif [ -d .svn ]; then
-    REV=`svnversion -c . | cut -d: -f2 | cut -dM -f1`
-    echo $REV
-    sed -i -e "s/Revision: .../Revision: ${REV}/g" config/scripts/astman.js
-fi
